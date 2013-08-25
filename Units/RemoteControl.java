@@ -18,13 +18,12 @@ class RemoteControl extends Thread implements MessageListenerInterface {
         private int speed;
         private final static int DIFF_SPEED = 30;
         protected volatile boolean remoteCtrlAlive;
-        private static File plantSound = new File("planted.wav");
   
         DifferentialPilot pilot;
           
         public void run() { 
                 remoteCtrlAlive = true;
-                pilot = new DifferentialPilot(3.0f,12.5f,Motor.B, Motor.C); 
+                pilot = new DifferentialPilot(3.0f,12.5f, Motor.B, Motor.C); 
         
             LCD.drawString(" Waiting for PC ", 4, 10, true); 
             MessageFrameworkNXT mfw = MessageFrameworkNXT.getInstance();
@@ -60,13 +59,13 @@ class RemoteControl extends Thread implements MessageListenerInterface {
                 }
                 else if(msg.getPayload().equals("forward"))
                 {
-                  pilot.forward(); 
+                  pilot.backward();
                   LCD.clearDisplay();
                   LCD.drawString("FORWARD", 0, 6);
                 }
                 else if(msg.getPayload().equals("backward"))
                 {
-                  pilot.backward(); 
+                  pilot.forward(); 
                   LCD.clearDisplay();
                   LCD.drawString("BACKWARD", 0, 6);
                 }

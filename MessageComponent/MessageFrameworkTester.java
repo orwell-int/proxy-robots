@@ -100,6 +100,7 @@ public class MessageFrameworkTester implements MessageListenerInterface
                         //m_mfBobomb.close();
                         m_mfDaneel.close();
                         //m_mfNxt.close();
+                        System.exit(0);
                       }
                     };              
                     
@@ -175,6 +176,6 @@ public class MessageFrameworkTester implements MessageListenerInterface
 
         @Override
         public void recievedNewMessage(LIMessage msg) {
-                System.out.println("Recieved: " + new String(msg.getEncodedMsg()) );            
+                System.out.println("Received: " + new String(msg.getEncodedMsg()) );            
         }       
 }
