@@ -67,7 +67,7 @@ public class MessageFramework {
         return m_connected;
         }
         
-        public void SendMessage(LIMessage msg)
+        public void SendMessage(UnitMessage msg)
         {
                 try  // handshake
         {
@@ -137,7 +137,7 @@ public class MessageFramework {
         if(isPacketValid(msgBytes))
         {
                 synchronized (m_RXguard) {
-                        LIMessage msg = LIMessage.setEncodedMsg(msgBytes);
+                        UnitMessage msg = UnitMessage.setEncodedMsg(msgBytes);
                         for(int j=0; j<m_messageListeners.size(); j++)
                         {
                                         m_messageListeners.get(j).recievedNewMessage(msg);

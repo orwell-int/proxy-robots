@@ -7,7 +7,7 @@ import lejos.nxt.LCD;
 import lejos.nxt.Motor;
 import lejos.nxt.Sound;
 import lejos.robotics.navigation.DifferentialPilot;
-import MessageComponent.LIMessage;
+import MessageComponent.UnitMessage;
 import MessageComponent.MessageFrameworkNXT;
 import MessageComponent.MessageListenerInterface;
 
@@ -49,7 +49,7 @@ class RemoteControl extends Thread implements MessageListenerInterface {
 //      }
         
         @Override
-        public void recievedNewMessage(LIMessage msg) {         
+        public void recievedNewMessage(UnitMessage msg) {         
                 LCD.drawString("Command: "+msg.getPayload(), 0, 5);
                 if(msg.getPayload().equals("stop"))
                 {
@@ -59,13 +59,13 @@ class RemoteControl extends Thread implements MessageListenerInterface {
                 }
                 else if(msg.getPayload().equals("forward"))
                 {
-                  pilot.backward();
+                  pilot.backward(); // This is due to the actual geometry of the tank
                   LCD.clearDisplay();
                   LCD.drawString("FORWARD", 0, 6);
                 }
                 else if(msg.getPayload().equals("backward"))
                 {
-                  pilot.forward(); 
+                  pilot.forward(); // This is due to the actual geometry of the tank
                   LCD.clearDisplay();
                   LCD.drawString("BACKWARD", 0, 6);
                 }
@@ -132,7 +132,6 @@ class RemoteControl extends Thread implements MessageListenerInterface {
                 }
                 else if(msg.getPayload().equals("planted"))
                 {
-                  Sound.playSample(plantSound, 100);
                   LCD.clearDisplay();
                   LCD.drawString("Bomb planted", 0, 6);
                 }

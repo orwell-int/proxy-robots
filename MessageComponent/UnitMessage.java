@@ -1,13 +1,13 @@
 package MessageComponent;
-public class LIMessage {
+public class UnitMessage {
         
         public static byte STX = 2;
         public static byte ETX = 3;
         
-        protected LIMessageType m_msgType; 
+        protected UnitMessageType m_msgType; 
         protected String m_payload;
         
-        public LIMessage(LIMessageType msgType, String payload){
+        public UnitMessage(UnitMessageType msgType, String payload){
                 m_msgType = msgType;
                 m_payload = payload;
         }
@@ -31,9 +31,9 @@ public class LIMessage {
                 return result;          
         }
         
-        public static LIMessage setEncodedMsg(byte[] msg) {
+        public static UnitMessage setEncodedMsg(byte[] msg) {
                 
-                LIMessageType msgType = (msg[1]==0?LIMessageType.Command:LIMessageType.Debug);  //  MessageType.values()[msg[0]];  // MessageType.class.getEnumConstants()[msg[0]]; //Need better solution.
+                UnitMessageType msgType = (msg[1]==0?UnitMessageType.Command:UnitMessageType.Debug);  //  MessageType.values()[msg[0]];  // MessageType.class.getEnumConstants()[msg[0]]; //Need better solution.
                 byte[] payloadBytesOnly = new byte[msg.length-4]; //4 since this is <STX>, MegType, :, and ETX, that we remove
                 for(int i=0; i<payloadBytesOnly.length; i++)
                 {
@@ -42,14 +42,14 @@ public class LIMessage {
                 
                 String payload = new String(payloadBytesOnly);
                 
-                return new LIMessage(msgType, payload);
+                return new UnitMessage(msgType, payload);
         }
         
-        public LIMessageType getMsgType() {
+        public UnitMessageType getMsgType() {
                 return m_msgType;
         }
 
-        public void setMsgType(LIMessageType type) {
+        public void setMsgType(UnitMessageType type) {
                 m_msgType = type;
         }
 

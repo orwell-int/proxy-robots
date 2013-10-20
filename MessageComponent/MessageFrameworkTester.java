@@ -108,7 +108,7 @@ public class MessageFrameworkTester implements MessageListenerInterface
                     
                     StopButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent ae) {
-                        LIMessage msg = new LIMessage(LIMessageType.Command, "stop");
+                        UnitMessage msg = new UnitMessage(UnitMessageType.Command, "stop");
                         //m_mfBobomb.SendMessage(msg);
                         m_mfDaneel.SendMessage(msg);
                         //m_mfNxt.SendMessage(msg); 
@@ -117,7 +117,7 @@ public class MessageFrameworkTester implements MessageListenerInterface
                     
                     ForwardButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent ae) {
-                        LIMessage msg = new LIMessage(LIMessageType.Command, "forward");
+                        UnitMessage msg = new UnitMessage(UnitMessageType.Command, "forward");
                         //m_mfBobomb.SendMessage(msg);
                         m_mfDaneel.SendMessage(msg);
                         //m_mfNxt.SendMessage(msg); 
@@ -126,7 +126,7 @@ public class MessageFrameworkTester implements MessageListenerInterface
                     
                     BackwardButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent ae) {
-                        LIMessage msg = new LIMessage(LIMessageType.Command, "backward");
+                        UnitMessage msg = new UnitMessage(UnitMessageType.Command, "backward");
                         //m_mfBobomb.SendMessage(msg);
                         m_mfDaneel.SendMessage(msg);
                         //m_mfNxt.SendMessage(msg); 
@@ -135,7 +135,7 @@ public class MessageFrameworkTester implements MessageListenerInterface
                     
                     LeftButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent ae) {
-                        LIMessage msg = new LIMessage(LIMessageType.Command, "left");
+                        UnitMessage msg = new UnitMessage(UnitMessageType.Command, "left");
                         //m_mfBobomb.SendMessage(msg);
                         m_mfDaneel.SendMessage(msg);
                         //m_mfNxt.SendMessage(msg); 
@@ -144,7 +144,7 @@ public class MessageFrameworkTester implements MessageListenerInterface
                     
                     RightButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent ae) {
-                        LIMessage msg = new LIMessage(LIMessageType.Command, "right");
+                        UnitMessage msg = new UnitMessage(UnitMessageType.Command, "right");
                         //m_mfBobomb.SendMessage(msg);
                         m_mfDaneel.SendMessage(msg);
                         //m_mfNxt.SendMessage(msg); 
@@ -175,7 +175,7 @@ public class MessageFrameworkTester implements MessageListenerInterface
         }
 
         @Override
-        public void recievedNewMessage(LIMessage msg) {
+        public void recievedNewMessage(UnitMessage msg) {
                 System.out.println("Received: " + new String(msg.getEncodedMsg()) );            
         }       
 }

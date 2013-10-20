@@ -35,7 +35,7 @@ public class MessageFrameworkNXT {
                 return m_instance;
         }
         
-        public void SendMessage(LIMessage msg)
+        public void SendMessage(UnitMessage msg)
         {
                 synchronized (m_TXguard) {
                         try {
@@ -100,7 +100,7 @@ public class MessageFrameworkNXT {
         if(isPacketValid(msgBytes))
         {
                 synchronized (m_RXguard) {
-                        LIMessage msg = LIMessage.setEncodedMsg(msgBytes);
+                        UnitMessage msg = UnitMessage.setEncodedMsg(msgBytes);
                                 for(int j=0; j<m_messageListeners.size(); j++)
                                 {
                                 m_messageListeners.get(j).recievedNewMessage(msg);

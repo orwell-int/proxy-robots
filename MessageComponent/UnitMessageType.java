@@ -1,6 +1,6 @@
 package MessageComponent;
 
-public enum LIMessageType
+public enum UnitMessageType
 {
         Command,
         Debug
