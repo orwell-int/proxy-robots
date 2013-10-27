@@ -2,7 +2,6 @@ package ProxyComponent;
 
 import org.zeromq.ZMQ;
 
-import MessageComponent.MessageFramework;
 import Units.Tank;
 
 import orwell.messages.Robot;

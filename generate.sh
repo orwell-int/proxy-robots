@@ -1,3 +1,5 @@
+mkdir -p GeneratedMessages;
+
 # generate java code for the protobuff definition
 protoc -I=messages --java_out=GeneratedMessages/ messages/version1.proto
 protoc -I=messages --java_out=GeneratedMessages/ messages/controller.proto
