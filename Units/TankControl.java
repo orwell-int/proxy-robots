@@ -43,8 +43,7 @@ class TankControl extends Thread implements MessageListenerInterface {
 //              return remoteCtrlAlive;
 //      }
         
-        @Override
-        public void receivedNewMessage(UnitMessage msg) {         
+        public void recievedNewMessage(UnitMessage msg) {         
                 LCD.drawString("Command: "+ msg.getPayload(), 0, 5);
                 if(msg.getPayload().equals("stop"))
                 {
