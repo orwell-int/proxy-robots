@@ -1,0 +1,250 @@
+<project name="orwell.proxy-robots" default="run_proxy">
+	<description>Projects used to make communications possible between the game server and the robots.</description>
+
+	<!-- set properties for this build -->
+	<property environment="env" />
+	<property file="build.properties" />
+
+	<!-- check whether nxj.home is correct -->
+	<available file="${nxj.home}/lib/pc" property="lejos.pc.exists" />
+	<available file="${nxj.home}/lib/nxt" property="lejos.nxt.exists" />
+	<fail unless="lejos.pc.exists" message="nxj.home variable incorrect, ${nxj.home}/lib/pc does not exist" />
+	<fail unless="lejos.nxt.exists" message="nxj.home variable incorrect, ${nxj.home}/lib/nxt does not exist" />
+
+	<!-- define the search paths -->
+	<path id="lejos.pc">
+		<fileset dir="${nxj.home}/lib/pc">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+	<path id="lejos.nxt">
+		<fileset dir="${nxj.home}/lib/nxt">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+	
+	<condition property="d32Flag" value="-d32" else="-Dblank.dummy.arg=">
+		<and>
+			<os family="mac" />
+		</and>
+	</condition>
+
+	<!-- deletes generated files -->
+	<target name="clean" description="clean up all generated files">
+		<delete dir="${build.dir}" />
+	</target>
+
+
+
+    <path id="proxy.classpath">
+        <pathelement location="bin"/>
+        <path refid="lejos.pc"/>
+        <pathelement location="../jeromq/target/jeromq-1.0.0-SNAPSHOT.jar"/>
+        <pathelement location="../protobuf-2.5.0/java/target/protobuf-java-2.5.0.jar"/>
+    </path>
+
+	<target name="compile_robots" depends="clean" description="compile the sources to upload on the robots">
+		<!-- Compile the java code from ${source.dir} to ${classes.dir}  -->
+		<mkdir dir="${classes.dir}" />
+		<javac
+			srcdir="${source.dir}"
+			includes="${source.include}"
+			excludes="${source.exclude}"
+			encoding="${source.encoding}"
+			source="${source.version}"
+			target="${target.version}"
+			destdir="${classes.dir}"
+			debug="true"
+			includeAntRuntime="false"
+			includeJavaRuntime="false"
+			verbose="false"
+		>
+			<bootclasspath refid="lejos.nxt" />
+			<!-- enable warnings -->
+			<compilerarg value="-Xlint:${source.warn}" />
+			<!--
+				Without this, there are some JDK jars in the classpath.
+				Set verbose=true to check that the classpath is really clean.
+			-->
+    		<compilerarg value="-extdirs" />
+    		<compilerarg value="" />
+		</javac>
+	</target>
+
+	<target name="compile_proxy" depends="clean" description="compile the sources that stay on the computer">
+		<!-- Compile the java code from ${source.dir} to ${classes.dir}  -->
+		<mkdir dir="${classes.dir}" />
+		<javac
+			srcdir="${source.dir}/ProxyComponent"
+			includes="${source.include}"
+			excludes="${source.exclude}"
+			encoding="${source.encoding}"
+			source="${source.version}"
+			target="${target.version}"
+			destdir="${classes.dir}"
+			debug="true"
+			includeAntRuntime="false"
+			includeJavaRuntime="false"
+			verbose="false"
+		>
+			<classpath refid="proxy.classpath" />
+			<!-- enable warnings -->
+			<compilerarg value="-Xlint:${source.warn}" />
+		</javac>
+	</target>
+
+	<target name="link_robots" depends="compile_robots" description="link the binary for the robots">
+		<!-- Link the binary and create a signature file -->
+		<java classname="lejos.pc.tools.NXJLink" failonerror="true">
+			<classpath refid="lejos.pc" />
+			<arg value="--bootclasspath" />
+			<arg pathref="lejos.nxt" />
+			<arg value="--classpath" />
+			<arg path="${classes.dir}" />
+			<arg value="--writeorder" />
+			<arg value="LE" />
+			<arg value="-o" />
+			<arg file="${output.nxj}" />
+			<arg value="-od" />
+			<arg file="${output.nxd}" />
+			<arg value="-v" />
+			<arg value="${main.class}" />
+		</java>
+	</target>
+	
+	<target name="debuglink_robots" depends="compile_robots" description="link the binary for the robots">
+		<!-- Link the binary and create a signature file -->
+		<java classname="lejos.pc.tools.NXJLink" failonerror="true">
+			<classpath refid="lejos.pc" />
+			<arg value="--bootclasspath" />
+			<arg pathref="lejos.nxt" />
+			<arg value="--classpath" />
+			<arg path="${classes.dir}" />
+			<arg value="--writeorder" />
+			<arg value="LE" />
+			<arg value="-o" />
+			<arg file="${output.nxj}" />
+			<arg value="-od" />
+			<arg file="${output.nxd}" />
+			<arg value="-gr" />
+			<arg value="-v" />
+			<arg value="${main.class}" />
+		</java>
+	</target>
+	
+	<target name="upload_robots" depends="link_robots" description="upload the binary to the robots">
+		<java classname="lejos.pc.tools.NXJUpload" fork="true" failonerror="true">
+			<sysproperty key="nxj.home" file="${nxj.home}"/>
+			<jvmarg value="${d32Flag}" />
+			<classpath refid="lejos.pc" />
+			<arg value="${output.nxj}" />
+		</java>
+	</target>
+	
+	<target name="uploadandrun_robots" depends="link_robots" description="upload and run the binary for the robots">
+		<java classname="lejos.pc.tools.NXJUpload" fork="true" failonerror="true">
+			<sysproperty key="nxj.home" file="${nxj.home}"/>
+			<jvmarg value="${d32Flag}" />
+			<classpath refid="lejos.pc" />
+			<arg value="-r" />
+			<arg file="${output.nxj}" />
+		</java>
+	</target>
+	
+	<target name="debuguploadandrun_robots" depends="debuglink_robots" description="upload and run the binary for the robots">
+		<java classname="lejos.pc.tools.NXJUpload" fork="true" failonerror="true">
+			<sysproperty key="nxj.home" file="${nxj.home}"/>
+			<jvmarg value="${d32Flag}" />
+			<classpath refid="lejos.pc" />
+			<arg value="-r" />
+			<arg file="${output.nxj}" />
+		</java>
+	</target>
+	
+	<target name="console_robots" depends="debuguploadandrun_robots" description="run a console for the robots">
+		<sleep seconds="4" />
+		<java classname="lejos.pc.tools.NXJConsole" fork="true" failonerror="true">
+			<sysproperty key="nxj.home" file="${nxj.home}"/>
+			<jvmarg value="${d32Flag}" />
+			<classpath refid="lejos.pc" />
+			<arg value="-di" />
+			<arg file="${output.nxj}" />
+		</java>
+	</target>
+	
+	<target name="consoleviewer_robots" depends="debuguploadandrun_robots" description="run the GUI Console Viewer for the robots">
+		<sleep seconds="4" />
+		<java classname="lejos.pc.tools.NXJConsoleViewer" fork="true" failonerror="true">
+			<sysproperty key="nxj.home" file="${nxj.home}"/>
+			<jvmarg value="${d32Flag}" />
+			<classpath refid="lejos.pc" />
+			<arg value="-di" />
+			<arg file="${output.nxd}" />
+		</java>
+	</target>
+	
+	<target name="debugtool_robots" description="run the debug tool for the robots">
+		  <input
+		    message="Exception class:"
+		    addproperty="class"
+		  />
+		  <input
+		    message="Method number:"
+		    addproperty="method"
+		  />
+		  <input
+		    message="PC value:"
+		    addproperty="pc"
+		  />
+		<java classname="lejos.pc.tools.NXJDebugTool" fork="true" failonerror="true">
+			<sysproperty key="nxj.home" file="${nxj.home}"/>
+			<classpath refid="lejos.pc" />
+			<arg value="-di" />
+			<arg file="${output.nxd}" />
+			<arg value="-c" />
+			<arg value="-m" />
+			<arg value="${class}" />
+			<arg value="${method}" />
+			<arg value="${pc}" />
+		</java>
+	</target>
+	
+	<!-- generate javadocs -->
+	<target name="docs_robots" description="generat_robotse javadocs for the robots">
+		<delete dir="${docs.dir}" />
+    	<mkdir dir="${docs.dir}" />
+		<javadoc
+			destdir="${docs.dir}"
+			source="${source.version}"
+			encoding="${source.encoding}"
+			charset="utf-8"
+			locale="en_US"
+			author="true"
+			access="protected"
+			windowtitle="Project documentation"
+			verbose="false"
+		>
+			<bootclasspath refid="lejos.nxt" />
+			<!--
+				Without this, there are some JDK jars in the classpath.
+				Set verbose=true to check that the classpath is really clean.
+			-->
+    		<arg value="-extdirs" />
+    		<arg value="" />
+			
+			<packageset	dir="${source.dir}"
+				includes="${source.include}"
+				excludes="${source.exclude}"
+			/>
+		</javadoc>
+	</target>
+
+	<target name="run_proxy" description="run the debug tool on the computer" depends="compile_proxy">
+		<java classname="ProxyComponent.ProxyRobots" fork="true" failonerror="true">
+			<sysproperty key="nxj.home" file="${nxj.home}"/>
+			<jvmarg value="${d32Flag}" />
+			<classpath refid="proxy.classpath" />
+			<classpath location="${classes.dir}" />
+		</java>
+	</target>
+</project>

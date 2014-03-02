@@ -1,9 +1,5 @@
 package ProxyComponent;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import orwell.messages.Controller;
 import Units.Tank;
 
@@ -16,7 +12,7 @@ public class ProtobufTest {
 		// TODO Auto-generated method stub
 	    Tank tank = new Tank("Daneel", "001653119482");
 	    tank.setNetworkID("BananaOne");
-	    System.out.println("Building robot for test: \n" + tank.toString());
+	    System.out.println("ProtobufTest: Building robot for test: \n" + tank.toString());
 
 	    Controller.Input tankInput = FakeServer.buildTestInput();
 	    tank.setControllerInput(tankInput.toByteArray());

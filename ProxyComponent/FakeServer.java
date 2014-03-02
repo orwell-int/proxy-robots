@@ -65,7 +65,7 @@ public class FakeServer
                 Controller.Input input = buildTestInput();
                 System.out.println("Building input for test");
 
-                byte [] zmq_input = getZMQmessage("CageBot", input);
+                byte [] zmq_input = getZMQmessage("BananaOne", input);
                 String str = new String(zmq_input, 0, zmq_input.length);
                 System.out.println("Message is:" + str);
 //                System.out.println("raw length: " + str.getBytes().length);
