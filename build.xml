@@ -34,20 +34,57 @@
 		<delete dir="${build.dir}" />
 	</target>
 
+    <path id="protobuf.jar">
+        <pathelement location="../protobuf-2.5.0/java/target/protobuf-java-2.5.0.jar"/>
+    </path>
 
+    <path id="robots.classpath">
+        <pathelement location="bin"/>
+        <path refid="lejos.nxt"/>
+        <path refid="lejos.pc"/>
+        <path refid="protobuf.jar"/>
+    </path>
 
     <path id="proxy.classpath">
         <pathelement location="bin"/>
         <path refid="lejos.pc"/>
+        <path refid="protobuf.jar"/>
         <pathelement location="../jeromq/target/jeromq-1.0.0-SNAPSHOT.jar"/>
-        <pathelement location="../protobuf-2.5.0/java/target/protobuf-java-2.5.0.jar"/>
     </path>
 
-	<target name="compile_robots" depends="clean" description="compile the sources to upload on the robots">
+	<target name="compile_mfNXT" depends="clean" description="compile the sources of the Message Framework used on NXT side">
 		<!-- Compile the java code from ${source.dir} to ${classes.dir}  -->
 		<mkdir dir="${classes.dir}" />
 		<javac
-			srcdir="${source.dir}"
+			srcdir="${source.mf.dir}"
+			includes="${source.include}"
+			excludes="${source.mfNXT.exclude}"
+			encoding="${source.encoding}"
+			source="${source.version}"
+			target="${target.version}"
+			destdir="${classes.dir}"
+			debug="true"
+			includeAntRuntime="false"
+			includeJavaRuntime="false"
+			verbose="false"
+		>
+			<bootclasspath refid="robots.classpath" />
+			<!-- enable warnings -->
+			<compilerarg value="-Xlint:${source.warn}" />
+			<!--
+				Without this, there are some JDK jars in the classpath.
+				Set verbose=true to check that the classpath is really clean.
+			-->
+    		<compilerarg value="-extdirs" />
+    		<compilerarg value="" />
+		</javac>
+	</target>
+
+	<target name="compile_robots" depends="compile_mfNXT" description="compile the sources to upload on the robots">
+		<!-- Compile the java code from ${source.dir} to ${classes.dir}  -->
+		<mkdir dir="${classes.dir}" />
+		<javac
+			srcdir="${source.robots.dir}"
 			includes="${source.include}"
 			excludes="${source.exclude}"
 			encoding="${source.encoding}"
@@ -59,7 +96,7 @@
 			includeJavaRuntime="false"
 			verbose="false"
 		>
-			<bootclasspath refid="lejos.nxt" />
+			<bootclasspath refid="robots.classpath" />
 			<!-- enable warnings -->
 			<compilerarg value="-Xlint:${source.warn}" />
 			<!--
@@ -75,7 +112,7 @@
 		<!-- Compile the java code from ${source.dir} to ${classes.dir}  -->
 		<mkdir dir="${classes.dir}" />
 		<javac
-			srcdir="${source.dir}/ProxyComponent"
+			srcdir="${source.proxy.dir}"
 			includes="${source.include}"
 			excludes="${source.exclude}"
 			encoding="${source.encoding}"
@@ -210,7 +247,7 @@
 	</target>
 	
 	<!-- generate javadocs -->
-	<target name="docs_robots" description="generat_robotse javadocs for the robots">
+	<target name="docs_robots" description="generate robots javadocs for the robots">
 		<delete dir="${docs.dir}" />
     	<mkdir dir="${docs.dir}" />
 		<javadoc
