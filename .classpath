@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path=""/>
+	<classpathentry kind="lib" path="${LEJOS_HOME}/lib/nxt/classes.jar" sourcepath="${LEJOS_HOME}/lib/nxt/classes-src.zip">
+		<accessrules>
+			<accessrule kind="discouraged" pattern="**/internal/**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="lib" path="${LEJOS_HOME}/lib/pc/pccomm.jar" sourcepath="${LEJOS_HOME}/lib/pc/pccomm-src.zip">
+		<accessrules>
+			<accessrule kind="discouraged" pattern="**/internal/**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="lib" path="$PROTOBUF_DIR/java/target/protobuf-java-2.5.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
