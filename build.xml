@@ -42,37 +42,9 @@
     <path id="proxy.classpath">
         <!--<pathelement location="bin"/>-->
         <path refid="lejos.pc"/>
-        <pathelement location="../protobuf-2.5.0/java/target/protobuf-java-2.5.0.jar"/>
-        <pathelement location="../jeromq/target/jeromq-1.0.0-SNAPSHOT.jar"/>
+        <pathelement location="${protobuf.dir}/java/target/protobuf-java-2.5.0.jar"/>
+        <pathelement location="${jeromq.dir}/target/jeromq-1.0.0-SNAPSHOT.jar"/>
     </path>
-
-	<target name="compile_mfNXT" depends="clean" description="compile the sources of the Message Framework used on NXT side">
-		<!-- Compile the java code from ${source.dir} to ${classes.dir}  -->
-		<mkdir dir="${classes.dir}" />
-		<javac
-			srcdir="${source.mf.dir}"
-			includes="${source.include}"
-			excludes="${source.mfNXT.exclude}"
-			encoding="${source.encoding}"
-			source="${source.version}"
-			target="${target.version}"
-			destdir="${classes.dir}"
-			debug="true"
-			includeAntRuntime="false"
-			includeJavaRuntime="false"
-			verbose="false"
-		>
-			<bootclasspath refid="robots.classpath" />
-			<!-- enable warnings -->
-			<compilerarg value="-Xlint:${source.warn}" />
-			<!--
-				Without this, there are some JDK jars in the classpath.
-				Set verbose=true to check that the classpath is really clean.
-			-->
-    		<compilerarg value="-extdirs" />
-    		<compilerarg value="" />
-		</javac>
-	</target>
 
 	<target name="compile_robots" description="compile the sources to upload on the robots">
 		<!-- Compile the java code from ${source.dir} to ${classes.dir}  -->
@@ -99,28 +71,6 @@
 			-->
     		<compilerarg value="-extdirs" />
     		<compilerarg value="" />
-		</javac>
-	</target>
-
-    <target name="compile_mfPC" depends="clean" description="compile the sources for the MessageFramework that stay on the computer">
-		<!-- Compile the java code from ${source.dir} to ${classes.dir}  -->
-		<mkdir dir="${classes.dir}" />
-		<javac
-			srcdir="${source.mf.dir}"
-			includes="${source.include}"
-			excludes="${source.mfPC.exclude}"
-			encoding="${source.encoding}"
-			source="${source.version}"
-			target="${target.version}"
-			destdir="${classes.dir}"
-			debug="true"
-			includeAntRuntime="false"
-			includeJavaRuntime="false"
-			verbose="false"
-		>
-			<classpath refid="proxy.classpath" />
-			<!-- enable warnings -->
-			<compilerarg value="-Xlint:${source.warn}" />
 		</javac>
 	</target>
 

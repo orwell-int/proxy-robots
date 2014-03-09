@@ -30,7 +30,7 @@ class TankControl extends Thread implements MessageListenerInterface {
             while(!Button.ESCAPE.isDown() && remoteCtrlAlive) {} 
         }
           
-        public void stop() {
+        public void stop_robot() {
                 remoteCtrlAlive = false;
         }
 
@@ -43,7 +43,7 @@ class TankControl extends Thread implements MessageListenerInterface {
 //      }
         
         public void recievedNewMessage(UnitMessage msg) {         
-                LCD.drawString("Command: "+ msg.getPayload(), 0, 5);
+                LCD.drawString("Command: " + msg.getPayload(), 0, 5);
                 if(msg.getPayload().equals("stop"))
                 {
                 	motorLeft.stop();
@@ -58,7 +58,7 @@ class TankControl extends Thread implements MessageListenerInterface {
                 	motorRight.stop();
                 	LCD.clearDisplay();
                 	LCD.drawString("PROGRAM STOPPED", 0, 6);
-                	stop();
+                	stop_robot();
                 }
                 else if(msg.getPayload().startsWith("input"))
                 {
