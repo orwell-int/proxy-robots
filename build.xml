@@ -34,21 +34,15 @@
 		<delete dir="${build.dir}" />
 	</target>
 
-    <path id="protobuf.jar">
-        <pathelement location="../protobuf-2.5.0/java/target/protobuf-java-2.5.0.jar"/>
-    </path>
-
     <path id="robots.classpath">
-        <pathelement location="bin"/>
+        <!--<pathelement location="bin"/>-->
         <path refid="lejos.nxt"/>
-        <path refid="lejos.pc"/>
-        <path refid="protobuf.jar"/>
     </path>
 
     <path id="proxy.classpath">
-        <pathelement location="bin"/>
+        <!--<pathelement location="bin"/>-->
         <path refid="lejos.pc"/>
-        <path refid="protobuf.jar"/>
+        <pathelement location="../protobuf-2.5.0/java/target/protobuf-java-2.5.0.jar"/>
         <pathelement location="../jeromq/target/jeromq-1.0.0-SNAPSHOT.jar"/>
     </path>
 
@@ -80,11 +74,11 @@
 		</javac>
 	</target>
 
-	<target name="compile_robots" depends="compile_mfNXT" description="compile the sources to upload on the robots">
+	<target name="compile_robots" description="compile the sources to upload on the robots">
 		<!-- Compile the java code from ${source.dir} to ${classes.dir}  -->
 		<mkdir dir="${classes.dir}" />
 		<javac
-			srcdir="${source.robots.dir}"
+			srcdir="${source.robots.dir}:${source.common.dir}"
 			includes="${source.include}"
 			excludes="${source.exclude}"
 			encoding="${source.encoding}"
@@ -130,11 +124,11 @@
 		</javac>
 	</target>
 
-	<target name="compile_proxy" depends="compile_mfPC" description="compile the sources that stay on the computer">
+	<target name="compile_proxy" description="compile the sources that stay on the computer">
 		<!-- Compile the java code from ${source.dir} to ${classes.dir}  -->
 		<mkdir dir="${classes.dir}" />
 		<javac
-			srcdir="${source.proxy.dir}"
+			srcdir="${source.proxy.dir}:${source.common.dir}:${source.messages.dir}"
 			includes="${source.include}"
 			excludes="${source.exclude}"
 			encoding="${source.encoding}"
@@ -167,7 +161,7 @@
 			<arg value="-od" />
 			<arg file="${output.nxd}" />
 			<arg value="-v" />
-			<arg value="${main.class}" />
+			<arg value="${main.robots.class}" />
 		</java>
 	</target>
 	
@@ -187,7 +181,7 @@
 			<arg file="${output.nxd}" />
 			<arg value="-gr" />
 			<arg value="-v" />
-			<arg value="${main.class}" />
+			<arg value="${main.robtos.class}" />
 		</java>
 	</target>
 	
@@ -299,7 +293,7 @@
 	</target>
 
 	<target name="run_fakeServer" description="run a FakeServer on the computer" depends="compile_proxy">
-		<java classname="ProxyComponent.FakeServer" fork="true" failonerror="true">
+		<java classname="orwell.proxy.FakeServer" fork="true" failonerror="true">
 			<sysproperty key="nxj.home" file="${nxj.home}"/>
 			<jvmarg value="${d32Flag}" />
 			<classpath refid="proxy.classpath" />
@@ -308,7 +302,7 @@
 	</target>
 
 	<target name="run_proxy" description="run the proxy on the computer" depends="compile_proxy">
-		<java classname="ProxyComponent.ProxyRobots" fork="true" failonerror="true">
+		<java classname="orwell.proxy.ProxyRobots" fork="true" failonerror="true">
 			<sysproperty key="nxj.home" file="${nxj.home}"/>
 			<jvmarg value="${d32Flag}" />
 			<classpath refid="proxy.classpath" />
@@ -316,8 +310,17 @@
 		</java>
 	</target>
 
-	<target name="run_protobufTest" description="run the proxy on the computer" depends="compile_proxy">
-		<java classname="ProxyComponent.ProtobufTest" fork="true" failonerror="true">
+	<target name="run_protobufTest" description="run the protobuf tester on the computer" depends="compile_proxy">
+		<java classname="orwell.proxy.ProtobufTest" fork="true" failonerror="true">
+			<sysproperty key="nxj.home" file="${nxj.home}"/>
+			<jvmarg value="${d32Flag}" />
+			<classpath refid="proxy.classpath" />
+			<classpath location="${classes.dir}" />
+		</java>
+	</target>
+
+	<target name="run_mfTest" description="run the MessageFrameworkTester on the computer" depends="compile_proxy">
+		<java classname="orwell.proxy.MessageFrameworkTester" fork="true" failonerror="true">
 			<sysproperty key="nxj.home" file="${nxj.home}"/>
 			<jvmarg value="${d32Flag}" />
 			<classpath refid="proxy.classpath" />

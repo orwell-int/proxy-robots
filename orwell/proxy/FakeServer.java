@@ -1,4 +1,4 @@
-package ProxyComponent;
+package orwell.proxy;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class FakeServer
 	static byte [] getZMQmessage(String dest, Controller.Input message)
 	{
 		String zMQmessageHeader = dest + " " + "Input" + " ";
-		return ProxyComponent.Utils.Concatenate(zMQmessageHeader.getBytes(), message.toByteArray());
+		return orwell.proxy.Utils.Concatenate(zMQmessageHeader.getBytes(), message.toByteArray());
 	}
 	
 	@SuppressWarnings("deprecation")

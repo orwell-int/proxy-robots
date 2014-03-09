@@ -1,8 +1,11 @@
-package MessageComponent;
+package orwell.proxy;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+
+import orwell.common.MessageListenerInterface;
+import orwell.common.UnitMessage;
 
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTConnector;

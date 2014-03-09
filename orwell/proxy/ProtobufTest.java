@@ -1,7 +1,6 @@
-package ProxyComponent;
+package orwell.proxy;
 
 import orwell.messages.Controller;
-import Units.Tank;
 
 public class ProtobufTest {
 

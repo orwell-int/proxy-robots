@@ -1,4 +1,4 @@
-package MessageComponent;
+package orwell.robots;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

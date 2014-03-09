@@ -1,4 +1,4 @@
-package ProxyComponent;
+package orwell.proxy;
 
 public class Utils {
 	

@@ -1,6 +1,5 @@
-package Units;
+package orwell.proxy;
 
-import MessageComponent.MessageFramework;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -113,7 +112,7 @@ public class Tank {
 	public byte[] getZMQRobotState()
 	{
 		String zMQmessageHeader= getNetworkID() + " " + "RobotState" + " ";
-		return ProxyComponent.Utils.Concatenate(
+		return orwell.proxy.Utils.Concatenate(
 				zMQmessageHeader.getBytes(), getRobotState().toByteArray());
 	}
 
