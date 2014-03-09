@@ -1,10 +1,7 @@
 package orwell.proxy;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import org.zeromq.ZMQ;
+
 import orwell.messages.Controller;
 import orwell.messages.Controller.Input;
 
