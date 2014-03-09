@@ -298,8 +298,26 @@
 		</javadoc>
 	</target>
 
-	<target name="run_proxy" description="run the debug tool on the computer" depends="compile_proxy">
+	<target name="run_fakeServer" description="run a FakeServer on the computer" depends="compile_proxy">
+		<java classname="ProxyComponent.FakeServer" fork="true" failonerror="true">
+			<sysproperty key="nxj.home" file="${nxj.home}"/>
+			<jvmarg value="${d32Flag}" />
+			<classpath refid="proxy.classpath" />
+			<classpath location="${classes.dir}" />
+		</java>
+	</target>
+
+	<target name="run_proxy" description="run the proxy on the computer" depends="compile_proxy">
 		<java classname="ProxyComponent.ProxyRobots" fork="true" failonerror="true">
+			<sysproperty key="nxj.home" file="${nxj.home}"/>
+			<jvmarg value="${d32Flag}" />
+			<classpath refid="proxy.classpath" />
+			<classpath location="${classes.dir}" />
+		</java>
+	</target>
+
+	<target name="run_protobufTest" description="run the proxy on the computer" depends="compile_proxy">
+		<java classname="ProxyComponent.ProtobufTest" fork="true" failonerror="true">
 			<sysproperty key="nxj.home" file="${nxj.home}"/>
 			<jvmarg value="${d32Flag}" />
 			<classpath refid="proxy.classpath" />
