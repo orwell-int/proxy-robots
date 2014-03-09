@@ -108,7 +108,29 @@
 		</javac>
 	</target>
 
-	<target name="compile_proxy" depends="clean" description="compile the sources that stay on the computer">
+    <target name="compile_mfPC" depends="clean" description="compile the sources for the MessageFramework that stay on the computer">
+		<!-- Compile the java code from ${source.dir} to ${classes.dir}  -->
+		<mkdir dir="${classes.dir}" />
+		<javac
+			srcdir="${source.mf.dir}"
+			includes="${source.include}"
+			excludes="${source.mfPC.exclude}"
+			encoding="${source.encoding}"
+			source="${source.version}"
+			target="${target.version}"
+			destdir="${classes.dir}"
+			debug="true"
+			includeAntRuntime="false"
+			includeJavaRuntime="false"
+			verbose="false"
+		>
+			<classpath refid="proxy.classpath" />
+			<!-- enable warnings -->
+			<compilerarg value="-Xlint:${source.warn}" />
+		</javac>
+	</target>
+
+	<target name="compile_proxy" depends="compile_mfPC" description="compile the sources that stay on the computer">
 		<!-- Compile the java code from ${source.dir} to ${classes.dir}  -->
 		<mkdir dir="${classes.dir}" />
 		<javac
