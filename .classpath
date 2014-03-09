@@ -13,5 +13,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="$PROTOBUF_DIR/java/target/protobuf-java-2.5.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
+	<classpathentry kind="lib" path="$JEROMQ_DIR/target/jeromq-1.0.0-SNAPSHOT.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

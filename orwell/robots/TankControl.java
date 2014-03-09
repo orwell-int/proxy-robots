@@ -18,7 +18,7 @@ class TankControl extends Thread implements MessageListenerInterface {
         NXTMotor motorRight = new NXTMotor(MotorPort.C);
           
         public void run() 
-        { 
+        {
             remoteCtrlAlive = true;
         
             LCD.drawString(" Waiting for PC ", 4, 10, true);
