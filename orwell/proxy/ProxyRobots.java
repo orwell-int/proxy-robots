@@ -33,7 +33,7 @@ public class ProxyRobots
 	    ZMQ.Socket receiver = context.socket(ZMQ.SUB);
 	    sender.setLinger(1000);
 	    receiver.setLinger(1000);
-	    String serverAddress = "localhost";
+	    String serverAddress = "192.168.1.46";
 	    sender.connect("tcp://" + serverAddress + ":9000");
 	    System.out.println("ProxyRobots Sender created");
 	    receiver.connect("tcp://" + serverAddress + ":9001");
@@ -60,10 +60,20 @@ public class ProxyRobots
 	    System.out.println("Message sent: " + request);
 
 	    byte space = 32; // ascii code of SPACE character
+	    
+	    byte [] raw_zmq_previousInput = null;
+	    
         while (!Thread.currentThread().isInterrupted())
 	    {
         	byte [] raw_zmq_input = receiver.recv();
-			System.out.println("raw length: " + raw_zmq_input.length);
+        	
+        	// We do not want to uselessly flood the robot
+        	if(raw_zmq_input.toString().compareTo(raw_zmq_previousInput.toString()) == 0)
+        	{
+        		System.out.println("=======================================================================");
+        		continue;
+        	}
+        	System.out.println("raw length: " + raw_zmq_input.length);
 			int indexType = 0;
 			int indexMessage = 0;
 			int index = 0;
@@ -125,6 +135,8 @@ public class ProxyRobots
 				default:		
 					System.out.println("[WARNING] Invalid Message type");
 			}
+			
+			raw_zmq_previousInput = raw_zmq_input;
 
 	    }
 	    sender.close();

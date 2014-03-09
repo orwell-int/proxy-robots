@@ -3,6 +3,8 @@ package orwell.proxy;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
+import orwell.common.UnitMessage;
+import orwell.common.UnitMessageType;
 import orwell.messages.Controller;
 import orwell.messages.Controller.Hello;
 import orwell.messages.Controller.Input;
@@ -120,6 +122,20 @@ public class Tank {
 	{	
 		try {
 			this.currentControllerInput = Controller.Input.parseFrom(inputMessage);
+			if (currentControllerInput.hasMove())
+			{
+				String payloadMove = "input move ";
+				payloadMove += currentControllerInput.getMove().getLeft() + " " + currentControllerInput.getMove().getRight();
+				UnitMessage msg = new UnitMessage(UnitMessageType.Command, payloadMove);
+				mfTank.SendMessage(msg);
+			}
+			if (currentControllerInput.hasFire() && (currentControllerInput.getFire().getWeapon1() || currentControllerInput.getFire().getWeapon2()))
+			{
+				String payloadFire = "input fire ";
+				payloadFire += currentControllerInput.getFire().getWeapon1() + " " + currentControllerInput.getFire().getWeapon2();
+				UnitMessage msg = new UnitMessage(UnitMessageType.Command, payloadFire);
+				mfTank.SendMessage(msg);
+			}
 		} catch (InvalidProtocolBufferException e) {
 			// TODO Auto-generated catch block
 			System.out.println("setControllerInput protobuff exception");

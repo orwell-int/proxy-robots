@@ -85,17 +85,17 @@ class TankControl extends Thread implements MessageListenerInterface {
                       	LCD.drawString("MVL: " + moveLeft, 0, 5);
                       	LCD.drawString("MVR: " + Math.abs(moveRight.intValue()), 0, 6);
                 		if(moveLeft > 0)
-                			motorLeft.forward();
-                		else if (moveLeft < 0)
                 			motorLeft.backward();
+                		else if (moveLeft < 0)
+                			motorLeft.forward();
                 		else
-                			motorLeft.flt();
+                			motorLeft.stop();
                 		if(moveRight > 0)
-                			motorRight.forward();
-                		else if (moveRight < 0)
                 			motorRight.backward();
+                		else if (moveRight < 0)
+                			motorRight.forward();
                 		else
-                			motorRight.flt();
+                			motorRight.stop();
                 	} 
                 	else if(inputType.startsWith("fire"))
                 	{
@@ -103,7 +103,7 @@ class TankControl extends Thread implements MessageListenerInterface {
                 	}
                 	else
                 	{
-                		LCD.drawString("No match", 0, 5);
+                		LCD.drawString("Input Nomatch", 0, 5);
                 	}
                   	//LCD.clearDisplay();
 //                  	LCD.drawString("Input order received: ", 0, 1);
