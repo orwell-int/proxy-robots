@@ -12,7 +12,7 @@ public class ProxyRobots
 	{
 	}
 	
-	static Robot.RobotState buildTestRobot()
+/*	static Robot.RobotState buildTestRobot()
 	{
 		Robot.RobotState.Builder testRobot = Robot.RobotState.newBuilder();
 		Robot.RobotState.Move.Builder testMove = Robot.RobotState.Move.newBuilder();
@@ -24,7 +24,7 @@ public class ProxyRobots
 		testRobot.setLife(42);
 		
 		return testRobot.build();
-	}
+	}*/
 
 	public static void main(String[] args) throws Exception
 	{
@@ -33,7 +33,7 @@ public class ProxyRobots
 	    ZMQ.Socket receiver = context.socket(ZMQ.SUB);
 	    sender.setLinger(1000);
 	    receiver.setLinger(1000);
-	    String serverAddress = "192.168.1.46";
+	    String serverAddress = "192.168.1.37";
 	    sender.connect("tcp://" + serverAddress + ":9000");
 	    System.out.println("ProxyRobots Sender created");
 	    receiver.connect("tcp://" + serverAddress + ":9001");
@@ -61,23 +61,24 @@ public class ProxyRobots
 
 	    byte space = 32; // ascii code of SPACE character
 	    
-	    byte [] raw_zmq_previousInput = null;
+	    String zmq_previousMessage = new String();
+	    String previousInput = new String();
 	    
         while (!Thread.currentThread().isInterrupted())
 	    {
-        	byte [] raw_zmq_input = receiver.recv();
+        	byte [] raw_zmq_message = receiver.recv();
+        	String zmq_message = new String(raw_zmq_message);
         	
         	// We do not want to uselessly flood the robot
-        	if(raw_zmq_input.toString().compareTo(raw_zmq_previousInput.toString()) == 0)
+        	if(zmq_message.compareTo(zmq_previousMessage) == 0)
         	{
         		System.out.println("=======================================================================");
         		continue;
         	}
-        	System.out.println("raw length: " + raw_zmq_input.length);
 			int indexType = 0;
 			int indexMessage = 0;
 			int index = 0;
-			for (byte item: raw_zmq_input)
+			for (byte item: raw_zmq_message)
 			{
 				if (0 == indexType)
 				{
@@ -102,22 +103,20 @@ public class ProxyRobots
 			//           indexType
 			int lengthRoutingID = indexType - 1;
 			int lengthType = indexMessage - indexType - 1;
-			String routingID = new String(raw_zmq_input, 0, lengthRoutingID);
-			String type = new String(raw_zmq_input, indexType, lengthType);
-			int lengthMessage = raw_zmq_input.length - lengthType - lengthRoutingID - 2;
+			String routingID = new String(raw_zmq_message, 0, lengthRoutingID);
+			String type = new String(raw_zmq_message, indexType, lengthType);
+			int lengthMessage = raw_zmq_message.length - lengthType - lengthRoutingID - 2;
 			byte [] message = new byte[lengthMessage];
-			System.arraycopy(raw_zmq_input, indexMessage, message, 0, message.length);
+			System.arraycopy(raw_zmq_message, indexMessage, message, 0, message.length);
 		
-			String zmq_input = new String(raw_zmq_input);
-			System.out.println("length: " + zmq_input.getBytes().length);
 			System.out.flush();
-			System.out.println("Message received: " + zmq_input);
+			System.out.println("Message received: " + zmq_message);
 //			Pattern messagePattern = Pattern.compile("([^ ]*) ([^ ]*) (.*)");
 
-			System.out.println("Message [DEST]: " + routingID);
+//			System.out.println("Message [DEST]: " + routingID);
 			tank.setNetworkID(routingID);
 			System.out.println("Message [TYPE]: " + type);
-			System.out.println("Message [MSG] : " + new String(message));
+//			System.out.println("Message [MSG] : " + new String(message));
 			
 			switch (type)
 			{
@@ -128,15 +127,23 @@ public class ProxyRobots
 					break;
 				case "Input":	
 					System.out.println("Setting controller Input to tank");
+					if(previousInput.compareTo(zmq_message) == 0)
+					{
+		        		System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+						continue;
+					}
+					previousInput = zmq_message;
 					tank.setControllerInput(message);
-					System.out.println("length: " + message.length);
+//					System.out.println("length: " + message.length);
 					System.out.println(tank.controllerInputToString());
+					break;
+				case "GameState":
 					break;
 				default:		
 					System.out.println("[WARNING] Invalid Message type");
 			}
 			
-			raw_zmq_previousInput = raw_zmq_input;
+			zmq_previousMessage = zmq_message;
 
 	    }
 	    sender.close();

@@ -11,7 +11,7 @@ public class FakeServer
 	{
 	}
 
-	static Controller.Input buildTestInput()
+	public static Controller.Input buildTestInput()
 	{
 		Controller.Input.Builder testInput = Input.newBuilder();
 		Controller.Input.Move.Builder testMove = Controller.Input.Move.newBuilder();
