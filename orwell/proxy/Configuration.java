@@ -1,64 +1,50 @@
 package orwell.proxy;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.io.FileNotFoundException;
 
 public class Configuration {
 	
 	private String filePath;
+	ConfigModel configuration;
+	public boolean isPopulated = false;
 
 	public Configuration()
 	{
 		this("orwell/proxy/configuration.xml");
 	}
 
-	public Configuration(String filePath)
-	{
-		this.filePath=filePath;
-		
-		try{
-		File configFile = new File(filePath);
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		Document doc = dBuilder.parse(configFile);
-	 
-		//optional, but recommended
-		//read this - http://stackoverflow.com/questions/13786607/normalization-in-dom-parsing-with-java-how-does-it-work
-		doc.getDocumentElement().normalize();
-	 
-		System.out.println("Root element: " + doc.getDocumentElement().getNodeName());
-		
-		NodeList nList = doc.getElementsByTagName("server-game");
-		 
-		System.out.println("----------------------------");
-	 
-		for (int temp = 0; temp < nList.getLength(); temp++) {
-	 
-			Node nNode = nList.item(temp);
-	 
-			System.out.println("\nCurrent Element: " + nNode.getNodeName());
-	 
-			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-	 
-				Element eElement = (Element) nNode;
-	 
-				System.out.println("name: " + eElement.getAttribute("name"));
-				System.out.println("ip: " + eElement.getElementsByTagName("ip").item(0).getTextContent());
-				System.out.println("pushPort: " + eElement.getElementsByTagName("pushPort").item(0).getTextContent());
-				System.out.println("subPort: " + eElement.getElementsByTagName("subPort").item(0).getTextContent());	 
-			}
+	public Configuration(String filePath) {
+		this.filePath = filePath;
 	}
-		
 	
-	} catch (Exception e) {
-		e.printStackTrace();
-    }
-
+	public ConfigModel getConfigModel()
+	{
+		return this.configuration;
+	}
+	
+	public void populate() throws FileNotFoundException, JAXBException
+	{
+		JAXBContext jc;
+		try {
+			jc = JAXBContext.newInstance(ConfigModel.class);
+	        Unmarshaller unmarshaller = jc.createUnmarshaller();
+	        File xml = new File(filePath);
+	        if(!xml.exists())
+	        {
+				System.out.println("Configuration:populate(): File " + this.filePath + " does not exist");
+	        	throw new FileNotFoundException(filePath);
+	        }
+	        this.configuration = (ConfigModel) unmarshaller.unmarshal(xml);
+		} catch (JAXBException e) {
+			System.out.println("Configuration:populate(): Error in configurationBOM population: " + e.toString());
+			throw e;
+		}
+		isPopulated = true;
+	}
+	
+	
 }
-}
-
