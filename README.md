@@ -25,3 +25,13 @@ Run the proxy:
 ```
 ant run_proxy 
 ```
+
+Run the junit test:
+```
+ant junit-proxy -v
+```
+
+Build a test report
+```
+ant junitreport 
+```
