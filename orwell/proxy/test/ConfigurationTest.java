@@ -46,6 +46,7 @@ public class ConfigurationTest {
     
     @Test
     public void checkProxyList() {
+    	
     	ConfigProxy configProxy = buildConfigTest().getConfigModel().getConfigProxy();
     	
     	assertEquals(3, configProxy.getConfigServerGames().size());
@@ -60,6 +61,7 @@ public class ConfigurationTest {
     
     @Test
     public void checkServerGameElement() {
+    	
     	ConfigServerGame configServerGame;
 		try {
 			configServerGame = buildConfigTest().getConfigModel().getConfigProxy().getConfigServerGame("platypus");

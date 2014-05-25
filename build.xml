@@ -32,6 +32,7 @@
     <!-- deletes generated files -->
     <target name="clean" description="clean up all generated files">
         <delete dir="${build.dir}" />
+    	<delete dir="${report.proxy.dir}" />
     </target>
 
     <path id="robots.classpath">
@@ -262,15 +263,6 @@
         </java>
     </target>
 
-    <target name="run_protobufTest" description="run the protobuf tester on the computer" depends="compile_proxy">
-        <java classname="orwell.proxy.test.Protobuf" fork="true" failonerror="true">
-            <sysproperty key="nxj.home" file="${nxj.home}"/>
-            <jvmarg value="${d32Flag}" />
-            <classpath refid="proxy.classpath" />
-            <classpath location="${classes.dir}" />
-        </java>
-    </target>
-
     <target name="run_mfTest" description="run the MessageFrameworkTester on the computer" depends="compile_proxy">
         <java classname="orwell.proxy.MessageFrameworkTester" fork="true" failonerror="true">
             <sysproperty key="nxj.home" file="${nxj.home}"/>
@@ -281,15 +273,27 @@
     </target>
 
     <target name="junit-proxy" description="run the unit tests for the proxy" depends="compile_proxy">
-        <junit printsummary="yes">
+    	<mkdir dir="${report.proxy.dir}"/>
+        <junit printsummary="yes" haltonerror="false" haltonfailure="false">
             <classpath>
                 <path refid="proxy.classpath"/>
+            	<pathelement location="${classes.dir}"/>
             </classpath>
+        	
+        	<formatter type="xml"/>
+        	<formatter type="plain" usefile="false" />
 
-            <batchtest fork="yes">
-                <fileset dir="${test.proxy.dir}" includes="*Test.java"/>
+            <batchtest fork="yes" todir="${report.proxy.dir}">
+                <fileset dir="${classes.dir}" includes="**/*Test.class"/>
             </batchtest>
         </junit>
+    </target>
+	
+	<target name="junitreport">
+        <junitreport todir="${report.proxy.dir}">
+            <fileset dir="${report.proxy.dir}" includes="TEST-*.xml"/>
+            <report todir="${report.proxy.dir}"/>
+        </junitreport>
     </target>
 
 </project>
