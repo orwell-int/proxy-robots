@@ -12,9 +12,9 @@ before_install:
 
 install:
     - cd protobuf-2.5.0 && ./configure
-    - sudo make install
+    - sudo make install --quiet
     - cd java && mvn install -P lite
-    - cd ../jeromq && sudo mvn install -q
+    - cd ../../jeromq && sudo mvn install -q
     - cd ..
 
 env:
