@@ -1,5 +1,34 @@
 language: java
 install: true
 
+before_install:
+    - sudo apt-get install -qq maven libprotoc-dev 
+    - wget -nc --no-check-certificate http://protobuf.googlecode.com/files/protobuf-2.5.0.tar.bz2
+    - tar xvf protobuf-2.5.0.tar.bz2
+    - cd protobuf-2.5.0
+    - ./configure
+    - sudo make install
+    - cd java && mvn install -P lite
+    - cd ..
+
+
+
+
+
+env:
+    - JUNIT_DIR=
+    - NXJ_HOME=
+    - HAMCREST_DIR=
+    - JEROMQ_DIR=
+    - PROTOBUF_DIR=./java/target/protobuf-java-2.5.0.jar
+
+    
 script: ant junit-proxy -v 
- 
+
+
+notifications:
+    recipients:
+        - miludmann+travis@gmail.com
+    email:
+        on_success: change
+        on_failure: always 
