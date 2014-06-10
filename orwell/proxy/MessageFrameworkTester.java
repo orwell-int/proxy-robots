@@ -1,4 +1,4 @@
-package MessageComponent;
+package orwell.proxy;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -14,6 +14,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import orwell.common.MessageListenerInterface;
+import orwell.common.UnitMessage;
+import orwell.common.UnitMessageType;
 
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;

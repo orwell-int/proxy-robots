@@ -1,7 +1,10 @@
-package MessageComponent;
+package orwell.robots;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import orwell.common.MessageListenerInterface;
+import orwell.common.UnitMessage;
 
 import lejos.nxt.LCD;
 

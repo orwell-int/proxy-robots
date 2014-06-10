@@ -1,5 +1,3 @@
-.project
-.classpath
 *.class
 .settings/org.eclipse.jdt.core.prefs
 GeneratedMessages/orwell/com/Version1.java
@@ -7,10 +5,12 @@ GeneratedMessages/orwell/messages/Controller.java
 GeneratedMessages/orwell/messages/Robot.java
 GeneratedMessages/orwell/messages/ServerGame.java
 GeneratedMessages/orwell/messages/ServerWeb.java
-essageFrameworkTester.nxd
+MessageFrameworkTester.nxd
 MessageFrameworkTester.nxj
 RemoteControl.nxd
 RemoteControl.nxj
 Units/.RemoteControl.java.swp
 Units/RemoteControl.class
 bin/
+.classpath
+.project

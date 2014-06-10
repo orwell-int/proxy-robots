@@ -1,4 +1,4 @@
-package MessageComponent;
+package orwell.common;
 public class UnitMessage {
         
         public static byte STX = 2;

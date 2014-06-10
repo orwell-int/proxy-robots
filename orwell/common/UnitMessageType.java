@@ -1,4 +1,4 @@
-package MessageComponent;
+package orwell.common;
 
 public enum UnitMessageType
 {

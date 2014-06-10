@@ -1,15 +1,11 @@
-package Units;
-
-import java.io.File;
+package orwell.robots;
 
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
 import lejos.nxt.Motor;
-import lejos.nxt.Sound;
 import lejos.robotics.navigation.DifferentialPilot;
-import MessageComponent.UnitMessage;
-import MessageComponent.MessageFrameworkNXT;
-import MessageComponent.MessageListenerInterface;
+import orwell.common.MessageListenerInterface;
+import orwell.common.UnitMessage;
 
 /** 
  * Thread to wait for a Bluetooth connection and execute remote commands 
@@ -36,7 +32,7 @@ class RemoteControl extends Thread implements MessageListenerInterface {
             while(!Button.ESCAPE.isPressed() && remoteCtrlAlive) {} 
         }
           
-        public void stop() {
+        public void stop_robot() {
                 remoteCtrlAlive = false;
         }
 
@@ -50,7 +46,7 @@ class RemoteControl extends Thread implements MessageListenerInterface {
         
         @Override
         public void recievedNewMessage(UnitMessage msg) {         
-                LCD.drawString("Command: "+msg.getPayload(), 0, 5);
+                LCD.drawString("Command: " + msg.getPayload(), 0, 5);
                 if(msg.getPayload().equals("stop"))
                 {
                   pilot.stop();
@@ -128,7 +124,7 @@ class RemoteControl extends Thread implements MessageListenerInterface {
                   pilot.stop();
                   LCD.clearDisplay();
                   LCD.drawString("PROGRAM STOPPED", 0, 6);
-                  stop();
+                  stop_robot();
                 }
                 else if(msg.getPayload().equals("planted"))
                 {
