@@ -11,15 +11,15 @@ import orwell.proxy.config.Configuration;
 public class ProxyRobots
 {
 	private String CONFIGURATION_FILE = "orwell/proxy/config/configuration.xml";
-	private ConfigProxy configProxy;
 	private String SERVER_GAME = "platypus";
 	private String TANK_NAME = "Daneel";
+	private ConfigProxy configProxy;
 	private ConfigServerGame configServerGame;
+	private ConfigRobots configRobots;
 	private ZMQ.Context context;
     private ZMQ.Socket sender;
     private ZMQ.Socket receiver;
     private Tank tank;
-	private ConfigRobots configRobots;
 	
 	public ProxyRobots()
 	{

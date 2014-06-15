@@ -10,305 +10,197 @@ public final class Robot {
   }
   public interface RobotStateOrBuilder
       extends com.google.protobuf.MessageLiteOrBuilder {
-    
+
     // optional double life = 1;
+    /**
+     * <code>optional double life = 1;</code>
+     */
     boolean hasLife();
+    /**
+     * <code>optional double life = 1;</code>
+     */
     double getLife();
-    
+
     // optional group Move = 2 {
+    /**
+     * <code>optional group Move = 2 { ... }</code>
+     */
     boolean hasMove();
+    /**
+     * <code>optional group Move = 2 { ... }</code>
+     */
     orwell.messages.Robot.RobotState.Move getMove();
-    
+
     // optional bool active = 3 [default = true];
+    /**
+     * <code>optional bool active = 3 [default = true];</code>
+     */
     boolean hasActive();
+    /**
+     * <code>optional bool active = 3 [default = true];</code>
+     */
     boolean getActive();
   }
+  /**
+   * Protobuf type {@code orwell.messages.RobotState}
+   *
+   * <pre>
+   * Notify the state the robot is in (sent while playing)
+   * </pre>
+   */
   public static final class RobotState extends
       com.google.protobuf.GeneratedMessageLite
       implements RobotStateOrBuilder {
     // Use RobotState.newBuilder() to construct.
-    private RobotState(Builder builder) {
+    private RobotState(com.google.protobuf.GeneratedMessageLite.Builder builder) {
       super(builder);
+
     }
     private RobotState(boolean noInit) {}
-    
+
     private static final RobotState defaultInstance;
     public static RobotState getDefaultInstance() {
       return defaultInstance;
     }
-    
+
     public RobotState getDefaultInstanceForType() {
       return defaultInstance;
     }
-    
+
+    private RobotState(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 9: {
+              bitField0_ |= 0x00000001;
+              life_ = input.readDouble();
+              break;
+            }
+            case 19: {
+              orwell.messages.Robot.RobotState.Move.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = move_.toBuilder();
+              }
+              move_ = input.readGroup(2, orwell.messages.Robot.RobotState.Move.PARSER,
+                  extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(move_);
+                move_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              active_ = input.readBool();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static com.google.protobuf.Parser<RobotState> PARSER =
+        new com.google.protobuf.AbstractParser<RobotState>() {
+      public RobotState parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new RobotState(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<RobotState> getParserForType() {
+      return PARSER;
+    }
+
     public interface MoveOrBuilder
         extends com.google.protobuf.MessageLiteOrBuilder {
-      
+
       // optional double left = 1;
+      /**
+       * <code>optional double left = 1;</code>
+       */
       boolean hasLeft();
+      /**
+       * <code>optional double left = 1;</code>
+       */
       double getLeft();
-      
+
       // optional double right = 2;
+      /**
+       * <code>optional double right = 2;</code>
+       */
       boolean hasRight();
+      /**
+       * <code>optional double right = 2;</code>
+       */
       double getRight();
     }
+    /**
+     * Protobuf type {@code orwell.messages.RobotState.Move}
+     */
     public static final class Move extends
         com.google.protobuf.GeneratedMessageLite
         implements MoveOrBuilder {
       // Use Move.newBuilder() to construct.
-      private Move(Builder builder) {
+      private Move(com.google.protobuf.GeneratedMessageLite.Builder builder) {
         super(builder);
+
       }
       private Move(boolean noInit) {}
-      
+
       private static final Move defaultInstance;
       public static Move getDefaultInstance() {
         return defaultInstance;
       }
-      
+
       public Move getDefaultInstanceForType() {
         return defaultInstance;
       }
-      
-      private int bitField0_;
-      // optional double left = 1;
-      public static final int LEFT_FIELD_NUMBER = 1;
-      private double left_;
-      public boolean hasLeft() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      public double getLeft() {
-        return left_;
-      }
-      
-      // optional double right = 2;
-      public static final int RIGHT_FIELD_NUMBER = 2;
-      private double right_;
-      public boolean hasRight() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      public double getRight() {
-        return right_;
-      }
-      
-      private void initFields() {
-        left_ = 0D;
-        right_ = 0D;
-      }
-      private byte memoizedIsInitialized = -1;
-      public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
-        
-        memoizedIsInitialized = 1;
-        return true;
-      }
-      
-      public void writeTo(com.google.protobuf.CodedOutputStream output)
-                          throws java.io.IOException {
-        getSerializedSize();
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          output.writeDouble(1, left_);
-        }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          output.writeDouble(2, right_);
-        }
-      }
-      
-      private int memoizedSerializedSize = -1;
-      public int getSerializedSize() {
-        int size = memoizedSerializedSize;
-        if (size != -1) return size;
-      
-        size = 0;
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeDoubleSize(1, left_);
-        }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeDoubleSize(2, right_);
-        }
-        memoizedSerializedSize = size;
-        return size;
-      }
-      
-      private static final long serialVersionUID = 0L;
-      @java.lang.Override
-      protected java.lang.Object writeReplace()
-          throws java.io.ObjectStreamException {
-        return super.writeReplace();
-      }
-      
-      public static orwell.messages.Robot.RobotState.Move parseFrom(
-          com.google.protobuf.ByteString data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data).buildParsed();
-      }
-      public static orwell.messages.Robot.RobotState.Move parseFrom(
-          com.google.protobuf.ByteString data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data, extensionRegistry)
-                 .buildParsed();
-      }
-      public static orwell.messages.Robot.RobotState.Move parseFrom(byte[] data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data).buildParsed();
-      }
-      public static orwell.messages.Robot.RobotState.Move parseFrom(
-          byte[] data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data, extensionRegistry)
-                 .buildParsed();
-      }
-      public static orwell.messages.Robot.RobotState.Move parseFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return newBuilder().mergeFrom(input).buildParsed();
-      }
-      public static orwell.messages.Robot.RobotState.Move parseFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return newBuilder().mergeFrom(input, extensionRegistry)
-                 .buildParsed();
-      }
-      public static orwell.messages.Robot.RobotState.Move parseDelimitedFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        Builder builder = newBuilder();
-        if (builder.mergeDelimitedFrom(input)) {
-          return builder.buildParsed();
-        } else {
-          return null;
-        }
-      }
-      public static orwell.messages.Robot.RobotState.Move parseDelimitedFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        Builder builder = newBuilder();
-        if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-          return builder.buildParsed();
-        } else {
-          return null;
-        }
-      }
-      public static orwell.messages.Robot.RobotState.Move parseFrom(
-          com.google.protobuf.CodedInputStream input)
-          throws java.io.IOException {
-        return newBuilder().mergeFrom(input).buildParsed();
-      }
-      public static orwell.messages.Robot.RobotState.Move parseFrom(
+
+      private Move(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return newBuilder().mergeFrom(input, extensionRegistry)
-                 .buildParsed();
-      }
-      
-      public static Builder newBuilder() { return Builder.create(); }
-      public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(orwell.messages.Robot.RobotState.Move prototype) {
-        return newBuilder().mergeFrom(prototype);
-      }
-      public Builder toBuilder() { return newBuilder(this); }
-      
-      public static final class Builder extends
-          com.google.protobuf.GeneratedMessageLite.Builder<
-            orwell.messages.Robot.RobotState.Move, Builder>
-          implements orwell.messages.Robot.RobotState.MoveOrBuilder {
-        // Construct using orwell.messages.Robot.RobotState.Move.newBuilder()
-        private Builder() {
-          maybeForceBuilderInitialization();
-        }
-        
-        private void maybeForceBuilderInitialization() {
-        }
-        private static Builder create() {
-          return new Builder();
-        }
-        
-        public Builder clear() {
-          super.clear();
-          left_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000001);
-          right_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000002);
-          return this;
-        }
-        
-        public Builder clone() {
-          return create().mergeFrom(buildPartial());
-        }
-        
-        public orwell.messages.Robot.RobotState.Move getDefaultInstanceForType() {
-          return orwell.messages.Robot.RobotState.Move.getDefaultInstance();
-        }
-        
-        public orwell.messages.Robot.RobotState.Move build() {
-          orwell.messages.Robot.RobotState.Move result = buildPartial();
-          if (!result.isInitialized()) {
-            throw newUninitializedMessageException(result);
-          }
-          return result;
-        }
-        
-        private orwell.messages.Robot.RobotState.Move buildParsed()
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          orwell.messages.Robot.RobotState.Move result = buildPartial();
-          if (!result.isInitialized()) {
-            throw newUninitializedMessageException(
-              result).asInvalidProtocolBufferException();
-          }
-          return result;
-        }
-        
-        public orwell.messages.Robot.RobotState.Move buildPartial() {
-          orwell.messages.Robot.RobotState.Move result = new orwell.messages.Robot.RobotState.Move(this);
-          int from_bitField0_ = bitField0_;
-          int to_bitField0_ = 0;
-          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-            to_bitField0_ |= 0x00000001;
-          }
-          result.left_ = left_;
-          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-            to_bitField0_ |= 0x00000002;
-          }
-          result.right_ = right_;
-          result.bitField0_ = to_bitField0_;
-          return result;
-        }
-        
-        public Builder mergeFrom(orwell.messages.Robot.RobotState.Move other) {
-          if (other == orwell.messages.Robot.RobotState.Move.getDefaultInstance()) return this;
-          if (other.hasLeft()) {
-            setLeft(other.getLeft());
-          }
-          if (other.hasRight()) {
-            setRight(other.getRight());
-          }
-          return this;
-        }
-        
-        public final boolean isInitialized() {
-          return true;
-        }
-        
-        public Builder mergeFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          while (true) {
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        initFields();
+        int mutable_bitField0_ = 0;
+        try {
+          boolean done = false;
+          while (!done) {
             int tag = input.readTag();
             switch (tag) {
               case 0:
-                
-                return this;
+                done = true;
+                break;
               default: {
-                if (!parseUnknownField(input, extensionRegistry, tag)) {
-                  
-                  return this;
+                if (!parseUnknownField(input,
+                                       extensionRegistry, tag)) {
+                  done = true;
                 }
                 break;
               }
@@ -324,94 +216,391 @@ public final class Robot {
               }
             }
           }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this);
+        } finally {
+          makeExtensionsImmutable();
         }
-        
+      }
+      public static com.google.protobuf.Parser<Move> PARSER =
+          new com.google.protobuf.AbstractParser<Move>() {
+        public Move parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new Move(input, extensionRegistry);
+        }
+      };
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<Move> getParserForType() {
+        return PARSER;
+      }
+
+      private int bitField0_;
+      // optional double left = 1;
+      public static final int LEFT_FIELD_NUMBER = 1;
+      private double left_;
+      /**
+       * <code>optional double left = 1;</code>
+       */
+      public boolean hasLeft() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional double left = 1;</code>
+       */
+      public double getLeft() {
+        return left_;
+      }
+
+      // optional double right = 2;
+      public static final int RIGHT_FIELD_NUMBER = 2;
+      private double right_;
+      /**
+       * <code>optional double right = 2;</code>
+       */
+      public boolean hasRight() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional double right = 2;</code>
+       */
+      public double getRight() {
+        return right_;
+      }
+
+      private void initFields() {
+        left_ = 0D;
+        right_ = 0D;
+      }
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized != -1) return isInitialized == 1;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeDouble(1, left_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          output.writeDouble(2, right_);
+        }
+      }
+
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeDoubleSize(1, left_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeDoubleSize(2, right_);
+        }
+        memoizedSerializedSize = size;
+        return size;
+      }
+
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+
+      public static orwell.messages.Robot.RobotState.Move parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static orwell.messages.Robot.RobotState.Move parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static orwell.messages.Robot.RobotState.Move parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static orwell.messages.Robot.RobotState.Move parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static orwell.messages.Robot.RobotState.Move parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static orwell.messages.Robot.RobotState.Move parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+      public static orwell.messages.Robot.RobotState.Move parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input);
+      }
+      public static orwell.messages.Robot.RobotState.Move parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      }
+      public static orwell.messages.Robot.RobotState.Move parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static orwell.messages.Robot.RobotState.Move parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(orwell.messages.Robot.RobotState.Move prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+
+      /**
+       * Protobuf type {@code orwell.messages.RobotState.Move}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageLite.Builder<
+            orwell.messages.Robot.RobotState.Move, Builder>
+          implements orwell.messages.Robot.RobotState.MoveOrBuilder {
+        // Construct using orwell.messages.Robot.RobotState.Move.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private void maybeForceBuilderInitialization() {
+        }
+        private static Builder create() {
+          return new Builder();
+        }
+
+        public Builder clear() {
+          super.clear();
+          left_ = 0D;
+          bitField0_ = (bitField0_ & ~0x00000001);
+          right_ = 0D;
+          bitField0_ = (bitField0_ & ~0x00000002);
+          return this;
+        }
+
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+
+        public orwell.messages.Robot.RobotState.Move getDefaultInstanceForType() {
+          return orwell.messages.Robot.RobotState.Move.getDefaultInstance();
+        }
+
+        public orwell.messages.Robot.RobotState.Move build() {
+          orwell.messages.Robot.RobotState.Move result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        public orwell.messages.Robot.RobotState.Move buildPartial() {
+          orwell.messages.Robot.RobotState.Move result = new orwell.messages.Robot.RobotState.Move(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          result.left_ = left_;
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000002;
+          }
+          result.right_ = right_;
+          result.bitField0_ = to_bitField0_;
+          return result;
+        }
+
+        public Builder mergeFrom(orwell.messages.Robot.RobotState.Move other) {
+          if (other == orwell.messages.Robot.RobotState.Move.getDefaultInstance()) return this;
+          if (other.hasLeft()) {
+            setLeft(other.getLeft());
+          }
+          if (other.hasRight()) {
+            setRight(other.getRight());
+          }
+          return this;
+        }
+
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          orwell.messages.Robot.RobotState.Move parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (orwell.messages.Robot.RobotState.Move) e.getUnfinishedMessage();
+            throw e;
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
         private int bitField0_;
-        
+
         // optional double left = 1;
         private double left_ ;
+        /**
+         * <code>optional double left = 1;</code>
+         */
         public boolean hasLeft() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
+        /**
+         * <code>optional double left = 1;</code>
+         */
         public double getLeft() {
           return left_;
         }
+        /**
+         * <code>optional double left = 1;</code>
+         */
         public Builder setLeft(double value) {
           bitField0_ |= 0x00000001;
           left_ = value;
           
           return this;
         }
+        /**
+         * <code>optional double left = 1;</code>
+         */
         public Builder clearLeft() {
           bitField0_ = (bitField0_ & ~0x00000001);
           left_ = 0D;
           
           return this;
         }
-        
+
         // optional double right = 2;
         private double right_ ;
+        /**
+         * <code>optional double right = 2;</code>
+         */
         public boolean hasRight() {
           return ((bitField0_ & 0x00000002) == 0x00000002);
         }
+        /**
+         * <code>optional double right = 2;</code>
+         */
         public double getRight() {
           return right_;
         }
+        /**
+         * <code>optional double right = 2;</code>
+         */
         public Builder setRight(double value) {
           bitField0_ |= 0x00000002;
           right_ = value;
           
           return this;
         }
+        /**
+         * <code>optional double right = 2;</code>
+         */
         public Builder clearRight() {
           bitField0_ = (bitField0_ & ~0x00000002);
           right_ = 0D;
           
           return this;
         }
-        
+
         // @@protoc_insertion_point(builder_scope:orwell.messages.RobotState.Move)
       }
-      
+
       static {
         defaultInstance = new Move(true);
         defaultInstance.initFields();
       }
-      
+
       // @@protoc_insertion_point(class_scope:orwell.messages.RobotState.Move)
     }
-    
+
     private int bitField0_;
     // optional double life = 1;
     public static final int LIFE_FIELD_NUMBER = 1;
     private double life_;
+    /**
+     * <code>optional double life = 1;</code>
+     */
     public boolean hasLife() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
+    /**
+     * <code>optional double life = 1;</code>
+     */
     public double getLife() {
       return life_;
     }
-    
+
     // optional group Move = 2 {
     public static final int MOVE_FIELD_NUMBER = 2;
     private orwell.messages.Robot.RobotState.Move move_;
+    /**
+     * <code>optional group Move = 2 { ... }</code>
+     */
     public boolean hasMove() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
+    /**
+     * <code>optional group Move = 2 { ... }</code>
+     */
     public orwell.messages.Robot.RobotState.Move getMove() {
       return move_;
     }
-    
+
     // optional bool active = 3 [default = true];
     public static final int ACTIVE_FIELD_NUMBER = 3;
     private boolean active_;
+    /**
+     * <code>optional bool active = 3 [default = true];</code>
+     */
     public boolean hasActive() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
+    /**
+     * <code>optional bool active = 3 [default = true];</code>
+     */
     public boolean getActive() {
       return active_;
     }
-    
+
     private void initFields() {
       life_ = 0D;
       move_ = orwell.messages.Robot.RobotState.Move.getDefaultInstance();
@@ -421,11 +610,11 @@ public final class Robot {
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
-      
+
       memoizedIsInitialized = 1;
       return true;
     }
-    
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -439,12 +628,12 @@ public final class Robot {
         output.writeBool(3, active_);
       }
     }
-    
+
     private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
-    
+
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
@@ -461,88 +650,81 @@ public final class Robot {
       memoizedSerializedSize = size;
       return size;
     }
-    
+
     private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected java.lang.Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
-    
+
     public static orwell.messages.Robot.RobotState parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static orwell.messages.Robot.RobotState parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static orwell.messages.Robot.RobotState parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static orwell.messages.Robot.RobotState parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static orwell.messages.Robot.RobotState parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static orwell.messages.Robot.RobotState parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static orwell.messages.Robot.RobotState parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input);
     }
     public static orwell.messages.Robot.RobotState parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static orwell.messages.Robot.RobotState parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static orwell.messages.Robot.RobotState parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
-    
+
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(orwell.messages.Robot.RobotState prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
-    
+
+    /**
+     * Protobuf type {@code orwell.messages.RobotState}
+     *
+     * <pre>
+     * Notify the state the robot is in (sent while playing)
+     * </pre>
+     */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageLite.Builder<
           orwell.messages.Robot.RobotState, Builder>
@@ -551,13 +733,13 @@ public final class Robot {
       private Builder() {
         maybeForceBuilderInitialization();
       }
-      
+
       private void maybeForceBuilderInitialization() {
       }
       private static Builder create() {
         return new Builder();
       }
-      
+
       public Builder clear() {
         super.clear();
         life_ = 0D;
@@ -568,15 +750,15 @@ public final class Robot {
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
-      
+
       public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
-      
+
       public orwell.messages.Robot.RobotState getDefaultInstanceForType() {
         return orwell.messages.Robot.RobotState.getDefaultInstance();
       }
-      
+
       public orwell.messages.Robot.RobotState build() {
         orwell.messages.Robot.RobotState result = buildPartial();
         if (!result.isInitialized()) {
@@ -584,17 +766,7 @@ public final class Robot {
         }
         return result;
       }
-      
-      private orwell.messages.Robot.RobotState buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        orwell.messages.Robot.RobotState result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
+
       public orwell.messages.Robot.RobotState buildPartial() {
         orwell.messages.Robot.RobotState result = new orwell.messages.Robot.RobotState(this);
         int from_bitField0_ = bitField0_;
@@ -614,7 +786,7 @@ public final class Robot {
         result.bitField0_ = to_bitField0_;
         return result;
       }
-      
+
       public Builder mergeFrom(orwell.messages.Robot.RobotState other) {
         if (other == orwell.messages.Robot.RobotState.getDefaultInstance()) return this;
         if (other.hasLife()) {
@@ -628,98 +800,102 @@ public final class Robot {
         }
         return this;
       }
-      
+
       public final boolean isInitialized() {
         return true;
       }
-      
+
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              
-              return this;
-            default: {
-              if (!parseUnknownField(input, extensionRegistry, tag)) {
-                
-                return this;
-              }
-              break;
-            }
-            case 9: {
-              bitField0_ |= 0x00000001;
-              life_ = input.readDouble();
-              break;
-            }
-            case 19: {
-              orwell.messages.Robot.RobotState.Move.Builder subBuilder = orwell.messages.Robot.RobotState.Move.newBuilder();
-              if (hasMove()) {
-                subBuilder.mergeFrom(getMove());
-              }
-              input.readGroup(2, subBuilder, extensionRegistry);
-              setMove(subBuilder.buildPartial());
-              break;
-            }
-            case 24: {
-              bitField0_ |= 0x00000004;
-              active_ = input.readBool();
-              break;
-            }
+        orwell.messages.Robot.RobotState parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (orwell.messages.Robot.RobotState) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
-      
       private int bitField0_;
-      
+
       // optional double life = 1;
       private double life_ ;
+      /**
+       * <code>optional double life = 1;</code>
+       */
       public boolean hasLife() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
+      /**
+       * <code>optional double life = 1;</code>
+       */
       public double getLife() {
         return life_;
       }
+      /**
+       * <code>optional double life = 1;</code>
+       */
       public Builder setLife(double value) {
         bitField0_ |= 0x00000001;
         life_ = value;
         
         return this;
       }
+      /**
+       * <code>optional double life = 1;</code>
+       */
       public Builder clearLife() {
         bitField0_ = (bitField0_ & ~0x00000001);
         life_ = 0D;
         
         return this;
       }
-      
+
       // optional group Move = 2 {
       private orwell.messages.Robot.RobotState.Move move_ = orwell.messages.Robot.RobotState.Move.getDefaultInstance();
+      /**
+       * <code>optional group Move = 2 { ... }</code>
+       */
       public boolean hasMove() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
+      /**
+       * <code>optional group Move = 2 { ... }</code>
+       */
       public orwell.messages.Robot.RobotState.Move getMove() {
         return move_;
       }
+      /**
+       * <code>optional group Move = 2 { ... }</code>
+       */
       public Builder setMove(orwell.messages.Robot.RobotState.Move value) {
         if (value == null) {
           throw new NullPointerException();
         }
         move_ = value;
-        
+
         bitField0_ |= 0x00000002;
         return this;
       }
+      /**
+       * <code>optional group Move = 2 { ... }</code>
+       */
       public Builder setMove(
           orwell.messages.Robot.RobotState.Move.Builder builderForValue) {
         move_ = builderForValue.build();
-        
+
         bitField0_ |= 0x00000002;
         return this;
       }
+      /**
+       * <code>optional group Move = 2 { ... }</code>
+       */
       public Builder mergeMove(orwell.messages.Robot.RobotState.Move value) {
         if (((bitField0_ & 0x00000002) == 0x00000002) &&
             move_ != orwell.messages.Robot.RobotState.Move.getDefaultInstance()) {
@@ -728,429 +904,808 @@ public final class Robot {
         } else {
           move_ = value;
         }
-        
+
         bitField0_ |= 0x00000002;
         return this;
       }
+      /**
+       * <code>optional group Move = 2 { ... }</code>
+       */
       public Builder clearMove() {
         move_ = orwell.messages.Robot.RobotState.Move.getDefaultInstance();
-        
+
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
-      
+
       // optional bool active = 3 [default = true];
       private boolean active_ = true;
+      /**
+       * <code>optional bool active = 3 [default = true];</code>
+       */
       public boolean hasActive() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
+      /**
+       * <code>optional bool active = 3 [default = true];</code>
+       */
       public boolean getActive() {
         return active_;
       }
+      /**
+       * <code>optional bool active = 3 [default = true];</code>
+       */
       public Builder setActive(boolean value) {
         bitField0_ |= 0x00000004;
         active_ = value;
         
         return this;
       }
+      /**
+       * <code>optional bool active = 3 [default = true];</code>
+       */
       public Builder clearActive() {
         bitField0_ = (bitField0_ & ~0x00000004);
         active_ = true;
         
         return this;
       }
-      
+
       // @@protoc_insertion_point(builder_scope:orwell.messages.RobotState)
     }
-    
+
     static {
       defaultInstance = new RobotState(true);
       defaultInstance.initFields();
     }
-    
+
     // @@protoc_insertion_point(class_scope:orwell.messages.RobotState)
   }
-  
-  public interface VideoOrBuilder
+
+  public interface RegisterOrBuilder
       extends com.google.protobuf.MessageLiteOrBuilder {
-    
-    // optional uint32 port = 1;
-    boolean hasPort();
-    int getPort();
-    
-    // optional string ip = 2;
-    boolean hasIp();
-    String getIp();
+
+    // required string temporary_robot_id = 1;
+    /**
+     * <code>required string temporary_robot_id = 1;</code>
+     *
+     * <pre>
+     * this temporary robot ID is only used when registering because
+     * we do not know yet what ID the server will assign to the robot
+     * </pre>
+     */
+    boolean hasTemporaryRobotId();
+    /**
+     * <code>required string temporary_robot_id = 1;</code>
+     *
+     * <pre>
+     * this temporary robot ID is only used when registering because
+     * we do not know yet what ID the server will assign to the robot
+     * </pre>
+     */
+    java.lang.String getTemporaryRobotId();
+    /**
+     * <code>required string temporary_robot_id = 1;</code>
+     *
+     * <pre>
+     * this temporary robot ID is only used when registering because
+     * we do not know yet what ID the server will assign to the robot
+     * </pre>
+     */
+    com.google.protobuf.ByteString
+        getTemporaryRobotIdBytes();
+
+    // required string video_address = 2;
+    /**
+     * <code>required string video_address = 2;</code>
+     */
+    boolean hasVideoAddress();
+    /**
+     * <code>required string video_address = 2;</code>
+     */
+    java.lang.String getVideoAddress();
+    /**
+     * <code>required string video_address = 2;</code>
+     */
+    com.google.protobuf.ByteString
+        getVideoAddressBytes();
+
+    // required uint32 video_port = 3;
+    /**
+     * <code>required uint32 video_port = 3;</code>
+     */
+    boolean hasVideoPort();
+    /**
+     * <code>required uint32 video_port = 3;</code>
+     */
+    int getVideoPort();
   }
-  public static final class Video extends
+  /**
+   * Protobuf type {@code orwell.messages.Register}
+   *
+   * <pre>
+   * Ask the server to register a new robot. The video address and port
+   * are provided.
+   * Answered by: Registered
+   * </pre>
+   */
+  public static final class Register extends
       com.google.protobuf.GeneratedMessageLite
-      implements VideoOrBuilder {
-    // Use Video.newBuilder() to construct.
-    private Video(Builder builder) {
+      implements RegisterOrBuilder {
+    // Use Register.newBuilder() to construct.
+    private Register(com.google.protobuf.GeneratedMessageLite.Builder builder) {
       super(builder);
+
     }
-    private Video(boolean noInit) {}
-    
-    private static final Video defaultInstance;
-    public static Video getDefaultInstance() {
+    private Register(boolean noInit) {}
+
+    private static final Register defaultInstance;
+    public static Register getDefaultInstance() {
       return defaultInstance;
     }
-    
-    public Video getDefaultInstanceForType() {
+
+    public Register getDefaultInstanceForType() {
       return defaultInstance;
     }
-    
+
+    private Register(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              bitField0_ |= 0x00000001;
+              temporaryRobotId_ = input.readBytes();
+              break;
+            }
+            case 18: {
+              bitField0_ |= 0x00000002;
+              videoAddress_ = input.readBytes();
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              videoPort_ = input.readUInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static com.google.protobuf.Parser<Register> PARSER =
+        new com.google.protobuf.AbstractParser<Register>() {
+      public Register parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Register(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Register> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
-    // optional uint32 port = 1;
-    public static final int PORT_FIELD_NUMBER = 1;
-    private int port_;
-    public boolean hasPort() {
+    // required string temporary_robot_id = 1;
+    public static final int TEMPORARY_ROBOT_ID_FIELD_NUMBER = 1;
+    private java.lang.Object temporaryRobotId_;
+    /**
+     * <code>required string temporary_robot_id = 1;</code>
+     *
+     * <pre>
+     * this temporary robot ID is only used when registering because
+     * we do not know yet what ID the server will assign to the robot
+     * </pre>
+     */
+    public boolean hasTemporaryRobotId() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
-    public int getPort() {
-      return port_;
-    }
-    
-    // optional string ip = 2;
-    public static final int IP_FIELD_NUMBER = 2;
-    private java.lang.Object ip_;
-    public boolean hasIp() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    public String getIp() {
-      java.lang.Object ref = ip_;
-      if (ref instanceof String) {
-        return (String) ref;
+    /**
+     * <code>required string temporary_robot_id = 1;</code>
+     *
+     * <pre>
+     * this temporary robot ID is only used when registering because
+     * we do not know yet what ID the server will assign to the robot
+     * </pre>
+     */
+    public java.lang.String getTemporaryRobotId() {
+      java.lang.Object ref = temporaryRobotId_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
       } else {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          ip_ = s;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          temporaryRobotId_ = s;
         }
         return s;
       }
     }
-    private com.google.protobuf.ByteString getIpBytes() {
-      java.lang.Object ref = ip_;
-      if (ref instanceof String) {
+    /**
+     * <code>required string temporary_robot_id = 1;</code>
+     *
+     * <pre>
+     * this temporary robot ID is only used when registering because
+     * we do not know yet what ID the server will assign to the robot
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getTemporaryRobotIdBytes() {
+      java.lang.Object ref = temporaryRobotId_;
+      if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        ip_ = b;
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        temporaryRobotId_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
-    
+
+    // required string video_address = 2;
+    public static final int VIDEO_ADDRESS_FIELD_NUMBER = 2;
+    private java.lang.Object videoAddress_;
+    /**
+     * <code>required string video_address = 2;</code>
+     */
+    public boolean hasVideoAddress() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required string video_address = 2;</code>
+     */
+    public java.lang.String getVideoAddress() {
+      java.lang.Object ref = videoAddress_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          videoAddress_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string video_address = 2;</code>
+     */
+    public com.google.protobuf.ByteString
+        getVideoAddressBytes() {
+      java.lang.Object ref = videoAddress_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        videoAddress_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // required uint32 video_port = 3;
+    public static final int VIDEO_PORT_FIELD_NUMBER = 3;
+    private int videoPort_;
+    /**
+     * <code>required uint32 video_port = 3;</code>
+     */
+    public boolean hasVideoPort() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required uint32 video_port = 3;</code>
+     */
+    public int getVideoPort() {
+      return videoPort_;
+    }
+
     private void initFields() {
-      port_ = 0;
-      ip_ = "";
+      temporaryRobotId_ = "";
+      videoAddress_ = "";
+      videoPort_ = 0;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
-      
+
+      if (!hasTemporaryRobotId()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasVideoAddress()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasVideoPort()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
-    
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeUInt32(1, port_);
+        output.writeBytes(1, getTemporaryRobotIdBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, getIpBytes());
+        output.writeBytes(2, getVideoAddressBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeUInt32(3, videoPort_);
       }
     }
-    
+
     private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
-    
+
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(1, port_);
+          .computeBytesSize(1, getTemporaryRobotIdBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, getIpBytes());
+          .computeBytesSize(2, getVideoAddressBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt32Size(3, videoPort_);
       }
       memoizedSerializedSize = size;
       return size;
     }
-    
+
     private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected java.lang.Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
-    
-    public static orwell.messages.Robot.Video parseFrom(
+
+    public static orwell.messages.Robot.Register parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
-    public static orwell.messages.Robot.Video parseFrom(
+    public static orwell.messages.Robot.Register parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static orwell.messages.Robot.Video parseFrom(byte[] data)
+    public static orwell.messages.Robot.Register parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
-    public static orwell.messages.Robot.Video parseFrom(
+    public static orwell.messages.Robot.Register parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static orwell.messages.Robot.Video parseFrom(java.io.InputStream input)
+    public static orwell.messages.Robot.Register parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
-    public static orwell.messages.Robot.Video parseFrom(
+    public static orwell.messages.Robot.Register parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static orwell.messages.Robot.Video parseDelimitedFrom(java.io.InputStream input)
+    public static orwell.messages.Robot.Register parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input);
     }
-    public static orwell.messages.Robot.Video parseDelimitedFrom(
+    public static orwell.messages.Robot.Register parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static orwell.messages.Robot.Video parseFrom(
+    public static orwell.messages.Robot.Register parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
-    public static orwell.messages.Robot.Video parseFrom(
+    public static orwell.messages.Robot.Register parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
-    
+
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(orwell.messages.Robot.Video prototype) {
+    public static Builder newBuilder(orwell.messages.Robot.Register prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
-    
+
+    /**
+     * Protobuf type {@code orwell.messages.Register}
+     *
+     * <pre>
+     * Ask the server to register a new robot. The video address and port
+     * are provided.
+     * Answered by: Registered
+     * </pre>
+     */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageLite.Builder<
-          orwell.messages.Robot.Video, Builder>
-        implements orwell.messages.Robot.VideoOrBuilder {
-      // Construct using orwell.messages.Robot.Video.newBuilder()
+          orwell.messages.Robot.Register, Builder>
+        implements orwell.messages.Robot.RegisterOrBuilder {
+      // Construct using orwell.messages.Robot.Register.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
-      
+
       private void maybeForceBuilderInitialization() {
       }
       private static Builder create() {
         return new Builder();
       }
-      
+
       public Builder clear() {
         super.clear();
-        port_ = 0;
+        temporaryRobotId_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
-        ip_ = "";
+        videoAddress_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
+        videoPort_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
-      
+
       public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
-      
-      public orwell.messages.Robot.Video getDefaultInstanceForType() {
-        return orwell.messages.Robot.Video.getDefaultInstance();
+
+      public orwell.messages.Robot.Register getDefaultInstanceForType() {
+        return orwell.messages.Robot.Register.getDefaultInstance();
       }
-      
-      public orwell.messages.Robot.Video build() {
-        orwell.messages.Robot.Video result = buildPartial();
+
+      public orwell.messages.Robot.Register build() {
+        orwell.messages.Robot.Register result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
-      
-      private orwell.messages.Robot.Video buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        orwell.messages.Robot.Video result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
-      public orwell.messages.Robot.Video buildPartial() {
-        orwell.messages.Robot.Video result = new orwell.messages.Robot.Video(this);
+
+      public orwell.messages.Robot.Register buildPartial() {
+        orwell.messages.Robot.Register result = new orwell.messages.Robot.Register(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.port_ = port_;
+        result.temporaryRobotId_ = temporaryRobotId_;
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.ip_ = ip_;
+        result.videoAddress_ = videoAddress_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.videoPort_ = videoPort_;
         result.bitField0_ = to_bitField0_;
         return result;
       }
-      
-      public Builder mergeFrom(orwell.messages.Robot.Video other) {
-        if (other == orwell.messages.Robot.Video.getDefaultInstance()) return this;
-        if (other.hasPort()) {
-          setPort(other.getPort());
+
+      public Builder mergeFrom(orwell.messages.Robot.Register other) {
+        if (other == orwell.messages.Robot.Register.getDefaultInstance()) return this;
+        if (other.hasTemporaryRobotId()) {
+          bitField0_ |= 0x00000001;
+          temporaryRobotId_ = other.temporaryRobotId_;
+          
         }
-        if (other.hasIp()) {
-          setIp(other.getIp());
+        if (other.hasVideoAddress()) {
+          bitField0_ |= 0x00000002;
+          videoAddress_ = other.videoAddress_;
+          
+        }
+        if (other.hasVideoPort()) {
+          setVideoPort(other.getVideoPort());
         }
         return this;
       }
-      
+
       public final boolean isInitialized() {
+        if (!hasTemporaryRobotId()) {
+          
+          return false;
+        }
+        if (!hasVideoAddress()) {
+          
+          return false;
+        }
+        if (!hasVideoPort()) {
+          
+          return false;
+        }
         return true;
       }
-      
+
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              
-              return this;
-            default: {
-              if (!parseUnknownField(input, extensionRegistry, tag)) {
-                
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              port_ = input.readUInt32();
-              break;
-            }
-            case 18: {
-              bitField0_ |= 0x00000002;
-              ip_ = input.readBytes();
-              break;
-            }
+        orwell.messages.Robot.Register parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (orwell.messages.Robot.Register) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
-      
       private int bitField0_;
-      
-      // optional uint32 port = 1;
-      private int port_ ;
-      public boolean hasPort() {
+
+      // required string temporary_robot_id = 1;
+      private java.lang.Object temporaryRobotId_ = "";
+      /**
+       * <code>required string temporary_robot_id = 1;</code>
+       *
+       * <pre>
+       * this temporary robot ID is only used when registering because
+       * we do not know yet what ID the server will assign to the robot
+       * </pre>
+       */
+      public boolean hasTemporaryRobotId() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public int getPort() {
-        return port_;
-      }
-      public Builder setPort(int value) {
-        bitField0_ |= 0x00000001;
-        port_ = value;
-        
-        return this;
-      }
-      public Builder clearPort() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        port_ = 0;
-        
-        return this;
-      }
-      
-      // optional string ip = 2;
-      private java.lang.Object ip_ = "";
-      public boolean hasIp() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      public String getIp() {
-        java.lang.Object ref = ip_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
-          ip_ = s;
+      /**
+       * <code>required string temporary_robot_id = 1;</code>
+       *
+       * <pre>
+       * this temporary robot ID is only used when registering because
+       * we do not know yet what ID the server will assign to the robot
+       * </pre>
+       */
+      public java.lang.String getTemporaryRobotId() {
+        java.lang.Object ref = temporaryRobotId_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          temporaryRobotId_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
-      public Builder setIp(String value) {
+      /**
+       * <code>required string temporary_robot_id = 1;</code>
+       *
+       * <pre>
+       * this temporary robot ID is only used when registering because
+       * we do not know yet what ID the server will assign to the robot
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+          getTemporaryRobotIdBytes() {
+        java.lang.Object ref = temporaryRobotId_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          temporaryRobotId_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string temporary_robot_id = 1;</code>
+       *
+       * <pre>
+       * this temporary robot ID is only used when registering because
+       * we do not know yet what ID the server will assign to the robot
+       * </pre>
+       */
+      public Builder setTemporaryRobotId(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        temporaryRobotId_ = value;
+        
+        return this;
+      }
+      /**
+       * <code>required string temporary_robot_id = 1;</code>
+       *
+       * <pre>
+       * this temporary robot ID is only used when registering because
+       * we do not know yet what ID the server will assign to the robot
+       * </pre>
+       */
+      public Builder clearTemporaryRobotId() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        temporaryRobotId_ = getDefaultInstance().getTemporaryRobotId();
+        
+        return this;
+      }
+      /**
+       * <code>required string temporary_robot_id = 1;</code>
+       *
+       * <pre>
+       * this temporary robot ID is only used when registering because
+       * we do not know yet what ID the server will assign to the robot
+       * </pre>
+       */
+      public Builder setTemporaryRobotIdBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        temporaryRobotId_ = value;
+        
+        return this;
+      }
+
+      // required string video_address = 2;
+      private java.lang.Object videoAddress_ = "";
+      /**
+       * <code>required string video_address = 2;</code>
+       */
+      public boolean hasVideoAddress() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required string video_address = 2;</code>
+       */
+      public java.lang.String getVideoAddress() {
+        java.lang.Object ref = videoAddress_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          videoAddress_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string video_address = 2;</code>
+       */
+      public com.google.protobuf.ByteString
+          getVideoAddressBytes() {
+        java.lang.Object ref = videoAddress_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          videoAddress_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string video_address = 2;</code>
+       */
+      public Builder setVideoAddress(
+          java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000002;
-        ip_ = value;
+        videoAddress_ = value;
         
         return this;
       }
-      public Builder clearIp() {
+      /**
+       * <code>required string video_address = 2;</code>
+       */
+      public Builder clearVideoAddress() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        ip_ = getDefaultInstance().getIp();
+        videoAddress_ = getDefaultInstance().getVideoAddress();
         
         return this;
       }
-      void setIp(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000002;
-        ip_ = value;
+      /**
+       * <code>required string video_address = 2;</code>
+       */
+      public Builder setVideoAddressBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        videoAddress_ = value;
         
+        return this;
       }
-      
-      // @@protoc_insertion_point(builder_scope:orwell.messages.Video)
+
+      // required uint32 video_port = 3;
+      private int videoPort_ ;
+      /**
+       * <code>required uint32 video_port = 3;</code>
+       */
+      public boolean hasVideoPort() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required uint32 video_port = 3;</code>
+       */
+      public int getVideoPort() {
+        return videoPort_;
+      }
+      /**
+       * <code>required uint32 video_port = 3;</code>
+       */
+      public Builder setVideoPort(int value) {
+        bitField0_ |= 0x00000004;
+        videoPort_ = value;
+        
+        return this;
+      }
+      /**
+       * <code>required uint32 video_port = 3;</code>
+       */
+      public Builder clearVideoPort() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        videoPort_ = 0;
+        
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:orwell.messages.Register)
     }
-    
+
     static {
-      defaultInstance = new Video(true);
+      defaultInstance = new Register(true);
       defaultInstance.initFields();
     }
-    
-    // @@protoc_insertion_point(class_scope:orwell.messages.Video)
+
+    // @@protoc_insertion_point(class_scope:orwell.messages.Register)
   }
-  
-  
+
+
   static {
   }
-  
+
   // @@protoc_insertion_point(outer_class_scope)
 }

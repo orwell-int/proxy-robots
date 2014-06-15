@@ -76,8 +76,14 @@
             <compilerarg value="" />
         </javac>
     </target>
+	
+	<target name="generate_messages_classes">
+		<exec executable="/bin/bash">
+			<arg value="./generate.sh"/>
+		</exec>
+	</target>
 
-    <target name="compile_proxy" description="compile the sources that stay on the computer">
+    <target name="compile_proxy" depends="generate_messages_classes" description="compile the sources that stay on the computer">
         <!-- Compile the java code from ${source.dir} to ${classes.dir}  -->
         <mkdir dir="${classes.dir}" />
         <javac

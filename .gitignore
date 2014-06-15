@@ -14,5 +14,4 @@ Units/RemoteControl.class
 bin/
 .classpath
 .project
-messages/
-
+orwell/proxy/test/report/
