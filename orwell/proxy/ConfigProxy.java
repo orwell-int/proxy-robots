@@ -7,6 +7,8 @@ import javax.xml.bind.annotation.XmlElement;
 public class ConfigProxy {
 	
 	private List<ConfigServerGame> configServerGames;
+	private int senderLinger;
+	private int receiverLinger;
 	
 	@XmlElement(name="server-game")
     public List<ConfigServerGame> getConfigServerGames() {
@@ -24,5 +26,23 @@ public class ConfigProxy {
 		}
 
     	throw new Exception("server-game " + name + " not found in the configuration file");
+    }
+    
+    public int getSenderLinger() {
+    	return senderLinger;
+    }
+    
+    @XmlElement(name="senderLinger")
+    public void setSenderLinger(int senderLinger) {
+    	this.senderLinger = senderLinger;
+    }
+    
+    public int getReceiverLinger() {
+    	return receiverLinger;
+    }
+    
+    @XmlElement(name="receiverLinger")
+    public void setReceiverLinger(int receiverLinger) {
+    	this.receiverLinger = receiverLinger;
     }
 }

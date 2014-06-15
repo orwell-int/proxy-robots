@@ -12,7 +12,9 @@ import org.junit.runners.JUnit4;
 
 import orwell.proxy.ConfigModel;
 import orwell.proxy.ConfigProxy;
+import orwell.proxy.ConfigRobots;
 import orwell.proxy.ConfigServerGame;
+import orwell.proxy.ConfigTank;
 import orwell.proxy.Configuration;
 
 /**
@@ -41,6 +43,7 @@ public class ConfigurationTest {
 	
     @Test
     public void populateConfigModel() {
+    	
     	assertTrue(buildConfigTest().isPopulated);
     }
     
@@ -73,5 +76,42 @@ public class ConfigurationTest {
 		}
     }
     
+    @Test
+    public void checkCommonElements() {
+    	
+    	ConfigProxy configProxy = buildConfigTest().getConfigModel().getConfigProxy();
+
+    	assertEquals(1000, configProxy.getSenderLinger());
+    	assertEquals(1000, configProxy.getReceiverLinger());
+    }
+    
+    @Test
+    public void checkRobotsList() {
+    	
+    	ConfigRobots configRobots = buildConfigTest().getConfigModel().getConfigRobots();
+    	
+    	assertEquals(1, configRobots.getConfigTanks().size());
+    	try {
+			assertNotNull(configRobots.getConfigTank("BananaOne"));
+		} catch (Exception e) {
+			fail(e.toString());
+		}
+    }
+    
+    @Test
+    public void checkTankElement() {
+    	
+    	ConfigTank configTank;
+		try {
+			configTank = buildConfigTest().getConfigModel().getConfigRobots().getConfigTank("BananaOne");
+	    	assertEquals("001653119482", configTank.getBluetoothID());
+	    	assertEquals("Daneel", configTank.getBluetoothName());
+	    	assertNotNull(configTank.getConfigCamera());
+	    	assertEquals("192.168.1.50", configTank.getConfigCamera().getIp());
+	    	assertEquals(9100, configTank.getConfigCamera().getPort());
+		} catch (Exception e) {
+			fail(e.toString());
+		}
+    }
 }
 

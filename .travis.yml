@@ -23,7 +23,6 @@ env:
     - JUNIT_DIR=. NXJ_HOME=leJOS_NXJ_0.9.1beta-3 HAMCREST_DIR=. JEROMQ_DIR=./jeromq PROTOBUF_DIR=.
 
 script:
-    - pwd
     - ant -version
     - ant junit-proxy -v 
 

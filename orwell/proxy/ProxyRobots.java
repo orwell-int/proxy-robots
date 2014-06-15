@@ -2,14 +2,58 @@ package orwell.proxy;
 
 import org.zeromq.ZMQ;
 
-
-import orwell.messages.Robot;
-
-
 public class ProxyRobots
 {
+	private String CONFIGURATION_FILE = "orwell/proxy/configuration.xml";
+	private ConfigProxy configProxy;
+	private String SERVER_GAME = "platypus";
+	private String TANK_NAME = "Daneel";
+	private ConfigServerGame configServerGame;
+	private ZMQ.Context context;
+    private ZMQ.Socket sender;
+    private ZMQ.Socket receiver;
+    private Tank tank;
+	private ConfigRobots configRobots;
+	
 	public ProxyRobots()
 	{
+		Configuration configuration = new Configuration(CONFIGURATION_FILE);
+		configProxy = configuration.getConfigModel().getConfigProxy();
+		configRobots = configuration.getConfigModel().getConfigRobots();
+		try {
+			configServerGame = configProxy.getConfigServerGame(SERVER_GAME);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	    context = ZMQ.context(1);
+	    sender = context.socket(ZMQ.PUSH);
+	    receiver = context.socket(ZMQ.SUB);
+	    sender.setLinger(configProxy.getSenderLinger());
+	    receiver.setLinger(configProxy.getReceiverLinger());
+	}
+	
+	public void connectToServer()
+	{
+	    sender.connect("tcp://" + configServerGame.getIp() + ":" + configServerGame.getPushPort());
+	    System.out.println("ProxyRobots Sender created");
+	    receiver.connect("tcp://" + configServerGame.getIp() + ":" + configServerGame.getSubPort());
+	    System.out.println("ProxyRobots Receiver created");
+	    receiver.subscribe(new String("").getBytes());
+	}
+	
+	public void connectToTank()
+	{
+		try {
+			ConfigTank configTank = configRobots.getConfigTank(TANK_NAME);
+		    tank = new Tank(configTank.getBluetoothName(), configTank.getBluetoothID());
+		    tank.setNetworkID(configTank.getNetworkID());
+		    System.out.println("Connecting to robot: \n" + tank.toString());
+		    tank.connectToNXT();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("Connected to tank!");
 	}
 	
 /*	static Robot.RobotState buildTestRobot()
@@ -28,35 +72,15 @@ public class ProxyRobots
 
 	public static void main(String[] args) throws Exception
 	{
-	    ZMQ.Context context = ZMQ.context(1);
-	    ZMQ.Socket sender = context.socket(ZMQ.PUSH);
-	    ZMQ.Socket receiver = context.socket(ZMQ.SUB);
-	    sender.setLinger(1000);
-	    receiver.setLinger(1000);
-	    String serverAddress = "192.168.1.37";
-	    sender.connect("tcp://" + serverAddress + ":9000");
-	    System.out.println("ProxyRobots Sender created");
-	    receiver.connect("tcp://" + serverAddress + ":9001");
-	    System.out.println("ProxyRobots Receiver created");
-	    receiver.subscribe(new String("").getBytes());
-
-	    //        socket.bind("tcp://*:5555");
-        
-	    Tank tank = new Tank("Daneel", "001653119482");
-	    tank.setNetworkID("BananaOne");
-	    System.out.println("Building robotState for test: \n" + tank.toString());
-	    tank.connectToNXT();
+		ProxyRobots proxyRobots = new ProxyRobots();
+		proxyRobots.connectToServer();
+		proxyRobots.connectToTank();
 	    
-//	    Robot.RobotState robotState = buildTestRobot();
-//        System.out.println("Building robotState for test");
-//        ProxyRobots.Print(robotState);
-
-
-        sender.send(tank.getZMQRobotState(), 0);
+		proxyRobots.sender.send(proxyRobots.tank.getZMQRobotState(), 0);
         System.out.println("Message sent");
 	
 	    String request = "Banana";
-	    sender.send(request, 0);
+	    proxyRobots.sender.send(request, 0);
 	    System.out.println("Message sent: " + request);
 
 	    byte space = 32; // ascii code of SPACE character
@@ -66,7 +90,7 @@ public class ProxyRobots
 	    
         while (!Thread.currentThread().isInterrupted())
 	    {
-        	byte [] raw_zmq_message = receiver.recv();
+        	byte [] raw_zmq_message = proxyRobots.receiver.recv();
         	String zmq_message = new String(raw_zmq_message);
         	
         	// We do not want to uselessly flood the robot
@@ -114,7 +138,7 @@ public class ProxyRobots
 //			Pattern messagePattern = Pattern.compile("([^ ]*) ([^ ]*) (.*)");
 
 //			System.out.println("Message [DEST]: " + routingID);
-			tank.setNetworkID(routingID);
+			proxyRobots.tank.setNetworkID(routingID);
 			System.out.println("Message [TYPE]: " + type);
 //			System.out.println("Message [MSG] : " + new String(message));
 			
@@ -122,8 +146,8 @@ public class ProxyRobots
 			{
 				case "Hello":	
 					System.out.println("Setting controller Hello to tank");
-					tank.setControllerHello(message);
-					System.out.println(tank.controllerHelloToString());
+					proxyRobots.tank.setControllerHello(message);
+					System.out.println(proxyRobots.tank.controllerHelloToString());
 					break;
 				case "Input":	
 					System.out.println("Setting controller Input to tank");
@@ -133,9 +157,9 @@ public class ProxyRobots
 						continue;
 					}
 					previousInput = zmq_message;
-					tank.setControllerInput(message);
+					proxyRobots.tank.setControllerInput(message);
 //					System.out.println("length: " + message.length);
-					System.out.println(tank.controllerInputToString());
+					System.out.println(proxyRobots.tank.controllerInputToString());
 					break;
 				case "GameState":
 					break;
@@ -146,8 +170,8 @@ public class ProxyRobots
 			zmq_previousMessage = zmq_message;
 
 	    }
-	    sender.close();
-	    receiver.close();
-	    context.term();
+        proxyRobots.sender.close();
+        proxyRobots.receiver.close();
+        proxyRobots.context.term();
 	}
 }
