@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.config;
 
 import java.util.List;
 

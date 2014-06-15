@@ -2,9 +2,15 @@ package orwell.proxy;
 
 import org.zeromq.ZMQ;
 
+import orwell.proxy.config.ConfigProxy;
+import orwell.proxy.config.ConfigRobots;
+import orwell.proxy.config.ConfigServerGame;
+import orwell.proxy.config.ConfigTank;
+import orwell.proxy.config.Configuration;
+
 public class ProxyRobots
 {
-	private String CONFIGURATION_FILE = "orwell/proxy/configuration.xml";
+	private String CONFIGURATION_FILE = "orwell/proxy/config/configuration.xml";
 	private ConfigProxy configProxy;
 	private String SERVER_GAME = "platypus";
 	private String TANK_NAME = "Daneel";

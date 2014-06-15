@@ -10,12 +10,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import orwell.proxy.ConfigModel;
-import orwell.proxy.ConfigProxy;
-import orwell.proxy.ConfigRobots;
-import orwell.proxy.ConfigServerGame;
-import orwell.proxy.ConfigTank;
-import orwell.proxy.Configuration;
+import orwell.proxy.config.ConfigModel;
+import orwell.proxy.config.ConfigProxy;
+import orwell.proxy.config.ConfigRobots;
+import orwell.proxy.config.ConfigServerGame;
+import orwell.proxy.config.ConfigTank;
+import orwell.proxy.config.Configuration;
 
 /**
  * Tests for {@link ConfigModel}.

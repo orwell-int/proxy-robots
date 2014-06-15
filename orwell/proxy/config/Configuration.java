@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.config;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -14,7 +14,7 @@ public class Configuration {
 
 	public Configuration()
 	{
-		this("orwell/proxy/configuration.xml");
+		this("orwell/proxy/config/configuration.xml");
 	}
 
 	public Configuration(String filePath) {
