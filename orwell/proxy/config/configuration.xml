@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding='utf8'?>
 <setup>
-    <proxy>
+	<proxy>
 		<senderLinger>1000</senderLinger>
 		<receiverLinger>1000</receiverLinger>
-        <server-game name='irondamien'>
-            <ip>192.168.1.37</ip>
-            <pushPort>9000</pushPort>
-            <subPort>9001</subPort>
-        </server-game>
-        <server-game name='platypus'>
-            <ip>192.168.1.46</ip>
-            <pushPort>9000</pushPort>
-            <subPort>9001</subPort>
-        </server-game>
-        <server-game name='localhost'>
-            <ip>localhost</ip>
-            <pushPort>9000</pushPort>
-            <subPort>9001</subPort>
-        </server-game>
-    </proxy>
+		<server-game name='irondamien'>
+			<ip>192.168.1.37</ip>
+			<pushPort>9000</pushPort>
+			<subPort>9001</subPort>
+		</server-game>
+		<server-game name='platypus'>
+			<ip>192.168.1.46</ip>
+			<pushPort>9000</pushPort>
+			<subPort>9001</subPort>
+		</server-game>
+		<server-game name='localhost'>
+			<ip>localhost</ip>
+			<pushPort>9000</pushPort>
+			<subPort>9001</subPort>
+		</server-game>
+	</proxy>
 
-    <robots>
-        <tank routingID='BananaOne'>
-            <bluetoothName>Daneel</bluetoothName>
-            <bluetoothID>001653119482</bluetoothID>
-            <camera>
-                <ip>192.168.1.50</ip>
-                <port>9100</port>
-            </camera>
-        </tank>
-    </robots>
+	<robots>
+		<tank routingID='BananaOne'>
+			<bluetoothName>Daneel</bluetoothName>
+			<bluetoothID>001653119482</bluetoothID>
+			<camera>
+				<ip>192.168.1.50</ip>
+				<port>9100</port>
+			</camera>
+		</tank>
+	</robots>
 </setup>
