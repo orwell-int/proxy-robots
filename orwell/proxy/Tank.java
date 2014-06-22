@@ -4,10 +4,11 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import orwell.common.UnitMessage;
 import orwell.common.UnitMessageType;
-import orwell.messages.Controller;
 import orwell.messages.Controller.Hello;
 import orwell.messages.Controller.Input;
 import orwell.messages.Robot;
+import orwell.messages.ServerGame.EnumTeam;
+import orwell.messages.ServerGame.Registered;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
 
@@ -25,11 +26,20 @@ public class Tank {
 			.newBuilder();
 	private Input currentControllerInput;
 	private Hello currentControllerHello;
+	private Registered serverGameRegistered;
 	private boolean isControllerReady;
 	private String controllerName;
 	private NXTInfo nxtInfo;
 	private MessageFramework mfTank = new MessageFramework();
 	private Camera camera;
+	private EnumTeam team;
+	private enum EnumRegistrationState {
+		NOT_REGISTERED,
+		REGISTERED,
+		REGISTRATION_FAILED;
+	}
+	public EnumRegistrationState registrationState = EnumRegistrationState.NOT_REGISTERED;
+
 
 	public Tank(String bluetoothName, String bluetoothID, Camera camera) {
 		setBluetoothName(bluetoothName);
@@ -81,12 +91,12 @@ public class Tank {
 	}
 
 	public Robot.Register getRegister() {
-		registerBuilder.setTemporaryRobotId(bluetoothID);
+		registerBuilder.setTemporaryRobotId(routingID);
 		registerBuilder.setVideoUrl(camera.getURL());
 		return registerBuilder.build();
 	}
 
-	public Controller.Input getControllerInput() {
+	public Input getControllerInput() {
 		return currentControllerInput;
 	}
 
@@ -109,6 +119,10 @@ public class Tank {
 	public String getControllerName() {
 		return controllerName;
 	}
+	
+	public EnumTeam getTeam() {
+		return team;
+	}
 
 	public byte[] getZMQRobotState() {
 		String zMQmessageHeader = getRoutingID() + " " + "RobotState" + " ";
@@ -122,9 +136,28 @@ public class Tank {
 				getRegister().toByteArray());
 	}
 
+	public void setRegistered(byte[] registeredMessage) {
+		try {
+			this.serverGameRegistered = Registered
+					.parseFrom(registeredMessage);
+			routingID = serverGameRegistered.getRobotId();
+			if (routingID.isEmpty())
+				registrationState = EnumRegistrationState.REGISTRATION_FAILED;
+			else
+			{
+				registrationState = EnumRegistrationState.REGISTERED;
+				team = serverGameRegistered.getTeam();
+			}
+		} catch (InvalidProtocolBufferException e) {
+			// TODO Auto-generated catch block
+			System.out.println("setRegistered protobuff exception");
+			e.printStackTrace();
+		}
+	}
+	
 	public void setControllerInput(byte[] inputMessage) {
 		try {
-			this.currentControllerInput = Controller.Input
+			this.currentControllerInput = Input
 					.parseFrom(inputMessage);
 			if (currentControllerInput.hasMove()) {
 				String payloadMove = "input move ";
@@ -153,7 +186,7 @@ public class Tank {
 
 	public void setControllerHello(byte[] helloMessage) {
 		try {
-			this.currentControllerHello = Controller.Hello
+			this.currentControllerHello = Hello
 					.parseFrom(helloMessage);
 			controllerName = currentControllerHello.getName();
 			isControllerReady = currentControllerHello.getReady();
@@ -226,4 +259,16 @@ public class Tank {
 		return string;
 	}
 
+	public String serverGameRegisteredToString() {
+		String string;
+		if (null != serverGameRegistered) {
+			string = "ServerGame REGISTERED of Robot [" + getRoutingID() + "]:"
+					+ "\n\t|___final RoutingID: " + serverGameRegistered.getRobotId()
+					+ "\n\t|___team: " + serverGameRegistered.getTeam();
+		} else {
+			string = "ServerGame REGISTERED of Robot [" + getRoutingID()
+					+ "] NOT initialized!";
+		}
+		return string;
+	}
 }

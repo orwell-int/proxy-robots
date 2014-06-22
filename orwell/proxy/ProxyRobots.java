@@ -1,17 +1,23 @@
 package orwell.proxy;
 
+import java.io.FileNotFoundException;
+import java.util.HashMap;
+
+import javax.xml.bind.JAXBException;
+
 import org.zeromq.ZMQ;
 
 import orwell.proxy.config.ConfigProxy;
 import orwell.proxy.config.ConfigRobots;
 import orwell.proxy.config.ConfigServerGame;
 import orwell.proxy.config.ConfigTank;
+import orwell.proxy.config.ConfigModel;
 import orwell.proxy.config.Configuration;
 
 public class ProxyRobots {
 	private String CONFIGURATION_FILE = "orwell/proxy/config/configuration.xml";
-	private String SERVER_GAME = "platypus";
-	private String TANK_NAME = "Daneel";
+	private String SERVER_GAME = "irondamien";
+	private String TANK_NAME = "BananaOne";
 	private ConfigProxy configProxy;
 	private ConfigServerGame configServerGame;
 	private ConfigRobots configRobots;
@@ -19,10 +25,19 @@ public class ProxyRobots {
 	private ZMQ.Socket sender;
 	private ZMQ.Socket receiver;
 	private Tank tank;
+	private HashMap<String,Tank> tanksToRegisterMap = new HashMap<String,Tank>();
+	private HashMap<String,Tank> registeredTanksMap = new HashMap<String,Tank>();
 
 	public ProxyRobots() {
 		Configuration configuration = new Configuration(CONFIGURATION_FILE);
-		configProxy = configuration.getConfigModel().getConfigProxy();
+		try {
+			// TODO Include populate into default constructor
+			configuration.populate();
+		} catch (FileNotFoundException | JAXBException e1) {
+			e1.toString();
+		}
+		ConfigModel configProxyModel = configuration.getConfigModel();
+		configProxy = configProxyModel.getConfigProxy();
 		configRobots = configuration.getConfigModel().getConfigRobots();
 		try {
 			configServerGame = configProxy.getConfigServerGame(SERVER_GAME);
@@ -54,7 +69,9 @@ public class ProxyRobots {
 					configTank.getConfigCamera().getPort());
 			tank = new Tank(configTank.getBluetoothName(),
 					configTank.getBluetoothID(), camera);
+			System.out.println(" NININININ" + configTank.getRoutingID());
 			tank.setRoutingID(configTank.getRoutingID());
+			tanksToRegisterMap.put(tank.getRoutingID(),tank);
 			System.out.println("Connecting to robot: \n" + tank.toString());
 			tank.connectToNXT();
 		} catch (Exception e) {
@@ -135,18 +152,28 @@ public class ProxyRobots {
 
 			System.out.flush();
 			System.out.println("Message received: " + zmq_message);
-			// Pattern messagePattern = Pattern.compile("([^ ]*) ([^ ]*) (.*)");
 
-			// System.out.println("Message [DEST]: " + routingID);
-			proxyRobots.tank.setRoutingID(routingID);
+			//proxyRobots.tank.setRoutingID(routingID);
 			System.out.println("Message [TYPE]: " + type);
-			// System.out.println("Message [MSG] : " + new String(message));
 
 			switch (type) {
 			case "Hello":
 				System.out.println("Setting controller Hello to tank");
 				proxyRobots.tank.setControllerHello(message);
 				System.out.println(proxyRobots.tank.controllerHelloToString());
+				break;
+			case "Registered":
+				System.out.println("Setting ServerGame Registered to tank");
+				if(proxyRobots.tanksToRegisterMap.containsKey(routingID))
+				{
+					Tank registeredTank = proxyRobots.registeredTanksMap.get(routingID);
+					proxyRobots.registeredTanksMap.put(routingID, registeredTank);
+					proxyRobots.tanksToRegisterMap.remove(routingID);
+					registeredTank.setRegistered(message);
+					System.out.println(registeredTank.serverGameRegisteredToString());
+				} else {
+					System.out.println("RoutingID " + routingID + " is not an ID of a tank to register"); 
+				}
 				break;
 			case "Input":
 				System.out.println("Setting controller Input to tank");
@@ -157,7 +184,6 @@ public class ProxyRobots {
 				}
 				previousInput = zmq_message;
 				proxyRobots.tank.setControllerInput(message);
-				// System.out.println("length: " + message.length);
 				System.out.println(proxyRobots.tank.controllerInputToString());
 				break;
 			case "GameState":
