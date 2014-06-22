@@ -995,30 +995,20 @@ public final class Robot {
     com.google.protobuf.ByteString
         getTemporaryRobotIdBytes();
 
-    // required string video_address = 2;
+    // required string video_url = 2;
     /**
-     * <code>required string video_address = 2;</code>
+     * <code>required string video_url = 2;</code>
      */
-    boolean hasVideoAddress();
+    boolean hasVideoUrl();
     /**
-     * <code>required string video_address = 2;</code>
+     * <code>required string video_url = 2;</code>
      */
-    java.lang.String getVideoAddress();
+    java.lang.String getVideoUrl();
     /**
-     * <code>required string video_address = 2;</code>
+     * <code>required string video_url = 2;</code>
      */
     com.google.protobuf.ByteString
-        getVideoAddressBytes();
-
-    // required uint32 video_port = 3;
-    /**
-     * <code>required uint32 video_port = 3;</code>
-     */
-    boolean hasVideoPort();
-    /**
-     * <code>required uint32 video_port = 3;</code>
-     */
-    int getVideoPort();
+        getVideoUrlBytes();
   }
   /**
    * Protobuf type {@code orwell.messages.Register}
@@ -1076,12 +1066,7 @@ public final class Robot {
             }
             case 18: {
               bitField0_ |= 0x00000002;
-              videoAddress_ = input.readBytes();
-              break;
-            }
-            case 24: {
-              bitField0_ |= 0x00000004;
-              videoPort_ = input.readUInt32();
+              videoUrl_ = input.readBytes();
               break;
             }
           }
@@ -1169,20 +1154,20 @@ public final class Robot {
       }
     }
 
-    // required string video_address = 2;
-    public static final int VIDEO_ADDRESS_FIELD_NUMBER = 2;
-    private java.lang.Object videoAddress_;
+    // required string video_url = 2;
+    public static final int VIDEO_URL_FIELD_NUMBER = 2;
+    private java.lang.Object videoUrl_;
     /**
-     * <code>required string video_address = 2;</code>
+     * <code>required string video_url = 2;</code>
      */
-    public boolean hasVideoAddress() {
+    public boolean hasVideoUrl() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required string video_address = 2;</code>
+     * <code>required string video_url = 2;</code>
      */
-    public java.lang.String getVideoAddress() {
-      java.lang.Object ref = videoAddress_;
+    public java.lang.String getVideoUrl() {
+      java.lang.Object ref = videoUrl_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
@@ -1190,48 +1175,31 @@ public final class Robot {
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
-          videoAddress_ = s;
+          videoUrl_ = s;
         }
         return s;
       }
     }
     /**
-     * <code>required string video_address = 2;</code>
+     * <code>required string video_url = 2;</code>
      */
     public com.google.protobuf.ByteString
-        getVideoAddressBytes() {
-      java.lang.Object ref = videoAddress_;
+        getVideoUrlBytes() {
+      java.lang.Object ref = videoUrl_;
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        videoAddress_ = b;
+        videoUrl_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
     }
 
-    // required uint32 video_port = 3;
-    public static final int VIDEO_PORT_FIELD_NUMBER = 3;
-    private int videoPort_;
-    /**
-     * <code>required uint32 video_port = 3;</code>
-     */
-    public boolean hasVideoPort() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>required uint32 video_port = 3;</code>
-     */
-    public int getVideoPort() {
-      return videoPort_;
-    }
-
     private void initFields() {
       temporaryRobotId_ = "";
-      videoAddress_ = "";
-      videoPort_ = 0;
+      videoUrl_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1242,11 +1210,7 @@ public final class Robot {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasVideoAddress()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasVideoPort()) {
+      if (!hasVideoUrl()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -1261,10 +1225,7 @@ public final class Robot {
         output.writeBytes(1, getTemporaryRobotIdBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBytes(2, getVideoAddressBytes());
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeUInt32(3, videoPort_);
+        output.writeBytes(2, getVideoUrlBytes());
       }
     }
 
@@ -1280,11 +1241,7 @@ public final class Robot {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(2, getVideoAddressBytes());
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(3, videoPort_);
+          .computeBytesSize(2, getVideoUrlBytes());
       }
       memoizedSerializedSize = size;
       return size;
@@ -1385,10 +1342,8 @@ public final class Robot {
         super.clear();
         temporaryRobotId_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
-        videoAddress_ = "";
+        videoUrl_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
-        videoPort_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -1419,11 +1374,7 @@ public final class Robot {
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.videoAddress_ = videoAddress_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
-        result.videoPort_ = videoPort_;
+        result.videoUrl_ = videoUrl_;
         result.bitField0_ = to_bitField0_;
         return result;
       }
@@ -1435,13 +1386,10 @@ public final class Robot {
           temporaryRobotId_ = other.temporaryRobotId_;
           
         }
-        if (other.hasVideoAddress()) {
+        if (other.hasVideoUrl()) {
           bitField0_ |= 0x00000002;
-          videoAddress_ = other.videoAddress_;
+          videoUrl_ = other.videoUrl_;
           
-        }
-        if (other.hasVideoPort()) {
-          setVideoPort(other.getVideoPort());
         }
         return this;
       }
@@ -1451,11 +1399,7 @@ public final class Robot {
           
           return false;
         }
-        if (!hasVideoAddress()) {
-          
-          return false;
-        }
-        if (!hasVideoPort()) {
+        if (!hasVideoUrl()) {
           
           return false;
         }
@@ -1585,109 +1529,76 @@ public final class Robot {
         return this;
       }
 
-      // required string video_address = 2;
-      private java.lang.Object videoAddress_ = "";
+      // required string video_url = 2;
+      private java.lang.Object videoUrl_ = "";
       /**
-       * <code>required string video_address = 2;</code>
+       * <code>required string video_url = 2;</code>
        */
-      public boolean hasVideoAddress() {
+      public boolean hasVideoUrl() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required string video_address = 2;</code>
+       * <code>required string video_url = 2;</code>
        */
-      public java.lang.String getVideoAddress() {
-        java.lang.Object ref = videoAddress_;
+      public java.lang.String getVideoUrl() {
+        java.lang.Object ref = videoUrl_;
         if (!(ref instanceof java.lang.String)) {
           java.lang.String s = ((com.google.protobuf.ByteString) ref)
               .toStringUtf8();
-          videoAddress_ = s;
+          videoUrl_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
         }
       }
       /**
-       * <code>required string video_address = 2;</code>
+       * <code>required string video_url = 2;</code>
        */
       public com.google.protobuf.ByteString
-          getVideoAddressBytes() {
-        java.lang.Object ref = videoAddress_;
+          getVideoUrlBytes() {
+        java.lang.Object ref = videoUrl_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          videoAddress_ = b;
+          videoUrl_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
       /**
-       * <code>required string video_address = 2;</code>
+       * <code>required string video_url = 2;</code>
        */
-      public Builder setVideoAddress(
+      public Builder setVideoUrl(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000002;
-        videoAddress_ = value;
+        videoUrl_ = value;
         
         return this;
       }
       /**
-       * <code>required string video_address = 2;</code>
+       * <code>required string video_url = 2;</code>
        */
-      public Builder clearVideoAddress() {
+      public Builder clearVideoUrl() {
         bitField0_ = (bitField0_ & ~0x00000002);
-        videoAddress_ = getDefaultInstance().getVideoAddress();
+        videoUrl_ = getDefaultInstance().getVideoUrl();
         
         return this;
       }
       /**
-       * <code>required string video_address = 2;</code>
+       * <code>required string video_url = 2;</code>
        */
-      public Builder setVideoAddressBytes(
+      public Builder setVideoUrlBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000002;
-        videoAddress_ = value;
-        
-        return this;
-      }
-
-      // required uint32 video_port = 3;
-      private int videoPort_ ;
-      /**
-       * <code>required uint32 video_port = 3;</code>
-       */
-      public boolean hasVideoPort() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>required uint32 video_port = 3;</code>
-       */
-      public int getVideoPort() {
-        return videoPort_;
-      }
-      /**
-       * <code>required uint32 video_port = 3;</code>
-       */
-      public Builder setVideoPort(int value) {
-        bitField0_ |= 0x00000004;
-        videoPort_ = value;
-        
-        return this;
-      }
-      /**
-       * <code>required uint32 video_port = 3;</code>
-       */
-      public Builder clearVideoPort() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        videoPort_ = 0;
+        videoUrl_ = value;
         
         return this;
       }

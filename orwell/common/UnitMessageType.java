@@ -1,7 +1,5 @@
 package orwell.common;
 
-public enum UnitMessageType
-{
-        Command,
-        Debug
+public enum UnitMessageType {
+	Command, Debug
 }

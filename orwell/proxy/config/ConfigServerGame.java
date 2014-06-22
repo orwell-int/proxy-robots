@@ -4,56 +4,48 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType(propOrder={"ip", "pushPort", "subPort"})
+@XmlType(propOrder = { "ip", "pushPort", "subPort" })
 public class ConfigServerGame {
-	
+
 	private String name;
 	private String ip;
 	private int pushPort;
 	private int subPort;
-	
-	public String getName()
-	{
+
+	public String getName() {
 		return name;
 	}
-	
+
 	@XmlAttribute
-	public void setName(String name)
-	{
+	public void setName(String name) {
 		this.name = name;
 	}
-	
-	public String getIp()
-	{
+
+	public String getIp() {
 		return ip;
 	}
-	
+
 	@XmlElement
-	public void setIp(String ip)
-	{
+	public void setIp(String ip) {
 		this.ip = ip;
 	}
 
-	public int getPushPort()
-	{
+	public int getPushPort() {
 		return pushPort;
 	}
-	
+
 	@XmlElement
-	public void setPushPort(int pushPort)
-	{
+	public void setPushPort(int pushPort) {
 		this.pushPort = pushPort;
 	}
-	
-	public int getSubPort()
-	{
+
+	public int getSubPort() {
 		return subPort;
 	}
-	
+
 	@XmlElement
-	public void setSubPort(int subPort)
-	{
+	public void setSubPort(int subPort) {
 		this.subPort = subPort;
 	}
-	
+
 }
