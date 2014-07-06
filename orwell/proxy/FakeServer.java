@@ -2,6 +2,8 @@ package orwell.proxy;
 
 import org.zeromq.ZMQ;
 
+import com.google.protobuf.InvalidProtocolBufferException;
+
 import orwell.messages.Controller;
 import orwell.messages.Controller.Input;
 
@@ -33,8 +35,7 @@ public class FakeServer {
 				message.toByteArray());
 	}
 
-	@SuppressWarnings("deprecation")
-	public static void main(String[] args) throws Exception {
+	public void startServer() {
 		ZMQ.Context context = ZMQ.context(1);
 
 		// Socket to receive messages on
@@ -62,8 +63,13 @@ public class FakeServer {
 				System.out.println("Message is:" + str);
 				// System.out.println("raw length: " + str.getBytes().length);
 				sender.send(zmq_input);
-				System.out.println(Controller.Input.parseFrom(
-						input.toByteArray()).toString());
+				try {
+					System.out.println(Controller.Input.parseFrom(
+							input.toByteArray()).toString());
+				} catch (InvalidProtocolBufferException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				System.out.println("Message sent");
 			}
 		}
@@ -71,6 +77,11 @@ public class FakeServer {
 		sender.close();
 		receiver.close();
 		context.term();
+	}
+	
+	public static void main(String[] args) throws Exception {
+		FakeServer fakeServer = new FakeServer();
+		fakeServer.startServer();
 	}
 
 }

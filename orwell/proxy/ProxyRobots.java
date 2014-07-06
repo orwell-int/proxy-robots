@@ -16,8 +16,6 @@ import orwell.proxy.config.ConfigModel;
 import orwell.proxy.config.Configuration;
 
 public class ProxyRobots {
-	private static final String CONFIGURATION_FILE = "orwell/proxy/config/configuration.xml";
-	private static final String SERVER_GAME = "irondamien";
 	private ConfigProxy configProxy;
 	private ConfigServerGame configServerGame;
 	private ConfigRobots configRobots;
@@ -27,8 +25,8 @@ public class ProxyRobots {
 	private HashMap<String,Tank> tanksToRegisterMap = new HashMap<String,Tank>();
 	private HashMap<String,Tank> registeredTanksMap = new HashMap<String,Tank>();
 
-	public ProxyRobots() {
-		Configuration configuration = new Configuration(CONFIGURATION_FILE);
+	public ProxyRobots(String ConfigFileAddress, String serverGame) {
+		Configuration configuration = new Configuration(ConfigFileAddress);
 		try {
 			// TODO Include populate into default constructor
 			configuration.populate();
@@ -39,7 +37,7 @@ public class ProxyRobots {
 		configProxy = configProxyModel.getConfigProxy();
 		configRobots = configuration.getConfigModel().getConfigRobots();
 		try {
-			configServerGame = configProxy.getConfigServerGame(SERVER_GAME);
+			configServerGame = configProxy.getConfigServerGame(serverGame);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -84,96 +82,61 @@ public class ProxyRobots {
 			
 		System.out.println("All tanks initialised");
 	}
-
+	
 	public void startCommunication() {
-		byte space = 32; // ascii code of SPACE character
 
 		String zmq_previousMessage = new String();
 		String previousInput = new String();
-
+		ZmqMessageWrapper zmqMessage;
+		
 		while (!Thread.currentThread().isInterrupted()) {
 			byte[] raw_zmq_message = this.receiver.recv();
-			String zmq_message = new String(raw_zmq_message);
+			zmqMessage = new ZmqMessageWrapper(raw_zmq_message);
 
 			// We do not want to uselessly flood the robot
-			if (zmq_message.compareTo(zmq_previousMessage) == 0) {
+			if (zmqMessage.zmqMessageString.compareTo(zmq_previousMessage) == 0) {
 				System.out
 						.println("=======================================================================");
 				continue;
 			}
-			int indexType = 0;
-			int indexMessage = 0;
-			int index = 0;
-			for (byte item : raw_zmq_message) {
-				if (0 == indexType) {
-					if (space == item) {
-						indexType = index + 1;
-					}
-				} else {
-					if (space == item) {
-						indexMessage = index + 1;
-						break;
-					}
-				}
-				++index;
-			}
-			// routingID type message
-			// ^ ^
-			// | indexMessage
-			// indexType
-			int lengthRoutingID = indexType - 1;
-			int lengthType = indexMessage - indexType - 1;
-			String routingID = new String(raw_zmq_message, 0, lengthRoutingID);
-			String type = new String(raw_zmq_message, indexType, lengthType);
-			int lengthMessage = raw_zmq_message.length - lengthType
-					- lengthRoutingID - 2;
-			byte[] message = new byte[lengthMessage];
-			System.arraycopy(raw_zmq_message, indexMessage, message, 0,
-					message.length);
-
-			System.out.flush();
-			System.out.println("Message received: " + zmq_message);
-
-			//proxyRobots.tank.setRoutingID(routingID);
-			System.out.println("Message [TYPE]: " + type);
-
-			switch (type) {
+			
+			switch (zmqMessage.type) {
 			case "Hello":
 				System.out.println("Setting controller Hello to tank");
-				if(this.registeredTanksMap.containsKey(routingID)) {
-					Tank tankTargeted = this.registeredTanksMap.get(routingID);
-					tankTargeted.setControllerHello(message);
+				if(this.registeredTanksMap.containsKey(zmqMessage.routingId)) {
+					Tank tankTargeted = this.registeredTanksMap.get(zmqMessage.routingId);
+					tankTargeted.setControllerHello(zmqMessage.message);
 					System.out.println(tankTargeted.controllerHelloToString());
 				} else {
-					System.out.println("RoutingID " + routingID + " is not an ID of a tank to register"); 
+					System.out.println("RoutingID " + zmqMessage.routingId + " is not an ID of a tank to register"); 
 				}
 				break;
 			case "Registered":
 				System.out.println("Setting ServerGame Registered to tank");
-				if(this.tanksToRegisterMap.containsKey(routingID)) {
-					Tank registeredTank = this.tanksToRegisterMap.get(routingID);
-					this.registeredTanksMap.put(routingID, registeredTank);
-					this.tanksToRegisterMap.remove(routingID);
-					registeredTank.setRegistered(message);
+				if(this.tanksToRegisterMap.containsKey(zmqMessage.routingId)) {
+					Tank registeredTank = this.tanksToRegisterMap.get(zmqMessage.routingId);
+					this.registeredTanksMap.put(zmqMessage.routingId, registeredTank);
+					this.tanksToRegisterMap.remove(zmqMessage.routingId);
+					registeredTank.setRegistered(zmqMessage.message);
 					System.out.println(registeredTank.serverGameRegisteredToString());
 				} else {
-					System.out.println("RoutingID " + routingID + " is not an ID of a tank to register"); 
+					System.out.println("RoutingID " + zmqMessage.routingId + " is not an ID of a tank to register"); 
 				}
 				break;
 			case "Input":
 				System.out.println("Setting controller Input to tank");
-				if (previousInput.compareTo(zmq_message) == 0) {
+				if (previousInput.compareTo(zmqMessage.zmqMessageString) == 0) {
 					System.out
 							.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 					continue;
 				}
-				previousInput = zmq_message;
-				if(this.registeredTanksMap.containsKey(routingID)) {
-					Tank tankTargeted = this.registeredTanksMap.get(routingID);
-					tankTargeted.setControllerInput(message);
+				previousInput = zmqMessage.zmqMessageString;
+				if(this.registeredTanksMap.containsKey(zmqMessage.routingId)) {
+					Tank tankTargeted = this.registeredTanksMap.get(zmqMessage.routingId);
+					tankTargeted.setControllerInput(zmqMessage.message);
 					System.out.println(tankTargeted.controllerInputToString());
 				} else {
-					System.out.println("RoutingID " + routingID + " is not an ID of a tank to register"); 
+					System.out.println("RoutingID " + zmqMessage.routingId + " is not an ID of a tank to register"); 
 				}
 				break;
 			case "GameState":
@@ -182,7 +145,7 @@ public class ProxyRobots {
 				System.out.println("[WARNING] Invalid Message type");
 			}
 
-			zmq_previousMessage = zmq_message;
+			zmq_previousMessage = zmqMessage.zmqMessageString;
 
 		}
 	}
@@ -194,7 +157,7 @@ public class ProxyRobots {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		ProxyRobots proxyRobots = new ProxyRobots();
+		ProxyRobots proxyRobots = new ProxyRobots("orwell/proxy/config/configuration.xml", "irondamien");
 		proxyRobots.connectToServer();
 		proxyRobots.initialiseTanks();
 		proxyRobots.startCommunication();
