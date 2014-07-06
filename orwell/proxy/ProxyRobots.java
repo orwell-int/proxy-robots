@@ -15,16 +15,15 @@ import orwell.proxy.config.ConfigModel;
 import orwell.proxy.config.Configuration;
 
 public class ProxyRobots {
-	private String CONFIGURATION_FILE = "orwell/proxy/config/configuration.xml";
-	private String SERVER_GAME = "irondamien";
-	private String TANK_NAME = "BananaOne";
+	private static final String CONFIGURATION_FILE = "orwell/proxy/config/configuration.xml";
+	private static final String SERVER_GAME = "irondamien";
+	private static final String TANK_NAME = "BananaOne";
 	private ConfigProxy configProxy;
 	private ConfigServerGame configServerGame;
 	private ConfigRobots configRobots;
 	private ZMQ.Context context;
 	private ZMQ.Socket sender;
 	private ZMQ.Socket receiver;
-	private Tank tank;
 	private HashMap<String,Tank> tanksToRegisterMap = new HashMap<String,Tank>();
 	private HashMap<String,Tank> registeredTanksMap = new HashMap<String,Tank>();
 
@@ -63,55 +62,39 @@ public class ProxyRobots {
 	}
 
 	public void initialiseTanks() {
+		boolean isConnected = false;
 		try {
 			ConfigTank configTank = configRobots.getConfigTank(TANK_NAME);
 			Camera camera = new Camera(configTank.getConfigCamera().getIp(),
 					configTank.getConfigCamera().getPort());
-			tank = new Tank(configTank.getBluetoothName(),
+			Tank tank = new Tank(configTank.getBluetoothName(),
 					configTank.getBluetoothID(), camera);
-			System.out.println(" NININININ" + configTank.getRoutingID());
-			tank.setRoutingID(configTank.getRoutingID());
+			System.out.println(" NININININ " + configTank.getTempRoutingID());
+			tank.setRoutingID(configTank.getTempRoutingID());
 			tanksToRegisterMap.put(tank.getRoutingID(),tank);
 			System.out.println("Connecting to robot: \n" + tank.toString());
-			tank.connectToNXT();
+			isConnected = tank.connectToNXT();
+			this.sender.send(tank.getZMQRegister(), 0);
 		} catch (Exception e) {
+			// getConfigTank has failed (tank not found in config file)
 			e.printStackTrace();
 		}
-		System.out.println("Connected to tank!");
-
-		this.sender.send(tank.getZMQRegister(), 0);
+		if(!isConnected) {
+			System.out.println("Tank is NOT connected!");
+		} else {
+			System.out.println("Tank is connected to the proxy!");
+		}
+		System.out.println("Tank initialised");
 	}
 
-	/*
-	 * static Robot.RobotState buildTestRobot() { Robot.RobotState.Builder
-	 * testRobot = Robot.RobotState.newBuilder(); Robot.RobotState.Move.Builder
-	 * testMove = Robot.RobotState.Move.newBuilder(); testMove.setLeft(42);
-	 * testMove.setRight(99); testRobot.setMove(testMove.build());
-	 * 
-	 * testRobot.setActive(true); testRobot.setLife(42);
-	 * 
-	 * return testRobot.build(); }
-	 */
-
-	public static void main(String[] args) throws Exception {
-		ProxyRobots proxyRobots = new ProxyRobots();
-		proxyRobots.connectToServer();
-		proxyRobots.initialiseTanks();
-
-		// proxyRobots.sender.send(proxyRobots.tank.getZMQRobotState(), 0);
-		// System.out.println("Message sent");
-		//
-		// String request = "Banana";
-		// proxyRobots.sender.send(request, 0);
-		// System.out.println("Message sent: " + request);
-
+	public void startCommunication() {
 		byte space = 32; // ascii code of SPACE character
 
 		String zmq_previousMessage = new String();
 		String previousInput = new String();
 
 		while (!Thread.currentThread().isInterrupted()) {
-			byte[] raw_zmq_message = proxyRobots.receiver.recv();
+			byte[] raw_zmq_message = this.receiver.recv();
 			String zmq_message = new String(raw_zmq_message);
 
 			// We do not want to uselessly flood the robot
@@ -159,16 +142,20 @@ public class ProxyRobots {
 			switch (type) {
 			case "Hello":
 				System.out.println("Setting controller Hello to tank");
-				proxyRobots.tank.setControllerHello(message);
-				System.out.println(proxyRobots.tank.controllerHelloToString());
+				if(this.registeredTanksMap.containsKey(routingID)) {
+					Tank tankTargeted = this.registeredTanksMap.get(routingID);
+					tankTargeted.setControllerHello(message);
+					System.out.println(tankTargeted.controllerHelloToString());
+				} else {
+					System.out.println("RoutingID " + routingID + " is not an ID of a tank to register"); 
+				}
 				break;
 			case "Registered":
 				System.out.println("Setting ServerGame Registered to tank");
-				if(proxyRobots.tanksToRegisterMap.containsKey(routingID))
-				{
-					Tank registeredTank = proxyRobots.registeredTanksMap.get(routingID);
-					proxyRobots.registeredTanksMap.put(routingID, registeredTank);
-					proxyRobots.tanksToRegisterMap.remove(routingID);
+				if(this.tanksToRegisterMap.containsKey(routingID)) {
+					Tank registeredTank = this.registeredTanksMap.get(routingID);
+					this.registeredTanksMap.put(routingID, registeredTank);
+					this.tanksToRegisterMap.remove(routingID);
 					registeredTank.setRegistered(message);
 					System.out.println(registeredTank.serverGameRegisteredToString());
 				} else {
@@ -183,8 +170,13 @@ public class ProxyRobots {
 					continue;
 				}
 				previousInput = zmq_message;
-				proxyRobots.tank.setControllerInput(message);
-				System.out.println(proxyRobots.tank.controllerInputToString());
+				if(this.registeredTanksMap.containsKey(routingID)) {
+					Tank tankTargeted = this.registeredTanksMap.get(routingID);
+					tankTargeted.setControllerInput(message);
+					System.out.println(tankTargeted.controllerInputToString());
+				} else {
+					System.out.println("RoutingID " + routingID + " is not an ID of a tank to register"); 
+				}
 				break;
 			case "GameState":
 				break;
@@ -195,8 +187,26 @@ public class ProxyRobots {
 			zmq_previousMessage = zmq_message;
 
 		}
-		proxyRobots.sender.close();
-		proxyRobots.receiver.close();
-		proxyRobots.context.term();
+	}
+
+	public void stopCommunication() {
+		this.sender.close();
+		this.receiver.close();
+		this.context.term();
+	}
+	
+	public static void main(String[] args) throws Exception {
+		ProxyRobots proxyRobots = new ProxyRobots();
+		proxyRobots.connectToServer();
+		proxyRobots.initialiseTanks();
+		proxyRobots.startCommunication();
+
+		// proxyRobots.sender.send(proxyRobots.tank.getZMQRobotState(), 0);
+		// System.out.println("Message sent");
+		//
+//		 String request = "Banana";
+//		 proxyRobots.sender.send(request, 0);
+//		 System.out.println("Message sent: " + request);
+		proxyRobots.stopCommunication();
 	}
 }
