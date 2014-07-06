@@ -1,4 +1,4 @@
-[![Stories in Ready](https://badge.waffle.io/orwell-int/proxy-robots.png?label=ready&title=Ready)](https://waffle.io/orwell-int/proxy-robots)
+[![Build Status](https://travis-ci.org/orwell-int/proxy-robots.svg?branch=master)](https://travis-ci.org/orwell-int/proxy-robots) [![Stories in Ready](https://badge.waffle.io/orwell-int/proxy-robots.png?label=ready&title=Ready)](https://waffle.io/orwell-int/proxy-robots)
 proxy-robots
 ============
 
