@@ -25,6 +25,7 @@ class TankControl extends Thread implements MessageListenerInterface {
 		mfw.addMessageListener(this);
 		mfw.StartListen();
 		LCD.drawString("Connected!", 0, 0, true);
+		Sound.beep();
 
 		while (!Button.ESCAPE.isDown() && remoteCtrlAlive) {
 		}
