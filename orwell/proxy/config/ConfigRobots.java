@@ -1,5 +1,6 @@
 package orwell.proxy.config;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -16,13 +17,23 @@ public class ConfigRobots {
 		this.configTanks = configTanks;
 	}
 
-	public ConfigTank getConfigTank(String routingID) throws Exception {
+	public ConfigTank getConfigTank(String tempRoutingID) throws Exception {
 		for (ConfigTank config : this.configTanks) {
-			if (config.getRoutingID().contentEquals(routingID))
+			if (config.getTempRoutingID().contentEquals(tempRoutingID))
 				return config;
 		}
 
-		throw new Exception("tank " + routingID
+		throw new Exception("tank " + tempRoutingID
 				+ " not found in the configuration file");
+	}
+	
+	public ArrayList<ConfigTank> getConfigRobotsToRegister() {
+		ArrayList<ConfigTank> configRobotsToRegister = new ArrayList<ConfigTank>();
+		for (ConfigTank configTank : this.configTanks) {
+			if(1 == configTank.getToRegister()) {
+				configRobotsToRegister.add(configTank);
+			}
+		}
+		return configRobotsToRegister;
 	}
 }

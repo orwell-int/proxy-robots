@@ -201,8 +201,8 @@ public class Tank {
 		return nxtInfo;
 	}
 
-	public void connectToNXT() {
-		mfTank.ConnectToNXT(nxtInfo);
+	public boolean connectToNXT() {
+		return mfTank.ConnectToNXT(nxtInfo);
 	}
 
 	public void register() {

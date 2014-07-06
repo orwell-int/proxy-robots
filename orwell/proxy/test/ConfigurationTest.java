@@ -94,7 +94,7 @@ public class ConfigurationTest {
 		ConfigRobots configRobots = buildConfigTest().getConfigModel()
 				.getConfigRobots();
 
-		assertEquals(1, configRobots.getConfigTanks().size());
+		assertEquals(2, configRobots.getConfigTanks().size());
 		try {
 			assertNotNull(configRobots.getConfigTank("BananaOne"));
 		} catch (Exception e) {
@@ -117,5 +117,14 @@ public class ConfigurationTest {
 		} catch (Exception e) {
 			fail(e.toString());
 		}
+	}
+	
+	@Test
+	public void checkRobotsToRegister() {
+
+		ConfigRobots configRobots = buildConfigTest().getConfigModel()
+				.getConfigRobots();
+
+		assertEquals(1, configRobots.getConfigRobotsToRegister().size());
 	}
 }

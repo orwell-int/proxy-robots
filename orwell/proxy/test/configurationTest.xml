@@ -21,12 +21,20 @@
 	</proxy>
 
 	<robots>
-		<tank routingID='BananaOne'>
+		<tank tempRoutingID='BananaOne' toRegister='1'>
 			<bluetoothName>Daneel</bluetoothName>
 			<bluetoothID>001653119482</bluetoothID>
 			<camera>
 				<ip>192.168.1.50</ip>
 				<port>9100</port>
+			</camera>
+		</tank>
+		<tank tempRoutingID='BananaTwo' toRegister='0'>
+			<bluetoothName>Cage</bluetoothName>
+			<bluetoothID>777777777777</bluetoothID>
+			<camera>
+				<ip>192.168.1.51</ip>
+				<port>9101</port>
 			</camera>
 		</tank>
 	</robots>

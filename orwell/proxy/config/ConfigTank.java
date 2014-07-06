@@ -7,18 +7,28 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(propOrder = { "bluetoothName", "bluetoothID", "camera" })
 public class ConfigTank {
 
-	private String routingID;
+	private String tempRoutingID;
 	private String bluetoothName;
 	private String bluetoothID;
 	private ConfigCamera camera;
+	private int toRegister;
 
-	public String getRoutingID() {
-		return routingID;
+	public String getTempRoutingID() {
+		return tempRoutingID;
 	}
 
 	@XmlAttribute
-	public void setRoutingID(String routingID) {
-		this.routingID = routingID;
+	public void setTempRoutingID(String tempRoutingID) {
+		this.tempRoutingID = tempRoutingID;
+	}
+	
+	public int getToRegister() {
+		return toRegister;
+	}
+
+	@XmlAttribute
+	public void setToRegister(int toRegister) {
+		this.toRegister = toRegister;
 	}
 
 	public String getBluetoothName() {
