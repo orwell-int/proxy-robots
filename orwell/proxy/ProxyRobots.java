@@ -1,6 +1,7 @@
 package orwell.proxy;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.xml.bind.JAXBException;
@@ -17,7 +18,6 @@ import orwell.proxy.config.Configuration;
 public class ProxyRobots {
 	private static final String CONFIGURATION_FILE = "orwell/proxy/config/configuration.xml";
 	private static final String SERVER_GAME = "irondamien";
-	private static final String TANK_NAME = "BananaOne";
 	private ConfigProxy configProxy;
 	private ConfigServerGame configServerGame;
 	private ConfigRobots configRobots;
@@ -63,8 +63,7 @@ public class ProxyRobots {
 
 	public void initialiseTanks() {
 		boolean isConnected = false;
-		try {
-			ConfigTank configTank = configRobots.getConfigTank(TANK_NAME);
+		for (ConfigTank configTank: configRobots.getConfigRobotsToRegister()) {
 			Camera camera = new Camera(configTank.getConfigCamera().getIp(),
 					configTank.getConfigCamera().getPort());
 			Tank tank = new Tank(configTank.getBluetoothName(),
@@ -75,16 +74,15 @@ public class ProxyRobots {
 			System.out.println("Connecting to robot: \n" + tank.toString());
 			isConnected = tank.connectToNXT();
 			this.sender.send(tank.getZMQRegister(), 0);
-		} catch (Exception e) {
-			// getConfigTank has failed (tank not found in config file)
-			e.printStackTrace();
+			
+			if(!isConnected) {
+				System.out.println("Tank [" + tank.getRoutingID() + "] failed to connect to the proxy!");
+			} else {
+				System.out.println("Tank [" + tank.getRoutingID() + "] is connected to the proxy!");
+			}
 		}
-		if(!isConnected) {
-			System.out.println("Tank is NOT connected!");
-		} else {
-			System.out.println("Tank is connected to the proxy!");
-		}
-		System.out.println("Tank initialised");
+			
+		System.out.println("All tanks initialised");
 	}
 
 	public void startCommunication() {
@@ -153,7 +151,7 @@ public class ProxyRobots {
 			case "Registered":
 				System.out.println("Setting ServerGame Registered to tank");
 				if(this.tanksToRegisterMap.containsKey(routingID)) {
-					Tank registeredTank = this.registeredTanksMap.get(routingID);
+					Tank registeredTank = this.tanksToRegisterMap.get(routingID);
 					this.registeredTanksMap.put(routingID, registeredTank);
 					this.tanksToRegisterMap.remove(routingID);
 					registeredTank.setRegistered(message);
