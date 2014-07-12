@@ -47,6 +47,9 @@
         <pathelement location="${jeromq.dir}/target/jeromq-0.3.5-SNAPSHOT.jar"/>
         <pathelement location="${junit.dir}/junit-4.11.jar"/>
         <pathelement location="${hamcrest-core.dir}/hamcrest-core-1.3.jar"/>
+        <pathelement location="${easymock.dir}/easymock-3.2.jar"/>
+        <pathelement location="${objenesis.dir}/objenesis-2.1.jar"/>
+        <pathelement location="${cglib.dir}/cglib-3.1-sources.jar"/>
     </path>
 
     <target name="compile_robots" description="compile the sources to upload on the robots">
