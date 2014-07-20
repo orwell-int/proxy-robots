@@ -11,7 +11,15 @@ public interface IRobot {
 		REGISTRATION_FAILED;
 	}
 	
+	public enum EnumConnectionState {
+		NOT_CONNECTED,
+		CONNECTED,
+		CONNECTION_FAILED;
+	}
+	
 	public EnumTeam getTeam();
+	public EnumRegistrationState getRegistrationState();
+	public EnumConnectionState getConnectionState();
 
 	public void setRoutingID(String routingID);
 	public String getRoutingID();
@@ -27,5 +35,10 @@ public interface IRobot {
 	public void setControllerInput(byte[] inputMessage);
 	public Input getControllerInput();
 	
-	public boolean connectToRobot();
+	public EnumConnectionState connectToRobot();
+	
+	public String robotStatetoString();
+	public String controllerInputToString();
+	public String serverGameRegisteredToString();
+	
 }

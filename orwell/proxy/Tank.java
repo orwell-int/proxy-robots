@@ -35,10 +35,9 @@ public class Tank implements IRobot {
 	private MessageFramework mfTank = new MessageFramework();
 	private Camera camera;
 
-
-	public EnumRegistrationState registrationState = EnumRegistrationState.NOT_REGISTERED;
+	private EnumRegistrationState registrationState = EnumRegistrationState.NOT_REGISTERED;
+	private EnumConnectionState connectionState = EnumConnectionState.NOT_CONNECTED;
 	private EnumTeam team;
-
 
 	public Tank(String bluetoothName, String bluetoothID, Camera camera) {
 		setBluetoothName(bluetoothName);
@@ -75,15 +74,15 @@ public class Tank implements IRobot {
 		tankStateBuilder.setLife(lifePoints);
 	}
 
-	public void setMoveLeft(double moveLeft) {
+	private void setMoveLeft(double moveLeft) {
 		moveBuilder.setLeft(moveLeft);
 	}
 
-	public void setMoveRight(double moveRight) {
+	private void setMoveRight(double moveRight) {
 		moveBuilder.setLeft(moveRight);
 	}
 
-	public RobotState.Move getRobotStateMove() {
+	private RobotState.Move getRobotStateMove() {
 		return moveBuilder.build();
 	}
 
@@ -103,30 +102,17 @@ public class Tank implements IRobot {
 		return currentControllerInput;
 	}
 
-	public String getBluetoothName() {
+	private String getBluetoothName() {
 		return bluetoothName;
 	}
 
-	public String getBluetoothID() {
+	private String getBluetoothID() {
 		return bluetoothID;
 	}
 
 	@Override
 	public String getRoutingID() {
 		return routingID;
-	}
-
-	public boolean getIsControllerReady() {
-		return isControllerReady;
-	}
-
-	public String getControllerName() {
-		return controllerName;
-	}
-	
-	@Override
-	public EnumTeam getTeam() {
-		return team;
 	}
 
 	@Override
@@ -207,17 +193,15 @@ public class Tank implements IRobot {
 		}
 	}
 
-	public NXTInfo getNXTInfo() {
-		return nxtInfo;
-	}
-
 	@Override
-	public boolean connectToRobot() {
-		return mfTank.ConnectToNXT(nxtInfo);
-	}
-
-	public void register() {
-
+	public EnumConnectionState connectToRobot() {
+		Boolean isConnected = mfTank.ConnectToNXT(nxtInfo);
+		if (isConnected) {
+			this.connectionState = EnumConnectionState.CONNECTED;
+		} else {
+			this.connectionState = EnumConnectionState.CONNECTION_FAILED;
+		}
+		return this.connectionState;
 	}
 
 	@Override
@@ -229,6 +213,7 @@ public class Tank implements IRobot {
 		return string;
 	}
 
+	@Override
 	public String robotStatetoString() {
 		String string = "RobotState of " + getRoutingID()
 				+ "\n\t|___isActive   = " + getRobotState().getActive()
@@ -239,6 +224,7 @@ public class Tank implements IRobot {
 		return string;
 	}
 
+	@Override
 	public String controllerInputToString() {
 		String string;
 		if (null != currentControllerInput) {
@@ -258,6 +244,7 @@ public class Tank implements IRobot {
 		return string;
 	}
 
+	// TODO useless ?
 	public String controllerHelloToString() {
 		String string;
 		if (null != currentControllerHello) {
@@ -271,6 +258,7 @@ public class Tank implements IRobot {
 		return string;
 	}
 
+	@Override
 	public String serverGameRegisteredToString() {
 		String string;
 		if (null != serverGameRegistered) {
@@ -282,5 +270,20 @@ public class Tank implements IRobot {
 					+ "] NOT initialized!";
 		}
 		return string;
+	}
+
+	@Override
+	public EnumRegistrationState getRegistrationState() {
+		return registrationState;
+	}
+
+	@Override
+	public EnumConnectionState getConnectionState() {
+		return connectionState;
+	}
+
+	@Override
+	public EnumTeam getTeam() {
+		return team;
 	}
 }
