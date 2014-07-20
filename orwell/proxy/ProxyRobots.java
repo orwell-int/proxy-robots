@@ -21,9 +21,9 @@ public class ProxyRobots {
 	private ZMQ.Context context;
 	private ZMQ.Socket sender;
 	private ZMQ.Socket receiver;
-	private HashMap<String,Tank> tanksInitializedMap = new HashMap<String,Tank>();
-	private HashMap<String,Tank> tanksConnectedMap = new HashMap<String,Tank>();
-	private HashMap<String,Tank> tanksRegisteredMap = new HashMap<String,Tank>();
+	private HashMap<String,IRobot> tanksInitializedMap = new HashMap<String,IRobot>();
+	private HashMap<String,IRobot> tanksConnectedMap = new HashMap<String,IRobot>();
+	private HashMap<String,IRobot> tanksRegisteredMap = new HashMap<String,IRobot>();
 
 	public ProxyRobots(String ConfigFileAddress, String serverGame) {
 		Configuration configuration = new Configuration(ConfigFileAddress);
@@ -83,25 +83,29 @@ public class ProxyRobots {
 	 * @param map of tanks to setup
 	 */
 	public void initialiseTanks(HashMap<String, Tank> tanksToInitializeMap) {
-		this.tanksInitializedMap = tanksToInitializeMap;
+		for (java.util.Map.Entry<String, Tank> entry: tanksToInitializeMap.entrySet()) {
+			String routingID = entry.getKey();
+			Tank tank = entry.getValue();
+			this.tanksInitializedMap.put(routingID, tank);
+		}
 	}
 	
 	/*
 	 * @param HashMap of tanks to connect to the proxy
 	 */
-	public void connectToTanks(HashMap<String, Tank> tanksToConnectMap) {
-		for (java.util.Map.Entry<String, Tank> entry: tanksToConnectMap.entrySet()) {
+	public void connectToRobots(HashMap<String, IRobot> tanksToConnectMap) {
+		for (java.util.Map.Entry<String, IRobot> entry: tanksToConnectMap.entrySet()) {
 			String routingID = entry.getKey();
-			Tank tank = entry.getValue();
+			IRobot tank = entry.getValue();
 			System.out.println("Connecting to robot: \n" + tank.toString());
 			tank.connectToRobot();
 			
 			if(tank.getConnectionState() == EnumConnectionState.CONNECTION_FAILED) {
-				System.out.println("Tank [" + tank.getRoutingID() + "] failed to connect to the proxy!");
+				System.out.println("Robot [" + tank.getRoutingID() + "] failed to connect to the proxy!");
 			} else {
-				// We only register Tanks we manage to connect to the proxy
+				// We only register Robots we manage to connect to the proxy
 				this.sender.send(tank.getZMQRegister(), 0);
-				System.out.println("Tank [" + tank.getRoutingID() + "] is connected to the proxy!");
+				System.out.println("Robot [" + tank.getRoutingID() + "] is connected to the proxy!");
 				this.tanksConnectedMap.put(routingID, tank);
 			}
 		}
@@ -111,10 +115,10 @@ public class ProxyRobots {
 	 * @param HashMap of tanks to register on the server-game
 	 *        It is probably better to only register connected tanks
 	 */
-	public void registerTanks(HashMap<String, Tank> tanksToRegisterMap) {
-		for (Tank tank: tanksToRegisterMap.values()) {
+	public void registerRobots(HashMap<String, IRobot> tanksToRegisterMap) {
+		for (IRobot tank: tanksToRegisterMap.values()) {
 			this.sender.send(tank.getZMQRegister(), 0);
-			System.out.println("Tank [" + tank.getRoutingID() + "] is connected to the proxy!");
+			System.out.println("Robot [" + tank.getRoutingID() + "] is connected to the proxy!");
 		}
 	}
 	
@@ -136,24 +140,14 @@ public class ProxyRobots {
 			}
 			
 			switch (zmqMessage.type) {
-			case "Hello":
-				System.out.println("Setting controller Hello to tank");
-				if(this.tanksRegisteredMap.containsKey(zmqMessage.routingId)) {
-					Tank tankTargeted = this.tanksRegisteredMap.get(zmqMessage.routingId);
-					tankTargeted.setControllerHello(zmqMessage.message);
-					System.out.println(tankTargeted.controllerHelloToString());
-				} else {
-					System.out.println("RoutingID " + zmqMessage.routingId + " is not an ID of a tank to register"); 
-				}
-				break;
 			case "Registered":
 				System.out.println("Setting ServerGame Registered to tank");
 				if(this.tanksConnectedMap.containsKey(zmqMessage.routingId)) {
-					Tank registeredTank = this.tanksConnectedMap.get(zmqMessage.routingId);
-					this.tanksRegisteredMap.put(zmqMessage.routingId, registeredTank);
+					IRobot registeredRobot = this.tanksConnectedMap.get(zmqMessage.routingId);
+					this.tanksRegisteredMap.put(zmqMessage.routingId, registeredRobot);
 					this.tanksConnectedMap.remove(zmqMessage.routingId);
-					registeredTank.setRegistered(zmqMessage.message);
-					System.out.println(registeredTank.serverGameRegisteredToString());
+					registeredRobot.setRegistered(zmqMessage.message);
+					System.out.println(registeredRobot.serverGameRegisteredToString());
 				} else {
 					System.out.println("RoutingID " + zmqMessage.routingId + " is not an ID of a tank to register"); 
 				}
@@ -167,7 +161,7 @@ public class ProxyRobots {
 				}
 				previousInput = zmqMessage.zmqMessageString;
 				if(this.tanksRegisteredMap.containsKey(zmqMessage.routingId)) {
-					Tank tankTargeted = this.tanksRegisteredMap.get(zmqMessage.routingId);
+					IRobot tankTargeted = this.tanksRegisteredMap.get(zmqMessage.routingId);
 					tankTargeted.setControllerInput(zmqMessage.message);
 					System.out.println(tankTargeted.controllerInputToString());
 				} else {
@@ -195,8 +189,8 @@ public class ProxyRobots {
 		ProxyRobots proxyRobots = new ProxyRobots("orwell/proxy/config/configuration.xml", "irondamien");
 		proxyRobots.connectToServer();
 		proxyRobots.initialiseTanks();
-		proxyRobots.connectToTanks(proxyRobots.tanksInitializedMap);
-		proxyRobots.registerTanks(proxyRobots.tanksConnectedMap);
+		proxyRobots.connectToRobots(proxyRobots.tanksInitializedMap);
+		proxyRobots.registerRobots(proxyRobots.tanksConnectedMap);
 		proxyRobots.startCommunication();
 
 		// proxyRobots.sender.send(proxyRobots.tank.getZMQRobotState(), 0);

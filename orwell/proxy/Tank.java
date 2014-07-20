@@ -4,7 +4,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import orwell.common.UnitMessage;
 import orwell.common.UnitMessageType;
-import orwell.messages.Controller.Hello;
 import orwell.messages.Controller.Input;
 import orwell.messages.Robot;
 import orwell.messages.Robot.Register;
@@ -27,10 +26,7 @@ public class Tank implements IRobot {
 	private Robot.Register.Builder registerBuilder = Robot.Register
 			.newBuilder();
 	private Input currentControllerInput;
-	private Hello currentControllerHello;
 	private Registered serverGameRegistered;
-	private boolean isControllerReady;
-	private String controllerName;
 	private NXTInfo nxtInfo;
 	private MessageFramework mfTank = new MessageFramework();
 	private Camera camera;
@@ -179,20 +175,6 @@ public class Tank implements IRobot {
 		}
 	}
 
-	// TODO The following method is probably now obsolete
-	public void setControllerHello(byte[] helloMessage) {
-		try {
-			this.currentControllerHello = Hello
-					.parseFrom(helloMessage);
-			controllerName = currentControllerHello.getName();
-			isControllerReady = currentControllerHello.getReady();
-		} catch (InvalidProtocolBufferException e) {
-			// TODO Auto-generated catch block
-			System.out.println("setControllerHello protobuff exception");
-			e.printStackTrace();
-		}
-	}
-
 	@Override
 	public EnumConnectionState connectToRobot() {
 		Boolean isConnected = mfTank.ConnectToNXT(nxtInfo);
@@ -208,7 +190,7 @@ public class Tank implements IRobot {
 	public String toString() {
 		String string = "Tank {[BTName] " + getBluetoothName() + " [BTID] "
 				+ getBluetoothID() + " [RoutingID] " + getRoutingID() + "}"
-				+ "\n\t" + controllerHelloToString() + "\n\t"
+				+ "\n\t"
 				+ controllerInputToString() + "\n\t" + robotStatetoString();
 		return string;
 	}
@@ -239,20 +221,6 @@ public class Tank implements IRobot {
 					+ currentControllerInput.getFire().getWeapon2();
 		} else {
 			string = "Controller INPUT of Robot [" + getRoutingID()
-					+ "] NOT initialized!";
-		}
-		return string;
-	}
-
-	// TODO useless ?
-	public String controllerHelloToString() {
-		String string;
-		if (null != currentControllerHello) {
-			string = "Controller HELLO of Robot [" + getRoutingID() + "]:"
-					+ "\n\t|___Name: " + currentControllerHello.getName()
-					+ "\n\t|___isReady: " + currentControllerHello.getReady();
-		} else {
-			string = "Controller HELLO of Robot [" + getRoutingID()
 					+ "] NOT initialized!";
 		}
 		return string;
