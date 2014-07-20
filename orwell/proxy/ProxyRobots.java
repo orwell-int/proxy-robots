@@ -16,7 +16,6 @@ import orwell.proxy.config.ConfigModel;
 import orwell.proxy.config.Configuration;
 
 public class ProxyRobots {
-	private ConfigProxy configProxy;
 	private ConfigServerGame configServerGame;
 	private ConfigRobots configRobots;
 	private ZMQ.Context context;
@@ -34,7 +33,7 @@ public class ProxyRobots {
 			e1.toString();
 		}
 		ConfigModel configProxyModel = configuration.getConfigModel();
-		configProxy = configProxyModel.getConfigProxy();
+		ConfigProxy configProxy = configProxyModel.getConfigProxy();
 		configRobots = configuration.getConfigModel().getConfigRobots();
 		try {
 			configServerGame = configProxy.getConfigServerGame(serverGame);
@@ -59,9 +58,15 @@ public class ProxyRobots {
 		receiver.subscribe(new String("").getBytes());
 	}
 
+	/*
+	 * This instantiate Tanks objects
+	 * Then, it tries to connect to the tanks themselves using BT
+	 * and register each of them (connected) on the server-game
+	 */
 	public void initialiseTanks() {
-		boolean isConnected = false;
+		boolean isConnected;
 		for (ConfigTank configTank: configRobots.getConfigRobotsToRegister()) {
+			isConnected = false;
 			Camera camera = new Camera(configTank.getConfigCamera().getIp(),
 					configTank.getConfigCamera().getPort());
 			Tank tank = new Tank(configTank.getBluetoothName(),
@@ -70,12 +75,14 @@ public class ProxyRobots {
 			tank.setRoutingID(configTank.getTempRoutingID());
 			tanksToRegisterMap.put(tank.getRoutingID(),tank);
 			System.out.println("Connecting to robot: \n" + tank.toString());
-			isConnected = tank.connectToNXT();
-			this.sender.send(tank.getZMQRegister(), 0);
+			isConnected = tank.connectToRobot();
+
 			
 			if(!isConnected) {
 				System.out.println("Tank [" + tank.getRoutingID() + "] failed to connect to the proxy!");
 			} else {
+				// We only register Tanks we manage to connect to the proxy
+				this.sender.send(tank.getZMQRegister(), 0);
 				System.out.println("Tank [" + tank.getRoutingID() + "] is connected to the proxy!");
 			}
 		}

@@ -4,15 +4,18 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import orwell.common.UnitMessage;
 import orwell.common.UnitMessageType;
+import orwell.messages.Controller;
 import orwell.messages.Controller.Hello;
 import orwell.messages.Controller.Input;
 import orwell.messages.Robot;
+import orwell.messages.Robot.Register;
+import orwell.messages.Robot.RobotState;
 import orwell.messages.ServerGame.EnumTeam;
 import orwell.messages.ServerGame.Registered;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
 
-public class Tank {
+public class Tank implements IRobot {
 
 	private static final double STARTING_LIFE_POINTS = 100;
 	private String routingID;
@@ -32,13 +35,10 @@ public class Tank {
 	private NXTInfo nxtInfo;
 	private MessageFramework mfTank = new MessageFramework();
 	private Camera camera;
-	private EnumTeam team;
-	private enum EnumRegistrationState {
-		NOT_REGISTERED,
-		REGISTERED,
-		REGISTRATION_FAILED;
-	}
+
+
 	public EnumRegistrationState registrationState = EnumRegistrationState.NOT_REGISTERED;
+	private EnumTeam team;
 
 
 	public Tank(String bluetoothName, String bluetoothID, Camera camera) {
@@ -81,16 +81,16 @@ public class Tank {
 		moveBuilder.setLeft(moveRight);
 	}
 
-	public Robot.RobotState.Move getRobotStateMove() {
+	public RobotState.Move getRobotStateMove() {
 		return moveBuilder.build();
 	}
 
-	public Robot.RobotState getRobotState() {
+	private RobotState getRobotState() {
 		tankStateBuilder.setMove(getRobotStateMove());
 		return tankStateBuilder.build();
 	}
 
-	public Robot.Register getRegister() {
+	private Register getRegister() {
 		registerBuilder.setTemporaryRobotId(routingID);
 		registerBuilder.setVideoUrl(camera.getURL());
 		return registerBuilder.build();
@@ -154,7 +154,7 @@ public class Tank {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void setControllerInput(byte[] inputMessage) {
 		try {
 			this.currentControllerInput = Input
@@ -184,6 +184,7 @@ public class Tank {
 		}
 	}
 
+	// TODO The following method is probably now obsolete
 	public void setControllerHello(byte[] helloMessage) {
 		try {
 			this.currentControllerHello = Hello
@@ -201,7 +202,7 @@ public class Tank {
 		return nxtInfo;
 	}
 
-	public boolean connectToNXT() {
+	public boolean connectToRobot() {
 		return mfTank.ConnectToNXT(nxtInfo);
 	}
 
