@@ -49,6 +49,18 @@ public class ProxyRobots {
 		receiver.setLinger(configProxy.getReceiverLinger());
 	}
 
+	public HashMap<String, IRobot> getTanksInitializedMap() {
+		return tanksInitializedMap;
+	}
+
+	public HashMap<String, IRobot> getTanksConnectedMap() {
+		return tanksConnectedMap;
+	}
+
+	public HashMap<String, IRobot> getTanksRegisteredMap() {
+		return tanksRegisteredMap;
+	}
+	
 	public void connectToServer() {
 		sender.connect("tcp://" + configServerGame.getIp() + ":"
 				+ configServerGame.getPushPort());

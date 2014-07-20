@@ -4,8 +4,11 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.*;
 
 import java.util.HashMap;
+
+import junit.framework.Assert;
 
 import org.easymock.EasyMock;
 import org.easymock.EasyMockSupport;
@@ -34,31 +37,37 @@ import orwell.proxy.Tank;
 @RunWith(JUnit4.class)
 public class ProxyRobotsTest extends EasyMockSupport {
 	
-	private Camera camera = new Camera("", 0);
-	
 	@Mock
-//	private Tank mockedTank;
+	private Tank mockedTank;
 	
 	@TestSubject
-	private ProxyRobots proxyRobots = new ProxyRobots("orwell/proxy/test/configurationTest.xml", "localhost");
+	private ProxyRobots proxyRobots;
 	
 	@Before
 	public void setUp() {
-		System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOO");
-		//proxyRobots = new ProxyRobots("orwell/proxy/test/configurationTest.xml", "localhost");
+		proxyRobots = new ProxyRobots("orwell/proxy/test/configurationTest.xml", "localhost");
+		mockedTank = createNiceMock(Tank.class);
 	}
-	
-	
 	
 	@Test
 	public void testInitialiseTanks() {
-		Tank mockedTank = createMock(Tank.class);
-		expect(mockedTank.connectToRobot()).andStubReturn(EnumConnectionState.CONNECTED);
-		replay(mockedTank);
 		proxyRobots.connectToServer();
 		HashMap<String,Tank> tanksInitializedMap = new HashMap<String,Tank>();
 		tanksInitializedMap.put("NicolasCage", mockedTank);
 		proxyRobots.initialiseTanks(tanksInitializedMap);
+		
+		assertEquals(1, proxyRobots.getTanksInitializedMap().size());
+		assertEquals(mockedTank, proxyRobots.getTanksInitializedMap().get("NicolasCage"));
+	}
+	
+	@Test
+	public void testConnectToRobots() {
+		expect(mockedTank.connectToRobot()).andStubReturn(EnumConnectionState.CONNECTED);
+		replay(mockedTank);
+		
+		proxyRobots.connectToRobots(proxyRobots.getTanksInitializedMap());
+		
+		//assertEquals(1, proxyRobots.getTanksConnectedMap().size());
 	}
 	
 //	@Test
