@@ -26,7 +26,7 @@ import orwell.proxy.config.Configuration;
 @RunWith(JUnit4.class)
 public class ConfigurationTest {
 
-	String CONFIGURATION_FILE_TEST = "orwell/proxy/test/configurationTest.xml";
+	private static final String CONFIGURATION_FILE_TEST = "orwell/proxy/test/configurationTest.xml";
 
 	private Configuration buildConfigTest() {
 		Configuration configTest = new Configuration(CONFIGURATION_FILE_TEST);
@@ -41,13 +41,13 @@ public class ConfigurationTest {
 	}
 
 	@Test
-	public void populateConfigModel() {
+	public void testPopulateConfigModel() {
 
 		assertTrue(buildConfigTest().isPopulated);
 	}
 
 	@Test
-	public void checkProxyList() {
+	public void testProxyList() {
 
 		ConfigProxy configProxy = buildConfigTest().getConfigModel()
 				.getConfigProxy();
@@ -64,7 +64,7 @@ public class ConfigurationTest {
 	}
 
 	@Test
-	public void checkServerGameElement() {
+	public void testServerGameElement() {
 
 		ConfigServerGame configServerGame;
 		try {
@@ -79,7 +79,7 @@ public class ConfigurationTest {
 	}
 
 	@Test
-	public void checkCommonElements() {
+	public void testCommonElements() {
 
 		ConfigProxy configProxy = buildConfigTest().getConfigModel()
 				.getConfigProxy();
@@ -89,7 +89,7 @@ public class ConfigurationTest {
 	}
 
 	@Test
-	public void checkRobotsList() {
+	public void testRobotsList() {
 
 		ConfigRobots configRobots = buildConfigTest().getConfigModel()
 				.getConfigRobots();
@@ -103,7 +103,7 @@ public class ConfigurationTest {
 	}
 
 	@Test
-	public void checkTankElement() {
+	public void testTankElement() {
 
 		ConfigTank configTank;
 		try {
@@ -118,9 +118,9 @@ public class ConfigurationTest {
 			fail(e.toString());
 		}
 	}
-	
+
 	@Test
-	public void checkRobotsToRegister() {
+	public void testRobotsToRegister() {
 
 		ConfigRobots configRobots = buildConfigTest().getConfigModel()
 				.getConfigRobots();

@@ -123,7 +123,6 @@ public class ProxyRobots {
 	}
 	
 	public void startCommunication() {
-
 		String zmq_previousMessage = new String();
 		String previousInput = new String();
 		ZmqMessageWrapper zmqMessage;
