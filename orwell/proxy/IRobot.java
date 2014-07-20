@@ -1,8 +1,6 @@
 package orwell.proxy;
 
 import orwell.messages.Controller.Input;
-import orwell.messages.Robot.Register;
-import orwell.messages.Robot.RobotState;
 import orwell.messages.ServerGame.EnumTeam;
 
 public interface IRobot {

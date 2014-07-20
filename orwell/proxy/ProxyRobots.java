@@ -1,7 +1,6 @@
 package orwell.proxy;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.xml.bind.JAXBException;

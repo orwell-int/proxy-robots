@@ -4,7 +4,6 @@ import com.google.protobuf.InvalidProtocolBufferException;
 
 import orwell.common.UnitMessage;
 import orwell.common.UnitMessageType;
-import orwell.messages.Controller;
 import orwell.messages.Controller.Hello;
 import orwell.messages.Controller.Input;
 import orwell.messages.Robot;
@@ -57,6 +56,7 @@ public class Tank implements IRobot {
 		this.bluetoothName = bluetoothName;
 	}
 
+	@Override
 	public void setRoutingID(String routingID) {
 		this.routingID = routingID;
 	}
@@ -65,10 +65,12 @@ public class Tank implements IRobot {
 		this.bluetoothID = bluetoothID;
 	}
 
+	@Override
 	public void setActive(boolean isActive) {
 		tankStateBuilder.setActive(isActive);
 	}
 
+	@Override
 	public void setLifePoints(double lifePoints) {
 		tankStateBuilder.setLife(lifePoints);
 	}
@@ -96,6 +98,7 @@ public class Tank implements IRobot {
 		return registerBuilder.build();
 	}
 
+	@Override
 	public Input getControllerInput() {
 		return currentControllerInput;
 	}
@@ -108,6 +111,7 @@ public class Tank implements IRobot {
 		return bluetoothID;
 	}
 
+	@Override
 	public String getRoutingID() {
 		return routingID;
 	}
@@ -120,22 +124,26 @@ public class Tank implements IRobot {
 		return controllerName;
 	}
 	
+	@Override
 	public EnumTeam getTeam() {
 		return team;
 	}
 
+	@Override
 	public byte[] getZMQRobotState() {
 		String zMQmessageHeader = getRoutingID() + " " + "RobotState" + " ";
 		return orwell.proxy.Utils.Concatenate(zMQmessageHeader.getBytes(),
 				getRobotState().toByteArray());
 	}
 
+	@Override
 	public byte[] getZMQRegister() {
 		String zMQmessageHeader = getRoutingID() + " " + "Register" + " ";
 		return orwell.proxy.Utils.Concatenate(zMQmessageHeader.getBytes(),
 				getRegister().toByteArray());
 	}
 
+	@Override
 	public void setRegistered(byte[] registeredMessage) {
 		try {
 			this.serverGameRegistered = Registered
@@ -155,6 +163,7 @@ public class Tank implements IRobot {
 		}
 	}
 
+	@Override
 	public void setControllerInput(byte[] inputMessage) {
 		try {
 			this.currentControllerInput = Input
@@ -202,6 +211,7 @@ public class Tank implements IRobot {
 		return nxtInfo;
 	}
 
+	@Override
 	public boolean connectToRobot() {
 		return mfTank.ConnectToNXT(nxtInfo);
 	}
@@ -210,6 +220,7 @@ public class Tank implements IRobot {
 
 	}
 
+	@Override
 	public String toString() {
 		String string = "Tank {[BTName] " + getBluetoothName() + " [BTID] "
 				+ getBluetoothID() + " [RoutingID] " + getRoutingID() + "}"

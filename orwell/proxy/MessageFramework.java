@@ -90,6 +90,7 @@ public class MessageFramework {
 	}
 
 	private class Reader extends Thread {
+		@Override
 		public void run() {
 			// while (true)
 			// {
