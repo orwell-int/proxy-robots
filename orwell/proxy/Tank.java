@@ -28,14 +28,14 @@ public class Tank implements IRobot {
 	private Input currentControllerInput;
 	private Registered serverGameRegistered;
 	private NXTInfo nxtInfo;
-	private MessageFramework mfTank = new MessageFramework();
+	private MessageFramework mfTank;
 	private Camera camera;
 
 	private EnumRegistrationState registrationState = EnumRegistrationState.NOT_REGISTERED;
 	private EnumConnectionState connectionState = EnumConnectionState.NOT_CONNECTED;
 	private EnumTeam team;
 
-	public Tank(String bluetoothName, String bluetoothID, Camera camera) {
+	public Tank(String bluetoothName, String bluetoothID, Camera camera, MessageFramework mf) {
 		setBluetoothName(bluetoothName);
 		setBluetoothID(bluetoothID);
 		this.camera = camera;
@@ -45,6 +45,11 @@ public class Tank implements IRobot {
 		setMoveRight(0);
 		nxtInfo = new NXTInfo(NXTCommFactory.BLUETOOTH, bluetoothName,
 				bluetoothID);
+		mfTank = mf;
+	}
+	
+	public Tank(String bluetoothName, String bluetoothID, Camera camera) {
+		this(bluetoothName, bluetoothID, camera, new MessageFramework());
 	}
 
 	private void setBluetoothName(String bluetoothName) {

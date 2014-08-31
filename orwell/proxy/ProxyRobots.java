@@ -98,6 +98,7 @@ public class ProxyRobots {
 		for (java.util.Map.Entry<String, Tank> entry: tanksToInitializeMap.entrySet()) {
 			String routingID = entry.getKey();
 			Tank tank = entry.getValue();
+			tank.setRoutingID(routingID);
 			this.tanksInitializedMap.put(routingID, tank);
 		}
 	}
