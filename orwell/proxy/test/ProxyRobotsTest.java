@@ -3,6 +3,8 @@ package orwell.proxy.test;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
@@ -36,6 +38,9 @@ public class ProxyRobotsTest extends EasyMockSupport {
 	private Tank mockedTank;
 	private MessageFramework mockedMf;
 	private Camera mockedCamera;
+	private ZMQ.Socket mockedZmqSocketSend;
+	private ZMQ.Socket mockedZmqSocketRecv;
+	private ZMQ.Context mockedZmqContext;
 
 	@TestSubject
 	private ProxyRobots proxyRobots;
@@ -56,9 +61,9 @@ public class ProxyRobotsTest extends EasyMockSupport {
 		expect(mockedCamera.getURL()).andStubReturn("http://NICOLAS.CAGE");
 		replay(mockedCamera);
 		
-		ZMQ.Socket mockedZmqSocketSend = createNiceMock(ZMQ.Socket.class);
-		ZMQ.Socket mockedZmqSocketRecv = createNiceMock(ZMQ.Socket.class);
-		ZMQ.Context mockedZmqContext = createNiceMock(ZMQ.Context.class);
+		mockedZmqSocketSend = createNiceMock(ZMQ.Socket.class);
+		mockedZmqSocketRecv = createNiceMock(ZMQ.Socket.class);
+		mockedZmqContext = createNiceMock(ZMQ.Context.class);
 		expect(mockedZmqContext.socket(ZMQ.PUSH)).andStubReturn(mockedZmqSocketSend);
 		expect(mockedZmqContext.socket(ZMQ.SUB)).andStubReturn(mockedZmqSocketRecv);
 		replay(mockedZmqContext);
@@ -95,10 +100,21 @@ public class ProxyRobotsTest extends EasyMockSupport {
 
 	@Test
 	public void testRegister() {
-		createAndInitializeTank();
+		Tank myTank = createAndInitializeTank();
+		
+		// TODO debug this part
+//		mockedZmqSocketSend.send(myTank.getZMQRegister(), 0);
+//		expectLastCall().times(1);
+		replay(mockedZmqSocketSend);
+		replay(mockedZmqSocketRecv);
+		
+//		proxyRobots = new ProxyRobots(
+//				"orwell/proxy/test/configurationTest.xml", "localhost", mockedZmqContext);
+
 		proxyRobots.connectToRobots();
 		proxyRobots.registerRobots();
 		
+		verify(mockedZmqSocketSend);
 	}
 
 }

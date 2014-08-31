@@ -27,7 +27,7 @@ public class ProxyRobots {
 	private HashMap<String,IRobot> tanksConnectedMap = new HashMap<String,IRobot>();
 	private HashMap<String,IRobot> tanksRegisteredMap = new HashMap<String,IRobot>();
 
-	public ProxyRobots(String ConfigFileAddress, String serverGame) {
+	public ProxyRobots(String ConfigFileAddress, String serverGame, ZMQ.Context zmqContext) {
 		Configuration configuration = new Configuration(ConfigFileAddress);
 		try {
 			// TODO Include populate into default constructor
@@ -44,11 +44,15 @@ public class ProxyRobots {
 			e.printStackTrace();
 		}
 
-		context = ZMQ.context(1);
+		context = zmqContext;
 		sender = context.socket(ZMQ.PUSH);
 		receiver = context.socket(ZMQ.SUB);
 		sender.setLinger(configProxy.getSenderLinger());
 		receiver.setLinger(configProxy.getReceiverLinger());
+	}
+	
+	public ProxyRobots(String ConfigFileAddress, String serverGame){
+		this(ConfigFileAddress, serverGame, ZMQ.context(1));
 	}
 
 	public HashMap<String, IRobot> getTanksInitializedMap() {
