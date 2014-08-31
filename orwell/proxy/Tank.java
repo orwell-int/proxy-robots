@@ -35,7 +35,8 @@ public class Tank implements IRobot {
 	private EnumConnectionState connectionState = EnumConnectionState.NOT_CONNECTED;
 	private EnumTeam team;
 
-	public Tank(String bluetoothName, String bluetoothID, Camera camera, MessageFramework mf) {
+	public Tank(String bluetoothName, String bluetoothID, Camera camera,
+			MessageFramework mf) {
 		setBluetoothName(bluetoothName);
 		setBluetoothID(bluetoothID);
 		this.camera = camera;
@@ -47,7 +48,7 @@ public class Tank implements IRobot {
 				bluetoothID);
 		mfTank = mf;
 	}
-	
+
 	public Tank(String bluetoothName, String bluetoothID, Camera camera) {
 		this(bluetoothName, bluetoothID, camera, new MessageFramework());
 	}
@@ -133,13 +134,11 @@ public class Tank implements IRobot {
 	@Override
 	public void setRegistered(byte[] registeredMessage) {
 		try {
-			this.serverGameRegistered = Registered
-					.parseFrom(registeredMessage);
+			this.serverGameRegistered = Registered.parseFrom(registeredMessage);
 			routingID = serverGameRegistered.getRobotId();
 			if (routingID.isEmpty())
 				registrationState = EnumRegistrationState.REGISTRATION_FAILED;
-			else
-			{
+			else {
 				registrationState = EnumRegistrationState.REGISTERED;
 				team = serverGameRegistered.getTeam();
 			}
@@ -153,8 +152,7 @@ public class Tank implements IRobot {
 	@Override
 	public void setControllerInput(byte[] inputMessage) {
 		try {
-			this.currentControllerInput = Input
-					.parseFrom(inputMessage);
+			this.currentControllerInput = Input.parseFrom(inputMessage);
 			if (currentControllerInput.hasMove()) {
 				String payloadMove = "input move ";
 				payloadMove += currentControllerInput.getMove().getLeft() + " "
@@ -195,8 +193,8 @@ public class Tank implements IRobot {
 	public String toString() {
 		String string = "Tank {[BTName] " + getBluetoothName() + " [BTID] "
 				+ getBluetoothID() + " [RoutingID] " + getRoutingID() + "}"
-				+ "\n\t"
-				+ controllerInputToString() + "\n\t" + robotStatetoString();
+				+ "\n\t" + controllerInputToString() + "\n\t"
+				+ robotStatetoString();
 		return string;
 	}
 
@@ -236,8 +234,9 @@ public class Tank implements IRobot {
 		String string;
 		if (null != serverGameRegistered) {
 			string = "ServerGame REGISTERED of Robot [" + getRoutingID() + "]:"
-					+ "\n\t|___final RoutingID: " + serverGameRegistered.getRobotId()
-					+ "\n\t|___team: " + serverGameRegistered.getTeam();
+					+ "\n\t|___final RoutingID: "
+					+ serverGameRegistered.getRobotId() + "\n\t|___team: "
+					+ serverGameRegistered.getTeam();
 		} else {
 			string = "ServerGame REGISTERED of Robot [" + getRoutingID()
 					+ "] NOT initialized!";
