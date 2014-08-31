@@ -2,6 +2,8 @@ package orwell.proxy;
 
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 
@@ -95,7 +97,7 @@ public class ProxyRobots {
 	 * @param map of tanks to setup
 	 */
 	public void initialiseTanks(HashMap<String, Tank> tanksToInitializeMap) {
-		for (java.util.Map.Entry<String, Tank> entry: tanksToInitializeMap.entrySet()) {
+		for (Map.Entry<String, Tank> entry: tanksToInitializeMap.entrySet()) {
 			String routingID = entry.getKey();
 			Tank tank = entry.getValue();
 			tank.setRoutingID(routingID);
@@ -103,11 +105,10 @@ public class ProxyRobots {
 		}
 	}
 	
-	/*
-	 * @param HashMap of tanks to connect to the proxy
-	 */
-	public void connectToRobots(HashMap<String, IRobot> tanksToConnectMap) {
-		for (java.util.Map.Entry<String, IRobot> entry: tanksToConnectMap.entrySet()) {
+	public void connectToRobots() {
+		Iterator<Map.Entry<String, IRobot>> iterator = tanksInitializedMap.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Map.Entry<String, IRobot> entry = iterator.next();
 			String routingID = entry.getKey();
 			IRobot tank = entry.getValue();
 			System.out.println("Connecting to robot: \n" + tank.toString());
@@ -116,22 +117,17 @@ public class ProxyRobots {
 			if(tank.getConnectionState() == EnumConnectionState.CONNECTION_FAILED) {
 				System.out.println("Robot [" + tank.getRoutingID() + "] failed to connect to the proxy!");
 			} else {
-				// We only register Robots we manage to connect to the proxy
-				this.sender.send(tank.getZMQRegister(), 0);
 				System.out.println("Robot [" + tank.getRoutingID() + "] is connected to the proxy!");
 				this.tanksConnectedMap.put(routingID, tank);
+				iterator.remove();
 			}
 		}
 	}
 	
-	/*
-	 * @param HashMap of tanks to register on the server-game
-	 *        It is probably better to only register connected tanks
-	 */
-	public void registerRobots(HashMap<String, IRobot> tanksToRegisterMap) {
-		for (IRobot tank: tanksToRegisterMap.values()) {
+	public void registerRobots() {
+		for (IRobot tank: tanksConnectedMap.values()) {
 			this.sender.send(tank.getZMQRegister(), 0);
-			System.out.println("Robot [" + tank.getRoutingID() + "] is connected to the proxy!");
+			System.out.println("Robot [" + tank.getRoutingID() + "] is trying to register itself to the server!");
 		}
 	}
 	
@@ -201,8 +197,8 @@ public class ProxyRobots {
 		ProxyRobots proxyRobots = new ProxyRobots("orwell/proxy/config/configuration.xml", "irondamien");
 		proxyRobots.connectToServer();
 		proxyRobots.initialiseTanks();
-		proxyRobots.connectToRobots(proxyRobots.tanksInitializedMap);
-		proxyRobots.registerRobots(proxyRobots.tanksConnectedMap);
+		proxyRobots.connectToRobots();
+		proxyRobots.registerRobots();
 		proxyRobots.startCommunication();
 
 		// proxyRobots.sender.send(proxyRobots.tank.getZMQRobotState(), 0);

@@ -3,7 +3,6 @@ package orwell.proxy.test;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.anyObject;
-
 import static org.junit.Assert.*;
 
 import java.util.HashMap;
@@ -17,6 +16,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.zeromq.ZMQ;
+
 import orwell.proxy.Camera;
 import orwell.proxy.MessageFramework;
 import orwell.proxy.ProxyRobots;
@@ -54,40 +55,50 @@ public class ProxyRobotsTest extends EasyMockSupport {
 		mockedCamera = createNiceMock(Camera.class);
 		expect(mockedCamera.getURL()).andStubReturn("http://NICOLAS.CAGE");
 		replay(mockedCamera);
+		
+		ZMQ.Socket mockedZmqSocketSend = createNiceMock(ZMQ.Socket.class);
+		ZMQ.Socket mockedZmqSocketRecv = createNiceMock(ZMQ.Socket.class);
+		ZMQ.Context mockedZmqContext = createNiceMock(ZMQ.Context.class);
+		expect(mockedZmqContext.socket(ZMQ.PUSH)).andStubReturn(mockedZmqSocketSend);
+		expect(mockedZmqContext.socket(ZMQ.SUB)).andStubReturn(mockedZmqSocketRecv);
+		replay(mockedZmqContext);
 	}
 
-	@Test
-	public void testInitialiseTanks() {
-		proxyRobots.connectToServer();
-		HashMap<String, Tank> tanksInitializedMap = new HashMap<String, Tank>();
-		tanksInitializedMap.put("NicolasCage", mockedTank);
-		proxyRobots.initialiseTanks(tanksInitializedMap);
-
-		assertEquals(1, proxyRobots.getTanksInitializedMap().size());
-		assertEquals(mockedTank,
-				proxyRobots.getTanksInitializedMap().get("NicolasCage"));
-	}
-
-	@Test
-	public void testConnectToRobots() {
+	public Tank createAndInitializeTank()
+	{
 		proxyRobots.connectToServer();
 		Tank myTank = new Tank("Btname", "BtId", mockedCamera, mockedMf);
 
 		HashMap<String, Tank> tanksInitializedMap = new HashMap<String, Tank>();
 		tanksInitializedMap.put("NicolasCage", myTank);
 		proxyRobots.initialiseTanks(tanksInitializedMap);
+		
+		return myTank;
+	}
+	
+	@Test
+	public void testInitialiseTanks() {
+		Tank myTank = createAndInitializeTank();
+		
+		assertEquals(1, proxyRobots.getTanksInitializedMap().size());
+		assertEquals(myTank,
+				proxyRobots.getTanksInitializedMap().get("NicolasCage"));
+	}
 
-		proxyRobots.connectToRobots(proxyRobots.getTanksInitializedMap());
+	@Test
+	public void testConnectToRobots() {
+		createAndInitializeTank();
+		proxyRobots.connectToRobots();
 
 		assertEquals(1, proxyRobots.getTanksConnectedMap().size());
 	}
 
-	// @Test
-	// public void testRegister() {
-	// ZMQ.Socket mockedZmqSocket = createMock(ZMQ.Socket.class);
-	//
-	// //TODO
-	// expect(mockedZmqSocket.recv()).andReturn(null);
-	// }
+	@Test
+	public void testRegister() {
+		createAndInitializeTank();
+		proxyRobots.connectToRobots();
+		proxyRobots.registerRobots();
+		
+	}
 
 }
