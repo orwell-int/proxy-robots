@@ -1,5 +1,7 @@
 package orwell.proxy;
 
+import java.util.UUID;
+
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import orwell.common.UnitMessage;
@@ -16,7 +18,7 @@ import lejos.pc.comm.NXTInfo;
 public class Tank implements IRobot {
 
 	private static final double STARTING_LIFE_POINTS = 100;
-	private String routingID;
+	private String routingID = UUID.randomUUID().toString();
 	private String bluetoothName;
 	private String bluetoothID;
 	private Robot.RobotState.Builder tankStateBuilder = Robot.RobotState
@@ -94,6 +96,7 @@ public class Tank implements IRobot {
 	}
 
 	private Register getRegister() {
+		System.out.println("=======TEST getRegister: " + routingID + " " + camera.getURL());
 		registerBuilder.setTemporaryRobotId(routingID);
 		registerBuilder.setVideoUrl(camera.getURL());
 		return registerBuilder.build();
@@ -127,6 +130,7 @@ public class Tank implements IRobot {
 	@Override
 	public byte[] getZMQRegister() {
 		String zMQmessageHeader = getRoutingID() + " " + "Register" + " ";
+		System.out.println("getZMQRegisterHeader: " + zMQmessageHeader);
 		return orwell.proxy.Utils.Concatenate(zMQmessageHeader.getBytes(),
 				getRegister().toByteArray());
 	}

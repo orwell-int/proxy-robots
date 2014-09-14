@@ -137,6 +137,7 @@ public class ProxyRobots {
 	public void registerRobots() {
 		for (IRobot tank : tanksConnectedMap.values()) {
 			this.sender.send(tank.getZMQRegister(), 0);
+			System.out.println("TEST RegisterHeader: " + tank.getZMQRegister().toString());
 			System.out.println("Robot [" + tank.getRoutingID()
 					+ "] is trying to register itself to the server!");
 		}

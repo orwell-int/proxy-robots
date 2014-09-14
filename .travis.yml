@@ -11,6 +11,8 @@ before_install:
     - wget -nc --no-check-certificate http://search.maven.org/remotecontent?filepath=cglib/cglib/3.1/cglib-3.1.jar -O cglib-3.1.jar
     - wget -nc --no-check-certificate http://search.maven.org/remotecontent?filepath=org/objenesis/objenesis/2.1/objenesis-2.1.jar -O objenesis-2.1.jar
     - wget -nc --no-check-certificate http://search.maven.org/remotecontent\?filepath\=org/ow2/asm/asm/5.0.3/asm-5.0.3-sources.jar -O asm-5.0.3-sources.jar
+    - wget -nc --no-check-certificate http://central.maven.org/maven2/org/javassist/javassist/3.18.2-GA/javassist-3.18.2-GA.jar -O javassist-3.18.2-GA.jar
+    - wget -nc --no-check-certificate http://dl.bintray.com/johanhaleby/generic/powermock-easymock-1.5.6-full.jar -O powermock-easymock-1.5.6-full.jar
     - git clone https://github.com/zeromq/jeromq
     - wget -nc --no-check-certificate http://sourceforge.net/projects/lejos/files/lejos-NXJ/0.9.1beta/leJOS_NXJ_0.9.1beta-3.tar.gz/download -O ./leJOS_NXJ_0.9.1beta-3.tar.gz
     - tar -xvf leJOS_NXJ_0.9.1beta-3.tar.gz
@@ -24,7 +26,7 @@ install:
     - cd ..
 
 env:
-    - JUNIT_DIR=. NXJ_HOME=leJOS_NXJ_0.9.1beta-3 HAMCREST_DIR=. JEROMQ_DIR=./jeromq PROTOBUF_DIR=. EASYMOCK_DIR=. ASM_DIR=.
+    - JUNIT_DIR=. NXJ_HOME=leJOS_NXJ_0.9.1beta-3 HAMCREST_DIR=. JEROMQ_DIR=./jeromq PROTOBUF_DIR=. EASYMOCK_DIR=. ASM_DIR=. POWERMOCK_DIR=. JAVASSIST_DIR=.
 
 script:
     - ant -version
