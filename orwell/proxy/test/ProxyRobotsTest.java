@@ -18,6 +18,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.junit.runner.RunWith;
 import org.zeromq.ZMQ;
 
@@ -35,6 +37,7 @@ import orwell.proxy.Tank;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( { ZMQ.Socket.class })
 public class ProxyRobotsTest {
+	final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class); 
 	
 	@TestSubject
 	private ProxyRobots proxyRobots;
@@ -48,8 +51,7 @@ public class ProxyRobotsTest {
 	private Tank myTank;
 
 	@Before
-	public void setUp() {
-		
+	public void setUp() {		
 		mockedMf = createNiceMock(MessageFramework.class);
 		expect(mockedMf.ConnectToNXT(anyObject(NXTInfo.class))).andStubReturn(
 				true);
@@ -70,8 +72,8 @@ public class ProxyRobotsTest {
 		mockedZmqSocketSend.setLinger(1000);
 		expectLastCall().times(1);
 		
-		System.out.println("TEST getZMQRegisterHeader: " + myTank.getZMQRegister().toString());
-//		expect(mockedZmqSocketSend.send(myTank.getZMQRegister(), 0)).andReturn(true);
+		System.out.println("*******TEST getZMQRegisterHeader: " + myTank.getZMQRegister().toString());
+		expect(mockedZmqSocketSend.send(myTank.getZMQRegister(), 0)).andReturn(true);
 //		expectLastCall().times(1);
 		replay(mockedZmqSocketSend);
 		replay(mockedZmqSocketRecv);
@@ -113,7 +115,7 @@ public class ProxyRobotsTest {
 
 	@Test
 	public void testRegister() {
-
+		logback.info("testRegister() -- IN");
 
 		createAndInitializeTank(proxyRobots);
 
@@ -121,6 +123,7 @@ public class ProxyRobotsTest {
 		proxyRobots.registerRobots();
 		//TODO Do an actual test
 //		verify(mockedZmqSocketSend);
+		logback.info("testRegister() -- OUT");
 	}
 	
 	public void tearDown(){

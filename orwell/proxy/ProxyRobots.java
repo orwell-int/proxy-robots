@@ -17,7 +17,15 @@ import orwell.proxy.config.ConfigTank;
 import orwell.proxy.config.ConfigModel;
 import orwell.proxy.config.Configuration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.core.util.StatusPrinter;
+
 public class ProxyRobots {
+	final static Logger logback = LoggerFactory.getLogger(ProxyRobots.class); 
+
 	private ConfigServerGame configServerGame;
 	private ConfigRobots configRobots;
 	private ZMQ.Context context;
@@ -29,6 +37,11 @@ public class ProxyRobots {
 
 	public ProxyRobots(String ConfigFileAddress, String serverGame,
 			ZMQ.Context zmqContext) {
+		// print internal state
+		// TODO fix ant so it finds the logback.xml file
+	    LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+	    StatusPrinter.print(lc);
+		
 		Configuration configuration = new Configuration(ConfigFileAddress);
 		try {
 			// TODO Include populate into default constructor

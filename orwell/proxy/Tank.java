@@ -99,7 +99,10 @@ public class Tank implements IRobot {
 		System.out.println("=======TEST getRegister: " + routingID + " " + camera.getURL());
 		registerBuilder.setTemporaryRobotId(routingID);
 		registerBuilder.setVideoUrl(camera.getURL());
-		return registerBuilder.build();
+		//TODO simplify return
+		Register build = registerBuilder.build();
+		System.out.println("BUILD " + build.toString());
+		return build;
 	}
 
 	@Override

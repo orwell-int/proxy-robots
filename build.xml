@@ -53,6 +53,9 @@
 		<pathelement location="${asm.dir}/asm-5.0.3.jar" />
 		<pathelement location="${powermock.dir}/powermock-easymock-1.5.6-full.jar" />
 		<pathelement location="${javassist.dir}/javassist-3.18.2-GA.jar" />
+		<pathelement location="${logback.dir}/logback-classic-1.1.2.jar" />
+		<pathelement location="${logback.dir}/logback-core-1.1.2.jar" />
+		<pathelement location="${slf4j.dir}/slf4j-api-1.7.7.jar" />
 	</path>
 
 	<target name="compile_robots" description="compile the sources to upload on the robots">
@@ -79,6 +82,7 @@
 
 	<target name="compile_proxy" depends="generate_messages_classes" description="compile the sources that stay on the computer">
 		<!-- Compile the java code from ${source.dir} to ${classes.dir}  -->
+		<copy file="logback.xml" todir="./build"/>
 		<mkdir dir="${classes.dir}" />
 		<javac srcdir="${source.proxy.dir}:${source.common.dir}:${source.messages.dir}" includes="${source.include}" excludes="${source.exclude}" encoding="${source.encoding}" source="${source.version}" target="${target.version}" destdir="${classes.dir}" debug="true" includeAntRuntime="false" includeJavaRuntime="false" verbose="false">
 			<classpath refid="proxy.classpath" />
