@@ -2,6 +2,9 @@ package orwell.proxy;
 
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import orwell.common.UnitMessage;
@@ -12,10 +15,12 @@ import orwell.messages.Robot.Register;
 import orwell.messages.Robot.RobotState;
 import orwell.messages.ServerGame.EnumTeam;
 import orwell.messages.ServerGame.Registered;
+import orwell.proxy.test.ProxyRobotsTest;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
 
 public class Tank implements IRobot {
+	final static Logger logback = LoggerFactory.getLogger(Tank.class); 
 
 	private static final double STARTING_LIFE_POINTS = 100;
 	private String routingID = UUID.randomUUID().toString();
@@ -96,12 +101,12 @@ public class Tank implements IRobot {
 	}
 
 	private Register getRegister() {
-		System.out.println("=======TEST getRegister: " + routingID + " " + camera.getURL());
+		logback.info("=======TEST getRegister: " + routingID + " " + camera.getURL());
 		registerBuilder.setTemporaryRobotId(routingID);
 		registerBuilder.setVideoUrl(camera.getURL());
 		//TODO simplify return
 		Register build = registerBuilder.build();
-		System.out.println("BUILD " + build.toString());
+		logback.info("BUILD " + build.toString());
 		return build;
 	}
 
@@ -133,7 +138,7 @@ public class Tank implements IRobot {
 	@Override
 	public byte[] getZMQRegister() {
 		String zMQmessageHeader = getRoutingID() + " " + "Register" + " ";
-		System.out.println("getZMQRegisterHeader: " + zMQmessageHeader);
+		logback.info("getZMQRegisterHeader: " + zMQmessageHeader);
 		return orwell.proxy.Utils.Concatenate(zMQmessageHeader.getBytes(),
 				getRegister().toByteArray());
 	}
@@ -151,7 +156,7 @@ public class Tank implements IRobot {
 			}
 		} catch (InvalidProtocolBufferException e) {
 			// TODO Auto-generated catch block
-			System.out.println("setRegistered protobuff exception");
+			logback.info("setRegistered protobuff exception");
 			e.printStackTrace();
 		}
 	}
@@ -180,7 +185,7 @@ public class Tank implements IRobot {
 			}
 		} catch (InvalidProtocolBufferException e) {
 			// TODO Auto-generated catch block
-			System.out.println("setControllerInput protobuff exception");
+			logback.info("setControllerInput protobuff exception");
 			e.printStackTrace();
 		}
 	}

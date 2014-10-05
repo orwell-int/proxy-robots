@@ -1,5 +1,7 @@
 package orwell.proxy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -8,6 +10,8 @@ import orwell.messages.Controller;
 import orwell.messages.Controller.Input;
 
 public class FakeServer {
+	final static Logger logback = LoggerFactory.getLogger(FakeServer.class); 
+	
 	public FakeServer() {
 	}
 
@@ -44,24 +48,24 @@ public class FakeServer {
 		receiver.setLinger(1000);
 		sender.setLinger(1000);
 		receiver.bind("tcp://localhost:9000");
-		System.out.println("Server Receiver created");
+		logback.info("Server Receiver created");
 		sender.bind("tcp://*:9001");
-		System.out.println("Server Sender created");
+		logback.info("Server Sender created");
 
 		// Process tasks forever
 		while (!Thread.currentThread().isInterrupted()) {
 			String zmq_message = receiver.recvStr();
 			System.out.flush();
-			System.out.println("Message received: '" + zmq_message + "'");
+			logback.info("Message received: '" + zmq_message + "'");
 
 			if (0 == zmq_message.compareTo("Banana")) {
 				Controller.Input input = buildTestInput();
-				System.out.println("Building input for test");
+				logback.info("Building input for test");
 
 				byte[] zmq_input = getZMQmessage("BananaOne", input);
 				String str = new String(zmq_input, 0, zmq_input.length);
-				System.out.println("Message is:" + str);
-				// System.out.println("raw length: " + str.getBytes().length);
+				logback.info("Message is:" + str);
+				// logback.info("raw length: " + str.getBytes().length);
 				sender.send(zmq_input);
 				try {
 					System.out.println(Controller.Input.parseFrom(
@@ -70,7 +74,7 @@ public class FakeServer {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				System.out.println("Message sent");
+				logback.info("Message sent");
 			}
 		}
 

@@ -56,6 +56,10 @@
 		<pathelement location="${logback.dir}/logback-classic-1.1.2.jar" />
 		<pathelement location="${logback.dir}/logback-core-1.1.2.jar" />
 		<pathelement location="${slf4j.dir}/slf4j-api-1.7.7.jar" />
+		<pathelement location="./logback.xml" />
+		<fileset dir=".">
+			<include name="**/logback.xml"/>
+		</fileset>
 	</path>
 
 	<target name="compile_robots" description="compile the sources to upload on the robots">
@@ -82,8 +86,9 @@
 
 	<target name="compile_proxy" depends="generate_messages_classes" description="compile the sources that stay on the computer">
 		<!-- Compile the java code from ${source.dir} to ${classes.dir}  -->
-		<copy file="logback.xml" todir="./build"/>
 		<mkdir dir="${classes.dir}" />
+		<!-- <symlink overwrite="true" link="${classes.dir}/logback.xml" resource="../../logback.xml"/>-->
+		<copy file="logback.xml" todir="${classes.dir}" overwrite="true" encoding="utf-8"/>
 		<javac srcdir="${source.proxy.dir}:${source.common.dir}:${source.messages.dir}" includes="${source.include}" excludes="${source.exclude}" encoding="${source.encoding}" source="${source.version}" target="${target.version}" destdir="${classes.dir}" debug="true" includeAntRuntime="false" includeJavaRuntime="false" verbose="false">
 			<classpath refid="proxy.classpath" />
 			<!-- enable warnings -->

@@ -37,6 +37,7 @@ import orwell.proxy.Tank;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest( { ZMQ.Socket.class })
 public class ProxyRobotsTest {
+	
 	final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class); 
 	
 	@TestSubject
@@ -51,7 +52,8 @@ public class ProxyRobotsTest {
 	private Tank myTank;
 
 	@Before
-	public void setUp() {		
+	public void setUp() {
+		logback.info("IN");
 		mockedMf = createNiceMock(MessageFramework.class);
 		expect(mockedMf.ConnectToNXT(anyObject(NXTInfo.class))).andStubReturn(
 				true);
@@ -72,7 +74,7 @@ public class ProxyRobotsTest {
 		mockedZmqSocketSend.setLinger(1000);
 		expectLastCall().times(1);
 		
-		System.out.println("*******TEST getZMQRegisterHeader: " + myTank.getZMQRegister().toString());
+		logback.info("*******TEST getZMQRegisterHeader: " + myTank.getZMQRegister().toString());
 		expect(mockedZmqSocketSend.send(myTank.getZMQRegister(), 0)).andReturn(true);
 //		expectLastCall().times(1);
 		replay(mockedZmqSocketSend);
@@ -84,38 +86,44 @@ public class ProxyRobotsTest {
 
 		proxyRobots = new ProxyRobots(
 				"orwell/proxy/test/configurationTest.xml", "localhost", mockedZmqContext);
-
+		logback.info("OUT");
 	}
 
 	public void createAndInitializeTank(ProxyRobots proxyrobots)
 	{
+		logback.info("IN");
 		proxyRobots.connectToServer();
 
 		HashMap<String, Tank> tanksInitializedMap = new HashMap<String, Tank>();
 		tanksInitializedMap.put("NicolasCage", myTank);
 		proxyRobots.initialiseTanks(tanksInitializedMap);
+		logback.info("OUT");
 	}
 	
 	@Test
 	public void testInitialiseTanks() {
+		logback.info("IN");
 		createAndInitializeTank(this.proxyRobots);
-		
+
 		assertEquals(1, proxyRobots.getTanksInitializedMap().size());
 		assertEquals(myTank,
 				proxyRobots.getTanksInitializedMap().get("NicolasCage"));
+		logback.info("OUT");
 	}
 
 	@Test
 	public void testConnectToRobots() {
+		logback.info("IN");
 		createAndInitializeTank(this.proxyRobots);
 		proxyRobots.connectToRobots();
 
 		assertEquals(1, proxyRobots.getTanksConnectedMap().size());
+		logback.info("OUT");
 	}
 
 	@Test
 	public void testRegister() {
-		logback.info("testRegister() -- IN");
+		logback.info("IN");
 
 		createAndInitializeTank(proxyRobots);
 
@@ -123,7 +131,7 @@ public class ProxyRobotsTest {
 		proxyRobots.registerRobots();
 		//TODO Do an actual test
 //		verify(mockedZmqSocketSend);
-		logback.info("testRegister() -- OUT");
+		logback.info("OUT");
 	}
 	
 	public void tearDown(){

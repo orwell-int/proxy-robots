@@ -5,15 +5,19 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import orwell.common.MessageListenerInterface;
 import orwell.common.UnitMessage;
-
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTConnector;
 import lejos.pc.comm.NXTInfo;
 
 public class MessageFramework {
-
+	
+	final static Logger logback = LoggerFactory.getLogger(MessageFramework.class); 
+	
 	// private static MessageFramework m_instance = new MessageFramework();
 	private Object m_RXguard;
 	private Object m_TXguard;
@@ -80,7 +84,7 @@ public class MessageFramework {
 
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.err.println("SendMessage failed: " + e.getMessage());
+			logback.error("SendMessage failed: " + e.getMessage());
 			// m_connected = false;
 		}
 	}
@@ -111,8 +115,7 @@ public class MessageFramework {
 
 				} catch (IOException e) {
 					e.printStackTrace();
-					System.err
-							.println("Error while reading in MessageFramework: "
+					logback.error("Error while reading in MessageFramework: "
 									+ e.getMessage());
 					close();
 				}
@@ -139,7 +142,7 @@ public class MessageFramework {
 				}
 			}
 		} else {
-			System.out.println("Invalid Packet:" + new String(msgBytes));
+			logback.debug("Invalid Packet:" + new String(msgBytes));
 		}
 	}
 
@@ -157,7 +160,7 @@ public class MessageFramework {
 			else
 				return true;
 		} catch (Exception e) {
-			System.err.println("Received corrupt package: "
+			logback.error("Received corrupt package: "
 					+ getBytesString(packet));
 			return false;
 		}
@@ -183,7 +186,7 @@ public class MessageFramework {
 				m_connecter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.err.println("Error while closing MessageFramework: "
+			logback.error("Error while closing MessageFramework: "
 					+ e.getMessage());
 		}
 	}

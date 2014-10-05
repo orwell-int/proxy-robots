@@ -1,6 +1,11 @@
 package orwell.proxy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ZmqMessageWrapper {
+	final static Logger logback = LoggerFactory.getLogger(ZmqMessageWrapper.class); 
+
 	public String routingId;
 	public String type;
 	public byte[] message;
@@ -40,9 +45,9 @@ public class ZmqMessageWrapper {
 				message.length);
 
 		System.out.flush();
-		System.out.println("Message received: " + zmqMessageString);
+		logback.info("Message received: " + zmqMessageString);
 
 		//proxyRobots.tank.setRoutingID(routingID);
-		System.out.println("Message [TYPE]: " + type);
+		logback.info("Message [TYPE]: " + type);
 	}
 }
