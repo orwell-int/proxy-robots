@@ -7,19 +7,17 @@ import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
 import orwell.proxy.IRobot.EnumConnectionState;
+import orwell.proxy.config.ConfigModel;
 import orwell.proxy.config.ConfigProxy;
 import orwell.proxy.config.ConfigRobots;
 import orwell.proxy.config.ConfigServerGame;
 import orwell.proxy.config.ConfigTank;
-import orwell.proxy.config.ConfigModel;
 import orwell.proxy.config.Configuration;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
 
