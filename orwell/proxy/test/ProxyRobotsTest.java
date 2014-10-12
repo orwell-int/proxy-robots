@@ -23,10 +23,13 @@ import org.slf4j.Logger;
 import org.junit.runner.RunWith;
 import org.zeromq.ZMQ;
 
+import orwell.messages.ServerGame;
 import orwell.proxy.Camera;
+import orwell.proxy.IRobot;
 import orwell.proxy.MessageFramework;
 import orwell.proxy.ProxyRobots;
 import orwell.proxy.Tank;
+import orwell.proxy.ZmqMessageWrapper;
 
 /**
  * Tests for {@link ProxyRobots}.
@@ -39,6 +42,11 @@ import orwell.proxy.Tank;
 public class ProxyRobotsTest {
 	
 	final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class); 
+	private enum EnumMessageType {
+		REGISTER,
+		REGISTERED,
+		INPUT;
+	}
 	
 	@TestSubject
 	private ProxyRobots proxyRobots;
@@ -74,10 +82,14 @@ public class ProxyRobotsTest {
 		mockedZmqSocketSend.setLinger(1000);
 		expectLastCall().times(1);
 		
-		logback.info("*******TEST getZMQRegisterHeader: " + myTank.getZMQRegister().toString());
+		logback.info("TEST getZMQRegisterHeader: " + myTank.getZMQRegister());
+
 		expect(mockedZmqSocketSend.send(myTank.getZMQRegister(), 0)).andReturn(true);
-//		expectLastCall().times(1);
+		logback.info("BATMAN");
+		//		expectLastCall().times(1);
 		replay(mockedZmqSocketSend);
+		
+		expect(mockedZmqSocketRecv.recv()).andStubReturn(getMockRawZmqMessage(myTank, EnumMessageType.REGISTERED));
 		replay(mockedZmqSocketRecv);
 		
 		expect(mockedZmqContext.socket(ZMQ.PUSH)).andStubReturn(mockedZmqSocketSend);
@@ -87,6 +99,35 @@ public class ProxyRobotsTest {
 		proxyRobots = new ProxyRobots(
 				"orwell/proxy/test/configurationTest.xml", "localhost", mockedZmqContext);
 		logback.info("OUT");
+	}
+	
+	public byte[] getMockRawZmqMessage(Tank tank, EnumMessageType messageType)
+	{
+		byte[] raw_zmq_message;
+		byte[] specificMessage = new byte[0];
+		
+		switch(messageType){
+		case REGISTERED:
+			specificMessage = getBytesRegistered();
+			break;
+		default:
+			logback.error("Case : Message type " + messageType + " not handled");
+		}
+		
+		String zMQmessageHeader = tank.getRoutingID() + " " + "Registered" + " ";
+		raw_zmq_message = orwell.proxy.Utils.Concatenate(zMQmessageHeader.getBytes(),
+				specificMessage);
+		
+		return raw_zmq_message;
+	}
+	
+	public byte[] getBytesRegistered()
+	{		
+		ServerGame.Registered.Builder registeredBuilder = ServerGame.Registered.newBuilder();
+		registeredBuilder.setRobotId("BananaOne");
+		registeredBuilder.setTeam(ServerGame.EnumTeam.BLU);
+		
+		return registeredBuilder.build().toByteArray();
 	}
 
 	public void createAndInitializeTank(ProxyRobots proxyrobots)
@@ -128,9 +169,13 @@ public class ProxyRobotsTest {
 		createAndInitializeTank(proxyRobots);
 
 		proxyRobots.connectToRobots();
+		assertEquals(IRobot.EnumRegistrationState.NOT_REGISTERED, myTank.getRegistrationState());
+
 		proxyRobots.registerRobots();
-		//TODO Do an actual test
-//		verify(mockedZmqSocketSend);
+		proxyRobots.startCommunication(new ZmqMessageWrapper(getMockRawZmqMessage(myTank, EnumMessageType.REGISTERED)));
+		
+		assertEquals(IRobot.EnumRegistrationState.REGISTERED, myTank.getRegistrationState());
+
 		logback.info("OUT");
 	}
 	

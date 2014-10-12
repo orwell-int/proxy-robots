@@ -40,5 +40,6 @@ public interface IRobot {
 	public String robotStatetoString();
 	public String controllerInputToString();
 	public String serverGameRegisteredToString();
+	public void buildRegister();
 	
 }

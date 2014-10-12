@@ -15,7 +15,6 @@ import orwell.messages.Robot.Register;
 import orwell.messages.Robot.RobotState;
 import orwell.messages.ServerGame.EnumTeam;
 import orwell.messages.ServerGame.Registered;
-import orwell.proxy.test.ProxyRobotsTest;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
 
@@ -37,6 +36,7 @@ public class Tank implements IRobot {
 	private NXTInfo nxtInfo;
 	private MessageFramework mfTank;
 	private Camera camera;
+	private Register register;
 
 	private EnumRegistrationState registrationState = EnumRegistrationState.NOT_REGISTERED;
 	private EnumConnectionState connectionState = EnumConnectionState.NOT_CONNECTED;
@@ -100,14 +100,20 @@ public class Tank implements IRobot {
 		return tankStateBuilder.build();
 	}
 
-	private Register getRegister() {
-		logback.info("=======TEST getRegister: " + routingID + " " + camera.getURL());
+	@Override
+	public void buildRegister() {
 		registerBuilder.setTemporaryRobotId(routingID);
 		registerBuilder.setVideoUrl(camera.getURL());
 		//TODO simplify return
-		Register build = registerBuilder.build();
-		logback.info("BUILD " + build.toString());
-		return build;
+		register = registerBuilder.build();
+	}
+
+	private Register getRegister() {
+		if(null == register)
+		{
+			buildRegister();
+		}
+		return register;
 	}
 
 	@Override
@@ -138,9 +144,10 @@ public class Tank implements IRobot {
 	@Override
 	public byte[] getZMQRegister() {
 		String zMQmessageHeader = getRoutingID() + " " + "Register" + " ";
-		logback.info("getZMQRegisterHeader: " + zMQmessageHeader);
-		return orwell.proxy.Utils.Concatenate(zMQmessageHeader.getBytes(),
+		byte[] zmqRegister = orwell.proxy.Utils.Concatenate(zMQmessageHeader.getBytes(),
 				getRegister().toByteArray());
+		logback.info("zMQmessageHeader: " + zMQmessageHeader);
+		return zmqRegister;
 	}
 
 	@Override

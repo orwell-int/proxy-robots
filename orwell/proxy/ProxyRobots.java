@@ -144,6 +144,7 @@ public class ProxyRobots {
 
 	public void registerRobots() {
 		for (IRobot tank : tanksConnectedMap.values()) {
+			tank.buildRegister();
 			this.sender.send(tank.getZMQRegister(), 0);
 			logback.info("TEST RegisterHeader: " + tank.getZMQRegister().toString());
 			logback.info("Robot [" + tank.getRoutingID()
@@ -151,7 +152,7 @@ public class ProxyRobots {
 		}
 	}
 
-	public void startCommunication() {
+	public void startCommunication(ZmqMessageWrapper interruptMessage) {
 		String zmq_previousMessage = new String();
 		String previousInput = new String();
 		ZmqMessageWrapper zmqMessage;
@@ -209,7 +210,15 @@ public class ProxyRobots {
 			}
 
 			zmq_previousMessage = zmqMessage.zmqMessageString;
+			
+			logback.debug("zmqMessage.type = " + zmqMessage.type);
+			logback.debug("interruptMessage.type = " + interruptMessage.type);
 
+			if(null != interruptMessage && zmqMessage.type.equals(interruptMessage.type))
+			{
+				logback.info("Communication interrupted with interrupt message : " + interruptMessage.type);
+				break;
+			}
 		}
 	}
 
@@ -232,7 +241,7 @@ public class ProxyRobots {
 		proxyRobots.initialiseTanks();
 		proxyRobots.connectToRobots();
 		proxyRobots.registerRobots();
-		proxyRobots.startCommunication();
+		proxyRobots.startCommunication(null);
 
 		// proxyRobots.sender.send(proxyRobots.tank.getZMQRobotState(), 0);
 		// logback.info("Message sent");

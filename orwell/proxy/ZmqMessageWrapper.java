@@ -31,16 +31,16 @@ public class ZmqMessageWrapper {
 			++index;
 		}
 		// routingID type message
-		// ^ ^
-		// | indexMessage
-		// indexType
+		//           ^    ^
+		//           |    indexMessage
+		//           indexType
 		int lengthRoutingID = indexType - 1;
 		int lengthType = indexMessage - indexType - 1;
 		this.routingId = new String(raw_zmq_message, 0, lengthRoutingID);
-		String type = new String(raw_zmq_message, indexType, lengthType);
+		this.type = new String(raw_zmq_message, indexType, lengthType);
 		int lengthMessage = raw_zmq_message.length - lengthType
 				- lengthRoutingID - 2;
-		byte[] message = new byte[lengthMessage];
+		this.message = new byte[lengthMessage];
 		System.arraycopy(raw_zmq_message, indexMessage, message, 0,
 				message.length);
 
