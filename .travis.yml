@@ -32,7 +32,6 @@ env:
     - PROXY_ROBOTS_JARS_DIR=. NXJ_HOME=leJOS_NXJ_0.9.1beta-3 JEROMQ_DIR=./jeromq PROTOBUF_DIR=.
 
 script:
-    - ant -version
     - ant junit-proxy -v 
 
 notifications:
