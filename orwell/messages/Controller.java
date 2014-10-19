@@ -35,31 +35,6 @@ public final class Controller {
      * <code>optional bool ready = 2 [default = true];</code>
      */
     boolean getReady();
-
-    // required uint32 port = 3;
-    /**
-     * <code>required uint32 port = 3;</code>
-     */
-    boolean hasPort();
-    /**
-     * <code>required uint32 port = 3;</code>
-     */
-    int getPort();
-
-    // required string ip = 4;
-    /**
-     * <code>required string ip = 4;</code>
-     */
-    boolean hasIp();
-    /**
-     * <code>required string ip = 4;</code>
-     */
-    java.lang.String getIp();
-    /**
-     * <code>required string ip = 4;</code>
-     */
-    com.google.protobuf.ByteString
-        getIpBytes();
   }
   /**
    * Protobuf type {@code orwell.messages.Hello}
@@ -117,16 +92,6 @@ public final class Controller {
             case 16: {
               bitField0_ |= 0x00000002;
               ready_ = input.readBool();
-              break;
-            }
-            case 24: {
-              bitField0_ |= 0x00000004;
-              port_ = input.readUInt32();
-              break;
-            }
-            case 34: {
-              bitField0_ |= 0x00000008;
-              ip_ = input.readBytes();
               break;
             }
           }
@@ -215,70 +180,9 @@ public final class Controller {
       return ready_;
     }
 
-    // required uint32 port = 3;
-    public static final int PORT_FIELD_NUMBER = 3;
-    private int port_;
-    /**
-     * <code>required uint32 port = 3;</code>
-     */
-    public boolean hasPort() {
-      return ((bitField0_ & 0x00000004) == 0x00000004);
-    }
-    /**
-     * <code>required uint32 port = 3;</code>
-     */
-    public int getPort() {
-      return port_;
-    }
-
-    // required string ip = 4;
-    public static final int IP_FIELD_NUMBER = 4;
-    private java.lang.Object ip_;
-    /**
-     * <code>required string ip = 4;</code>
-     */
-    public boolean hasIp() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
-    }
-    /**
-     * <code>required string ip = 4;</code>
-     */
-    public java.lang.String getIp() {
-      java.lang.Object ref = ip_;
-      if (ref instanceof java.lang.String) {
-        return (java.lang.String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          ip_ = s;
-        }
-        return s;
-      }
-    }
-    /**
-     * <code>required string ip = 4;</code>
-     */
-    public com.google.protobuf.ByteString
-        getIpBytes() {
-      java.lang.Object ref = ip_;
-      if (ref instanceof java.lang.String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        ip_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-
     private void initFields() {
       name_ = "";
       ready_ = true;
-      port_ = 0;
-      ip_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -286,14 +190,6 @@ public final class Controller {
       if (isInitialized != -1) return isInitialized == 1;
 
       if (!hasName()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasPort()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasIp()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -310,12 +206,6 @@ public final class Controller {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeBool(2, ready_);
       }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeUInt32(3, port_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeBytes(4, getIpBytes());
-      }
     }
 
     private int memoizedSerializedSize = -1;
@@ -331,14 +221,6 @@ public final class Controller {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(2, ready_);
-      }
-      if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeUInt32Size(3, port_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(4, getIpBytes());
       }
       memoizedSerializedSize = size;
       return size;
@@ -440,10 +322,6 @@ public final class Controller {
         bitField0_ = (bitField0_ & ~0x00000001);
         ready_ = true;
         bitField0_ = (bitField0_ & ~0x00000002);
-        port_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000004);
-        ip_ = "";
-        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -475,14 +353,6 @@ public final class Controller {
           to_bitField0_ |= 0x00000002;
         }
         result.ready_ = ready_;
-        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
-          to_bitField0_ |= 0x00000004;
-        }
-        result.port_ = port_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
-        result.ip_ = ip_;
         result.bitField0_ = to_bitField0_;
         return result;
       }
@@ -497,27 +367,11 @@ public final class Controller {
         if (other.hasReady()) {
           setReady(other.getReady());
         }
-        if (other.hasPort()) {
-          setPort(other.getPort());
-        }
-        if (other.hasIp()) {
-          bitField0_ |= 0x00000008;
-          ip_ = other.ip_;
-          
-        }
         return this;
       }
 
       public final boolean isInitialized() {
         if (!hasName()) {
-          
-          return false;
-        }
-        if (!hasPort()) {
-          
-          return false;
-        }
-        if (!hasIp()) {
           
           return false;
         }
@@ -646,113 +500,6 @@ public final class Controller {
       public Builder clearReady() {
         bitField0_ = (bitField0_ & ~0x00000002);
         ready_ = true;
-        
-        return this;
-      }
-
-      // required uint32 port = 3;
-      private int port_ ;
-      /**
-       * <code>required uint32 port = 3;</code>
-       */
-      public boolean hasPort() {
-        return ((bitField0_ & 0x00000004) == 0x00000004);
-      }
-      /**
-       * <code>required uint32 port = 3;</code>
-       */
-      public int getPort() {
-        return port_;
-      }
-      /**
-       * <code>required uint32 port = 3;</code>
-       */
-      public Builder setPort(int value) {
-        bitField0_ |= 0x00000004;
-        port_ = value;
-        
-        return this;
-      }
-      /**
-       * <code>required uint32 port = 3;</code>
-       */
-      public Builder clearPort() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        port_ = 0;
-        
-        return this;
-      }
-
-      // required string ip = 4;
-      private java.lang.Object ip_ = "";
-      /**
-       * <code>required string ip = 4;</code>
-       */
-      public boolean hasIp() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>required string ip = 4;</code>
-       */
-      public java.lang.String getIp() {
-        java.lang.Object ref = ip_;
-        if (!(ref instanceof java.lang.String)) {
-          java.lang.String s = ((com.google.protobuf.ByteString) ref)
-              .toStringUtf8();
-          ip_ = s;
-          return s;
-        } else {
-          return (java.lang.String) ref;
-        }
-      }
-      /**
-       * <code>required string ip = 4;</code>
-       */
-      public com.google.protobuf.ByteString
-          getIpBytes() {
-        java.lang.Object ref = ip_;
-        if (ref instanceof String) {
-          com.google.protobuf.ByteString b = 
-              com.google.protobuf.ByteString.copyFromUtf8(
-                  (java.lang.String) ref);
-          ip_ = b;
-          return b;
-        } else {
-          return (com.google.protobuf.ByteString) ref;
-        }
-      }
-      /**
-       * <code>required string ip = 4;</code>
-       */
-      public Builder setIp(
-          java.lang.String value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
-        ip_ = value;
-        
-        return this;
-      }
-      /**
-       * <code>required string ip = 4;</code>
-       */
-      public Builder clearIp() {
-        bitField0_ = (bitField0_ & ~0x00000008);
-        ip_ = getDefaultInstance().getIp();
-        
-        return this;
-      }
-      /**
-       * <code>required string ip = 4;</code>
-       */
-      public Builder setIpBytes(
-          com.google.protobuf.ByteString value) {
-        if (value == null) {
-    throw new NullPointerException();
-  }
-  bitField0_ |= 0x00000008;
-        ip_ = value;
         
         return this;
       }

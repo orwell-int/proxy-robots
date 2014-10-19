@@ -94,8 +94,10 @@ public class ProxyRobots {
 		for (ConfigTank configTank : configRobots.getConfigRobotsToRegister()) {
 			Camera camera = new Camera(configTank.getConfigCamera().getIp(),
 					configTank.getConfigCamera().getPort());
+			//TODO Improve initialization of setImage to get something meaningful
+			//from the string (like an actual picture)
 			Tank tank = new Tank(configTank.getBluetoothName(),
-					configTank.getBluetoothID(), camera);
+					configTank.getBluetoothID(), camera, configTank.getImage());
 			logback.info(" NININININ " + configTank.getTempRoutingID());
 			tank.setRoutingID(configTank.getTempRoutingID());
 			this.tanksInitializedMap.put(tank.getRoutingID(), tank);

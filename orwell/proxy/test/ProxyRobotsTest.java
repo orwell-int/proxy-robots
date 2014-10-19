@@ -71,7 +71,7 @@ public class ProxyRobotsTest {
 		expect(mockedCamera.getURL()).andStubReturn("192.168.1.50");
 		replay(mockedCamera);
 		
-		myTank = new Tank("Btname", "BtId", mockedCamera, mockedMf);
+		myTank = new Tank("Btname", "BtId", mockedCamera, mockedMf, "");
 		myTank.setRoutingID("NicolasCage");
 		
 		mockedZmqSocketSend = createNiceMock(ZMQ.Socket.class);

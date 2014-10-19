@@ -28,6 +28,7 @@
 				<ip>192.168.1.50</ip>
 				<port>9100</port>
 			</camera>
+			<image>Yellow hull -- TO BE BETTER CONFIGURED</image>
 		</tank>
 	</robots>
 </setup>

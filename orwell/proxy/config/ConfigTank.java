@@ -4,7 +4,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType(propOrder = { "bluetoothName", "bluetoothID", "camera" })
+@XmlType(propOrder = { "bluetoothName", "bluetoothID", "camera", "image" })
 public class ConfigTank {
 
 	private String tempRoutingID;
@@ -12,6 +12,7 @@ public class ConfigTank {
 	private String bluetoothID;
 	private ConfigCamera camera;
 	private int toRegister;
+	private String image;
 
 	public String getTempRoutingID() {
 		return tempRoutingID;
@@ -56,5 +57,14 @@ public class ConfigTank {
 	@XmlElement
 	public void setCamera(ConfigCamera camera) {
 		this.camera = camera;
+	}
+	
+	public String getImage() {
+		return image;
+	}
+
+	@XmlElement
+	public void setImage(String image) {
+		this.image = image;
 	}
 }

@@ -40,6 +40,31 @@ public final class Robot {
      * <code>optional bool active = 3 [default = true];</code>
      */
     boolean getActive();
+
+    // optional string rfid = 4 [default = ""];
+    /**
+     * <code>optional string rfid = 4 [default = ""];</code>
+     */
+    boolean hasRfid();
+    /**
+     * <code>optional string rfid = 4 [default = ""];</code>
+     */
+    java.lang.String getRfid();
+    /**
+     * <code>optional string rfid = 4 [default = ""];</code>
+     */
+    com.google.protobuf.ByteString
+        getRfidBytes();
+
+    // optional int32 color = 5 [default = -1];
+    /**
+     * <code>optional int32 color = 5 [default = -1];</code>
+     */
+    boolean hasColor();
+    /**
+     * <code>optional int32 color = 5 [default = -1];</code>
+     */
+    int getColor();
   }
   /**
    * Protobuf type {@code orwell.messages.RobotState}
@@ -110,6 +135,16 @@ public final class Robot {
             case 24: {
               bitField0_ |= 0x00000004;
               active_ = input.readBool();
+              break;
+            }
+            case 34: {
+              bitField0_ |= 0x00000008;
+              rfid_ = input.readBytes();
+              break;
+            }
+            case 40: {
+              bitField0_ |= 0x00000010;
+              color_ = input.readInt32();
               break;
             }
           }
@@ -601,10 +636,71 @@ public final class Robot {
       return active_;
     }
 
+    // optional string rfid = 4 [default = ""];
+    public static final int RFID_FIELD_NUMBER = 4;
+    private java.lang.Object rfid_;
+    /**
+     * <code>optional string rfid = 4 [default = ""];</code>
+     */
+    public boolean hasRfid() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional string rfid = 4 [default = ""];</code>
+     */
+    public java.lang.String getRfid() {
+      java.lang.Object ref = rfid_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          rfid_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string rfid = 4 [default = ""];</code>
+     */
+    public com.google.protobuf.ByteString
+        getRfidBytes() {
+      java.lang.Object ref = rfid_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        rfid_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // optional int32 color = 5 [default = -1];
+    public static final int COLOR_FIELD_NUMBER = 5;
+    private int color_;
+    /**
+     * <code>optional int32 color = 5 [default = -1];</code>
+     */
+    public boolean hasColor() {
+      return ((bitField0_ & 0x00000010) == 0x00000010);
+    }
+    /**
+     * <code>optional int32 color = 5 [default = -1];</code>
+     */
+    public int getColor() {
+      return color_;
+    }
+
     private void initFields() {
       life_ = 0D;
       move_ = orwell.messages.Robot.RobotState.Move.getDefaultInstance();
       active_ = true;
+      rfid_ = "";
+      color_ = -1;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -627,6 +723,12 @@ public final class Robot {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeBool(3, active_);
       }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeBytes(4, getRfidBytes());
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        output.writeInt32(5, color_);
+      }
     }
 
     private int memoizedSerializedSize = -1;
@@ -646,6 +748,14 @@ public final class Robot {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(3, active_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, getRfidBytes());
+      }
+      if (((bitField0_ & 0x00000010) == 0x00000010)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(5, color_);
       }
       memoizedSerializedSize = size;
       return size;
@@ -748,6 +858,10 @@ public final class Robot {
         bitField0_ = (bitField0_ & ~0x00000002);
         active_ = true;
         bitField0_ = (bitField0_ & ~0x00000004);
+        rfid_ = "";
+        bitField0_ = (bitField0_ & ~0x00000008);
+        color_ = -1;
+        bitField0_ = (bitField0_ & ~0x00000010);
         return this;
       }
 
@@ -783,6 +897,14 @@ public final class Robot {
           to_bitField0_ |= 0x00000004;
         }
         result.active_ = active_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.rfid_ = rfid_;
+        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
+          to_bitField0_ |= 0x00000010;
+        }
+        result.color_ = color_;
         result.bitField0_ = to_bitField0_;
         return result;
       }
@@ -797,6 +919,14 @@ public final class Robot {
         }
         if (other.hasActive()) {
           setActive(other.getActive());
+        }
+        if (other.hasRfid()) {
+          bitField0_ |= 0x00000008;
+          rfid_ = other.rfid_;
+          
+        }
+        if (other.hasColor()) {
+          setColor(other.getColor());
         }
         return this;
       }
@@ -951,6 +1081,113 @@ public final class Robot {
         return this;
       }
 
+      // optional string rfid = 4 [default = ""];
+      private java.lang.Object rfid_ = "";
+      /**
+       * <code>optional string rfid = 4 [default = ""];</code>
+       */
+      public boolean hasRfid() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional string rfid = 4 [default = ""];</code>
+       */
+      public java.lang.String getRfid() {
+        java.lang.Object ref = rfid_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          rfid_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string rfid = 4 [default = ""];</code>
+       */
+      public com.google.protobuf.ByteString
+          getRfidBytes() {
+        java.lang.Object ref = rfid_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          rfid_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string rfid = 4 [default = ""];</code>
+       */
+      public Builder setRfid(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        rfid_ = value;
+        
+        return this;
+      }
+      /**
+       * <code>optional string rfid = 4 [default = ""];</code>
+       */
+      public Builder clearRfid() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        rfid_ = getDefaultInstance().getRfid();
+        
+        return this;
+      }
+      /**
+       * <code>optional string rfid = 4 [default = ""];</code>
+       */
+      public Builder setRfidBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000008;
+        rfid_ = value;
+        
+        return this;
+      }
+
+      // optional int32 color = 5 [default = -1];
+      private int color_ = -1;
+      /**
+       * <code>optional int32 color = 5 [default = -1];</code>
+       */
+      public boolean hasColor() {
+        return ((bitField0_ & 0x00000010) == 0x00000010);
+      }
+      /**
+       * <code>optional int32 color = 5 [default = -1];</code>
+       */
+      public int getColor() {
+        return color_;
+      }
+      /**
+       * <code>optional int32 color = 5 [default = -1];</code>
+       */
+      public Builder setColor(int value) {
+        bitField0_ |= 0x00000010;
+        color_ = value;
+        
+        return this;
+      }
+      /**
+       * <code>optional int32 color = 5 [default = -1];</code>
+       */
+      public Builder clearColor() {
+        bitField0_ = (bitField0_ & ~0x00000010);
+        color_ = -1;
+        
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:orwell.messages.RobotState)
     }
 
@@ -1009,6 +1246,21 @@ public final class Robot {
      */
     com.google.protobuf.ByteString
         getVideoUrlBytes();
+
+    // required string image = 3;
+    /**
+     * <code>required string image = 3;</code>
+     */
+    boolean hasImage();
+    /**
+     * <code>required string image = 3;</code>
+     */
+    java.lang.String getImage();
+    /**
+     * <code>required string image = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getImageBytes();
   }
   /**
    * Protobuf type {@code orwell.messages.Register}
@@ -1067,6 +1319,11 @@ public final class Robot {
             case 18: {
               bitField0_ |= 0x00000002;
               videoUrl_ = input.readBytes();
+              break;
+            }
+            case 26: {
+              bitField0_ |= 0x00000004;
+              image_ = input.readBytes();
               break;
             }
           }
@@ -1197,9 +1454,53 @@ public final class Robot {
       }
     }
 
+    // required string image = 3;
+    public static final int IMAGE_FIELD_NUMBER = 3;
+    private java.lang.Object image_;
+    /**
+     * <code>required string image = 3;</code>
+     */
+    public boolean hasImage() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required string image = 3;</code>
+     */
+    public java.lang.String getImage() {
+      java.lang.Object ref = image_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          image_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string image = 3;</code>
+     */
+    public com.google.protobuf.ByteString
+        getImageBytes() {
+      java.lang.Object ref = image_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        image_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
     private void initFields() {
       temporaryRobotId_ = "";
       videoUrl_ = "";
+      image_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -1211,6 +1512,10 @@ public final class Robot {
         return false;
       }
       if (!hasVideoUrl()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasImage()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -1227,6 +1532,9 @@ public final class Robot {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeBytes(2, getVideoUrlBytes());
       }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBytes(3, getImageBytes());
+      }
     }
 
     private int memoizedSerializedSize = -1;
@@ -1242,6 +1550,10 @@ public final class Robot {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBytesSize(2, getVideoUrlBytes());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, getImageBytes());
       }
       memoizedSerializedSize = size;
       return size;
@@ -1344,6 +1656,8 @@ public final class Robot {
         bitField0_ = (bitField0_ & ~0x00000001);
         videoUrl_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
+        image_ = "";
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -1375,6 +1689,10 @@ public final class Robot {
           to_bitField0_ |= 0x00000002;
         }
         result.videoUrl_ = videoUrl_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.image_ = image_;
         result.bitField0_ = to_bitField0_;
         return result;
       }
@@ -1391,6 +1709,11 @@ public final class Robot {
           videoUrl_ = other.videoUrl_;
           
         }
+        if (other.hasImage()) {
+          bitField0_ |= 0x00000004;
+          image_ = other.image_;
+          
+        }
         return this;
       }
 
@@ -1400,6 +1723,10 @@ public final class Robot {
           return false;
         }
         if (!hasVideoUrl()) {
+          
+          return false;
+        }
+        if (!hasImage()) {
           
           return false;
         }
@@ -1599,6 +1926,80 @@ public final class Robot {
   }
   bitField0_ |= 0x00000002;
         videoUrl_ = value;
+        
+        return this;
+      }
+
+      // required string image = 3;
+      private java.lang.Object image_ = "";
+      /**
+       * <code>required string image = 3;</code>
+       */
+      public boolean hasImage() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required string image = 3;</code>
+       */
+      public java.lang.String getImage() {
+        java.lang.Object ref = image_;
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          image_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>required string image = 3;</code>
+       */
+      public com.google.protobuf.ByteString
+          getImageBytes() {
+        java.lang.Object ref = image_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          image_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string image = 3;</code>
+       */
+      public Builder setImage(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        image_ = value;
+        
+        return this;
+      }
+      /**
+       * <code>required string image = 3;</code>
+       */
+      public Builder clearImage() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        image_ = getDefaultInstance().getImage();
+        
+        return this;
+      }
+      /**
+       * <code>required string image = 3;</code>
+       */
+      public Builder setImageBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000004;
+        image_ = value;
         
         return this;
       }

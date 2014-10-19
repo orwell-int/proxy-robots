@@ -28,6 +28,7 @@
 				<ip>192.168.1.50</ip>
 				<port>9100</port>
 			</camera>
+			<image>Yellow hull -- TO BE BETTER CONFIGURED</image>
 		</tank>
 		<tank tempRoutingID='BananaTwo' toRegister='0'>
 			<bluetoothName>Cage</bluetoothName>
@@ -36,6 +37,7 @@
 				<ip>192.168.1.51</ip>
 				<port>9101</port>
 			</camera>
+			<image>Blue hull -- TO BE BETTER CONFIGURED</image>
 		</tank>
 	</robots>
 </setup>

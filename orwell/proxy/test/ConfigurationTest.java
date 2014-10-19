@@ -114,6 +114,7 @@ public class ConfigurationTest {
 			assertNotNull(configTank.getConfigCamera());
 			assertEquals("192.168.1.50", configTank.getConfigCamera().getIp());
 			assertEquals(9100, configTank.getConfigCamera().getPort());
+			assertEquals("Yellow hull -- TO BE BETTER CONFIGURED", configTank.getImage());
 		} catch (Exception e) {
 			fail(e.toString());
 		}

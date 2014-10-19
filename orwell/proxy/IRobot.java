@@ -24,6 +24,13 @@ public interface IRobot {
 	public void setRoutingID(String routingID);
 	public String getRoutingID();
 	
+	/*
+	 * Image is a picture of the robot itself to be sent to the
+	 * server before the start of the game
+	 */
+	public void setImage(String image);
+	public String getImage();
+	
 	public void setActive(boolean isActive);
 	public void setLifePoints(double lifePoints);
 	

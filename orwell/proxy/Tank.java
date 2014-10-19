@@ -37,13 +37,14 @@ public class Tank implements IRobot {
 	private MessageFramework mfTank;
 	private Camera camera;
 	private Register register;
+	private String image;
 
 	private EnumRegistrationState registrationState = EnumRegistrationState.NOT_REGISTERED;
 	private EnumConnectionState connectionState = EnumConnectionState.NOT_CONNECTED;
 	private EnumTeam team;
 
 	public Tank(String bluetoothName, String bluetoothID, Camera camera,
-			MessageFramework mf) {
+			MessageFramework mf, String image) {
 		setBluetoothName(bluetoothName);
 		setBluetoothID(bluetoothID);
 		this.camera = camera;
@@ -54,10 +55,11 @@ public class Tank implements IRobot {
 		nxtInfo = new NXTInfo(NXTCommFactory.BLUETOOTH, bluetoothName,
 				bluetoothID);
 		mfTank = mf;
+		this.image = image;
 	}
 
-	public Tank(String bluetoothName, String bluetoothID, Camera camera) {
-		this(bluetoothName, bluetoothID, camera, new MessageFramework());
+	public Tank(String bluetoothName, String bluetoothID, Camera camera, String image) {
+		this(bluetoothName, bluetoothID, camera, new MessageFramework(), image);
 	}
 
 	private void setBluetoothName(String bluetoothName) {
@@ -104,7 +106,12 @@ public class Tank implements IRobot {
 	public void buildRegister() {
 		registerBuilder.setTemporaryRobotId(routingID);
 		registerBuilder.setVideoUrl(camera.getURL());
-		//TODO simplify return
+		registerBuilder.setImage(image);
+		if("" == image)
+		{
+			logback.info("Image of tank " + routingID + " is empty. " 
+					+ "This will probably be an issue for the serverGame");
+		}
 		register = registerBuilder.build();
 	}
 
@@ -276,5 +283,15 @@ public class Tank implements IRobot {
 	@Override
 	public EnumTeam getTeam() {
 		return team;
+	}
+
+	@Override
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	@Override
+	public String getImage() {
+		return image;
 	}
 }
