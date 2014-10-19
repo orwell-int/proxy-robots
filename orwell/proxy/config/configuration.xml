@@ -5,8 +5,8 @@
 		<receiverLinger>1000</receiverLinger>
 		<server-game name='irondamien'>
 			<ip>192.168.1.37</ip>
-			<pushPort>9000</pushPort>
-			<subPort>9001</subPort>
+			<pushPort>9001</pushPort>
+			<subPort>9000</subPort>
 		</server-game>
 		<server-game name='platypus'>
 			<ip>192.168.1.46</ip>
@@ -29,15 +29,6 @@
 				<port>9100</port>
 			</camera>
 			<image>Yellow hull -- TO BE BETTER CONFIGURED</image>
-		</tank>
-		<tank tempRoutingID='BananaTwo' toRegister='0'>
-			<bluetoothName>Cage</bluetoothName>
-			<bluetoothID>777777777777</bluetoothID>
-			<camera>
-				<ip>192.168.1.51</ip>
-				<port>9101</port>
-			</camera>
-			<image>Blue hull -- TO BE BETTER CONFIGURED</image>
 		</tank>
 	</robots>
 </setup>

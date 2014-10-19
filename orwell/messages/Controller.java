@@ -10,302 +10,77 @@ public final class Controller {
   }
   public interface HelloOrBuilder
       extends com.google.protobuf.MessageLiteOrBuilder {
-    
+
     // required string name = 1;
+    /**
+     * <code>required string name = 1;</code>
+     */
     boolean hasName();
-    String getName();
-    
+    /**
+     * <code>required string name = 1;</code>
+     */
+    java.lang.String getName();
+    /**
+     * <code>required string name = 1;</code>
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
+
     // optional bool ready = 2 [default = true];
+    /**
+     * <code>optional bool ready = 2 [default = true];</code>
+     */
     boolean hasReady();
+    /**
+     * <code>optional bool ready = 2 [default = true];</code>
+     */
     boolean getReady();
   }
+  /**
+   * Protobuf type {@code orwell.messages.Hello}
+   *
+   * <pre>
+   * Tell a player wants to join
+   * answered by: Welcome, Goodbye
+   * </pre>
+   */
   public static final class Hello extends
       com.google.protobuf.GeneratedMessageLite
       implements HelloOrBuilder {
     // Use Hello.newBuilder() to construct.
-    private Hello(Builder builder) {
+    private Hello(com.google.protobuf.GeneratedMessageLite.Builder builder) {
       super(builder);
+
     }
     private Hello(boolean noInit) {}
-    
+
     private static final Hello defaultInstance;
     public static Hello getDefaultInstance() {
       return defaultInstance;
     }
-    
+
     public Hello getDefaultInstanceForType() {
       return defaultInstance;
     }
-    
-    private int bitField0_;
-    // required string name = 1;
-    public static final int NAME_FIELD_NUMBER = 1;
-    private java.lang.Object name_;
-    public boolean hasName() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    public String getName() {
-      java.lang.Object ref = name_;
-      if (ref instanceof String) {
-        return (String) ref;
-      } else {
-        com.google.protobuf.ByteString bs = 
-            (com.google.protobuf.ByteString) ref;
-        String s = bs.toStringUtf8();
-        if (com.google.protobuf.Internal.isValidUtf8(bs)) {
-          name_ = s;
-        }
-        return s;
-      }
-    }
-    private com.google.protobuf.ByteString getNameBytes() {
-      java.lang.Object ref = name_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8((String) ref);
-        name_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
-      }
-    }
-    
-    // optional bool ready = 2 [default = true];
-    public static final int READY_FIELD_NUMBER = 2;
-    private boolean ready_;
-    public boolean hasReady() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    public boolean getReady() {
-      return ready_;
-    }
-    
-    private void initFields() {
-      name_ = "";
-      ready_ = true;
-    }
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized != -1) return isInitialized == 1;
-      
-      if (!hasName()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      memoizedIsInitialized = 1;
-      return true;
-    }
-    
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      getSerializedSize();
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, getNameBytes());
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeBool(2, ready_);
-      }
-    }
-    
-    private int memoizedSerializedSize = -1;
-    public int getSerializedSize() {
-      int size = memoizedSerializedSize;
-      if (size != -1) return size;
-    
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getNameBytes());
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(2, ready_);
-      }
-      memoizedSerializedSize = size;
-      return size;
-    }
-    
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    protected java.lang.Object writeReplace()
-        throws java.io.ObjectStreamException {
-      return super.writeReplace();
-    }
-    
-    public static orwell.messages.Controller.Hello parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static orwell.messages.Controller.Hello parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static orwell.messages.Controller.Hello parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
-    }
-    public static orwell.messages.Controller.Hello parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
-    }
-    public static orwell.messages.Controller.Hello parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static orwell.messages.Controller.Hello parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    public static orwell.messages.Controller.Hello parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static orwell.messages.Controller.Hello parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
-    }
-    public static orwell.messages.Controller.Hello parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
-    }
-    public static orwell.messages.Controller.Hello parseFrom(
+
+    private Hello(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
-    }
-    
-    public static Builder newBuilder() { return Builder.create(); }
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(orwell.messages.Controller.Hello prototype) {
-      return newBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() { return newBuilder(this); }
-    
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageLite.Builder<
-          orwell.messages.Controller.Hello, Builder>
-        implements orwell.messages.Controller.HelloOrBuilder {
-      // Construct using orwell.messages.Controller.Hello.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-      
-      private void maybeForceBuilderInitialization() {
-      }
-      private static Builder create() {
-        return new Builder();
-      }
-      
-      public Builder clear() {
-        super.clear();
-        name_ = "";
-        bitField0_ = (bitField0_ & ~0x00000001);
-        ready_ = true;
-        bitField0_ = (bitField0_ & ~0x00000002);
-        return this;
-      }
-      
-      public Builder clone() {
-        return create().mergeFrom(buildPartial());
-      }
-      
-      public orwell.messages.Controller.Hello getDefaultInstanceForType() {
-        return orwell.messages.Controller.Hello.getDefaultInstance();
-      }
-      
-      public orwell.messages.Controller.Hello build() {
-        orwell.messages.Controller.Hello result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-      
-      private orwell.messages.Controller.Hello buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        orwell.messages.Controller.Hello result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
-      public orwell.messages.Controller.Hello buildPartial() {
-        orwell.messages.Controller.Hello result = new orwell.messages.Controller.Hello(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        result.name_ = name_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
-        result.ready_ = ready_;
-        result.bitField0_ = to_bitField0_;
-        return result;
-      }
-      
-      public Builder mergeFrom(orwell.messages.Controller.Hello other) {
-        if (other == orwell.messages.Controller.Hello.getDefaultInstance()) return this;
-        if (other.hasName()) {
-          setName(other.getName());
-        }
-        if (other.hasReady()) {
-          setReady(other.getReady());
-        }
-        return this;
-      }
-      
-      public final boolean isInitialized() {
-        if (!hasName()) {
-          
-          return false;
-        }
-        return true;
-      }
-      
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        while (true) {
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
           int tag = input.readTag();
           switch (tag) {
             case 0:
-              
-              return this;
+              done = true;
+              break;
             default: {
-              if (!parseUnknownField(input, extensionRegistry, tag)) {
-                
-                return this;
+              if (!parseUnknownField(input,
+                                     extensionRegistry, tag)) {
+                done = true;
               }
               break;
             }
@@ -321,26 +96,350 @@ public final class Controller {
             }
           }
         }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
       }
-      
+    }
+    public static com.google.protobuf.Parser<Hello> PARSER =
+        new com.google.protobuf.AbstractParser<Hello>() {
+      public Hello parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Hello(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Hello> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    // required string name = 1;
+    public static final int NAME_FIELD_NUMBER = 1;
+    private java.lang.Object name_;
+    /**
+     * <code>required string name = 1;</code>
+     */
+    public boolean hasName() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required string name = 1;</code>
+     */
+    public java.lang.String getName() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          name_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>required string name = 1;</code>
+     */
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      java.lang.Object ref = name_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        name_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    // optional bool ready = 2 [default = true];
+    public static final int READY_FIELD_NUMBER = 2;
+    private boolean ready_;
+    /**
+     * <code>optional bool ready = 2 [default = true];</code>
+     */
+    public boolean hasReady() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional bool ready = 2 [default = true];</code>
+     */
+    public boolean getReady() {
+      return ready_;
+    }
+
+    private void initFields() {
+      name_ = "";
+      ready_ = true;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+
+      if (!hasName()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBool(2, ready_);
+      }
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(2, ready_);
+      }
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static orwell.messages.Controller.Hello parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static orwell.messages.Controller.Hello parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static orwell.messages.Controller.Hello parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static orwell.messages.Controller.Hello parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static orwell.messages.Controller.Hello parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static orwell.messages.Controller.Hello parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static orwell.messages.Controller.Hello parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static orwell.messages.Controller.Hello parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static orwell.messages.Controller.Hello parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static orwell.messages.Controller.Hello parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(orwell.messages.Controller.Hello prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    /**
+     * Protobuf type {@code orwell.messages.Hello}
+     *
+     * <pre>
+     * Tell a player wants to join
+     * answered by: Welcome, Goodbye
+     * </pre>
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageLite.Builder<
+          orwell.messages.Controller.Hello, Builder>
+        implements orwell.messages.Controller.HelloOrBuilder {
+      // Construct using orwell.messages.Controller.Hello.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private void maybeForceBuilderInitialization() {
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        name_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        ready_ = true;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public orwell.messages.Controller.Hello getDefaultInstanceForType() {
+        return orwell.messages.Controller.Hello.getDefaultInstance();
+      }
+
+      public orwell.messages.Controller.Hello build() {
+        orwell.messages.Controller.Hello result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public orwell.messages.Controller.Hello buildPartial() {
+        orwell.messages.Controller.Hello result = new orwell.messages.Controller.Hello(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.name_ = name_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.ready_ = ready_;
+        result.bitField0_ = to_bitField0_;
+        return result;
+      }
+
+      public Builder mergeFrom(orwell.messages.Controller.Hello other) {
+        if (other == orwell.messages.Controller.Hello.getDefaultInstance()) return this;
+        if (other.hasName()) {
+          bitField0_ |= 0x00000001;
+          name_ = other.name_;
+          
+        }
+        if (other.hasReady()) {
+          setReady(other.getReady());
+        }
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasName()) {
+          
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        orwell.messages.Controller.Hello parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (orwell.messages.Controller.Hello) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
       private int bitField0_;
-      
+
       // required string name = 1;
       private java.lang.Object name_ = "";
+      /**
+       * <code>required string name = 1;</code>
+       */
       public boolean hasName() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public String getName() {
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public java.lang.String getName() {
         java.lang.Object ref = name_;
-        if (!(ref instanceof String)) {
-          String s = ((com.google.protobuf.ByteString) ref).toStringUtf8();
+        if (!(ref instanceof java.lang.String)) {
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
           name_ = s;
           return s;
         } else {
-          return (String) ref;
+          return (java.lang.String) ref;
         }
       }
-      public Builder setName(String value) {
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        java.lang.Object ref = name_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          name_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public Builder setName(
+          java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
@@ -349,347 +448,260 @@ public final class Controller {
         
         return this;
       }
+      /**
+       * <code>required string name = 1;</code>
+       */
       public Builder clearName() {
         bitField0_ = (bitField0_ & ~0x00000001);
         name_ = getDefaultInstance().getName();
         
         return this;
       }
-      void setName(com.google.protobuf.ByteString value) {
-        bitField0_ |= 0x00000001;
+      /**
+       * <code>required string name = 1;</code>
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
         name_ = value;
         
+        return this;
       }
-      
+
       // optional bool ready = 2 [default = true];
       private boolean ready_ = true;
+      /**
+       * <code>optional bool ready = 2 [default = true];</code>
+       */
       public boolean hasReady() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
+      /**
+       * <code>optional bool ready = 2 [default = true];</code>
+       */
       public boolean getReady() {
         return ready_;
       }
+      /**
+       * <code>optional bool ready = 2 [default = true];</code>
+       */
       public Builder setReady(boolean value) {
         bitField0_ |= 0x00000002;
         ready_ = value;
         
         return this;
       }
+      /**
+       * <code>optional bool ready = 2 [default = true];</code>
+       */
       public Builder clearReady() {
         bitField0_ = (bitField0_ & ~0x00000002);
         ready_ = true;
         
         return this;
       }
-      
+
       // @@protoc_insertion_point(builder_scope:orwell.messages.Hello)
     }
-    
+
     static {
       defaultInstance = new Hello(true);
       defaultInstance.initFields();
     }
-    
+
     // @@protoc_insertion_point(class_scope:orwell.messages.Hello)
   }
-  
+
   public interface InputOrBuilder
       extends com.google.protobuf.MessageLiteOrBuilder {
-    
+
     // optional group Move = 1 {
+    /**
+     * <code>optional group Move = 1 { ... }</code>
+     */
     boolean hasMove();
+    /**
+     * <code>optional group Move = 1 { ... }</code>
+     */
     orwell.messages.Controller.Input.Move getMove();
-    
+
     // optional group Fire = 2 {
+    /**
+     * <code>optional group Fire = 2 { ... }</code>
+     */
     boolean hasFire();
+    /**
+     * <code>optional group Fire = 2 { ... }</code>
+     */
     orwell.messages.Controller.Input.Fire getFire();
   }
+  /**
+   * Protobuf type {@code orwell.messages.Input}
+   *
+   * <pre>
+   * Notify the state of the inputs to control the robot
+   * </pre>
+   */
   public static final class Input extends
       com.google.protobuf.GeneratedMessageLite
       implements InputOrBuilder {
     // Use Input.newBuilder() to construct.
-    private Input(Builder builder) {
+    private Input(com.google.protobuf.GeneratedMessageLite.Builder builder) {
       super(builder);
+
     }
     private Input(boolean noInit) {}
-    
+
     private static final Input defaultInstance;
     public static Input getDefaultInstance() {
       return defaultInstance;
     }
-    
+
     public Input getDefaultInstanceForType() {
       return defaultInstance;
     }
-    
+
+    private Input(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 11: {
+              orwell.messages.Controller.Input.Move.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000001) == 0x00000001)) {
+                subBuilder = move_.toBuilder();
+              }
+              move_ = input.readGroup(1, orwell.messages.Controller.Input.Move.PARSER,
+                  extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(move_);
+                move_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000001;
+              break;
+            }
+            case 19: {
+              orwell.messages.Controller.Input.Fire.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = fire_.toBuilder();
+              }
+              fire_ = input.readGroup(2, orwell.messages.Controller.Input.Fire.PARSER,
+                  extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(fire_);
+                fire_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static com.google.protobuf.Parser<Input> PARSER =
+        new com.google.protobuf.AbstractParser<Input>() {
+      public Input parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Input(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Input> getParserForType() {
+      return PARSER;
+    }
+
     public interface MoveOrBuilder
         extends com.google.protobuf.MessageLiteOrBuilder {
-      
+
       // optional double left = 1;
+      /**
+       * <code>optional double left = 1;</code>
+       */
       boolean hasLeft();
+      /**
+       * <code>optional double left = 1;</code>
+       */
       double getLeft();
-      
+
       // optional double right = 2;
+      /**
+       * <code>optional double right = 2;</code>
+       */
       boolean hasRight();
+      /**
+       * <code>optional double right = 2;</code>
+       */
       double getRight();
     }
+    /**
+     * Protobuf type {@code orwell.messages.Input.Move}
+     */
     public static final class Move extends
         com.google.protobuf.GeneratedMessageLite
         implements MoveOrBuilder {
       // Use Move.newBuilder() to construct.
-      private Move(Builder builder) {
+      private Move(com.google.protobuf.GeneratedMessageLite.Builder builder) {
         super(builder);
+
       }
       private Move(boolean noInit) {}
-      
+
       private static final Move defaultInstance;
       public static Move getDefaultInstance() {
         return defaultInstance;
       }
-      
+
       public Move getDefaultInstanceForType() {
         return defaultInstance;
       }
-      
-      private int bitField0_;
-      // optional double left = 1;
-      public static final int LEFT_FIELD_NUMBER = 1;
-      private double left_;
-      public boolean hasLeft() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      public double getLeft() {
-        return left_;
-      }
-      
-      // optional double right = 2;
-      public static final int RIGHT_FIELD_NUMBER = 2;
-      private double right_;
-      public boolean hasRight() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      public double getRight() {
-        return right_;
-      }
-      
-      private void initFields() {
-        left_ = 0D;
-        right_ = 0D;
-      }
-      private byte memoizedIsInitialized = -1;
-      public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
-        
-        memoizedIsInitialized = 1;
-        return true;
-      }
-      
-      public void writeTo(com.google.protobuf.CodedOutputStream output)
-                          throws java.io.IOException {
-        getSerializedSize();
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          output.writeDouble(1, left_);
-        }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          output.writeDouble(2, right_);
-        }
-      }
-      
-      private int memoizedSerializedSize = -1;
-      public int getSerializedSize() {
-        int size = memoizedSerializedSize;
-        if (size != -1) return size;
-      
-        size = 0;
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeDoubleSize(1, left_);
-        }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeDoubleSize(2, right_);
-        }
-        memoizedSerializedSize = size;
-        return size;
-      }
-      
-      private static final long serialVersionUID = 0L;
-      @java.lang.Override
-      protected java.lang.Object writeReplace()
-          throws java.io.ObjectStreamException {
-        return super.writeReplace();
-      }
-      
-      public static orwell.messages.Controller.Input.Move parseFrom(
-          com.google.protobuf.ByteString data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data).buildParsed();
-      }
-      public static orwell.messages.Controller.Input.Move parseFrom(
-          com.google.protobuf.ByteString data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data, extensionRegistry)
-                 .buildParsed();
-      }
-      public static orwell.messages.Controller.Input.Move parseFrom(byte[] data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data).buildParsed();
-      }
-      public static orwell.messages.Controller.Input.Move parseFrom(
-          byte[] data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data, extensionRegistry)
-                 .buildParsed();
-      }
-      public static orwell.messages.Controller.Input.Move parseFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return newBuilder().mergeFrom(input).buildParsed();
-      }
-      public static orwell.messages.Controller.Input.Move parseFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return newBuilder().mergeFrom(input, extensionRegistry)
-                 .buildParsed();
-      }
-      public static orwell.messages.Controller.Input.Move parseDelimitedFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        Builder builder = newBuilder();
-        if (builder.mergeDelimitedFrom(input)) {
-          return builder.buildParsed();
-        } else {
-          return null;
-        }
-      }
-      public static orwell.messages.Controller.Input.Move parseDelimitedFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        Builder builder = newBuilder();
-        if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-          return builder.buildParsed();
-        } else {
-          return null;
-        }
-      }
-      public static orwell.messages.Controller.Input.Move parseFrom(
-          com.google.protobuf.CodedInputStream input)
-          throws java.io.IOException {
-        return newBuilder().mergeFrom(input).buildParsed();
-      }
-      public static orwell.messages.Controller.Input.Move parseFrom(
+
+      private Move(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return newBuilder().mergeFrom(input, extensionRegistry)
-                 .buildParsed();
-      }
-      
-      public static Builder newBuilder() { return Builder.create(); }
-      public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(orwell.messages.Controller.Input.Move prototype) {
-        return newBuilder().mergeFrom(prototype);
-      }
-      public Builder toBuilder() { return newBuilder(this); }
-      
-      public static final class Builder extends
-          com.google.protobuf.GeneratedMessageLite.Builder<
-            orwell.messages.Controller.Input.Move, Builder>
-          implements orwell.messages.Controller.Input.MoveOrBuilder {
-        // Construct using orwell.messages.Controller.Input.Move.newBuilder()
-        private Builder() {
-          maybeForceBuilderInitialization();
-        }
-        
-        private void maybeForceBuilderInitialization() {
-        }
-        private static Builder create() {
-          return new Builder();
-        }
-        
-        public Builder clear() {
-          super.clear();
-          left_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000001);
-          right_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000002);
-          return this;
-        }
-        
-        public Builder clone() {
-          return create().mergeFrom(buildPartial());
-        }
-        
-        public orwell.messages.Controller.Input.Move getDefaultInstanceForType() {
-          return orwell.messages.Controller.Input.Move.getDefaultInstance();
-        }
-        
-        public orwell.messages.Controller.Input.Move build() {
-          orwell.messages.Controller.Input.Move result = buildPartial();
-          if (!result.isInitialized()) {
-            throw newUninitializedMessageException(result);
-          }
-          return result;
-        }
-        
-        private orwell.messages.Controller.Input.Move buildParsed()
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          orwell.messages.Controller.Input.Move result = buildPartial();
-          if (!result.isInitialized()) {
-            throw newUninitializedMessageException(
-              result).asInvalidProtocolBufferException();
-          }
-          return result;
-        }
-        
-        public orwell.messages.Controller.Input.Move buildPartial() {
-          orwell.messages.Controller.Input.Move result = new orwell.messages.Controller.Input.Move(this);
-          int from_bitField0_ = bitField0_;
-          int to_bitField0_ = 0;
-          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-            to_bitField0_ |= 0x00000001;
-          }
-          result.left_ = left_;
-          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-            to_bitField0_ |= 0x00000002;
-          }
-          result.right_ = right_;
-          result.bitField0_ = to_bitField0_;
-          return result;
-        }
-        
-        public Builder mergeFrom(orwell.messages.Controller.Input.Move other) {
-          if (other == orwell.messages.Controller.Input.Move.getDefaultInstance()) return this;
-          if (other.hasLeft()) {
-            setLeft(other.getLeft());
-          }
-          if (other.hasRight()) {
-            setRight(other.getRight());
-          }
-          return this;
-        }
-        
-        public final boolean isInitialized() {
-          return true;
-        }
-        
-        public Builder mergeFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          while (true) {
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        initFields();
+        int mutable_bitField0_ = 0;
+        try {
+          boolean done = false;
+          while (!done) {
             int tag = input.readTag();
             switch (tag) {
               case 0:
-                
-                return this;
+                done = true;
+                break;
               default: {
-                if (!parseUnknownField(input, extensionRegistry, tag)) {
-                  
-                  return this;
+                if (!parseUnknownField(input,
+                                       extensionRegistry, tag)) {
+                  done = true;
                 }
                 break;
               }
@@ -705,331 +717,405 @@ public final class Controller {
               }
             }
           }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this);
+        } finally {
+          makeExtensionsImmutable();
         }
-        
-        private int bitField0_;
-        
-        // optional double left = 1;
-        private double left_ ;
-        public boolean hasLeft() {
-          return ((bitField0_ & 0x00000001) == 0x00000001);
-        }
-        public double getLeft() {
-          return left_;
-        }
-        public Builder setLeft(double value) {
-          bitField0_ |= 0x00000001;
-          left_ = value;
-          
-          return this;
-        }
-        public Builder clearLeft() {
-          bitField0_ = (bitField0_ & ~0x00000001);
-          left_ = 0D;
-          
-          return this;
-        }
-        
-        // optional double right = 2;
-        private double right_ ;
-        public boolean hasRight() {
-          return ((bitField0_ & 0x00000002) == 0x00000002);
-        }
-        public double getRight() {
-          return right_;
-        }
-        public Builder setRight(double value) {
-          bitField0_ |= 0x00000002;
-          right_ = value;
-          
-          return this;
-        }
-        public Builder clearRight() {
-          bitField0_ = (bitField0_ & ~0x00000002);
-          right_ = 0D;
-          
-          return this;
-        }
-        
-        // @@protoc_insertion_point(builder_scope:orwell.messages.Input.Move)
       }
-      
-      static {
-        defaultInstance = new Move(true);
-        defaultInstance.initFields();
+      public static com.google.protobuf.Parser<Move> PARSER =
+          new com.google.protobuf.AbstractParser<Move>() {
+        public Move parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new Move(input, extensionRegistry);
+        }
+      };
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<Move> getParserForType() {
+        return PARSER;
       }
-      
-      // @@protoc_insertion_point(class_scope:orwell.messages.Input.Move)
-    }
-    
-    public interface FireOrBuilder
-        extends com.google.protobuf.MessageLiteOrBuilder {
-      
-      // optional bool weapon1 = 1;
-      boolean hasWeapon1();
-      boolean getWeapon1();
-      
-      // optional bool weapon2 = 2;
-      boolean hasWeapon2();
-      boolean getWeapon2();
-    }
-    public static final class Fire extends
-        com.google.protobuf.GeneratedMessageLite
-        implements FireOrBuilder {
-      // Use Fire.newBuilder() to construct.
-      private Fire(Builder builder) {
-        super(builder);
-      }
-      private Fire(boolean noInit) {}
-      
-      private static final Fire defaultInstance;
-      public static Fire getDefaultInstance() {
-        return defaultInstance;
-      }
-      
-      public Fire getDefaultInstanceForType() {
-        return defaultInstance;
-      }
-      
+
       private int bitField0_;
-      // optional bool weapon1 = 1;
-      public static final int WEAPON1_FIELD_NUMBER = 1;
-      private boolean weapon1_;
-      public boolean hasWeapon1() {
+      // optional double left = 1;
+      public static final int LEFT_FIELD_NUMBER = 1;
+      private double left_;
+      /**
+       * <code>optional double left = 1;</code>
+       */
+      public boolean hasLeft() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
-      public boolean getWeapon1() {
-        return weapon1_;
+      /**
+       * <code>optional double left = 1;</code>
+       */
+      public double getLeft() {
+        return left_;
       }
-      
-      // optional bool weapon2 = 2;
-      public static final int WEAPON2_FIELD_NUMBER = 2;
-      private boolean weapon2_;
-      public boolean hasWeapon2() {
+
+      // optional double right = 2;
+      public static final int RIGHT_FIELD_NUMBER = 2;
+      private double right_;
+      /**
+       * <code>optional double right = 2;</code>
+       */
+      public boolean hasRight() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
-      public boolean getWeapon2() {
-        return weapon2_;
+      /**
+       * <code>optional double right = 2;</code>
+       */
+      public double getRight() {
+        return right_;
       }
-      
+
       private void initFields() {
-        weapon1_ = false;
-        weapon2_ = false;
+        left_ = 0D;
+        right_ = 0D;
       }
       private byte memoizedIsInitialized = -1;
       public final boolean isInitialized() {
         byte isInitialized = memoizedIsInitialized;
         if (isInitialized != -1) return isInitialized == 1;
-        
+
         memoizedIsInitialized = 1;
         return true;
       }
-      
+
       public void writeTo(com.google.protobuf.CodedOutputStream output)
                           throws java.io.IOException {
         getSerializedSize();
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          output.writeBool(1, weapon1_);
+          output.writeDouble(1, left_);
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          output.writeBool(2, weapon2_);
+          output.writeDouble(2, right_);
         }
       }
-      
+
       private int memoizedSerializedSize = -1;
       public int getSerializedSize() {
         int size = memoizedSerializedSize;
         if (size != -1) return size;
-      
+
         size = 0;
         if (((bitField0_ & 0x00000001) == 0x00000001)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeBoolSize(1, weapon1_);
+            .computeDoubleSize(1, left_);
         }
         if (((bitField0_ & 0x00000002) == 0x00000002)) {
           size += com.google.protobuf.CodedOutputStream
-            .computeBoolSize(2, weapon2_);
+            .computeDoubleSize(2, right_);
         }
         memoizedSerializedSize = size;
         return size;
       }
-      
+
       private static final long serialVersionUID = 0L;
       @java.lang.Override
       protected java.lang.Object writeReplace()
           throws java.io.ObjectStreamException {
         return super.writeReplace();
       }
-      
-      public static orwell.messages.Controller.Input.Fire parseFrom(
+
+      public static orwell.messages.Controller.Input.Move parseFrom(
           com.google.protobuf.ByteString data)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data).buildParsed();
+        return PARSER.parseFrom(data);
       }
-      public static orwell.messages.Controller.Input.Fire parseFrom(
+      public static orwell.messages.Controller.Input.Move parseFrom(
           com.google.protobuf.ByteString data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data, extensionRegistry)
-                 .buildParsed();
+        return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static orwell.messages.Controller.Input.Fire parseFrom(byte[] data)
+      public static orwell.messages.Controller.Input.Move parseFrom(byte[] data)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data).buildParsed();
+        return PARSER.parseFrom(data);
       }
-      public static orwell.messages.Controller.Input.Fire parseFrom(
+      public static orwell.messages.Controller.Input.Move parseFrom(
           byte[] data,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return newBuilder().mergeFrom(data, extensionRegistry)
-                 .buildParsed();
+        return PARSER.parseFrom(data, extensionRegistry);
       }
-      public static orwell.messages.Controller.Input.Fire parseFrom(java.io.InputStream input)
+      public static orwell.messages.Controller.Input.Move parseFrom(java.io.InputStream input)
           throws java.io.IOException {
-        return newBuilder().mergeFrom(input).buildParsed();
+        return PARSER.parseFrom(input);
       }
-      public static orwell.messages.Controller.Input.Fire parseFrom(
+      public static orwell.messages.Controller.Input.Move parseFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        return newBuilder().mergeFrom(input, extensionRegistry)
-                 .buildParsed();
+        return PARSER.parseFrom(input, extensionRegistry);
       }
-      public static orwell.messages.Controller.Input.Fire parseDelimitedFrom(java.io.InputStream input)
+      public static orwell.messages.Controller.Input.Move parseDelimitedFrom(java.io.InputStream input)
           throws java.io.IOException {
-        Builder builder = newBuilder();
-        if (builder.mergeDelimitedFrom(input)) {
-          return builder.buildParsed();
-        } else {
-          return null;
-        }
+        return PARSER.parseDelimitedFrom(input);
       }
-      public static orwell.messages.Controller.Input.Fire parseDelimitedFrom(
+      public static orwell.messages.Controller.Input.Move parseDelimitedFrom(
           java.io.InputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        Builder builder = newBuilder();
-        if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-          return builder.buildParsed();
-        } else {
-          return null;
-        }
+        return PARSER.parseDelimitedFrom(input, extensionRegistry);
       }
-      public static orwell.messages.Controller.Input.Fire parseFrom(
+      public static orwell.messages.Controller.Input.Move parseFrom(
           com.google.protobuf.CodedInputStream input)
           throws java.io.IOException {
-        return newBuilder().mergeFrom(input).buildParsed();
+        return PARSER.parseFrom(input);
       }
-      public static orwell.messages.Controller.Input.Fire parseFrom(
+      public static orwell.messages.Controller.Input.Move parseFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        return newBuilder().mergeFrom(input, extensionRegistry)
-                 .buildParsed();
+        return PARSER.parseFrom(input, extensionRegistry);
       }
-      
+
       public static Builder newBuilder() { return Builder.create(); }
       public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(orwell.messages.Controller.Input.Fire prototype) {
+      public static Builder newBuilder(orwell.messages.Controller.Input.Move prototype) {
         return newBuilder().mergeFrom(prototype);
       }
       public Builder toBuilder() { return newBuilder(this); }
-      
+
+      /**
+       * Protobuf type {@code orwell.messages.Input.Move}
+       */
       public static final class Builder extends
           com.google.protobuf.GeneratedMessageLite.Builder<
-            orwell.messages.Controller.Input.Fire, Builder>
-          implements orwell.messages.Controller.Input.FireOrBuilder {
-        // Construct using orwell.messages.Controller.Input.Fire.newBuilder()
+            orwell.messages.Controller.Input.Move, Builder>
+          implements orwell.messages.Controller.Input.MoveOrBuilder {
+        // Construct using orwell.messages.Controller.Input.Move.newBuilder()
         private Builder() {
           maybeForceBuilderInitialization();
         }
-        
+
         private void maybeForceBuilderInitialization() {
         }
         private static Builder create() {
           return new Builder();
         }
-        
+
         public Builder clear() {
           super.clear();
-          weapon1_ = false;
+          left_ = 0D;
           bitField0_ = (bitField0_ & ~0x00000001);
-          weapon2_ = false;
+          right_ = 0D;
           bitField0_ = (bitField0_ & ~0x00000002);
           return this;
         }
-        
+
         public Builder clone() {
           return create().mergeFrom(buildPartial());
         }
-        
-        public orwell.messages.Controller.Input.Fire getDefaultInstanceForType() {
-          return orwell.messages.Controller.Input.Fire.getDefaultInstance();
+
+        public orwell.messages.Controller.Input.Move getDefaultInstanceForType() {
+          return orwell.messages.Controller.Input.Move.getDefaultInstance();
         }
-        
-        public orwell.messages.Controller.Input.Fire build() {
-          orwell.messages.Controller.Input.Fire result = buildPartial();
+
+        public orwell.messages.Controller.Input.Move build() {
+          orwell.messages.Controller.Input.Move result = buildPartial();
           if (!result.isInitialized()) {
             throw newUninitializedMessageException(result);
           }
           return result;
         }
-        
-        private orwell.messages.Controller.Input.Fire buildParsed()
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          orwell.messages.Controller.Input.Fire result = buildPartial();
-          if (!result.isInitialized()) {
-            throw newUninitializedMessageException(
-              result).asInvalidProtocolBufferException();
-          }
-          return result;
-        }
-        
-        public orwell.messages.Controller.Input.Fire buildPartial() {
-          orwell.messages.Controller.Input.Fire result = new orwell.messages.Controller.Input.Fire(this);
+
+        public orwell.messages.Controller.Input.Move buildPartial() {
+          orwell.messages.Controller.Input.Move result = new orwell.messages.Controller.Input.Move(this);
           int from_bitField0_ = bitField0_;
           int to_bitField0_ = 0;
           if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
             to_bitField0_ |= 0x00000001;
           }
-          result.weapon1_ = weapon1_;
+          result.left_ = left_;
           if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
             to_bitField0_ |= 0x00000002;
           }
-          result.weapon2_ = weapon2_;
+          result.right_ = right_;
           result.bitField0_ = to_bitField0_;
           return result;
         }
-        
-        public Builder mergeFrom(orwell.messages.Controller.Input.Fire other) {
-          if (other == orwell.messages.Controller.Input.Fire.getDefaultInstance()) return this;
-          if (other.hasWeapon1()) {
-            setWeapon1(other.getWeapon1());
+
+        public Builder mergeFrom(orwell.messages.Controller.Input.Move other) {
+          if (other == orwell.messages.Controller.Input.Move.getDefaultInstance()) return this;
+          if (other.hasLeft()) {
+            setLeft(other.getLeft());
           }
-          if (other.hasWeapon2()) {
-            setWeapon2(other.getWeapon2());
+          if (other.hasRight()) {
+            setRight(other.getRight());
           }
           return this;
         }
-        
+
         public final boolean isInitialized() {
           return true;
         }
-        
+
         public Builder mergeFrom(
             com.google.protobuf.CodedInputStream input,
             com.google.protobuf.ExtensionRegistryLite extensionRegistry)
             throws java.io.IOException {
-          while (true) {
+          orwell.messages.Controller.Input.Move parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (orwell.messages.Controller.Input.Move) e.getUnfinishedMessage();
+            throw e;
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
+        private int bitField0_;
+
+        // optional double left = 1;
+        private double left_ ;
+        /**
+         * <code>optional double left = 1;</code>
+         */
+        public boolean hasLeft() {
+          return ((bitField0_ & 0x00000001) == 0x00000001);
+        }
+        /**
+         * <code>optional double left = 1;</code>
+         */
+        public double getLeft() {
+          return left_;
+        }
+        /**
+         * <code>optional double left = 1;</code>
+         */
+        public Builder setLeft(double value) {
+          bitField0_ |= 0x00000001;
+          left_ = value;
+          
+          return this;
+        }
+        /**
+         * <code>optional double left = 1;</code>
+         */
+        public Builder clearLeft() {
+          bitField0_ = (bitField0_ & ~0x00000001);
+          left_ = 0D;
+          
+          return this;
+        }
+
+        // optional double right = 2;
+        private double right_ ;
+        /**
+         * <code>optional double right = 2;</code>
+         */
+        public boolean hasRight() {
+          return ((bitField0_ & 0x00000002) == 0x00000002);
+        }
+        /**
+         * <code>optional double right = 2;</code>
+         */
+        public double getRight() {
+          return right_;
+        }
+        /**
+         * <code>optional double right = 2;</code>
+         */
+        public Builder setRight(double value) {
+          bitField0_ |= 0x00000002;
+          right_ = value;
+          
+          return this;
+        }
+        /**
+         * <code>optional double right = 2;</code>
+         */
+        public Builder clearRight() {
+          bitField0_ = (bitField0_ & ~0x00000002);
+          right_ = 0D;
+          
+          return this;
+        }
+
+        // @@protoc_insertion_point(builder_scope:orwell.messages.Input.Move)
+      }
+
+      static {
+        defaultInstance = new Move(true);
+        defaultInstance.initFields();
+      }
+
+      // @@protoc_insertion_point(class_scope:orwell.messages.Input.Move)
+    }
+
+    public interface FireOrBuilder
+        extends com.google.protobuf.MessageLiteOrBuilder {
+
+      // optional bool weapon1 = 1;
+      /**
+       * <code>optional bool weapon1 = 1;</code>
+       */
+      boolean hasWeapon1();
+      /**
+       * <code>optional bool weapon1 = 1;</code>
+       */
+      boolean getWeapon1();
+
+      // optional bool weapon2 = 2;
+      /**
+       * <code>optional bool weapon2 = 2;</code>
+       */
+      boolean hasWeapon2();
+      /**
+       * <code>optional bool weapon2 = 2;</code>
+       */
+      boolean getWeapon2();
+    }
+    /**
+     * Protobuf type {@code orwell.messages.Input.Fire}
+     */
+    public static final class Fire extends
+        com.google.protobuf.GeneratedMessageLite
+        implements FireOrBuilder {
+      // Use Fire.newBuilder() to construct.
+      private Fire(com.google.protobuf.GeneratedMessageLite.Builder builder) {
+        super(builder);
+
+      }
+      private Fire(boolean noInit) {}
+
+      private static final Fire defaultInstance;
+      public static Fire getDefaultInstance() {
+        return defaultInstance;
+      }
+
+      public Fire getDefaultInstanceForType() {
+        return defaultInstance;
+      }
+
+      private Fire(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        initFields();
+        int mutable_bitField0_ = 0;
+        try {
+          boolean done = false;
+          while (!done) {
             int tag = input.readTag();
             switch (tag) {
               case 0:
-                
-                return this;
+                done = true;
+                break;
               default: {
-                if (!parseUnknownField(input, extensionRegistry, tag)) {
-                  
-                  return this;
+                if (!parseUnknownField(input,
+                                       extensionRegistry, tag)) {
+                  done = true;
                 }
                 break;
               }
@@ -1045,84 +1131,375 @@ public final class Controller {
               }
             }
           }
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          throw e.setUnfinishedMessage(this);
+        } catch (java.io.IOException e) {
+          throw new com.google.protobuf.InvalidProtocolBufferException(
+              e.getMessage()).setUnfinishedMessage(this);
+        } finally {
+          makeExtensionsImmutable();
         }
-        
+      }
+      public static com.google.protobuf.Parser<Fire> PARSER =
+          new com.google.protobuf.AbstractParser<Fire>() {
+        public Fire parsePartialFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws com.google.protobuf.InvalidProtocolBufferException {
+          return new Fire(input, extensionRegistry);
+        }
+      };
+
+      @java.lang.Override
+      public com.google.protobuf.Parser<Fire> getParserForType() {
+        return PARSER;
+      }
+
+      private int bitField0_;
+      // optional bool weapon1 = 1;
+      public static final int WEAPON1_FIELD_NUMBER = 1;
+      private boolean weapon1_;
+      /**
+       * <code>optional bool weapon1 = 1;</code>
+       */
+      public boolean hasWeapon1() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional bool weapon1 = 1;</code>
+       */
+      public boolean getWeapon1() {
+        return weapon1_;
+      }
+
+      // optional bool weapon2 = 2;
+      public static final int WEAPON2_FIELD_NUMBER = 2;
+      private boolean weapon2_;
+      /**
+       * <code>optional bool weapon2 = 2;</code>
+       */
+      public boolean hasWeapon2() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional bool weapon2 = 2;</code>
+       */
+      public boolean getWeapon2() {
+        return weapon2_;
+      }
+
+      private void initFields() {
+        weapon1_ = false;
+        weapon2_ = false;
+      }
+      private byte memoizedIsInitialized = -1;
+      public final boolean isInitialized() {
+        byte isInitialized = memoizedIsInitialized;
+        if (isInitialized != -1) return isInitialized == 1;
+
+        memoizedIsInitialized = 1;
+        return true;
+      }
+
+      public void writeTo(com.google.protobuf.CodedOutputStream output)
+                          throws java.io.IOException {
+        getSerializedSize();
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          output.writeBool(1, weapon1_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          output.writeBool(2, weapon2_);
+        }
+      }
+
+      private int memoizedSerializedSize = -1;
+      public int getSerializedSize() {
+        int size = memoizedSerializedSize;
+        if (size != -1) return size;
+
+        size = 0;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBoolSize(1, weapon1_);
+        }
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          size += com.google.protobuf.CodedOutputStream
+            .computeBoolSize(2, weapon2_);
+        }
+        memoizedSerializedSize = size;
+        return size;
+      }
+
+      private static final long serialVersionUID = 0L;
+      @java.lang.Override
+      protected java.lang.Object writeReplace()
+          throws java.io.ObjectStreamException {
+        return super.writeReplace();
+      }
+
+      public static orwell.messages.Controller.Input.Fire parseFrom(
+          com.google.protobuf.ByteString data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static orwell.messages.Controller.Input.Fire parseFrom(
+          com.google.protobuf.ByteString data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static orwell.messages.Controller.Input.Fire parseFrom(byte[] data)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data);
+      }
+      public static orwell.messages.Controller.Input.Fire parseFrom(
+          byte[] data,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return PARSER.parseFrom(data, extensionRegistry);
+      }
+      public static orwell.messages.Controller.Input.Fire parseFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static orwell.messages.Controller.Input.Fire parseFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+      public static orwell.messages.Controller.Input.Fire parseDelimitedFrom(java.io.InputStream input)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input);
+      }
+      public static orwell.messages.Controller.Input.Fire parseDelimitedFrom(
+          java.io.InputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseDelimitedFrom(input, extensionRegistry);
+      }
+      public static orwell.messages.Controller.Input.Fire parseFrom(
+          com.google.protobuf.CodedInputStream input)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input);
+      }
+      public static orwell.messages.Controller.Input.Fire parseFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        return PARSER.parseFrom(input, extensionRegistry);
+      }
+
+      public static Builder newBuilder() { return Builder.create(); }
+      public Builder newBuilderForType() { return newBuilder(); }
+      public static Builder newBuilder(orwell.messages.Controller.Input.Fire prototype) {
+        return newBuilder().mergeFrom(prototype);
+      }
+      public Builder toBuilder() { return newBuilder(this); }
+
+      /**
+       * Protobuf type {@code orwell.messages.Input.Fire}
+       */
+      public static final class Builder extends
+          com.google.protobuf.GeneratedMessageLite.Builder<
+            orwell.messages.Controller.Input.Fire, Builder>
+          implements orwell.messages.Controller.Input.FireOrBuilder {
+        // Construct using orwell.messages.Controller.Input.Fire.newBuilder()
+        private Builder() {
+          maybeForceBuilderInitialization();
+        }
+
+        private void maybeForceBuilderInitialization() {
+        }
+        private static Builder create() {
+          return new Builder();
+        }
+
+        public Builder clear() {
+          super.clear();
+          weapon1_ = false;
+          bitField0_ = (bitField0_ & ~0x00000001);
+          weapon2_ = false;
+          bitField0_ = (bitField0_ & ~0x00000002);
+          return this;
+        }
+
+        public Builder clone() {
+          return create().mergeFrom(buildPartial());
+        }
+
+        public orwell.messages.Controller.Input.Fire getDefaultInstanceForType() {
+          return orwell.messages.Controller.Input.Fire.getDefaultInstance();
+        }
+
+        public orwell.messages.Controller.Input.Fire build() {
+          orwell.messages.Controller.Input.Fire result = buildPartial();
+          if (!result.isInitialized()) {
+            throw newUninitializedMessageException(result);
+          }
+          return result;
+        }
+
+        public orwell.messages.Controller.Input.Fire buildPartial() {
+          orwell.messages.Controller.Input.Fire result = new orwell.messages.Controller.Input.Fire(this);
+          int from_bitField0_ = bitField0_;
+          int to_bitField0_ = 0;
+          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+            to_bitField0_ |= 0x00000001;
+          }
+          result.weapon1_ = weapon1_;
+          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+            to_bitField0_ |= 0x00000002;
+          }
+          result.weapon2_ = weapon2_;
+          result.bitField0_ = to_bitField0_;
+          return result;
+        }
+
+        public Builder mergeFrom(orwell.messages.Controller.Input.Fire other) {
+          if (other == orwell.messages.Controller.Input.Fire.getDefaultInstance()) return this;
+          if (other.hasWeapon1()) {
+            setWeapon1(other.getWeapon1());
+          }
+          if (other.hasWeapon2()) {
+            setWeapon2(other.getWeapon2());
+          }
+          return this;
+        }
+
+        public final boolean isInitialized() {
+          return true;
+        }
+
+        public Builder mergeFrom(
+            com.google.protobuf.CodedInputStream input,
+            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+            throws java.io.IOException {
+          orwell.messages.Controller.Input.Fire parsedMessage = null;
+          try {
+            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+            parsedMessage = (orwell.messages.Controller.Input.Fire) e.getUnfinishedMessage();
+            throw e;
+          } finally {
+            if (parsedMessage != null) {
+              mergeFrom(parsedMessage);
+            }
+          }
+          return this;
+        }
         private int bitField0_;
-        
+
         // optional bool weapon1 = 1;
         private boolean weapon1_ ;
+        /**
+         * <code>optional bool weapon1 = 1;</code>
+         */
         public boolean hasWeapon1() {
           return ((bitField0_ & 0x00000001) == 0x00000001);
         }
+        /**
+         * <code>optional bool weapon1 = 1;</code>
+         */
         public boolean getWeapon1() {
           return weapon1_;
         }
+        /**
+         * <code>optional bool weapon1 = 1;</code>
+         */
         public Builder setWeapon1(boolean value) {
           bitField0_ |= 0x00000001;
           weapon1_ = value;
           
           return this;
         }
+        /**
+         * <code>optional bool weapon1 = 1;</code>
+         */
         public Builder clearWeapon1() {
           bitField0_ = (bitField0_ & ~0x00000001);
           weapon1_ = false;
           
           return this;
         }
-        
+
         // optional bool weapon2 = 2;
         private boolean weapon2_ ;
+        /**
+         * <code>optional bool weapon2 = 2;</code>
+         */
         public boolean hasWeapon2() {
           return ((bitField0_ & 0x00000002) == 0x00000002);
         }
+        /**
+         * <code>optional bool weapon2 = 2;</code>
+         */
         public boolean getWeapon2() {
           return weapon2_;
         }
+        /**
+         * <code>optional bool weapon2 = 2;</code>
+         */
         public Builder setWeapon2(boolean value) {
           bitField0_ |= 0x00000002;
           weapon2_ = value;
           
           return this;
         }
+        /**
+         * <code>optional bool weapon2 = 2;</code>
+         */
         public Builder clearWeapon2() {
           bitField0_ = (bitField0_ & ~0x00000002);
           weapon2_ = false;
           
           return this;
         }
-        
+
         // @@protoc_insertion_point(builder_scope:orwell.messages.Input.Fire)
       }
-      
+
       static {
         defaultInstance = new Fire(true);
         defaultInstance.initFields();
       }
-      
+
       // @@protoc_insertion_point(class_scope:orwell.messages.Input.Fire)
     }
-    
+
     private int bitField0_;
     // optional group Move = 1 {
     public static final int MOVE_FIELD_NUMBER = 1;
     private orwell.messages.Controller.Input.Move move_;
+    /**
+     * <code>optional group Move = 1 { ... }</code>
+     */
     public boolean hasMove() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
+    /**
+     * <code>optional group Move = 1 { ... }</code>
+     */
     public orwell.messages.Controller.Input.Move getMove() {
       return move_;
     }
-    
+
     // optional group Fire = 2 {
     public static final int FIRE_FIELD_NUMBER = 2;
     private orwell.messages.Controller.Input.Fire fire_;
+    /**
+     * <code>optional group Fire = 2 { ... }</code>
+     */
     public boolean hasFire() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
+    /**
+     * <code>optional group Fire = 2 { ... }</code>
+     */
     public orwell.messages.Controller.Input.Fire getFire() {
       return fire_;
     }
-    
+
     private void initFields() {
       move_ = orwell.messages.Controller.Input.Move.getDefaultInstance();
       fire_ = orwell.messages.Controller.Input.Fire.getDefaultInstance();
@@ -1131,11 +1508,11 @@ public final class Controller {
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
-      
+
       memoizedIsInitialized = 1;
       return true;
     }
-    
+
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       getSerializedSize();
@@ -1146,12 +1523,12 @@ public final class Controller {
         output.writeGroup(2, fire_);
       }
     }
-    
+
     private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
       int size = memoizedSerializedSize;
       if (size != -1) return size;
-    
+
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
@@ -1164,88 +1541,81 @@ public final class Controller {
       memoizedSerializedSize = size;
       return size;
     }
-    
+
     private static final long serialVersionUID = 0L;
     @java.lang.Override
     protected java.lang.Object writeReplace()
         throws java.io.ObjectStreamException {
       return super.writeReplace();
     }
-    
+
     public static orwell.messages.Controller.Input parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static orwell.messages.Controller.Input parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static orwell.messages.Controller.Input parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data).buildParsed();
+      return PARSER.parseFrom(data);
     }
     public static orwell.messages.Controller.Input parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return newBuilder().mergeFrom(data, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(data, extensionRegistry);
     }
     public static orwell.messages.Controller.Input parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static orwell.messages.Controller.Input parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static orwell.messages.Controller.Input parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input);
     }
     public static orwell.messages.Controller.Input parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      Builder builder = newBuilder();
-      if (builder.mergeDelimitedFrom(input, extensionRegistry)) {
-        return builder.buildParsed();
-      } else {
-        return null;
-      }
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static orwell.messages.Controller.Input parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input).buildParsed();
+      return PARSER.parseFrom(input);
     }
     public static orwell.messages.Controller.Input parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return newBuilder().mergeFrom(input, extensionRegistry)
-               .buildParsed();
+      return PARSER.parseFrom(input, extensionRegistry);
     }
-    
+
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder(orwell.messages.Controller.Input prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
-    
+
+    /**
+     * Protobuf type {@code orwell.messages.Input}
+     *
+     * <pre>
+     * Notify the state of the inputs to control the robot
+     * </pre>
+     */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageLite.Builder<
           orwell.messages.Controller.Input, Builder>
@@ -1254,13 +1624,13 @@ public final class Controller {
       private Builder() {
         maybeForceBuilderInitialization();
       }
-      
+
       private void maybeForceBuilderInitialization() {
       }
       private static Builder create() {
         return new Builder();
       }
-      
+
       public Builder clear() {
         super.clear();
         move_ = orwell.messages.Controller.Input.Move.getDefaultInstance();
@@ -1269,15 +1639,15 @@ public final class Controller {
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
-      
+
       public Builder clone() {
         return create().mergeFrom(buildPartial());
       }
-      
+
       public orwell.messages.Controller.Input getDefaultInstanceForType() {
         return orwell.messages.Controller.Input.getDefaultInstance();
       }
-      
+
       public orwell.messages.Controller.Input build() {
         orwell.messages.Controller.Input result = buildPartial();
         if (!result.isInitialized()) {
@@ -1285,17 +1655,7 @@ public final class Controller {
         }
         return result;
       }
-      
-      private orwell.messages.Controller.Input buildParsed()
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        orwell.messages.Controller.Input result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(
-            result).asInvalidProtocolBufferException();
-        }
-        return result;
-      }
-      
+
       public orwell.messages.Controller.Input buildPartial() {
         orwell.messages.Controller.Input result = new orwell.messages.Controller.Input(this);
         int from_bitField0_ = bitField0_;
@@ -1311,7 +1671,7 @@ public final class Controller {
         result.bitField0_ = to_bitField0_;
         return result;
       }
-      
+
       public Builder mergeFrom(orwell.messages.Controller.Input other) {
         if (other == orwell.messages.Controller.Input.getDefaultInstance()) return this;
         if (other.hasMove()) {
@@ -1322,76 +1682,69 @@ public final class Controller {
         }
         return this;
       }
-      
+
       public final boolean isInitialized() {
         return true;
       }
-      
+
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              
-              return this;
-            default: {
-              if (!parseUnknownField(input, extensionRegistry, tag)) {
-                
-                return this;
-              }
-              break;
-            }
-            case 11: {
-              orwell.messages.Controller.Input.Move.Builder subBuilder = orwell.messages.Controller.Input.Move.newBuilder();
-              if (hasMove()) {
-                subBuilder.mergeFrom(getMove());
-              }
-              input.readGroup(1, subBuilder, extensionRegistry);
-              setMove(subBuilder.buildPartial());
-              break;
-            }
-            case 19: {
-              orwell.messages.Controller.Input.Fire.Builder subBuilder = orwell.messages.Controller.Input.Fire.newBuilder();
-              if (hasFire()) {
-                subBuilder.mergeFrom(getFire());
-              }
-              input.readGroup(2, subBuilder, extensionRegistry);
-              setFire(subBuilder.buildPartial());
-              break;
-            }
+        orwell.messages.Controller.Input parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (orwell.messages.Controller.Input) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
           }
         }
+        return this;
       }
-      
       private int bitField0_;
-      
+
       // optional group Move = 1 {
       private orwell.messages.Controller.Input.Move move_ = orwell.messages.Controller.Input.Move.getDefaultInstance();
+      /**
+       * <code>optional group Move = 1 { ... }</code>
+       */
       public boolean hasMove() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
+      /**
+       * <code>optional group Move = 1 { ... }</code>
+       */
       public orwell.messages.Controller.Input.Move getMove() {
         return move_;
       }
+      /**
+       * <code>optional group Move = 1 { ... }</code>
+       */
       public Builder setMove(orwell.messages.Controller.Input.Move value) {
         if (value == null) {
           throw new NullPointerException();
         }
         move_ = value;
-        
+
         bitField0_ |= 0x00000001;
         return this;
       }
+      /**
+       * <code>optional group Move = 1 { ... }</code>
+       */
       public Builder setMove(
           orwell.messages.Controller.Input.Move.Builder builderForValue) {
         move_ = builderForValue.build();
-        
+
         bitField0_ |= 0x00000001;
         return this;
       }
+      /**
+       * <code>optional group Move = 1 { ... }</code>
+       */
       public Builder mergeMove(orwell.messages.Controller.Input.Move value) {
         if (((bitField0_ & 0x00000001) == 0x00000001) &&
             move_ != orwell.messages.Controller.Input.Move.getDefaultInstance()) {
@@ -1400,41 +1753,59 @@ public final class Controller {
         } else {
           move_ = value;
         }
-        
+
         bitField0_ |= 0x00000001;
         return this;
       }
+      /**
+       * <code>optional group Move = 1 { ... }</code>
+       */
       public Builder clearMove() {
         move_ = orwell.messages.Controller.Input.Move.getDefaultInstance();
-        
+
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
-      
+
       // optional group Fire = 2 {
       private orwell.messages.Controller.Input.Fire fire_ = orwell.messages.Controller.Input.Fire.getDefaultInstance();
+      /**
+       * <code>optional group Fire = 2 { ... }</code>
+       */
       public boolean hasFire() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
+      /**
+       * <code>optional group Fire = 2 { ... }</code>
+       */
       public orwell.messages.Controller.Input.Fire getFire() {
         return fire_;
       }
+      /**
+       * <code>optional group Fire = 2 { ... }</code>
+       */
       public Builder setFire(orwell.messages.Controller.Input.Fire value) {
         if (value == null) {
           throw new NullPointerException();
         }
         fire_ = value;
-        
+
         bitField0_ |= 0x00000002;
         return this;
       }
+      /**
+       * <code>optional group Fire = 2 { ... }</code>
+       */
       public Builder setFire(
           orwell.messages.Controller.Input.Fire.Builder builderForValue) {
         fire_ = builderForValue.build();
-        
+
         bitField0_ |= 0x00000002;
         return this;
       }
+      /**
+       * <code>optional group Fire = 2 { ... }</code>
+       */
       public Builder mergeFire(orwell.messages.Controller.Input.Fire value) {
         if (((bitField0_ & 0x00000002) == 0x00000002) &&
             fire_ != orwell.messages.Controller.Input.Fire.getDefaultInstance()) {
@@ -1443,31 +1814,34 @@ public final class Controller {
         } else {
           fire_ = value;
         }
-        
+
         bitField0_ |= 0x00000002;
         return this;
       }
+      /**
+       * <code>optional group Fire = 2 { ... }</code>
+       */
       public Builder clearFire() {
         fire_ = orwell.messages.Controller.Input.Fire.getDefaultInstance();
-        
+
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
-      
+
       // @@protoc_insertion_point(builder_scope:orwell.messages.Input)
     }
-    
+
     static {
       defaultInstance = new Input(true);
       defaultInstance.initFields();
     }
-    
+
     // @@protoc_insertion_point(class_scope:orwell.messages.Input)
   }
-  
-  
+
+
   static {
   }
-  
+
   // @@protoc_insertion_point(outer_class_scope)
 }

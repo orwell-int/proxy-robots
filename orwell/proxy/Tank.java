@@ -1,219 +1,297 @@
 package orwell.proxy;
 
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
 import orwell.common.UnitMessage;
 import orwell.common.UnitMessageType;
-import orwell.messages.Controller;
-import orwell.messages.Controller.Hello;
 import orwell.messages.Controller.Input;
 import orwell.messages.Robot;
+import orwell.messages.Robot.Register;
+import orwell.messages.Robot.RobotState;
+import orwell.messages.ServerGame.EnumTeam;
+import orwell.messages.ServerGame.Registered;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
 
-public class Tank {
+public class Tank implements IRobot {
+	final static Logger logback = LoggerFactory.getLogger(Tank.class); 
 
 	private static final double STARTING_LIFE_POINTS = 100;
-	private String routingID;
+	private String routingID = UUID.randomUUID().toString();
 	private String bluetoothName;
 	private String bluetoothID;
-	private Robot.RobotState.Builder tankStateBuilder = Robot.RobotState.newBuilder();
-	private Robot.RobotState.Move.Builder moveBuilder = Robot.RobotState.Move.newBuilder();
+	private Robot.RobotState.Builder tankStateBuilder = Robot.RobotState
+			.newBuilder();
+	private Robot.RobotState.Move.Builder moveBuilder = Robot.RobotState.Move
+			.newBuilder();
+	private Robot.Register.Builder registerBuilder = Robot.Register
+			.newBuilder();
 	private Input currentControllerInput;
-	private Hello currentControllerHello;
-	private boolean isControllerReady;
-	private String controllerName;
+	private Registered serverGameRegistered;
 	private NXTInfo nxtInfo;
-	private MessageFramework mfTank = new MessageFramework();
+	private MessageFramework mfTank;
+	private Camera camera;
+	private Register register;
+	private String image;
 
-	public Tank(String bluetoothName, String bluetoothID)
-	{
+	private EnumRegistrationState registrationState = EnumRegistrationState.NOT_REGISTERED;
+	private EnumConnectionState connectionState = EnumConnectionState.NOT_CONNECTED;
+	private EnumTeam team;
+
+	public Tank(String bluetoothName, String bluetoothID, Camera camera,
+			MessageFramework mf, String image) {
 		setBluetoothName(bluetoothName);
 		setBluetoothID(bluetoothID);
+		this.camera = camera;
 		setActive(false);
 		setLifePoints(STARTING_LIFE_POINTS);
 		setMoveLeft(0);
 		setMoveRight(0);
-		nxtInfo = new NXTInfo(NXTCommFactory.BLUETOOTH, bluetoothName, bluetoothID);
+		nxtInfo = new NXTInfo(NXTCommFactory.BLUETOOTH, bluetoothName,
+				bluetoothID);
+		mfTank = mf;
+		this.image = image;
+	}
+
+	public Tank(String bluetoothName, String bluetoothID, Camera camera, String image) {
+		this(bluetoothName, bluetoothID, camera, new MessageFramework(), image);
 	}
 
 	private void setBluetoothName(String bluetoothName) {
 		this.bluetoothName = bluetoothName;
 	}
 
-	public void setNetworkID(String networkID) {
-		this.routingID = networkID;
+	@Override
+	public void setRoutingID(String routingID) {
+		this.routingID = routingID;
 	}
 
 	private void setBluetoothID(String bluetoothID) {
 		this.bluetoothID = bluetoothID;
 	}
 
-	public void setActive(boolean isActive)
-	{
+	@Override
+	public void setActive(boolean isActive) {
 		tankStateBuilder.setActive(isActive);
 	}
 
-	public void setLifePoints(double lifePoints)
-	{
+	@Override
+	public void setLifePoints(double lifePoints) {
 		tankStateBuilder.setLife(lifePoints);
 	}
 
-	public void setMoveLeft(double moveLeft)
-	{
+	private void setMoveLeft(double moveLeft) {
 		moveBuilder.setLeft(moveLeft);
 	}
 
-	public void setMoveRight(double moveRight)
-	{
+	private void setMoveRight(double moveRight) {
 		moveBuilder.setLeft(moveRight);
 	}
 
-	public Robot.RobotState.Move getRobotStateMove()
-	{
+	private RobotState.Move getRobotStateMove() {
 		return moveBuilder.build();
 	}
 
-	public Robot.RobotState getRobotState()
-	{
+	private RobotState getRobotState() {
 		tankStateBuilder.setMove(getRobotStateMove());
 		return tankStateBuilder.build();
 	}
 
-	public Controller.Input getControllerInput()
-	{
+	@Override
+	public void buildRegister() {
+		registerBuilder.setTemporaryRobotId(routingID);
+		registerBuilder.setVideoUrl(camera.getURL());
+		registerBuilder.setImage(image);
+		if("" == image)
+		{
+			logback.info("Image of tank " + routingID + " is empty. " 
+					+ "This will probably be an issue for the serverGame");
+		}
+		register = registerBuilder.build();
+	}
+
+	private Register getRegister() {
+		if(null == register)
+		{
+			buildRegister();
+		}
+		return register;
+	}
+
+	@Override
+	public Input getControllerInput() {
 		return currentControllerInput;
 	}
 
-	public String getBluetoothName()
-	{
+	private String getBluetoothName() {
 		return bluetoothName;
 	}
 
-	public String getBluetoothID()
-	{
+	private String getBluetoothID() {
 		return bluetoothID;
 	}
 
-	public String getNetworkID()
-	{
+	@Override
+	public String getRoutingID() {
 		return routingID;
 	}
 
-	public boolean getIsControllerReady()
-	{
-		return isControllerReady;
+	@Override
+	public byte[] getZMQRobotState() {
+		String zMQmessageHeader = getRoutingID() + " " + "RobotState" + " ";
+		return orwell.proxy.Utils.Concatenate(zMQmessageHeader.getBytes(),
+				getRobotState().toByteArray());
 	}
 
-	public String getControllerName()
-	{
-		return controllerName;
+	@Override
+	public byte[] getZMQRegister() {
+		String zMQmessageHeader = getRoutingID() + " " + "Register" + " ";
+		byte[] zmqRegister = orwell.proxy.Utils.Concatenate(zMQmessageHeader.getBytes(),
+				getRegister().toByteArray());
+		logback.info("zMQmessageHeader: " + zMQmessageHeader);
+		return zmqRegister;
 	}
 
-	public byte[] getZMQRobotState()
-	{
-		String zMQmessageHeader= getNetworkID() + " " + "RobotState" + " ";
-		return orwell.proxy.Utils.Concatenate(
-				zMQmessageHeader.getBytes(), getRobotState().toByteArray());
-	}
-
-	public void setControllerInput(byte [] inputMessage)
-	{	
+	@Override
+	public void setRegistered(byte[] registeredMessage) {
 		try {
-			this.currentControllerInput = Controller.Input.parseFrom(inputMessage);
-			if (currentControllerInput.hasMove())
-			{
+			this.serverGameRegistered = Registered.parseFrom(registeredMessage);
+			routingID = serverGameRegistered.getRobotId();
+			if (routingID.isEmpty())
+				registrationState = EnumRegistrationState.REGISTRATION_FAILED;
+			else {
+				registrationState = EnumRegistrationState.REGISTERED;
+				team = serverGameRegistered.getTeam();
+			}
+		} catch (InvalidProtocolBufferException e) {
+			// TODO Auto-generated catch block
+			logback.info("setRegistered protobuff exception");
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void setControllerInput(byte[] inputMessage) {
+		try {
+			this.currentControllerInput = Input.parseFrom(inputMessage);
+			if (currentControllerInput.hasMove()) {
 				String payloadMove = "input move ";
-				payloadMove += currentControllerInput.getMove().getLeft() + " " + currentControllerInput.getMove().getRight();
-				UnitMessage msg = new UnitMessage(UnitMessageType.Command, payloadMove);
+				payloadMove += currentControllerInput.getMove().getLeft() + " "
+						+ currentControllerInput.getMove().getRight();
+				UnitMessage msg = new UnitMessage(UnitMessageType.Command,
+						payloadMove);
 				mfTank.SendMessage(msg);
 			}
-			if (currentControllerInput.hasFire() && (currentControllerInput.getFire().getWeapon1() || currentControllerInput.getFire().getWeapon2()))
-			{
+			if (currentControllerInput.hasFire()
+					&& (currentControllerInput.getFire().getWeapon1() || currentControllerInput
+							.getFire().getWeapon2())) {
 				String payloadFire = "input fire ";
-				payloadFire += currentControllerInput.getFire().getWeapon1() + " " + currentControllerInput.getFire().getWeapon2();
-				UnitMessage msg = new UnitMessage(UnitMessageType.Command, payloadFire);
+				payloadFire += currentControllerInput.getFire().getWeapon1()
+						+ " " + currentControllerInput.getFire().getWeapon2();
+				UnitMessage msg = new UnitMessage(UnitMessageType.Command,
+						payloadFire);
 				mfTank.SendMessage(msg);
 			}
 		} catch (InvalidProtocolBufferException e) {
 			// TODO Auto-generated catch block
-			System.out.println("setControllerInput protobuff exception");
+			logback.info("setControllerInput protobuff exception");
 			e.printStackTrace();
 		}
 	}
 
-	public void setControllerHello(byte [] helloMessage) {
-		try {
-			this.currentControllerHello = Controller.Hello.parseFrom(helloMessage);
-			controllerName = currentControllerHello.getName();
-			isControllerReady = currentControllerHello.getReady();
-		} catch (InvalidProtocolBufferException e) {
-			// TODO Auto-generated catch block
-			System.out.println("setControllerHello protobuff exception");
-			e.printStackTrace();
+	@Override
+	public EnumConnectionState connectToRobot() {
+		Boolean isConnected = mfTank.ConnectToNXT(nxtInfo);
+		if (isConnected) {
+			this.connectionState = EnumConnectionState.CONNECTED;
+		} else {
+			this.connectionState = EnumConnectionState.CONNECTION_FAILED;
 		}
-	}
-	
-	public NXTInfo getNXTInfo()
-	{
-		return nxtInfo;
-	}
-	
-	public void connectToNXT()
-	{
-		mfTank.ConnectToNXT(nxtInfo);
+		return this.connectionState;
 	}
 
-	public String toString()
-	{
-		String string = "Tank {[BTName] " + getBluetoothName() + 
-				" [BTID] " + getBluetoothID() +
-				" [NetworkID] " + getNetworkID() + "}" +
-				"\n\t" + controllerHelloToString() +
-				"\n\t" + controllerInputToString() +
-				"\n\t" + robotStatetoString();
+	@Override
+	public String toString() {
+		String string = "Tank {[BTName] " + getBluetoothName() + " [BTID] "
+				+ getBluetoothID() + " [RoutingID] " + getRoutingID() + "}"
+				+ "\n\t" + controllerInputToString() + "\n\t"
+				+ robotStatetoString();
 		return string;
 	}
 
-	public String robotStatetoString()
-	{
-		String string = "RobotState of " +  getNetworkID() +
-				"\n\t|___isActive   = " + getRobotState().getActive() +
-				"\n\t|___lifePoints = " + getRobotState().getLife() +
-				"\n\t|___MoveState  = [LEFT] " + getRobotStateMove().getLeft() +
-				" [RIGHT] " + getRobotStateMove().getRight();
+	@Override
+	public String robotStatetoString() {
+		String string = "RobotState of " + getRoutingID()
+				+ "\n\t|___isActive   = " + getRobotState().getActive()
+				+ "\n\t|___lifePoints = " + getRobotState().getLife()
+				+ "\n\t|___MoveState  = [LEFT] "
+				+ getRobotStateMove().getLeft() + " [RIGHT] "
+				+ getRobotStateMove().getRight();
 		return string;
 	}
 
-	public String controllerInputToString() 
-	{
+	@Override
+	public String controllerInputToString() {
 		String string;
-		if (null != currentControllerInput)
-		{
-			string = "Controller INPUT of Robot [" + getNetworkID() +"]:" +
-					"\n\t|___Move order: [LEFT] " + currentControllerInput.getMove().getLeft() + " \t\t[RIGHT] " + currentControllerInput.getMove().getRight() +
-					"\n\t|___Fire order: [WEAPON1] " + currentControllerInput.getFire().getWeapon1() + " \t[WEAPON2] " + currentControllerInput.getFire().getWeapon2();
-		} else
-		{
-			string = "Controller INPUT of Robot [" + getNetworkID() +"] NOT initialized!";
+		if (null != currentControllerInput) {
+			string = "Controller INPUT of Robot [" + getRoutingID() + "]:"
+					+ "\n\t|___Move order: [LEFT] "
+					+ currentControllerInput.getMove().getLeft()
+					+ " \t\t[RIGHT] "
+					+ currentControllerInput.getMove().getRight()
+					+ "\n\t|___Fire order: [WEAPON1] "
+					+ currentControllerInput.getFire().getWeapon1()
+					+ " \t[WEAPON2] "
+					+ currentControllerInput.getFire().getWeapon2();
+		} else {
+			string = "Controller INPUT of Robot [" + getRoutingID()
+					+ "] NOT initialized!";
 		}
 		return string;
 	}
 
-	public String controllerHelloToString() 
-	{
+	@Override
+	public String serverGameRegisteredToString() {
 		String string;
-		if (null != currentControllerHello)
-		{
-			string = "Controller HELLO of Robot [" + getNetworkID() +"]:" +
-					"\n\t|___Name: " + currentControllerHello.getName() +
-					"\n\t|___isReady: " + currentControllerHello.getReady();
-		} else
-		{
-			string = "Controller HELLO of Robot [" + getNetworkID() +"] NOT initialized!";
+		if (null != serverGameRegistered) {
+			string = "ServerGame REGISTERED of Robot [" + getRoutingID() + "]:"
+					+ "\n\t|___final RoutingID: "
+					+ serverGameRegistered.getRobotId() + "\n\t|___team: "
+					+ serverGameRegistered.getTeam();
+		} else {
+			string = "ServerGame REGISTERED of Robot [" + getRoutingID()
+					+ "] NOT initialized!";
 		}
 		return string;
 	}
 
+	@Override
+	public EnumRegistrationState getRegistrationState() {
+		return registrationState;
+	}
+
+	@Override
+	public EnumConnectionState getConnectionState() {
+		return connectionState;
+	}
+
+	@Override
+	public EnumTeam getTeam() {
+		return team;
+	}
+
+	@Override
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	@Override
+	public String getImage() {
+		return image;
+	}
 }
