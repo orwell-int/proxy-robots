@@ -16,7 +16,8 @@ before_install:
     - wget -nc --no-check-certificate http://central.maven.org/maven2/ch/qos/logback/logback-classic/1.1.2/logback-classic-1.1.2.jar -O logback-classic-1.1.2.jar
     - wget -nc --no-check-certificate http://central.maven.org/maven2/ch/qos/logback/logback-core/1.1.2/logback-core-1.1.2.jar -O logback-core-1.1.2.jar
     - wget -nc --no-check-certificate http://central.maven.org/maven2/org/slf4j/slf4j-api/1.7.7/slf4j-api-1.7.7.jar -O slf4j-api-1.7.7.jar
-    - git clone https://github.com/zeromq/jeromq
+    - wget -nc --no-check-certificate http://search.maven.org/remotecontent?filepath=org/zeromq/jeromq/0.3.4/jeromq-0.3.4.jar -O jeromq-0.3.4.jar 
+    #- git clone https://github.com/zeromq/jeromq
     - wget -nc --no-check-certificate http://sourceforge.net/projects/lejos/files/lejos-NXJ/0.9.1beta/leJOS_NXJ_0.9.1beta-3.tar.gz/download -O ./leJOS_NXJ_0.9.1beta-3.tar.gz
     - tar -xvf leJOS_NXJ_0.9.1beta-3.tar.gz
 
@@ -25,11 +26,11 @@ install:
     #- sudo make install --quiet
     #- cd java && mvn install -P lite
     #- cd ../..
-    - cd jeromq && sudo mvn install -q
-    - cd ..
+    #- cd jeromq && sudo mvn install -q
+    #- cd ..
 
 env:
-    - PROXY_ROBOTS_JARS_DIR=. NXJ_HOME=leJOS_NXJ_0.9.1beta-3 JEROMQ_DIR=./jeromq PROTOBUF_DIR=.
+    - PROXY_ROBOTS_JARS_DIR=. NXJ_HOME=leJOS_NXJ_0.9.1beta-3 JEROMQ_DIR=. PROTOBUF_DIR=.
 
 script:
     - ant junit-proxy -v 
