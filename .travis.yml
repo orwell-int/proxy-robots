@@ -1,7 +1,7 @@
 language: java
 
 before_install:
-    - sudo apt-get install -qq maven libprotoc-dev protobuf-compiler 
+    - sudo apt-get install -qq libprotoc-dev protobuf-compiler 
     #- wget -nc --no-check-certificate http://protobuf.googlecode.com/files/protobuf-2.5.0.tar.bz2
     #- tar xvf protobuf-2.5.0.tar.bz2
     - wget -nc --no-check-certificate http://search.maven.org/remotecontent?filepath=com/google/protobuf/protobuf-java/2.5.0/protobuf-java-2.5.0.jar -O ./protobuf-java-2.5.0.jar

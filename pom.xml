@@ -1,5 +1,5 @@
 <project>
-  <modelVersion>1</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
   <groupId>orwell</groupId>
   <artifactId>proxy-robots</artifactId>
   <version>0.1</version>
@@ -85,6 +85,21 @@
   		<groupId>org.zeromq</groupId>
   		<artifactId>jeromq</artifactId>
   		<version>0.3.4</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>lejos.pc</groupId>
+  		<artifactId>pccomm</artifactId>
+  		<version>0.9.1beta-3</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>lejos.pc</groupId>
+  		<artifactId>pctools</artifactId>
+  		<version>0.9.1beta-3</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>lejos.nxt</groupId>
+  		<artifactId>classes</artifactId>
+  		<version>0.9.1beta-3</version>
   	</dependency>
   </dependencies>
 </project>
