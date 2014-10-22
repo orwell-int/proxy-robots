@@ -44,7 +44,7 @@
 		<!--<pathelement location="bin"/>-->
 		<path refid="lejos.pc" />
 		<pathelement location="${protobuf.dir}/protobuf-java-2.5.0.jar" />
-		<pathelement location="${jeromq.dir}/target/jeromq-0.3.4.jar" />
+		<pathelement location="${jeromq.dir}/jeromq-0.3.4.jar" />
 		<pathelement location="${jeromq.dir}/target/jeromq-0.3.5-SNAPSHOT.jar" />
 		<pathelement location="${junit.dir}/junit-4.11.jar" />
 		<pathelement location="${hamcrest-core.dir}/hamcrest-core-1.3.jar" />
