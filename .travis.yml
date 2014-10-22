@@ -28,7 +28,8 @@ install:
     #- cd ../..
     #- cd jeromq && sudo mvn install -q
     #- cd ..
-
+    - mvn validate
+    - mvn clean install
 env:
     - PROXY_ROBOTS_JARS_DIR=. NXJ_HOME=leJOS_NXJ_0.9.1beta-3 JEROMQ_DIR=. PROTOBUF_DIR=.
 
