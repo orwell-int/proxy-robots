@@ -1,4 +1,4 @@
-package orwell.proxy.test;
+package orwell.proxy;
 
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
