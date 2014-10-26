@@ -165,8 +165,7 @@ public class ProxyRobots {
 
 			// We do not want to uselessly flood the robot
 			if (zmqMessage.zmqMessageString.compareTo(zmq_previousMessage) == 0) {
-				System.out
-						.println("=======================================================================");
+				logback.debug("Current zmq message identical to previous zmq message");
 				continue;
 			}
 
@@ -180,7 +179,7 @@ public class ProxyRobots {
 							registeredRobot);
 					this.tanksConnectedMap.remove(zmqMessage.routingId);
 					registeredRobot.setRegistered(zmqMessage.message);
-					System.out.println(registeredRobot
+					logback.info("Registered robot : " + registeredRobot
 							.serverGameRegisteredToString());
 				} else {
 					logback.info("RoutingID " + zmqMessage.routingId
@@ -190,8 +189,7 @@ public class ProxyRobots {
 			case "Input":
 				logback.info("Setting controller Input to tank");
 				if (previousInput.compareTo(zmqMessage.zmqMessageString) == 0) {
-					System.out
-							.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+					logback.debug("Current input identical to previous input");
 					continue;
 				}
 				previousInput = zmqMessage.zmqMessageString;
@@ -199,7 +197,7 @@ public class ProxyRobots {
 					IRobot tankTargeted = this.tanksRegisteredMap
 							.get(zmqMessage.routingId);
 					tankTargeted.setControllerInput(zmqMessage.message);
-					System.out.println(tankTargeted.controllerInputToString());
+					logback.info("tankTargeted input : " + tankTargeted.controllerInputToString());
 				} else {
 					logback.info("RoutingID " + zmqMessage.routingId
 							+ " is not an ID of a tank to register");
@@ -238,7 +236,7 @@ public class ProxyRobots {
 
 	public static void main(String[] args) throws Exception {
 		ProxyRobots proxyRobots = new ProxyRobots(
-				"orwell/proxy/config/configuration.xml", "irondamien");
+				"src/main/resources/configuration.xml", "irondamien");
 		proxyRobots.connectToServer();
 		proxyRobots.initialiseTanks();
 		proxyRobots.connectToRobots();

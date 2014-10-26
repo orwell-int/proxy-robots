@@ -96,7 +96,7 @@ public class ProxyRobotsTest {
 		replay(mockedZmqContext);
 
 		proxyRobots = new ProxyRobots(
-				"orwell/proxy/test/configurationTest.xml", "localhost", mockedZmqContext);
+				"src/test/resources/configurationTest.xml", "localhost", mockedZmqContext);
 		logback.info("OUT");
 	}
 	
