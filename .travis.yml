@@ -27,6 +27,9 @@ env:
 script:
     - ant junit-proxy -v 
 
+after_success:
+    - mvn clean cobertura:cobertura coveralls:report
+
 notifications:
     recipients:
         - miludmann+travis@gmail.com
