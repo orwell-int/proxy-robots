@@ -15,12 +15,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import lejos.pc.comm.NXTCommFactory;
+import lejos.pc.comm.NXTInfo;
 import orwell.common.MessageListenerInterface;
 import orwell.common.UnitMessage;
 import orwell.common.UnitMessageType;
-
-import lejos.pc.comm.NXTCommFactory;
-import lejos.pc.comm.NXTInfo;
 
 public class MessageFrameworkTester implements MessageListenerInterface {
 	// MessageFramework m_mfBobomb;
@@ -189,7 +188,7 @@ public class MessageFrameworkTester implements MessageListenerInterface {
 	}
 
 	@Override
-	public void recievedNewMessage(UnitMessage msg) {
+	public void receivedNewMessage(UnitMessage msg) {
 		System.out.println("Received: " + new String(msg.getEncodedMsg()));
 	}
 }

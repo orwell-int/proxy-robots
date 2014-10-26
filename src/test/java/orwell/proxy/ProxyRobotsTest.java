@@ -1,12 +1,11 @@
 package orwell.proxy;
 
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.*;
-import static org.powermock.api.easymock.PowerMock.*;
+import static org.easymock.EasyMock.replay;
+import static org.junit.Assert.assertEquals;
+import static org.powermock.api.easymock.PowerMock.createNiceMock;
 
 import java.util.HashMap;
 
@@ -16,11 +15,11 @@ import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
-import org.junit.runner.RunWith;
+import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
 import orwell.messages.ServerGame;

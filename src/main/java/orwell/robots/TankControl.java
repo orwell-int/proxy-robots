@@ -1,12 +1,12 @@
 package orwell.robots;
 
-import orwell.common.MessageListenerInterface;
-import orwell.common.UnitMessage;
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
 import lejos.nxt.MotorPort;
 import lejos.nxt.NXTMotor;
 import lejos.nxt.Sound;
+import orwell.common.MessageListenerInterface;
+import orwell.common.UnitMessage;
 
 /**
  * Thread to wait for a Bluetooth connection and execute remote commands
@@ -43,7 +43,7 @@ class TankControl extends Thread implements MessageListenerInterface {
 	// return remoteCtrlAlive;
 	// }
 
-	public void recievedNewMessage(UnitMessage msg) {
+	public void receivedNewMessage(UnitMessage msg) {
 		LCD.drawString("Command: " + msg.getPayload(), 0, 5);
 		if (msg.getPayload().equals("stop")) {
 			motorLeft.stop();
