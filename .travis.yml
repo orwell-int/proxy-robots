@@ -19,8 +19,8 @@ before_install:
     - tar -xvf leJOS_NXJ_0.9.1beta-3.tar.gz
 
 install:
-    - mvn validate
-    - mvn clean install
+    - mvn validate -q
+    - mvn clean install 
 env:
     - PROXY_ROBOTS_JARS_DIR=. NXJ_HOME=leJOS_NXJ_0.9.1beta-3 PROTOBUF_DIR=.
 
@@ -28,7 +28,7 @@ script:
     - ant junit-proxy -v 
 
 after_success:
-    - mvn clean cobertura:cobertura coveralls:report
+    - mvn clean cobertura:cobertura coveralls:report -q
 
 notifications:
     recipients:
