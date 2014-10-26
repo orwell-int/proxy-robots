@@ -15,8 +15,7 @@
 	</organization>
 	<scm>
 		<url>https://github.com/orwell-int/proxy-robots</url>
-		<connection>ssh git@github.com:orwell-int/proxy-robots.git</connection>
-		<developerConnection>Michael Ludmann</developerConnection>
+		<connection>scm:git:git://github.com:orwell-int/proxy-robots.git</connection>
 	</scm>
 	<ciManagement>
 		<system>travis-ci</system>
