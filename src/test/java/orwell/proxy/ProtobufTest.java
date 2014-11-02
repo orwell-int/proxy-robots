@@ -42,7 +42,7 @@ public class ProtobufTest {
 	}
 
 	@Test
-	public void checkControllerInput() {
+	public void testControllerInput() {
 		Controller.Input input;
 
 		try {
