@@ -1,16 +1,18 @@
-package orwell.proxy.test;
+package orwell.proxy;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-
 import orwell.messages.Controller;
-import orwell.messages.Controller.Input;
 import orwell.proxy.Tank;
+
+import com.google.protobuf.InvalidProtocolBufferException;
 
 /**
  * Tests for {@link Tank}.
@@ -22,7 +24,7 @@ import orwell.proxy.Tank;
 public class ProtobufTest {
 
 	private Controller.Input buildTestInput() {
-		Controller.Input.Builder testInput = Input.newBuilder();
+		Controller.Input.Builder testInput = Controller.Input.newBuilder();
 		Controller.Input.Move.Builder testMove = Controller.Input.Move
 				.newBuilder();
 		testMove.setLeft(50);

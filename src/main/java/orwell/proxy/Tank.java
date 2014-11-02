@@ -2,21 +2,21 @@ package orwell.proxy;
 
 import java.util.UUID;
 
+import lejos.pc.comm.NXTCommFactory;
+import lejos.pc.comm.NXTInfo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.protobuf.InvalidProtocolBufferException;
 
 import orwell.common.UnitMessage;
 import orwell.common.UnitMessageType;
 import orwell.messages.Controller.Input;
-import orwell.messages.Robot;
 import orwell.messages.Robot.Register;
 import orwell.messages.Robot.RobotState;
 import orwell.messages.ServerGame.EnumTeam;
 import orwell.messages.ServerGame.Registered;
-import lejos.pc.comm.NXTCommFactory;
-import lejos.pc.comm.NXTInfo;
+
+import com.google.protobuf.InvalidProtocolBufferException;
 
 public class Tank implements IRobot {
 	final static Logger logback = LoggerFactory.getLogger(Tank.class); 
@@ -25,11 +25,11 @@ public class Tank implements IRobot {
 	private String routingID = UUID.randomUUID().toString();
 	private String bluetoothName;
 	private String bluetoothID;
-	private Robot.RobotState.Builder tankStateBuilder = Robot.RobotState
+	private RobotState.Builder tankStateBuilder = RobotState
 			.newBuilder();
-	private Robot.RobotState.Move.Builder moveBuilder = Robot.RobotState.Move
+	private RobotState.Move.Builder moveBuilder = RobotState.Move
 			.newBuilder();
-	private Robot.Register.Builder registerBuilder = Robot.Register
+	private Register.Builder registerBuilder = Register
 			.newBuilder();
 	private Input currentControllerInput;
 	private Registered serverGameRegistered;

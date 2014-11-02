@@ -4,10 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
-import com.google.protobuf.InvalidProtocolBufferException;
-
 import orwell.messages.Controller;
-import orwell.messages.Controller.Input;
+
+import com.google.protobuf.InvalidProtocolBufferException;
 
 public class FakeServer {
 	final static Logger logback = LoggerFactory.getLogger(FakeServer.class); 
@@ -16,7 +15,7 @@ public class FakeServer {
 	}
 
 	public static Controller.Input buildTestInput() {
-		Controller.Input.Builder testInput = Input.newBuilder();
+		Controller.Input.Builder testInput = Controller.Input.newBuilder();
 		Controller.Input.Move.Builder testMove = Controller.Input.Move
 				.newBuilder();
 		testMove.setLeft(50);

@@ -3,10 +3,9 @@ package orwell.robots;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import lejos.nxt.LCD;
 import orwell.common.MessageListenerInterface;
 import orwell.common.UnitMessage;
-
-import lejos.nxt.LCD;
 
 public class MessageFrameworkNXT {
 
@@ -92,7 +91,7 @@ public class MessageFrameworkNXT {
 			synchronized (m_RXguard) {
 				UnitMessage msg = UnitMessage.setEncodedMsg(msgBytes);
 				for (int j = 0; j < m_messageListeners.size(); j++) {
-					m_messageListeners.get(j).recievedNewMessage(msg);
+					m_messageListeners.get(j).receivedNewMessage(msg);
 				}
 			}
 		} else {

@@ -5,14 +5,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
+import lejos.pc.comm.NXTCommFactory;
+import lejos.pc.comm.NXTConnector;
+import lejos.pc.comm.NXTInfo;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import orwell.common.MessageListenerInterface;
 import orwell.common.UnitMessage;
-import lejos.pc.comm.NXTCommFactory;
-import lejos.pc.comm.NXTConnector;
-import lejos.pc.comm.NXTInfo;
 
 public class MessageFramework {
 	
@@ -138,7 +139,7 @@ public class MessageFramework {
 			synchronized (m_RXguard) {
 				UnitMessage msg = UnitMessage.setEncodedMsg(msgBytes);
 				for (int j = 0; j < m_messageListeners.size(); j++) {
-					m_messageListeners.get(j).recievedNewMessage(msg);
+					m_messageListeners.get(j).receivedNewMessage(msg);
 				}
 			}
 		} else {

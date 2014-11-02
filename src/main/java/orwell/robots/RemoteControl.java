@@ -46,7 +46,7 @@ class RemoteControl extends Thread implements MessageListenerInterface {
 	// }
 
 	@Override
-	public void recievedNewMessage(UnitMessage msg) {
+	public void receivedNewMessage(UnitMessage msg) {
 		LCD.drawString("Command: " + msg.getPayload(), 0, 5);
 		if (msg.getPayload().equals("stop")) {
 			pilot.stop();

@@ -1,7 +1,7 @@
 *.class
 *.nxj
 *.nxd
-.settings/org.eclipse.jdt.core.prefs
+.settings/
 GeneratedMessages/orwell/com/Version1.java
 GeneratedMessages/orwell/messages/Controller.java
 GeneratedMessages/orwell/messages/Robot.java
@@ -15,3 +15,4 @@ bin/
 orwell/proxy/test/report/
 logs/
 build/
+target/
