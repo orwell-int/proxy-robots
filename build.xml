@@ -80,7 +80,7 @@
 
 	<target name="generate_messages_classes">
 		<exec executable="/bin/bash">
-			<arg value="./generate.sh" />
+			<arg value="${scripts.dir}/generate.sh" />
 		</exec>
 	</target>
 
