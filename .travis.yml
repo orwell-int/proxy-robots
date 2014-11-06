@@ -24,8 +24,7 @@ notifications:
   recipients: 
   - miludmann+travis@gmail.com
   slack:
-    rooms: 
-      secure: nCWjD+saKx7k5arMZFksP9xwHAPf1bDcluztPtYS7rwmAxhyn8v40BMwlSwUHHcjGGZB/Rp+ablnhe5AHnFtQY11C4tulScz/ruWG2L5X29m47uwr0sEzQa/rIq/Kms4ISF57zjPmppVTNKv4NbMQSL/Hcxfc69HctKJzKzcszY=
+    secure: nCWjD+saKx7k5arMZFksP9xwHAPf1bDcluztPtYS7rwmAxhyn8v40BMwlSwUHHcjGGZB/Rp+ablnhe5AHnFtQY11C4tulScz/ruWG2L5X29m47uwr0sEzQa/rIq/Kms4ISF57zjPmppVTNKv4NbMQSL/Hcxfc69HctKJzKzcszY=
     on_success: always
     on_failure: always
   email: 
