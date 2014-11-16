@@ -3,6 +3,7 @@ after_success:
 script: 
 - ant junit-proxy -v
 before_install: 
+- git submodule update --init --recursive
 - sudo apt-get install -qq libprotoc-dev protobuf-compiler
 - wget -nc --no-check-certificate http://search.maven.org/remotecontent?filepath=com/google/protobuf/protobuf-java/2.5.0/protobuf-java-2.5.0.jar -O ./protobuf-java-2.5.0.jar
 - wget -nc --no-check-certificate http://search.maven.org/remotecontent?filepath=junit/junit/4.11/junit-4.11.jar -O ./junit-4.11.jar
