@@ -33,7 +33,7 @@ notifications:
     on_success: change
     on_failure: always
 env: 
-- PROXY_ROBOTS_JARS_DIR=. NXJ_HOME=leJOS_NXJ_0.9.1beta-3 PROTOBUF_DIR=.
+- PROXY_ROBOTS_JARS_DIR=$TRAVIS_BUILD_DIR NXJ_HOME=$TRAVIS_BUILD_DIR/leJOS_NXJ_0.9.1beta-3 PROTOBUF_DIR=$TRAVIS_BUILD_DIR
 install: 
 - mvn validate -q
 - mvn clean install
