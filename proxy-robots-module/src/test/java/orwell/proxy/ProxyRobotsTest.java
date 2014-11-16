@@ -25,10 +25,11 @@ import org.zeromq.ZMQ;
 import orwell.messages.ServerGame;
 import orwell.proxy.Camera;
 import orwell.proxy.IRobot;
-import orwell.proxy.MessageFramework;
 import orwell.proxy.ProxyRobots;
 import orwell.proxy.Tank;
 import orwell.proxy.ZmqMessageWrapper;
+import lejos.mf.pc.MessageFramework;
+
 
 /**
  * Tests for {@link ProxyRobots}.

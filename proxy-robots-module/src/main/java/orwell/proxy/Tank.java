@@ -8,8 +8,9 @@ import lejos.pc.comm.NXTInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import orwell.common.UnitMessage;
-import orwell.common.UnitMessageType;
+import lejos.mf.common.UnitMessage;
+import lejos.mf.common.UnitMessageType;
+import lejos.mf.pc.MessageFramework;
 import orwell.messages.Controller.Input;
 import orwell.messages.Robot.Register;
 import orwell.messages.Robot.RobotState;
