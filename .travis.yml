@@ -1,7 +1,6 @@
 after_success: 
 - mvn clean cobertura:cobertura coveralls:report -q
 script: 
-- ant junit-proxy -v
 before_install: 
 - git submodule update --init --recursive
 - sudo apt-get install -qq libprotoc-dev protobuf-compiler
