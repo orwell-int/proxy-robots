@@ -90,6 +90,11 @@
 			<artifactId>pctools</artifactId>
 			<version>0.9.1beta-3</version>
 		</dependency>
+		<dependency>
+			<groupId>lejos.pc.3rdparty</groupId>
+			<artifactId>bluecove</artifactId>
+			<version>0.9.1beta-3</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

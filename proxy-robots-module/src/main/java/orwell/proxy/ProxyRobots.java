@@ -40,8 +40,8 @@ public class ProxyRobots {
 		try {
 			// TODO Include populate into default constructor
 			configuration.populate();
-		} catch (FileNotFoundException | JAXBException e1) {
-			e1.toString();
+		} catch (JAXBException e1) {
+			logback.error(e1.toString());
 		}
 		ConfigModel configProxyModel = configuration.getConfigModel();
 		ConfigProxy configProxy = configProxyModel.getConfigProxy();
