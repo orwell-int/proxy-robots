@@ -97,7 +97,7 @@ public class ProxyRobotsTest {
 		replay(mockedZmqContext);
 
 		proxyRobots = new ProxyRobots(
-				"src/test/resources/configurationTest.xml", "localhost", mockedZmqContext);
+				"/configurationTest.xml", "localhost", mockedZmqContext);
 		logback.info("OUT");
 	}
 	

@@ -14,7 +14,7 @@ public class Configuration {
 	public boolean isPopulated = false;
 
 	public Configuration() {
-		this("orwell/proxy/config/configuration.xml");
+		this("/configuration.xml");
 	}
 
 	public Configuration(String filePath) {
@@ -30,7 +30,7 @@ public class Configuration {
 		try {
 			jc = JAXBContext.newInstance(ConfigModel.class);
 			Unmarshaller unmarshaller = jc.createUnmarshaller();
-			File xml = new File(filePath);
+			File xml = new File(getClass().getResource(filePath).getPath());
 			if (!xml.exists()) {
 				System.out.println("Configuration:populate(): File "
 						+ this.filePath + " does not exist");

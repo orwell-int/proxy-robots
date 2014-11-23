@@ -236,7 +236,7 @@ public class ProxyRobots {
 
 	public static void main(String[] args) throws Exception {
 		ProxyRobots proxyRobots = new ProxyRobots(
-				"src/main/resources/configuration.xml", "irondamien");
+				"/configuration.xml", "irondamien");
 		proxyRobots.connectToServer();
 		proxyRobots.initialiseTanks();
 		proxyRobots.connectToRobots();
