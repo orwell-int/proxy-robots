@@ -8,6 +8,12 @@ local setup for coveralls
 -------------------------
 Run with maven
 --------------
+Prerequiste: have jdk-7+ installed on your machine
+```
+javac -version
+>javac 1.7.xxx
+```
+
 Install maven:
 ```
 sudo apt-get install maven
@@ -39,6 +45,8 @@ mvn clean cobertura:cobertura coveralls:report
 
 Running it with ant (soon to be deprecated)
 -------------------------------------------
+
+You need the depencies jar already in a local folder. See build.properties for details.
 
 Show the existing targets:
 ```
