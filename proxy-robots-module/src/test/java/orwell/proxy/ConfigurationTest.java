@@ -35,8 +35,6 @@ public class ConfigurationTest {
 		Configuration configTest = new Configuration(CONFIGURATION_FILE_TEST);
 		try {
 			configTest.populate();
-		} catch (FileNotFoundException e) {
-			fail(e.toString());
 		} catch (JAXBException e) {
 			fail(e.toString());
 		}
