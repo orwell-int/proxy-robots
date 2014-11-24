@@ -12,6 +12,9 @@ Prerequiste: have jdk-7+ installed on your machine
 ```
 javac -version
 >javac 1.7.xxx
+
+java -version                                                         
+>java version "1.7.xxx"
 ```
 
 Install maven:
