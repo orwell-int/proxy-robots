@@ -31,7 +31,7 @@ export NXJ_HOME=leJOS_NXJ_0.9.1beta-3
 
 Run maven (validate, build, test)
 ```
-maven clean install
+mvn clean install
 ```
 
 To update the coveralls status, export your repo token in the following environment variable:
