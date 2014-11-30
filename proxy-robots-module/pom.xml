@@ -8,6 +8,11 @@
 	<artifactId>proxy-robots-module</artifactId>
 	<version>0.1.0</version>
 	<name>Proxy robots - module</name>
+	<parent>
+		<groupId>orwell</groupId>
+		<artifactId>proxy-robots</artifactId>
+		<version>0.1.0</version>
+	</parent>
 	<dependencies>
 		<dependency>
 			<groupId>lejos.mf</groupId>

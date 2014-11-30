@@ -23,11 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
 import orwell.messages.ServerGame;
-import orwell.proxy.Camera;
-import orwell.proxy.IRobot;
-import orwell.proxy.ProxyRobots;
-import orwell.proxy.Tank;
-import orwell.proxy.ZmqMessageWrapper;
 import lejos.mf.pc.MessageFramework;
 
 
@@ -137,7 +132,7 @@ public class ProxyRobotsTest {
 
 		HashMap<String, Tank> tanksInitializedMap = new HashMap<String, Tank>();
 		tanksInitializedMap.put("NicolasCage", myTank);
-		proxyRobots.initialiseTanks(tanksInitializedMap);
+		proxyRobots.initializeTanks(tanksInitializedMap);
 		logback.info("OUT");
 	}
 	

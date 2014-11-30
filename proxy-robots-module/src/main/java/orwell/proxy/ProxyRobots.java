@@ -1,6 +1,5 @@
 package orwell.proxy;
 
-import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -90,7 +89,7 @@ public class ProxyRobots {
 	 * This instantiate Tanks objects from a configuration It only set up the
 	 * tanksInitializedMap
 	 */
-	public void initialiseTanks() {
+	public void initializeTanks() {
 		for (ConfigTank configTank : configRobots.getConfigRobotsToRegister()) {
 			Camera camera = new Camera(configTank.getConfigCamera().getIp(),
 					configTank.getConfigCamera().getPort());
@@ -98,13 +97,13 @@ public class ProxyRobots {
 			//from the string (like an actual picture)
 			Tank tank = new Tank(configTank.getBluetoothName(),
 					configTank.getBluetoothID(), camera, configTank.getImage());
-			logback.info(" NININININ " + configTank.getTempRoutingID());
+			logback.info("NININININ " + configTank.getTempRoutingID());
 			tank.setRoutingID(configTank.getTempRoutingID());
 			this.tanksInitializedMap.put(tank.getRoutingID(), tank);
 		}
 
 		logback.info("All " + this.tanksInitializedMap.size()
-				+ " tank(s) initialised");
+				+ " tank(s) initialized");
 	}
 
 	/*
@@ -113,7 +112,7 @@ public class ProxyRobots {
 	 * 
 	 * @param map of tanks to setup
 	 */
-	public void initialiseTanks(HashMap<String, Tank> tanksToInitializeMap) {
+	public void initializeTanks(HashMap<String, Tank> tanksToInitializeMap) {
 		for (Map.Entry<String, Tank> entry : tanksToInitializeMap.entrySet()) {
 			String routingID = entry.getKey();
 			Tank tank = entry.getValue();
@@ -238,7 +237,7 @@ public class ProxyRobots {
 		ProxyRobots proxyRobots = new ProxyRobots(
 				"/configuration.xml", "irondamien");
 		proxyRobots.connectToServer();
-		proxyRobots.initialiseTanks();
+		proxyRobots.initializeTanks();
 		proxyRobots.connectToRobots();
 		proxyRobots.registerRobots();
 		proxyRobots.startCommunication(null);
