@@ -2,7 +2,7 @@
 *.nxj
 *.nxd
 *.iml
-.idea
+.idea/
 .settings/
 GeneratedMessages/orwell/com/Version1.java
 GeneratedMessages/orwell/messages/Controller.java
