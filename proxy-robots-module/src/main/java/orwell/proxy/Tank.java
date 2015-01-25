@@ -2,6 +2,7 @@ package orwell.proxy;
 
 import java.util.UUID;
 
+import lejos.mf.common.MessageListenerInterface;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
 
@@ -19,7 +20,7 @@ import orwell.messages.ServerGame.Registered;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
-public class Tank implements IRobot {
+public class Tank implements IRobot, MessageListenerInterface {
 	final static Logger logback = LoggerFactory.getLogger(Tank.class); 
 
 	private static final double STARTING_LIFE_POINTS = 100;
@@ -56,6 +57,7 @@ public class Tank implements IRobot {
 		nxtInfo = new NXTInfo(NXTCommFactory.BLUETOOTH, bluetoothName,
 				bluetoothID);
 		mfTank = mf;
+		mf.addMessageListener(this);
 		this.image = image;
 	}
 
@@ -221,12 +223,12 @@ public class Tank implements IRobot {
 		String string = "Tank {[BTName] " + getBluetoothName() + " [BTID] "
 				+ getBluetoothID() + " [RoutingID] " + getRoutingID() + "}"
 				+ "\n\t" + controllerInputToString() + "\n\t"
-				+ robotStatetoString();
+				+ robotStateToString();
 		return string;
 	}
 
 	@Override
-	public String robotStatetoString() {
+	public String robotStateToString() {
 		String string = "RobotState of " + getRoutingID()
 				+ "\n\t|___isActive   = " + getRobotState().getActive()
 				+ "\n\t|___lifePoints = " + getRobotState().getLife()
@@ -294,5 +296,45 @@ public class Tank implements IRobot {
 	@Override
 	public String getImage() {
 		return image;
+	}
+
+	public void closeConnection(){
+		mfTank.close();
+	}
+
+	public void receivedNewMessage(UnitMessage msg) {
+		switch (msg.getMsgType()){
+			case Stop:
+				onMsgStop();
+				break;
+			case Rfid:
+				onMsgRfid(msg.getPayload());
+				break;
+			case Command:
+				onMsgCommand(msg.getPayload());
+				break;
+			default:
+				onMsgNotDefined(msg.getPayload());
+				break;
+		}
+	}
+
+	private void onMsgStop(){
+		logback.info("Tank " + this.getBluetoothName() + " is stopping");
+		connectionState = EnumConnectionState.NOT_CONNECTED;
+		closeConnection();
+	}
+
+	private void onMsgRfid(String msg){
+		logback.debug("RFID info received: " + msg);
+	}
+
+	private void onMsgCommand(String msg){
+		logback.debug("Tank is sending a command: " + msg);
+		logback.debug("This command will not be processed");
+	}
+
+	private void onMsgNotDefined(String msg){
+		logback.error("Unable to decode message received: " + msg);
 	}
 }

@@ -1,9 +1,6 @@
 package orwell.proxy;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertEquals;
 import static org.powermock.api.easymock.PowerMock.createNiceMock;
 
@@ -16,6 +13,7 @@ import org.easymock.TestSubject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
@@ -33,7 +31,7 @@ import lejos.mf.pc.MessageFramework;
  */
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest( { ZMQ.Socket.class })
+@PrepareForTest( { ZMQ.Socket.class } )
 public class ProxyRobotsTest {
 	
 	final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class); 
@@ -44,8 +42,8 @@ public class ProxyRobotsTest {
 	}
 	
 	@TestSubject
-	private ProxyRobots proxyRobots;
-	
+	private ProxyRobots myProxyRobots;
+
 	@Mock
 	private ZMQ.Socket mockedZmqSocketSend;
 	private ZMQ.Socket mockedZmqSocketRecv;
@@ -72,27 +70,27 @@ public class ProxyRobotsTest {
 		mockedZmqSocketSend = createNiceMock(ZMQ.Socket.class);
 		mockedZmqSocketRecv = createNiceMock(ZMQ.Socket.class);
 		mockedZmqContext = createNiceMock(ZMQ.Context.class);
-		
-		// TODO debug this part
-		mockedZmqSocketSend.setLinger(1000);
-		expectLastCall().times(1);
-		
-		logback.info("TEST getZMQRegisterHeader: " + myTank.getZMQRegister());
 
-		expect(mockedZmqSocketSend.send(myTank.getZMQRegister(), 0)).andReturn(true);
-		logback.info("BATMAN");
-		//		expectLastCall().times(1);
+		mockedZmqSocketSend.setLinger(1000);
+		expectLastCall().once();
+
+		expect(mockedZmqSocketSend.send(myTank.getZMQRegister())).andStubReturn(true);
+		mockedZmqSocketSend.close();
+		expectLastCall().once();
 		replay(mockedZmqSocketSend);
 		
 		expect(mockedZmqSocketRecv.recv()).andStubReturn(getMockRawZmqMessage(myTank, EnumMessageType.REGISTERED));
+		mockedZmqSocketRecv.close();
+		expectLastCall().once();
 		replay(mockedZmqSocketRecv);
-		
-		expect(mockedZmqContext.socket(ZMQ.PUSH)).andStubReturn(mockedZmqSocketSend);
-		expect(mockedZmqContext.socket(ZMQ.SUB)).andStubReturn(mockedZmqSocketRecv);
+
+		expect(mockedZmqContext.socket(ZMQ.PUSH)).andReturn(mockedZmqSocketSend);
+		expect(mockedZmqContext.socket(ZMQ.SUB)).andReturn(mockedZmqSocketRecv);
 		replay(mockedZmqContext);
 
-		proxyRobots = new ProxyRobots(
+		myProxyRobots = new ProxyRobots(
 				"/configurationTest.xml", "localhost", mockedZmqContext);
+
 		logback.info("OUT");
 	}
 	
@@ -125,35 +123,35 @@ public class ProxyRobotsTest {
 		return registeredBuilder.build().toByteArray();
 	}
 
-	public void createAndInitializeTank(ProxyRobots proxyrobots)
+	public void createAndInitializeTank(ProxyRobots iProxyRobots)
 	{
 		logback.info("IN");
-		proxyRobots.connectToServer();
+		iProxyRobots.connectToServer();
 
 		HashMap<String, Tank> tanksInitializedMap = new HashMap<String, Tank>();
 		tanksInitializedMap.put("NicolasCage", myTank);
-		proxyRobots.initializeTanks(tanksInitializedMap);
+		iProxyRobots.initializeTanks(tanksInitializedMap);
 		logback.info("OUT");
 	}
 	
 	@Test
 	public void testInitialiseTanks() {
 		logback.info("IN");
-		createAndInitializeTank(this.proxyRobots);
+		createAndInitializeTank(myProxyRobots);
 
-		assertEquals(1, proxyRobots.getTanksInitializedMap().size());
+		assertEquals(1, myProxyRobots.getTanksInitializedMap().size());
 		assertEquals(myTank,
-				proxyRobots.getTanksInitializedMap().get("NicolasCage"));
+				myProxyRobots.getTanksInitializedMap().get("NicolasCage"));
 		logback.info("OUT");
 	}
 
 	@Test
 	public void testConnectToRobots() {
 		logback.info("IN");
-		createAndInitializeTank(this.proxyRobots);
-		proxyRobots.connectToRobots();
+		createAndInitializeTank(myProxyRobots);
+		myProxyRobots.connectToRobots();
 
-		assertEquals(1, proxyRobots.getTanksConnectedMap().size());
+		assertEquals(1, myProxyRobots.getTanksConnectedMap().size());
 		logback.info("OUT");
 	}
 
@@ -161,17 +159,42 @@ public class ProxyRobotsTest {
 	public void testRegister() {
 		logback.info("IN");
 
-		createAndInitializeTank(proxyRobots);
+		createAndInitializeTank(myProxyRobots);
 
-		proxyRobots.connectToRobots();
+		myProxyRobots.connectToRobots();
 		assertEquals(IRobot.EnumRegistrationState.NOT_REGISTERED, myTank.getRegistrationState());
 
-		proxyRobots.registerRobots();
-		proxyRobots.startCommunication(new ZmqMessageWrapper(getMockRawZmqMessage(myTank, EnumMessageType.REGISTERED)));
-		
+		myProxyRobots.registerRobots();
+		myProxyRobots.startCommunication(new ZmqMessageWrapper(getMockRawZmqMessage(myTank, EnumMessageType.REGISTERED)));
+
 		assertEquals(IRobot.EnumRegistrationState.REGISTERED, myTank.getRegistrationState());
 
 		logback.info("OUT");
+	}
+
+	@Test
+	public void testUpdateConnectedTanks() {
+		logback.info("IN");
+
+		createAndInitializeTank(myProxyRobots);
+
+		myProxyRobots.connectToRobots();
+		myProxyRobots.registerRobots();
+		assert(myProxyRobots.getTanksConnectedMap().containsKey("NicolasCage"));
+
+		myProxyRobots.startCommunication(new ZmqMessageWrapper(getMockRawZmqMessage(myTank, EnumMessageType.REGISTERED)));
+
+		// Tank is disconnected
+		myTank.closeConnection();
+		myProxyRobots.stopCommunication();
+
+		// So the map is empty
+		assert(myProxyRobots.getTanksConnectedMap().isEmpty());
+
+		// And the communication is closed TODO: make the check work
+		PowerMock.verify(mockedZmqSocketSend);
+
+		logback.debug("OUT");
 	}
 	
 	public void tearDown(){

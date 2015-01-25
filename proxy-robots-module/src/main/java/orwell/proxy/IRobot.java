@@ -44,9 +44,8 @@ public interface IRobot {
 	
 	public EnumConnectionState connectToRobot();
 	
-	public String robotStatetoString();
+	public String robotStateToString();
 	public String controllerInputToString();
 	public String serverGameRegisteredToString();
 	public void buildRegister();
-	
 }

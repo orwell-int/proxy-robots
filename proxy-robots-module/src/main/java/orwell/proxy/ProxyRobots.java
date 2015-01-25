@@ -1,5 +1,6 @@
 package orwell.proxy;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -146,10 +147,29 @@ public class ProxyRobots {
 	public void registerRobots() {
 		for (IRobot tank : tanksConnectedMap.values()) {
 			tank.buildRegister();
-			this.sender.send(tank.getZMQRegister(), 0);
-			logback.info("TEST RegisterHeader: " + tank.getZMQRegister().toString());
+			sender.send(tank.getZMQRegister(), 0);
+			logback.info("TEST RegisterHeader: " + Arrays.toString(tank.getZMQRegister()));
 			logback.info("Robot [" + tank.getRoutingID()
 					+ "] is trying to register itself to the server!");
+		}
+	}
+
+	private void updateConnectedTanks(){
+		Iterator<Map.Entry<String, IRobot>> iterator = tanksConnectedMap
+				.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Map.Entry<String, IRobot> entry = iterator.next();
+			String routingId = entry.getKey();
+			IRobot tank = entry.getValue();
+
+			if(tank.getConnectionState() != EnumConnectionState.CONNECTED){
+				tanksConnectedMap.remove(routingId);
+				logback.info("Removing dead tank connected: " + routingId);
+				if(this.tanksRegisteredMap.containsKey(routingId)){
+					tanksRegisteredMap.remove(routingId);
+					logback.info("Removing dead tank registered: " + routingId);
+				}
+			}
 		}
 	}
 
@@ -158,7 +178,7 @@ public class ProxyRobots {
 		String previousInput = new String();
 		ZmqMessageWrapper zmqMessage;
 
-		while (!Thread.currentThread().isInterrupted()) {
+		while (!Thread.currentThread().isInterrupted() && !tanksConnectedMap.isEmpty()) {
 			byte[] raw_zmq_message = this.receiver.recv();
 			zmqMessage = new ZmqMessageWrapper(raw_zmq_message);
 
@@ -218,13 +238,17 @@ public class ProxyRobots {
 				logback.info("Communication interrupted with interrupt message : " + interruptMessage.type);
 				break;
 			}
+			updateConnectedTanks();
 		}
+		logback.info("End of communication");
 	}
 
 	public void stopCommunication() {
-		this.sender.close();
-		this.receiver.close();
-		this.context.term();
+		logback.info("Stopping communication");
+		sender.close();
+		receiver.close();
+		context.term();
+		logback.info("Communication stopped");
 	}
 	
 	public void printLoggerState() {
