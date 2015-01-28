@@ -8,91 +8,122 @@ public final class Robot {
   public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistryLite registry) {
   }
-  public interface RobotStateOrBuilder
+  /**
+   * Protobuf enum {@code orwell.messages.Status}
+   */
+  public enum Status
+      implements com.google.protobuf.Internal.EnumLite {
+    /**
+     * <code>ON = 1;</code>
+     */
+    ON(0, 1),
+    /**
+     * <code>OFF = 2;</code>
+     */
+    OFF(1, 2),
+    ;
+
+    /**
+     * <code>ON = 1;</code>
+     */
+    public static final int ON_VALUE = 1;
+    /**
+     * <code>OFF = 2;</code>
+     */
+    public static final int OFF_VALUE = 2;
+
+
+    public final int getNumber() { return value; }
+
+    public static Status valueOf(int value) {
+      switch (value) {
+        case 1: return ON;
+        case 2: return OFF;
+        default: return null;
+      }
+    }
+
+    public static com.google.protobuf.Internal.EnumLiteMap<Status>
+        internalGetValueMap() {
+      return internalValueMap;
+    }
+    private static com.google.protobuf.Internal.EnumLiteMap<Status>
+        internalValueMap =
+          new com.google.protobuf.Internal.EnumLiteMap<Status>() {
+            public Status findValueByNumber(int number) {
+              return Status.valueOf(number);
+            }
+          };
+
+    private final int value;
+
+    private Status(int index, int value) {
+      this.value = value;
+    }
+
+    // @@protoc_insertion_point(enum_scope:orwell.messages.Status)
+  }
+
+  public interface ServerRobotStateOrBuilder
       extends com.google.protobuf.MessageLiteOrBuilder {
 
-    // optional double life = 1;
+    // repeated .orwell.messages.Colour colour = 1;
     /**
-     * <code>optional double life = 1;</code>
+     * <code>repeated .orwell.messages.Colour colour = 1;</code>
      */
-    boolean hasLife();
+    java.util.List<orwell.messages.Robot.Colour> 
+        getColourList();
     /**
-     * <code>optional double life = 1;</code>
+     * <code>repeated .orwell.messages.Colour colour = 1;</code>
      */
-    double getLife();
+    orwell.messages.Robot.Colour getColour(int index);
+    /**
+     * <code>repeated .orwell.messages.Colour colour = 1;</code>
+     */
+    int getColourCount();
 
-    // optional group Move = 2 {
+    // repeated .orwell.messages.Rfid rfid = 2;
     /**
-     * <code>optional group Move = 2 { ... }</code>
+     * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
      */
-    boolean hasMove();
+    java.util.List<orwell.messages.Robot.Rfid> 
+        getRfidList();
     /**
-     * <code>optional group Move = 2 { ... }</code>
+     * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
      */
-    orwell.messages.Robot.RobotState.Move getMove();
-
-    // optional bool active = 3 [default = true];
+    orwell.messages.Robot.Rfid getRfid(int index);
     /**
-     * <code>optional bool active = 3 [default = true];</code>
+     * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
      */
-    boolean hasActive();
-    /**
-     * <code>optional bool active = 3 [default = true];</code>
-     */
-    boolean getActive();
-
-    // optional string rfid = 4 [default = ""];
-    /**
-     * <code>optional string rfid = 4 [default = ""];</code>
-     */
-    boolean hasRfid();
-    /**
-     * <code>optional string rfid = 4 [default = ""];</code>
-     */
-    java.lang.String getRfid();
-    /**
-     * <code>optional string rfid = 4 [default = ""];</code>
-     */
-    com.google.protobuf.ByteString
-        getRfidBytes();
-
-    // optional int32 color = 5 [default = -1];
-    /**
-     * <code>optional int32 color = 5 [default = -1];</code>
-     */
-    boolean hasColor();
-    /**
-     * <code>optional int32 color = 5 [default = -1];</code>
-     */
-    int getColor();
+    int getRfidCount();
   }
   /**
-   * Protobuf type {@code orwell.messages.RobotState}
+   * Protobuf type {@code orwell.messages.ServerRobotState}
    *
    * <pre>
    * Notify the state the robot is in (sent while playing)
    * </pre>
    */
-  public static final class RobotState extends
+  public static final class ServerRobotState extends
       com.google.protobuf.GeneratedMessageLite
-      implements RobotStateOrBuilder {
-    // Use RobotState.newBuilder() to construct.
-    private RobotState(com.google.protobuf.GeneratedMessageLite.Builder builder) {
+      implements ServerRobotStateOrBuilder {
+    // Use ServerRobotState.newBuilder() to construct.
+    private ServerRobotState(com.google.protobuf.GeneratedMessageLite.Builder builder) {
       super(builder);
 
     }
-    private RobotState(boolean noInit) {}
+    private ServerRobotState(boolean noInit) {}
 
-    private static final RobotState defaultInstance;
-    public static RobotState getDefaultInstance() {
+    private static final ServerRobotState defaultInstance;
+    public static ServerRobotState getDefaultInstance() {
       return defaultInstance;
     }
 
-    public RobotState getDefaultInstanceForType() {
+    public ServerRobotState getDefaultInstanceForType() {
       return defaultInstance;
     }
 
-    private RobotState(
+    private ServerRobotState(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -113,38 +144,728 @@ public final class Robot {
               }
               break;
             }
-            case 9: {
-              bitField0_ |= 0x00000001;
-              life_ = input.readDouble();
+            case 10: {
+              if (!((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+                colour_ = new java.util.ArrayList<orwell.messages.Robot.Colour>();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              colour_.add(input.readMessage(orwell.messages.Robot.Colour.PARSER, extensionRegistry));
               break;
             }
-            case 19: {
-              orwell.messages.Robot.RobotState.Move.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000002) == 0x00000002)) {
-                subBuilder = move_.toBuilder();
+            case 18: {
+              if (!((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+                rfid_ = new java.util.ArrayList<orwell.messages.Robot.Rfid>();
+                mutable_bitField0_ |= 0x00000002;
               }
-              move_ = input.readGroup(2, orwell.messages.Robot.RobotState.Move.PARSER,
-                  extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(move_);
-                move_ = subBuilder.buildPartial();
+              rfid_.add(input.readMessage(orwell.messages.Robot.Rfid.PARSER, extensionRegistry));
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
+          colour_ = java.util.Collections.unmodifiableList(colour_);
+        }
+        if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
+          rfid_ = java.util.Collections.unmodifiableList(rfid_);
+        }
+        makeExtensionsImmutable();
+      }
+    }
+    public static com.google.protobuf.Parser<ServerRobotState> PARSER =
+        new com.google.protobuf.AbstractParser<ServerRobotState>() {
+      public ServerRobotState parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ServerRobotState(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ServerRobotState> getParserForType() {
+      return PARSER;
+    }
+
+    // repeated .orwell.messages.Colour colour = 1;
+    public static final int COLOUR_FIELD_NUMBER = 1;
+    private java.util.List<orwell.messages.Robot.Colour> colour_;
+    /**
+     * <code>repeated .orwell.messages.Colour colour = 1;</code>
+     */
+    public java.util.List<orwell.messages.Robot.Colour> getColourList() {
+      return colour_;
+    }
+    /**
+     * <code>repeated .orwell.messages.Colour colour = 1;</code>
+     */
+    public java.util.List<? extends orwell.messages.Robot.ColourOrBuilder> 
+        getColourOrBuilderList() {
+      return colour_;
+    }
+    /**
+     * <code>repeated .orwell.messages.Colour colour = 1;</code>
+     */
+    public int getColourCount() {
+      return colour_.size();
+    }
+    /**
+     * <code>repeated .orwell.messages.Colour colour = 1;</code>
+     */
+    public orwell.messages.Robot.Colour getColour(int index) {
+      return colour_.get(index);
+    }
+    /**
+     * <code>repeated .orwell.messages.Colour colour = 1;</code>
+     */
+    public orwell.messages.Robot.ColourOrBuilder getColourOrBuilder(
+        int index) {
+      return colour_.get(index);
+    }
+
+    // repeated .orwell.messages.Rfid rfid = 2;
+    public static final int RFID_FIELD_NUMBER = 2;
+    private java.util.List<orwell.messages.Robot.Rfid> rfid_;
+    /**
+     * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
+     */
+    public java.util.List<orwell.messages.Robot.Rfid> getRfidList() {
+      return rfid_;
+    }
+    /**
+     * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
+     */
+    public java.util.List<? extends orwell.messages.Robot.RfidOrBuilder> 
+        getRfidOrBuilderList() {
+      return rfid_;
+    }
+    /**
+     * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
+     */
+    public int getRfidCount() {
+      return rfid_.size();
+    }
+    /**
+     * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
+     */
+    public orwell.messages.Robot.Rfid getRfid(int index) {
+      return rfid_.get(index);
+    }
+    /**
+     * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
+     */
+    public orwell.messages.Robot.RfidOrBuilder getRfidOrBuilder(
+        int index) {
+      return rfid_.get(index);
+    }
+
+    private void initFields() {
+      colour_ = java.util.Collections.emptyList();
+      rfid_ = java.util.Collections.emptyList();
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+
+      for (int i = 0; i < getColourCount(); i++) {
+        if (!getColour(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      for (int i = 0; i < getRfidCount(); i++) {
+        if (!getRfid(i).isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      for (int i = 0; i < colour_.size(); i++) {
+        output.writeMessage(1, colour_.get(i));
+      }
+      for (int i = 0; i < rfid_.size(); i++) {
+        output.writeMessage(2, rfid_.get(i));
+      }
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      for (int i = 0; i < colour_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(1, colour_.get(i));
+      }
+      for (int i = 0; i < rfid_.size(); i++) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, rfid_.get(i));
+      }
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static orwell.messages.Robot.ServerRobotState parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static orwell.messages.Robot.ServerRobotState parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static orwell.messages.Robot.ServerRobotState parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static orwell.messages.Robot.ServerRobotState parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static orwell.messages.Robot.ServerRobotState parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static orwell.messages.Robot.ServerRobotState parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static orwell.messages.Robot.ServerRobotState parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static orwell.messages.Robot.ServerRobotState parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static orwell.messages.Robot.ServerRobotState parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static orwell.messages.Robot.ServerRobotState parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(orwell.messages.Robot.ServerRobotState prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    /**
+     * Protobuf type {@code orwell.messages.ServerRobotState}
+     *
+     * <pre>
+     * Notify the state the robot is in (sent while playing)
+     * </pre>
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageLite.Builder<
+          orwell.messages.Robot.ServerRobotState, Builder>
+        implements orwell.messages.Robot.ServerRobotStateOrBuilder {
+      // Construct using orwell.messages.Robot.ServerRobotState.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private void maybeForceBuilderInitialization() {
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        colour_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        rfid_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public orwell.messages.Robot.ServerRobotState getDefaultInstanceForType() {
+        return orwell.messages.Robot.ServerRobotState.getDefaultInstance();
+      }
+
+      public orwell.messages.Robot.ServerRobotState build() {
+        orwell.messages.Robot.ServerRobotState result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public orwell.messages.Robot.ServerRobotState buildPartial() {
+        orwell.messages.Robot.ServerRobotState result = new orwell.messages.Robot.ServerRobotState(this);
+        int from_bitField0_ = bitField0_;
+        if (((bitField0_ & 0x00000001) == 0x00000001)) {
+          colour_ = java.util.Collections.unmodifiableList(colour_);
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.colour_ = colour_;
+        if (((bitField0_ & 0x00000002) == 0x00000002)) {
+          rfid_ = java.util.Collections.unmodifiableList(rfid_);
+          bitField0_ = (bitField0_ & ~0x00000002);
+        }
+        result.rfid_ = rfid_;
+        return result;
+      }
+
+      public Builder mergeFrom(orwell.messages.Robot.ServerRobotState other) {
+        if (other == orwell.messages.Robot.ServerRobotState.getDefaultInstance()) return this;
+        if (!other.colour_.isEmpty()) {
+          if (colour_.isEmpty()) {
+            colour_ = other.colour_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureColourIsMutable();
+            colour_.addAll(other.colour_);
+          }
+          
+        }
+        if (!other.rfid_.isEmpty()) {
+          if (rfid_.isEmpty()) {
+            rfid_ = other.rfid_;
+            bitField0_ = (bitField0_ & ~0x00000002);
+          } else {
+            ensureRfidIsMutable();
+            rfid_.addAll(other.rfid_);
+          }
+          
+        }
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        for (int i = 0; i < getColourCount(); i++) {
+          if (!getColour(i).isInitialized()) {
+            
+            return false;
+          }
+        }
+        for (int i = 0; i < getRfidCount(); i++) {
+          if (!getRfid(i).isInitialized()) {
+            
+            return false;
+          }
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        orwell.messages.Robot.ServerRobotState parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (orwell.messages.Robot.ServerRobotState) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      // repeated .orwell.messages.Colour colour = 1;
+      private java.util.List<orwell.messages.Robot.Colour> colour_ =
+        java.util.Collections.emptyList();
+      private void ensureColourIsMutable() {
+        if (!((bitField0_ & 0x00000001) == 0x00000001)) {
+          colour_ = new java.util.ArrayList<orwell.messages.Robot.Colour>(colour_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+
+      /**
+       * <code>repeated .orwell.messages.Colour colour = 1;</code>
+       */
+      public java.util.List<orwell.messages.Robot.Colour> getColourList() {
+        return java.util.Collections.unmodifiableList(colour_);
+      }
+      /**
+       * <code>repeated .orwell.messages.Colour colour = 1;</code>
+       */
+      public int getColourCount() {
+        return colour_.size();
+      }
+      /**
+       * <code>repeated .orwell.messages.Colour colour = 1;</code>
+       */
+      public orwell.messages.Robot.Colour getColour(int index) {
+        return colour_.get(index);
+      }
+      /**
+       * <code>repeated .orwell.messages.Colour colour = 1;</code>
+       */
+      public Builder setColour(
+          int index, orwell.messages.Robot.Colour value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureColourIsMutable();
+        colour_.set(index, value);
+
+        return this;
+      }
+      /**
+       * <code>repeated .orwell.messages.Colour colour = 1;</code>
+       */
+      public Builder setColour(
+          int index, orwell.messages.Robot.Colour.Builder builderForValue) {
+        ensureColourIsMutable();
+        colour_.set(index, builderForValue.build());
+
+        return this;
+      }
+      /**
+       * <code>repeated .orwell.messages.Colour colour = 1;</code>
+       */
+      public Builder addColour(orwell.messages.Robot.Colour value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureColourIsMutable();
+        colour_.add(value);
+
+        return this;
+      }
+      /**
+       * <code>repeated .orwell.messages.Colour colour = 1;</code>
+       */
+      public Builder addColour(
+          int index, orwell.messages.Robot.Colour value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureColourIsMutable();
+        colour_.add(index, value);
+
+        return this;
+      }
+      /**
+       * <code>repeated .orwell.messages.Colour colour = 1;</code>
+       */
+      public Builder addColour(
+          orwell.messages.Robot.Colour.Builder builderForValue) {
+        ensureColourIsMutable();
+        colour_.add(builderForValue.build());
+
+        return this;
+      }
+      /**
+       * <code>repeated .orwell.messages.Colour colour = 1;</code>
+       */
+      public Builder addColour(
+          int index, orwell.messages.Robot.Colour.Builder builderForValue) {
+        ensureColourIsMutable();
+        colour_.add(index, builderForValue.build());
+
+        return this;
+      }
+      /**
+       * <code>repeated .orwell.messages.Colour colour = 1;</code>
+       */
+      public Builder addAllColour(
+          java.lang.Iterable<? extends orwell.messages.Robot.Colour> values) {
+        ensureColourIsMutable();
+        super.addAll(values, colour_);
+
+        return this;
+      }
+      /**
+       * <code>repeated .orwell.messages.Colour colour = 1;</code>
+       */
+      public Builder clearColour() {
+        colour_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000001);
+
+        return this;
+      }
+      /**
+       * <code>repeated .orwell.messages.Colour colour = 1;</code>
+       */
+      public Builder removeColour(int index) {
+        ensureColourIsMutable();
+        colour_.remove(index);
+
+        return this;
+      }
+
+      // repeated .orwell.messages.Rfid rfid = 2;
+      private java.util.List<orwell.messages.Robot.Rfid> rfid_ =
+        java.util.Collections.emptyList();
+      private void ensureRfidIsMutable() {
+        if (!((bitField0_ & 0x00000002) == 0x00000002)) {
+          rfid_ = new java.util.ArrayList<orwell.messages.Robot.Rfid>(rfid_);
+          bitField0_ |= 0x00000002;
+         }
+      }
+
+      /**
+       * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
+       */
+      public java.util.List<orwell.messages.Robot.Rfid> getRfidList() {
+        return java.util.Collections.unmodifiableList(rfid_);
+      }
+      /**
+       * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
+       */
+      public int getRfidCount() {
+        return rfid_.size();
+      }
+      /**
+       * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
+       */
+      public orwell.messages.Robot.Rfid getRfid(int index) {
+        return rfid_.get(index);
+      }
+      /**
+       * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
+       */
+      public Builder setRfid(
+          int index, orwell.messages.Robot.Rfid value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureRfidIsMutable();
+        rfid_.set(index, value);
+
+        return this;
+      }
+      /**
+       * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
+       */
+      public Builder setRfid(
+          int index, orwell.messages.Robot.Rfid.Builder builderForValue) {
+        ensureRfidIsMutable();
+        rfid_.set(index, builderForValue.build());
+
+        return this;
+      }
+      /**
+       * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
+       */
+      public Builder addRfid(orwell.messages.Robot.Rfid value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureRfidIsMutable();
+        rfid_.add(value);
+
+        return this;
+      }
+      /**
+       * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
+       */
+      public Builder addRfid(
+          int index, orwell.messages.Robot.Rfid value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureRfidIsMutable();
+        rfid_.add(index, value);
+
+        return this;
+      }
+      /**
+       * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
+       */
+      public Builder addRfid(
+          orwell.messages.Robot.Rfid.Builder builderForValue) {
+        ensureRfidIsMutable();
+        rfid_.add(builderForValue.build());
+
+        return this;
+      }
+      /**
+       * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
+       */
+      public Builder addRfid(
+          int index, orwell.messages.Robot.Rfid.Builder builderForValue) {
+        ensureRfidIsMutable();
+        rfid_.add(index, builderForValue.build());
+
+        return this;
+      }
+      /**
+       * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
+       */
+      public Builder addAllRfid(
+          java.lang.Iterable<? extends orwell.messages.Robot.Rfid> values) {
+        ensureRfidIsMutable();
+        super.addAll(values, rfid_);
+
+        return this;
+      }
+      /**
+       * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
+       */
+      public Builder clearRfid() {
+        rfid_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000002);
+
+        return this;
+      }
+      /**
+       * <code>repeated .orwell.messages.Rfid rfid = 2;</code>
+       */
+      public Builder removeRfid(int index) {
+        ensureRfidIsMutable();
+        rfid_.remove(index);
+
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:orwell.messages.ServerRobotState)
+    }
+
+    static {
+      defaultInstance = new ServerRobotState(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:orwell.messages.ServerRobotState)
+  }
+
+  public interface ColourOrBuilder
+      extends com.google.protobuf.MessageLiteOrBuilder {
+
+    // required int64 timestamp = 1;
+    /**
+     * <code>required int64 timestamp = 1;</code>
+     */
+    boolean hasTimestamp();
+    /**
+     * <code>required int64 timestamp = 1;</code>
+     */
+    long getTimestamp();
+
+    // required .orwell.messages.Status status = 2;
+    /**
+     * <code>required .orwell.messages.Status status = 2;</code>
+     */
+    boolean hasStatus();
+    /**
+     * <code>required .orwell.messages.Status status = 2;</code>
+     */
+    orwell.messages.Robot.Status getStatus();
+
+    // required int32 colour = 3;
+    /**
+     * <code>required int32 colour = 3;</code>
+     */
+    boolean hasColour();
+    /**
+     * <code>required int32 colour = 3;</code>
+     */
+    int getColour();
+  }
+  /**
+   * Protobuf type {@code orwell.messages.Colour}
+   *
+   * <pre>
+   * Robot is detecting a Colour flag
+   * </pre>
+   */
+  public static final class Colour extends
+      com.google.protobuf.GeneratedMessageLite
+      implements ColourOrBuilder {
+    // Use Colour.newBuilder() to construct.
+    private Colour(com.google.protobuf.GeneratedMessageLite.Builder builder) {
+      super(builder);
+
+    }
+    private Colour(boolean noInit) {}
+
+    private static final Colour defaultInstance;
+    public static Colour getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public Colour getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private Colour(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input,
+                                     extensionRegistry, tag)) {
+                done = true;
               }
-              bitField0_ |= 0x00000002;
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              timestamp_ = input.readInt64();
+              break;
+            }
+            case 16: {
+              int rawValue = input.readEnum();
+              orwell.messages.Robot.Status value = orwell.messages.Robot.Status.valueOf(rawValue);
+              if (value != null) {
+                bitField0_ |= 0x00000002;
+                status_ = value;
+              }
               break;
             }
             case 24: {
               bitField0_ |= 0x00000004;
-              active_ = input.readBool();
-              break;
-            }
-            case 34: {
-              bitField0_ |= 0x00000008;
-              rfid_ = input.readBytes();
-              break;
-            }
-            case 40: {
-              bitField0_ |= 0x00000010;
-              color_ = input.readInt32();
+              colour_ = input.readInt32();
               break;
             }
           }
@@ -158,495 +879,604 @@ public final class Robot {
         makeExtensionsImmutable();
       }
     }
-    public static com.google.protobuf.Parser<RobotState> PARSER =
-        new com.google.protobuf.AbstractParser<RobotState>() {
-      public RobotState parsePartialFrom(
+    public static com.google.protobuf.Parser<Colour> PARSER =
+        new com.google.protobuf.AbstractParser<Colour>() {
+      public Colour parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new RobotState(input, extensionRegistry);
+        return new Colour(input, extensionRegistry);
       }
     };
 
     @java.lang.Override
-    public com.google.protobuf.Parser<RobotState> getParserForType() {
+    public com.google.protobuf.Parser<Colour> getParserForType() {
       return PARSER;
     }
 
-    public interface MoveOrBuilder
-        extends com.google.protobuf.MessageLiteOrBuilder {
-
-      // optional double left = 1;
-      /**
-       * <code>optional double left = 1;</code>
-       */
-      boolean hasLeft();
-      /**
-       * <code>optional double left = 1;</code>
-       */
-      double getLeft();
-
-      // optional double right = 2;
-      /**
-       * <code>optional double right = 2;</code>
-       */
-      boolean hasRight();
-      /**
-       * <code>optional double right = 2;</code>
-       */
-      double getRight();
-    }
-    /**
-     * Protobuf type {@code orwell.messages.RobotState.Move}
-     */
-    public static final class Move extends
-        com.google.protobuf.GeneratedMessageLite
-        implements MoveOrBuilder {
-      // Use Move.newBuilder() to construct.
-      private Move(com.google.protobuf.GeneratedMessageLite.Builder builder) {
-        super(builder);
-
-      }
-      private Move(boolean noInit) {}
-
-      private static final Move defaultInstance;
-      public static Move getDefaultInstance() {
-        return defaultInstance;
-      }
-
-      public Move getDefaultInstanceForType() {
-        return defaultInstance;
-      }
-
-      private Move(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        initFields();
-        int mutable_bitField0_ = 0;
-        try {
-          boolean done = false;
-          while (!done) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                done = true;
-                break;
-              default: {
-                if (!parseUnknownField(input,
-                                       extensionRegistry, tag)) {
-                  done = true;
-                }
-                break;
-              }
-              case 9: {
-                bitField0_ |= 0x00000001;
-                left_ = input.readDouble();
-                break;
-              }
-              case 17: {
-                bitField0_ |= 0x00000002;
-                right_ = input.readDouble();
-                break;
-              }
-            }
-          }
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          throw e.setUnfinishedMessage(this);
-        } catch (java.io.IOException e) {
-          throw new com.google.protobuf.InvalidProtocolBufferException(
-              e.getMessage()).setUnfinishedMessage(this);
-        } finally {
-          makeExtensionsImmutable();
-        }
-      }
-      public static com.google.protobuf.Parser<Move> PARSER =
-          new com.google.protobuf.AbstractParser<Move>() {
-        public Move parsePartialFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws com.google.protobuf.InvalidProtocolBufferException {
-          return new Move(input, extensionRegistry);
-        }
-      };
-
-      @java.lang.Override
-      public com.google.protobuf.Parser<Move> getParserForType() {
-        return PARSER;
-      }
-
-      private int bitField0_;
-      // optional double left = 1;
-      public static final int LEFT_FIELD_NUMBER = 1;
-      private double left_;
-      /**
-       * <code>optional double left = 1;</code>
-       */
-      public boolean hasLeft() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>optional double left = 1;</code>
-       */
-      public double getLeft() {
-        return left_;
-      }
-
-      // optional double right = 2;
-      public static final int RIGHT_FIELD_NUMBER = 2;
-      private double right_;
-      /**
-       * <code>optional double right = 2;</code>
-       */
-      public boolean hasRight() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>optional double right = 2;</code>
-       */
-      public double getRight() {
-        return right_;
-      }
-
-      private void initFields() {
-        left_ = 0D;
-        right_ = 0D;
-      }
-      private byte memoizedIsInitialized = -1;
-      public final boolean isInitialized() {
-        byte isInitialized = memoizedIsInitialized;
-        if (isInitialized != -1) return isInitialized == 1;
-
-        memoizedIsInitialized = 1;
-        return true;
-      }
-
-      public void writeTo(com.google.protobuf.CodedOutputStream output)
-                          throws java.io.IOException {
-        getSerializedSize();
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          output.writeDouble(1, left_);
-        }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          output.writeDouble(2, right_);
-        }
-      }
-
-      private int memoizedSerializedSize = -1;
-      public int getSerializedSize() {
-        int size = memoizedSerializedSize;
-        if (size != -1) return size;
-
-        size = 0;
-        if (((bitField0_ & 0x00000001) == 0x00000001)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeDoubleSize(1, left_);
-        }
-        if (((bitField0_ & 0x00000002) == 0x00000002)) {
-          size += com.google.protobuf.CodedOutputStream
-            .computeDoubleSize(2, right_);
-        }
-        memoizedSerializedSize = size;
-        return size;
-      }
-
-      private static final long serialVersionUID = 0L;
-      @java.lang.Override
-      protected java.lang.Object writeReplace()
-          throws java.io.ObjectStreamException {
-        return super.writeReplace();
-      }
-
-      public static orwell.messages.Robot.RobotState.Move parseFrom(
-          com.google.protobuf.ByteString data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static orwell.messages.Robot.RobotState.Move parseFrom(
-          com.google.protobuf.ByteString data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static orwell.messages.Robot.RobotState.Move parseFrom(byte[] data)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data);
-      }
-      public static orwell.messages.Robot.RobotState.Move parseFrom(
-          byte[] data,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-        return PARSER.parseFrom(data, extensionRegistry);
-      }
-      public static orwell.messages.Robot.RobotState.Move parseFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input);
-      }
-      public static orwell.messages.Robot.RobotState.Move parseFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
-      }
-      public static orwell.messages.Robot.RobotState.Move parseDelimitedFrom(java.io.InputStream input)
-          throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input);
-      }
-      public static orwell.messages.Robot.RobotState.Move parseDelimitedFrom(
-          java.io.InputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseDelimitedFrom(input, extensionRegistry);
-      }
-      public static orwell.messages.Robot.RobotState.Move parseFrom(
-          com.google.protobuf.CodedInputStream input)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input);
-      }
-      public static orwell.messages.Robot.RobotState.Move parseFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        return PARSER.parseFrom(input, extensionRegistry);
-      }
-
-      public static Builder newBuilder() { return Builder.create(); }
-      public Builder newBuilderForType() { return newBuilder(); }
-      public static Builder newBuilder(orwell.messages.Robot.RobotState.Move prototype) {
-        return newBuilder().mergeFrom(prototype);
-      }
-      public Builder toBuilder() { return newBuilder(this); }
-
-      /**
-       * Protobuf type {@code orwell.messages.RobotState.Move}
-       */
-      public static final class Builder extends
-          com.google.protobuf.GeneratedMessageLite.Builder<
-            orwell.messages.Robot.RobotState.Move, Builder>
-          implements orwell.messages.Robot.RobotState.MoveOrBuilder {
-        // Construct using orwell.messages.Robot.RobotState.Move.newBuilder()
-        private Builder() {
-          maybeForceBuilderInitialization();
-        }
-
-        private void maybeForceBuilderInitialization() {
-        }
-        private static Builder create() {
-          return new Builder();
-        }
-
-        public Builder clear() {
-          super.clear();
-          left_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000001);
-          right_ = 0D;
-          bitField0_ = (bitField0_ & ~0x00000002);
-          return this;
-        }
-
-        public Builder clone() {
-          return create().mergeFrom(buildPartial());
-        }
-
-        public orwell.messages.Robot.RobotState.Move getDefaultInstanceForType() {
-          return orwell.messages.Robot.RobotState.Move.getDefaultInstance();
-        }
-
-        public orwell.messages.Robot.RobotState.Move build() {
-          orwell.messages.Robot.RobotState.Move result = buildPartial();
-          if (!result.isInitialized()) {
-            throw newUninitializedMessageException(result);
-          }
-          return result;
-        }
-
-        public orwell.messages.Robot.RobotState.Move buildPartial() {
-          orwell.messages.Robot.RobotState.Move result = new orwell.messages.Robot.RobotState.Move(this);
-          int from_bitField0_ = bitField0_;
-          int to_bitField0_ = 0;
-          if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-            to_bitField0_ |= 0x00000001;
-          }
-          result.left_ = left_;
-          if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-            to_bitField0_ |= 0x00000002;
-          }
-          result.right_ = right_;
-          result.bitField0_ = to_bitField0_;
-          return result;
-        }
-
-        public Builder mergeFrom(orwell.messages.Robot.RobotState.Move other) {
-          if (other == orwell.messages.Robot.RobotState.Move.getDefaultInstance()) return this;
-          if (other.hasLeft()) {
-            setLeft(other.getLeft());
-          }
-          if (other.hasRight()) {
-            setRight(other.getRight());
-          }
-          return this;
-        }
-
-        public final boolean isInitialized() {
-          return true;
-        }
-
-        public Builder mergeFrom(
-            com.google.protobuf.CodedInputStream input,
-            com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-            throws java.io.IOException {
-          orwell.messages.Robot.RobotState.Move parsedMessage = null;
-          try {
-            parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-          } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-            parsedMessage = (orwell.messages.Robot.RobotState.Move) e.getUnfinishedMessage();
-            throw e;
-          } finally {
-            if (parsedMessage != null) {
-              mergeFrom(parsedMessage);
-            }
-          }
-          return this;
-        }
-        private int bitField0_;
-
-        // optional double left = 1;
-        private double left_ ;
-        /**
-         * <code>optional double left = 1;</code>
-         */
-        public boolean hasLeft() {
-          return ((bitField0_ & 0x00000001) == 0x00000001);
-        }
-        /**
-         * <code>optional double left = 1;</code>
-         */
-        public double getLeft() {
-          return left_;
-        }
-        /**
-         * <code>optional double left = 1;</code>
-         */
-        public Builder setLeft(double value) {
-          bitField0_ |= 0x00000001;
-          left_ = value;
-          
-          return this;
-        }
-        /**
-         * <code>optional double left = 1;</code>
-         */
-        public Builder clearLeft() {
-          bitField0_ = (bitField0_ & ~0x00000001);
-          left_ = 0D;
-          
-          return this;
-        }
-
-        // optional double right = 2;
-        private double right_ ;
-        /**
-         * <code>optional double right = 2;</code>
-         */
-        public boolean hasRight() {
-          return ((bitField0_ & 0x00000002) == 0x00000002);
-        }
-        /**
-         * <code>optional double right = 2;</code>
-         */
-        public double getRight() {
-          return right_;
-        }
-        /**
-         * <code>optional double right = 2;</code>
-         */
-        public Builder setRight(double value) {
-          bitField0_ |= 0x00000002;
-          right_ = value;
-          
-          return this;
-        }
-        /**
-         * <code>optional double right = 2;</code>
-         */
-        public Builder clearRight() {
-          bitField0_ = (bitField0_ & ~0x00000002);
-          right_ = 0D;
-          
-          return this;
-        }
-
-        // @@protoc_insertion_point(builder_scope:orwell.messages.RobotState.Move)
-      }
-
-      static {
-        defaultInstance = new Move(true);
-        defaultInstance.initFields();
-      }
-
-      // @@protoc_insertion_point(class_scope:orwell.messages.RobotState.Move)
-    }
-
     private int bitField0_;
-    // optional double life = 1;
-    public static final int LIFE_FIELD_NUMBER = 1;
-    private double life_;
+    // required int64 timestamp = 1;
+    public static final int TIMESTAMP_FIELD_NUMBER = 1;
+    private long timestamp_;
     /**
-     * <code>optional double life = 1;</code>
+     * <code>required int64 timestamp = 1;</code>
      */
-    public boolean hasLife() {
+    public boolean hasTimestamp() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional double life = 1;</code>
+     * <code>required int64 timestamp = 1;</code>
      */
-    public double getLife() {
-      return life_;
+    public long getTimestamp() {
+      return timestamp_;
     }
 
-    // optional group Move = 2 {
-    public static final int MOVE_FIELD_NUMBER = 2;
-    private orwell.messages.Robot.RobotState.Move move_;
+    // required .orwell.messages.Status status = 2;
+    public static final int STATUS_FIELD_NUMBER = 2;
+    private orwell.messages.Robot.Status status_;
     /**
-     * <code>optional group Move = 2 { ... }</code>
+     * <code>required .orwell.messages.Status status = 2;</code>
      */
-    public boolean hasMove() {
+    public boolean hasStatus() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>optional group Move = 2 { ... }</code>
+     * <code>required .orwell.messages.Status status = 2;</code>
      */
-    public orwell.messages.Robot.RobotState.Move getMove() {
-      return move_;
+    public orwell.messages.Robot.Status getStatus() {
+      return status_;
     }
 
-    // optional bool active = 3 [default = true];
-    public static final int ACTIVE_FIELD_NUMBER = 3;
-    private boolean active_;
+    // required int32 colour = 3;
+    public static final int COLOUR_FIELD_NUMBER = 3;
+    private int colour_;
     /**
-     * <code>optional bool active = 3 [default = true];</code>
+     * <code>required int32 colour = 3;</code>
      */
-    public boolean hasActive() {
+    public boolean hasColour() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>optional bool active = 3 [default = true];</code>
+     * <code>required int32 colour = 3;</code>
      */
-    public boolean getActive() {
-      return active_;
+    public int getColour() {
+      return colour_;
     }
 
-    // optional string rfid = 4 [default = ""];
-    public static final int RFID_FIELD_NUMBER = 4;
-    private java.lang.Object rfid_;
+    private void initFields() {
+      timestamp_ = 0L;
+      status_ = orwell.messages.Robot.Status.ON;
+      colour_ = 0;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized != -1) return isInitialized == 1;
+
+      if (!hasTimestamp()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasStatus()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasColour()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt64(1, timestamp_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeEnum(2, status_.getNumber());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeInt32(3, colour_);
+      }
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt64Size(1, timestamp_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeEnumSize(2, status_.getNumber());
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, colour_);
+      }
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static orwell.messages.Robot.Colour parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static orwell.messages.Robot.Colour parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static orwell.messages.Robot.Colour parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static orwell.messages.Robot.Colour parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static orwell.messages.Robot.Colour parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static orwell.messages.Robot.Colour parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static orwell.messages.Robot.Colour parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static orwell.messages.Robot.Colour parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static orwell.messages.Robot.Colour parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static orwell.messages.Robot.Colour parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(orwell.messages.Robot.Colour prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
     /**
-     * <code>optional string rfid = 4 [default = ""];</code>
+     * Protobuf type {@code orwell.messages.Colour}
+     *
+     * <pre>
+     * Robot is detecting a Colour flag
+     * </pre>
      */
-    public boolean hasRfid() {
-      return ((bitField0_ & 0x00000008) == 0x00000008);
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageLite.Builder<
+          orwell.messages.Robot.Colour, Builder>
+        implements orwell.messages.Robot.ColourOrBuilder {
+      // Construct using orwell.messages.Robot.Colour.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private void maybeForceBuilderInitialization() {
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        timestamp_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        status_ = orwell.messages.Robot.Status.ON;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        colour_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public orwell.messages.Robot.Colour getDefaultInstanceForType() {
+        return orwell.messages.Robot.Colour.getDefaultInstance();
+      }
+
+      public orwell.messages.Robot.Colour build() {
+        orwell.messages.Robot.Colour result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public orwell.messages.Robot.Colour buildPartial() {
+        orwell.messages.Robot.Colour result = new orwell.messages.Robot.Colour(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.timestamp_ = timestamp_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.status_ = status_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.colour_ = colour_;
+        result.bitField0_ = to_bitField0_;
+        return result;
+      }
+
+      public Builder mergeFrom(orwell.messages.Robot.Colour other) {
+        if (other == orwell.messages.Robot.Colour.getDefaultInstance()) return this;
+        if (other.hasTimestamp()) {
+          setTimestamp(other.getTimestamp());
+        }
+        if (other.hasStatus()) {
+          setStatus(other.getStatus());
+        }
+        if (other.hasColour()) {
+          setColour(other.getColour());
+        }
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasTimestamp()) {
+          
+          return false;
+        }
+        if (!hasStatus()) {
+          
+          return false;
+        }
+        if (!hasColour()) {
+          
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        orwell.messages.Robot.Colour parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (orwell.messages.Robot.Colour) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      // required int64 timestamp = 1;
+      private long timestamp_ ;
+      /**
+       * <code>required int64 timestamp = 1;</code>
+       */
+      public boolean hasTimestamp() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required int64 timestamp = 1;</code>
+       */
+      public long getTimestamp() {
+        return timestamp_;
+      }
+      /**
+       * <code>required int64 timestamp = 1;</code>
+       */
+      public Builder setTimestamp(long value) {
+        bitField0_ |= 0x00000001;
+        timestamp_ = value;
+        
+        return this;
+      }
+      /**
+       * <code>required int64 timestamp = 1;</code>
+       */
+      public Builder clearTimestamp() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        timestamp_ = 0L;
+        
+        return this;
+      }
+
+      // required .orwell.messages.Status status = 2;
+      private orwell.messages.Robot.Status status_ = orwell.messages.Robot.Status.ON;
+      /**
+       * <code>required .orwell.messages.Status status = 2;</code>
+       */
+      public boolean hasStatus() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required .orwell.messages.Status status = 2;</code>
+       */
+      public orwell.messages.Robot.Status getStatus() {
+        return status_;
+      }
+      /**
+       * <code>required .orwell.messages.Status status = 2;</code>
+       */
+      public Builder setStatus(orwell.messages.Robot.Status value) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        bitField0_ |= 0x00000002;
+        status_ = value;
+        
+        return this;
+      }
+      /**
+       * <code>required .orwell.messages.Status status = 2;</code>
+       */
+      public Builder clearStatus() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        status_ = orwell.messages.Robot.Status.ON;
+        
+        return this;
+      }
+
+      // required int32 colour = 3;
+      private int colour_ ;
+      /**
+       * <code>required int32 colour = 3;</code>
+       */
+      public boolean hasColour() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>required int32 colour = 3;</code>
+       */
+      public int getColour() {
+        return colour_;
+      }
+      /**
+       * <code>required int32 colour = 3;</code>
+       */
+      public Builder setColour(int value) {
+        bitField0_ |= 0x00000004;
+        colour_ = value;
+        
+        return this;
+      }
+      /**
+       * <code>required int32 colour = 3;</code>
+       */
+      public Builder clearColour() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        colour_ = 0;
+        
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:orwell.messages.Colour)
+    }
+
+    static {
+      defaultInstance = new Colour(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:orwell.messages.Colour)
+  }
+
+  public interface RfidOrBuilder
+      extends com.google.protobuf.MessageLiteOrBuilder {
+
+    // required int64 timestamp = 1;
+    /**
+     * <code>required int64 timestamp = 1;</code>
+     */
+    boolean hasTimestamp();
+    /**
+     * <code>required int64 timestamp = 1;</code>
+     */
+    long getTimestamp();
+
+    // required .orwell.messages.Status status = 2;
+    /**
+     * <code>required .orwell.messages.Status status = 2;</code>
+     */
+    boolean hasStatus();
+    /**
+     * <code>required .orwell.messages.Status status = 2;</code>
+     */
+    orwell.messages.Robot.Status getStatus();
+
+    // required string rfid = 3;
+    /**
+     * <code>required string rfid = 3;</code>
+     */
+    boolean hasRfid();
+    /**
+     * <code>required string rfid = 3;</code>
+     */
+    java.lang.String getRfid();
+    /**
+     * <code>required string rfid = 3;</code>
+     */
+    com.google.protobuf.ByteString
+        getRfidBytes();
+  }
+  /**
+   * Protobuf type {@code orwell.messages.Rfid}
+   *
+   * <pre>
+   * Robot is detecting a RFID flag
+   * </pre>
+   */
+  public static final class Rfid extends
+      com.google.protobuf.GeneratedMessageLite
+      implements RfidOrBuilder {
+    // Use Rfid.newBuilder() to construct.
+    private Rfid(com.google.protobuf.GeneratedMessageLite.Builder builder) {
+      super(builder);
+
+    }
+    private Rfid(boolean noInit) {}
+
+    private static final Rfid defaultInstance;
+    public static Rfid getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public Rfid getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private Rfid(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              timestamp_ = input.readInt64();
+              break;
+            }
+            case 16: {
+              int rawValue = input.readEnum();
+              orwell.messages.Robot.Status value = orwell.messages.Robot.Status.valueOf(rawValue);
+              if (value != null) {
+                bitField0_ |= 0x00000002;
+                status_ = value;
+              }
+              break;
+            }
+            case 26: {
+              bitField0_ |= 0x00000004;
+              rfid_ = input.readBytes();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        makeExtensionsImmutable();
+      }
+    }
+    public static com.google.protobuf.Parser<Rfid> PARSER =
+        new com.google.protobuf.AbstractParser<Rfid>() {
+      public Rfid parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new Rfid(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<Rfid> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    // required int64 timestamp = 1;
+    public static final int TIMESTAMP_FIELD_NUMBER = 1;
+    private long timestamp_;
+    /**
+     * <code>required int64 timestamp = 1;</code>
+     */
+    public boolean hasTimestamp() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional string rfid = 4 [default = ""];</code>
+     * <code>required int64 timestamp = 1;</code>
+     */
+    public long getTimestamp() {
+      return timestamp_;
+    }
+
+    // required .orwell.messages.Status status = 2;
+    public static final int STATUS_FIELD_NUMBER = 2;
+    private orwell.messages.Robot.Status status_;
+    /**
+     * <code>required .orwell.messages.Status status = 2;</code>
+     */
+    public boolean hasStatus() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required .orwell.messages.Status status = 2;</code>
+     */
+    public orwell.messages.Robot.Status getStatus() {
+      return status_;
+    }
+
+    // required string rfid = 3;
+    public static final int RFID_FIELD_NUMBER = 3;
+    private java.lang.Object rfid_;
+    /**
+     * <code>required string rfid = 3;</code>
+     */
+    public boolean hasRfid() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>required string rfid = 3;</code>
      */
     public java.lang.String getRfid() {
       java.lang.Object ref = rfid_;
@@ -663,7 +1493,7 @@ public final class Robot {
       }
     }
     /**
-     * <code>optional string rfid = 4 [default = ""];</code>
+     * <code>required string rfid = 3;</code>
      */
     public com.google.protobuf.ByteString
         getRfidBytes() {
@@ -679,34 +1509,28 @@ public final class Robot {
       }
     }
 
-    // optional int32 color = 5 [default = -1];
-    public static final int COLOR_FIELD_NUMBER = 5;
-    private int color_;
-    /**
-     * <code>optional int32 color = 5 [default = -1];</code>
-     */
-    public boolean hasColor() {
-      return ((bitField0_ & 0x00000010) == 0x00000010);
-    }
-    /**
-     * <code>optional int32 color = 5 [default = -1];</code>
-     */
-    public int getColor() {
-      return color_;
-    }
-
     private void initFields() {
-      life_ = 0D;
-      move_ = orwell.messages.Robot.RobotState.Move.getDefaultInstance();
-      active_ = true;
+      timestamp_ = 0L;
+      status_ = orwell.messages.Robot.Status.ON;
       rfid_ = "";
-      color_ = -1;
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
 
+      if (!hasTimestamp()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasStatus()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasRfid()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -715,19 +1539,13 @@ public final class Robot {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeDouble(1, life_);
+        output.writeInt64(1, timestamp_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeGroup(2, move_);
+        output.writeEnum(2, status_.getNumber());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeBool(3, active_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeBytes(4, getRfidBytes());
-      }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        output.writeInt32(5, color_);
+        output.writeBytes(3, getRfidBytes());
       }
     }
 
@@ -739,23 +1557,15 @@ public final class Robot {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeDoubleSize(1, life_);
+          .computeInt64Size(1, timestamp_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeGroupSize(2, move_);
+          .computeEnumSize(2, status_.getNumber());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBoolSize(3, active_);
-      }
-      if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(4, getRfidBytes());
-      }
-      if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(5, color_);
+          .computeBytesSize(3, getRfidBytes());
       }
       memoizedSerializedSize = size;
       return size;
@@ -768,53 +1578,53 @@ public final class Robot {
       return super.writeReplace();
     }
 
-    public static orwell.messages.Robot.RobotState parseFrom(
+    public static orwell.messages.Robot.Rfid parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static orwell.messages.Robot.RobotState parseFrom(
+    public static orwell.messages.Robot.Rfid parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static orwell.messages.Robot.RobotState parseFrom(byte[] data)
+    public static orwell.messages.Robot.Rfid parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static orwell.messages.Robot.RobotState parseFrom(
+    public static orwell.messages.Robot.Rfid parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static orwell.messages.Robot.RobotState parseFrom(java.io.InputStream input)
+    public static orwell.messages.Robot.Rfid parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static orwell.messages.Robot.RobotState parseFrom(
+    public static orwell.messages.Robot.Rfid parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static orwell.messages.Robot.RobotState parseDelimitedFrom(java.io.InputStream input)
+    public static orwell.messages.Robot.Rfid parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static orwell.messages.Robot.RobotState parseDelimitedFrom(
+    public static orwell.messages.Robot.Rfid parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static orwell.messages.Robot.RobotState parseFrom(
+    public static orwell.messages.Robot.Rfid parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static orwell.messages.Robot.RobotState parseFrom(
+    public static orwell.messages.Robot.Rfid parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -823,23 +1633,23 @@ public final class Robot {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(orwell.messages.Robot.RobotState prototype) {
+    public static Builder newBuilder(orwell.messages.Robot.Rfid prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
 
     /**
-     * Protobuf type {@code orwell.messages.RobotState}
+     * Protobuf type {@code orwell.messages.Rfid}
      *
      * <pre>
-     * Notify the state the robot is in (sent while playing)
+     * Robot is detecting a RFID flag
      * </pre>
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessageLite.Builder<
-          orwell.messages.Robot.RobotState, Builder>
-        implements orwell.messages.Robot.RobotStateOrBuilder {
-      // Construct using orwell.messages.Robot.RobotState.newBuilder()
+          orwell.messages.Robot.Rfid, Builder>
+        implements orwell.messages.Robot.RfidOrBuilder {
+      // Construct using orwell.messages.Robot.Rfid.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -852,16 +1662,12 @@ public final class Robot {
 
       public Builder clear() {
         super.clear();
-        life_ = 0D;
+        timestamp_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000001);
-        move_ = orwell.messages.Robot.RobotState.Move.getDefaultInstance();
+        status_ = orwell.messages.Robot.Status.ON;
         bitField0_ = (bitField0_ & ~0x00000002);
-        active_ = true;
-        bitField0_ = (bitField0_ & ~0x00000004);
         rfid_ = "";
-        bitField0_ = (bitField0_ & ~0x00000008);
-        color_ = -1;
-        bitField0_ = (bitField0_ & ~0x00000010);
+        bitField0_ = (bitField0_ & ~0x00000004);
         return this;
       }
 
@@ -869,69 +1675,67 @@ public final class Robot {
         return create().mergeFrom(buildPartial());
       }
 
-      public orwell.messages.Robot.RobotState getDefaultInstanceForType() {
-        return orwell.messages.Robot.RobotState.getDefaultInstance();
+      public orwell.messages.Robot.Rfid getDefaultInstanceForType() {
+        return orwell.messages.Robot.Rfid.getDefaultInstance();
       }
 
-      public orwell.messages.Robot.RobotState build() {
-        orwell.messages.Robot.RobotState result = buildPartial();
+      public orwell.messages.Robot.Rfid build() {
+        orwell.messages.Robot.Rfid result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public orwell.messages.Robot.RobotState buildPartial() {
-        orwell.messages.Robot.RobotState result = new orwell.messages.Robot.RobotState(this);
+      public orwell.messages.Robot.Rfid buildPartial() {
+        orwell.messages.Robot.Rfid result = new orwell.messages.Robot.Rfid(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.life_ = life_;
+        result.timestamp_ = timestamp_;
         if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
           to_bitField0_ |= 0x00000002;
         }
-        result.move_ = move_;
+        result.status_ = status_;
         if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
           to_bitField0_ |= 0x00000004;
         }
-        result.active_ = active_;
-        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
-          to_bitField0_ |= 0x00000008;
-        }
         result.rfid_ = rfid_;
-        if (((from_bitField0_ & 0x00000010) == 0x00000010)) {
-          to_bitField0_ |= 0x00000010;
-        }
-        result.color_ = color_;
         result.bitField0_ = to_bitField0_;
         return result;
       }
 
-      public Builder mergeFrom(orwell.messages.Robot.RobotState other) {
-        if (other == orwell.messages.Robot.RobotState.getDefaultInstance()) return this;
-        if (other.hasLife()) {
-          setLife(other.getLife());
+      public Builder mergeFrom(orwell.messages.Robot.Rfid other) {
+        if (other == orwell.messages.Robot.Rfid.getDefaultInstance()) return this;
+        if (other.hasTimestamp()) {
+          setTimestamp(other.getTimestamp());
         }
-        if (other.hasMove()) {
-          mergeMove(other.getMove());
-        }
-        if (other.hasActive()) {
-          setActive(other.getActive());
+        if (other.hasStatus()) {
+          setStatus(other.getStatus());
         }
         if (other.hasRfid()) {
-          bitField0_ |= 0x00000008;
+          bitField0_ |= 0x00000004;
           rfid_ = other.rfid_;
           
-        }
-        if (other.hasColor()) {
-          setColor(other.getColor());
         }
         return this;
       }
 
       public final boolean isInitialized() {
+        if (!hasTimestamp()) {
+          
+          return false;
+        }
+        if (!hasStatus()) {
+          
+          return false;
+        }
+        if (!hasRfid()) {
+          
+          return false;
+        }
         return true;
       }
 
@@ -939,11 +1743,11 @@ public final class Robot {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        orwell.messages.Robot.RobotState parsedMessage = null;
+        orwell.messages.Robot.Rfid parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (orwell.messages.Robot.RobotState) e.getUnfinishedMessage();
+          parsedMessage = (orwell.messages.Robot.Rfid) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -954,143 +1758,85 @@ public final class Robot {
       }
       private int bitField0_;
 
-      // optional double life = 1;
-      private double life_ ;
+      // required int64 timestamp = 1;
+      private long timestamp_ ;
       /**
-       * <code>optional double life = 1;</code>
+       * <code>required int64 timestamp = 1;</code>
        */
-      public boolean hasLife() {
+      public boolean hasTimestamp() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional double life = 1;</code>
+       * <code>required int64 timestamp = 1;</code>
        */
-      public double getLife() {
-        return life_;
+      public long getTimestamp() {
+        return timestamp_;
       }
       /**
-       * <code>optional double life = 1;</code>
+       * <code>required int64 timestamp = 1;</code>
        */
-      public Builder setLife(double value) {
+      public Builder setTimestamp(long value) {
         bitField0_ |= 0x00000001;
-        life_ = value;
+        timestamp_ = value;
         
         return this;
       }
       /**
-       * <code>optional double life = 1;</code>
+       * <code>required int64 timestamp = 1;</code>
        */
-      public Builder clearLife() {
+      public Builder clearTimestamp() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        life_ = 0D;
+        timestamp_ = 0L;
         
         return this;
       }
 
-      // optional group Move = 2 {
-      private orwell.messages.Robot.RobotState.Move move_ = orwell.messages.Robot.RobotState.Move.getDefaultInstance();
+      // required .orwell.messages.Status status = 2;
+      private orwell.messages.Robot.Status status_ = orwell.messages.Robot.Status.ON;
       /**
-       * <code>optional group Move = 2 { ... }</code>
+       * <code>required .orwell.messages.Status status = 2;</code>
        */
-      public boolean hasMove() {
+      public boolean hasStatus() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>optional group Move = 2 { ... }</code>
+       * <code>required .orwell.messages.Status status = 2;</code>
        */
-      public orwell.messages.Robot.RobotState.Move getMove() {
-        return move_;
+      public orwell.messages.Robot.Status getStatus() {
+        return status_;
       }
       /**
-       * <code>optional group Move = 2 { ... }</code>
+       * <code>required .orwell.messages.Status status = 2;</code>
        */
-      public Builder setMove(orwell.messages.Robot.RobotState.Move value) {
+      public Builder setStatus(orwell.messages.Robot.Status value) {
         if (value == null) {
           throw new NullPointerException();
         }
-        move_ = value;
-
         bitField0_ |= 0x00000002;
+        status_ = value;
+        
         return this;
       }
       /**
-       * <code>optional group Move = 2 { ... }</code>
+       * <code>required .orwell.messages.Status status = 2;</code>
        */
-      public Builder setMove(
-          orwell.messages.Robot.RobotState.Move.Builder builderForValue) {
-        move_ = builderForValue.build();
-
-        bitField0_ |= 0x00000002;
-        return this;
-      }
-      /**
-       * <code>optional group Move = 2 { ... }</code>
-       */
-      public Builder mergeMove(orwell.messages.Robot.RobotState.Move value) {
-        if (((bitField0_ & 0x00000002) == 0x00000002) &&
-            move_ != orwell.messages.Robot.RobotState.Move.getDefaultInstance()) {
-          move_ =
-            orwell.messages.Robot.RobotState.Move.newBuilder(move_).mergeFrom(value).buildPartial();
-        } else {
-          move_ = value;
-        }
-
-        bitField0_ |= 0x00000002;
-        return this;
-      }
-      /**
-       * <code>optional group Move = 2 { ... }</code>
-       */
-      public Builder clearMove() {
-        move_ = orwell.messages.Robot.RobotState.Move.getDefaultInstance();
-
+      public Builder clearStatus() {
         bitField0_ = (bitField0_ & ~0x00000002);
+        status_ = orwell.messages.Robot.Status.ON;
+        
         return this;
       }
 
-      // optional bool active = 3 [default = true];
-      private boolean active_ = true;
+      // required string rfid = 3;
+      private java.lang.Object rfid_ = "";
       /**
-       * <code>optional bool active = 3 [default = true];</code>
+       * <code>required string rfid = 3;</code>
        */
-      public boolean hasActive() {
+      public boolean hasRfid() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>optional bool active = 3 [default = true];</code>
-       */
-      public boolean getActive() {
-        return active_;
-      }
-      /**
-       * <code>optional bool active = 3 [default = true];</code>
-       */
-      public Builder setActive(boolean value) {
-        bitField0_ |= 0x00000004;
-        active_ = value;
-        
-        return this;
-      }
-      /**
-       * <code>optional bool active = 3 [default = true];</code>
-       */
-      public Builder clearActive() {
-        bitField0_ = (bitField0_ & ~0x00000004);
-        active_ = true;
-        
-        return this;
-      }
-
-      // optional string rfid = 4 [default = ""];
-      private java.lang.Object rfid_ = "";
-      /**
-       * <code>optional string rfid = 4 [default = ""];</code>
-       */
-      public boolean hasRfid() {
-        return ((bitField0_ & 0x00000008) == 0x00000008);
-      }
-      /**
-       * <code>optional string rfid = 4 [default = ""];</code>
+       * <code>required string rfid = 3;</code>
        */
       public java.lang.String getRfid() {
         java.lang.Object ref = rfid_;
@@ -1104,7 +1850,7 @@ public final class Robot {
         }
       }
       /**
-       * <code>optional string rfid = 4 [default = ""];</code>
+       * <code>required string rfid = 3;</code>
        */
       public com.google.protobuf.ByteString
           getRfidBytes() {
@@ -1120,83 +1866,50 @@ public final class Robot {
         }
       }
       /**
-       * <code>optional string rfid = 4 [default = ""];</code>
+       * <code>required string rfid = 3;</code>
        */
       public Builder setRfid(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000008;
+  bitField0_ |= 0x00000004;
         rfid_ = value;
         
         return this;
       }
       /**
-       * <code>optional string rfid = 4 [default = ""];</code>
+       * <code>required string rfid = 3;</code>
        */
       public Builder clearRfid() {
-        bitField0_ = (bitField0_ & ~0x00000008);
+        bitField0_ = (bitField0_ & ~0x00000004);
         rfid_ = getDefaultInstance().getRfid();
         
         return this;
       }
       /**
-       * <code>optional string rfid = 4 [default = ""];</code>
+       * <code>required string rfid = 3;</code>
        */
       public Builder setRfidBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
-  bitField0_ |= 0x00000008;
+  bitField0_ |= 0x00000004;
         rfid_ = value;
         
         return this;
       }
 
-      // optional int32 color = 5 [default = -1];
-      private int color_ = -1;
-      /**
-       * <code>optional int32 color = 5 [default = -1];</code>
-       */
-      public boolean hasColor() {
-        return ((bitField0_ & 0x00000010) == 0x00000010);
-      }
-      /**
-       * <code>optional int32 color = 5 [default = -1];</code>
-       */
-      public int getColor() {
-        return color_;
-      }
-      /**
-       * <code>optional int32 color = 5 [default = -1];</code>
-       */
-      public Builder setColor(int value) {
-        bitField0_ |= 0x00000010;
-        color_ = value;
-        
-        return this;
-      }
-      /**
-       * <code>optional int32 color = 5 [default = -1];</code>
-       */
-      public Builder clearColor() {
-        bitField0_ = (bitField0_ & ~0x00000010);
-        color_ = -1;
-        
-        return this;
-      }
-
-      // @@protoc_insertion_point(builder_scope:orwell.messages.RobotState)
+      // @@protoc_insertion_point(builder_scope:orwell.messages.Rfid)
     }
 
     static {
-      defaultInstance = new RobotState(true);
+      defaultInstance = new Rfid(true);
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:orwell.messages.RobotState)
+    // @@protoc_insertion_point(class_scope:orwell.messages.Rfid)
   }
 
   public interface RegisterOrBuilder

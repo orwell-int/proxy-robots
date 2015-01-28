@@ -14,7 +14,7 @@ import lejos.mf.common.UnitMessageType;
 import lejos.mf.pc.MessageFramework;
 import orwell.messages.Controller.Input;
 import orwell.messages.Robot.Register;
-import orwell.messages.Robot.RobotState;
+import orwell.messages.Robot.ServerRobotState;
 import orwell.messages.ServerGame.EnumTeam;
 import orwell.messages.ServerGame.Registered;
 
@@ -23,13 +23,10 @@ import com.google.protobuf.InvalidProtocolBufferException;
 public class Tank implements IRobot, MessageListenerInterface {
 	final static Logger logback = LoggerFactory.getLogger(Tank.class); 
 
-	private static final double STARTING_LIFE_POINTS = 100;
 	private String routingID = UUID.randomUUID().toString();
 	private String bluetoothName;
 	private String bluetoothID;
-	private RobotState.Builder tankStateBuilder = RobotState
-			.newBuilder();
-	private RobotState.Move.Builder moveBuilder = RobotState.Move
+	private ServerRobotState.Builder tankStateBuilder = ServerRobotState
 			.newBuilder();
 	private Register.Builder registerBuilder = Register
 			.newBuilder();
@@ -50,10 +47,6 @@ public class Tank implements IRobot, MessageListenerInterface {
 		setBluetoothName(bluetoothName);
 		setBluetoothID(bluetoothID);
 		this.camera = camera;
-		setActive(false);
-		setLifePoints(STARTING_LIFE_POINTS);
-		setMoveLeft(0);
-		setMoveRight(0);
 		nxtInfo = new NXTInfo(NXTCommFactory.BLUETOOTH, bluetoothName,
 				bluetoothID);
 		mfTank = mf;
@@ -78,30 +71,7 @@ public class Tank implements IRobot, MessageListenerInterface {
 		this.bluetoothID = bluetoothID;
 	}
 
-	@Override
-	public void setActive(boolean isActive) {
-		tankStateBuilder.setActive(isActive);
-	}
-
-	@Override
-	public void setLifePoints(double lifePoints) {
-		tankStateBuilder.setLife(lifePoints);
-	}
-
-	private void setMoveLeft(double moveLeft) {
-		moveBuilder.setLeft(moveLeft);
-	}
-
-	private void setMoveRight(double moveRight) {
-		moveBuilder.setLeft(moveRight);
-	}
-
-	private RobotState.Move getRobotStateMove() {
-		return moveBuilder.build();
-	}
-
-	private RobotState getRobotState() {
-		tankStateBuilder.setMove(getRobotStateMove());
+	private ServerRobotState getRobotState() {
 		return tankStateBuilder.build();
 	}
 
@@ -230,11 +200,8 @@ public class Tank implements IRobot, MessageListenerInterface {
 	@Override
 	public String robotStateToString() {
 		String string = "RobotState of " + getRoutingID()
-				+ "\n\t|___isActive   = " + getRobotState().getActive()
-				+ "\n\t|___lifePoints = " + getRobotState().getLife()
-				+ "\n\t|___MoveState  = [LEFT] "
-				+ getRobotStateMove().getLeft() + " [RIGHT] "
-				+ getRobotStateMove().getRight();
+				+ "\n\t|___RFID   = " + getRobotState().getRfidList()
+				+ "\n\t|___Colour = " + getRobotState().getColourList();
 		return string;
 	}
 

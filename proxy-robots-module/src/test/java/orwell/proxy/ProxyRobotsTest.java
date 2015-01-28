@@ -196,6 +196,14 @@ public class ProxyRobotsTest {
 
 		logback.debug("OUT");
 	}
+
+    @Test
+    public void testSendServerRobotState() {
+        logback.info("IN");
+
+
+        logback.info("OUT");
+    }
 	
 	public void tearDown(){
 	}

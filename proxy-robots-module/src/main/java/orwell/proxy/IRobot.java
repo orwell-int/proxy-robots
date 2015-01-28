@@ -31,9 +31,6 @@ public interface IRobot {
 	public void setImage(String image);
 	public String getImage();
 	
-	public void setActive(boolean isActive);
-	public void setLifePoints(double lifePoints);
-	
 	public byte[] getZMQRobotState();
 	
 	public void setRegistered(byte[] registeredMessage);
