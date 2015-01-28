@@ -55,18 +55,23 @@ public class ProxyRobotsTest {
 	@Before
 	public void setUp() {
 		logback.info("IN");
+
+        // Mock Message framework
 		mockedMf = createNiceMock(MessageFramework.class);
 		expect(mockedMf.ConnectToNXT(anyObject(NXTInfo.class))).andStubReturn(
 				true);
 		replay(mockedMf);
 
+        // Mock camera
 		mockedCamera = createNiceMock(Camera.class);
 		expect(mockedCamera.getURL()).andStubReturn("192.168.1.50");
 		replay(mockedCamera);
-		
+
+        // Mock one tank
 		myTank = new Tank("Btname", "BtId", mockedCamera, mockedMf, "");
 		myTank.setRoutingID("NicolasCage");
-		
+
+        // Mock ZMQ behavior with mock sockets and context
 		mockedZmqSocketSend = createNiceMock(ZMQ.Socket.class);
 		mockedZmqSocketRecv = createNiceMock(ZMQ.Socket.class);
 		mockedZmqContext = createNiceMock(ZMQ.Context.class);
@@ -88,6 +93,7 @@ public class ProxyRobotsTest {
 		expect(mockedZmqContext.socket(ZMQ.SUB)).andReturn(mockedZmqSocketRecv);
 		replay(mockedZmqContext);
 
+        // Instantiate main class with mock parameters
 		myProxyRobots = new ProxyRobots(
 				"/configurationTest.xml", "localhost", mockedZmqContext);
 
@@ -188,10 +194,10 @@ public class ProxyRobotsTest {
 		myTank.closeConnection();
 		myProxyRobots.stopCommunication();
 
-		// So the map is empty
+		// So the map of connected tanks is empty
 		assert(myProxyRobots.getTanksConnectedMap().isEmpty());
 
-		// And the communication is closed TODO: make the check work
+		// And the communication is closed
 		PowerMock.verify(mockedZmqSocketSend);
 
 		logback.debug("OUT");
