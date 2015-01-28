@@ -206,7 +206,12 @@ public class ProxyRobotsTest {
     @Test
     public void testSendServerRobotState() {
         logback.info("IN");
+        createAndInitializeTank(myProxyRobots);
 
+        myProxyRobots.connectToRobots();
+        myProxyRobots.registerRobots();
+
+        myProxyRobots.startCommunication(new ZmqMessageWrapper(getMockRawZmqMessage(myTank, EnumMessageType.INPUT)));
 
         logback.info("OUT");
     }
