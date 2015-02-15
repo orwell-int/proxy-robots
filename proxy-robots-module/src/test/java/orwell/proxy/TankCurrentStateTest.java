@@ -47,7 +47,6 @@ public class TankCurrentStateTest {
         tankCurrentState.setNewRfid("1234567890");
         tankCurrentState.setNewRfid("1234567891");
 
-
         ServerRobotState serverRobotState = tankCurrentState.getServerRobotState();
         assertEquals(3, serverRobotState.getRfidCount());
         assertEquals("1234567890", serverRobotState.getRfid(0).getRfid());

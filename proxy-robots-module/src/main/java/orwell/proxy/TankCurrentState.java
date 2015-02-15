@@ -61,10 +61,14 @@ public class TankCurrentState {
         return serverRobotStateBuilder.build();
     }
 
-    public ServerRobotState getAndClearServerRobotState() {
-        ServerRobotState srs = serverRobotStateBuilder.build();
+    public void clearServerRobotState() {
         serverRobotStateBuilder.clearRfid();
         serverRobotStateBuilder.clearColour();
+    }
+
+    public ServerRobotState getAndClearServerRobotState() {
+        ServerRobotState srs = serverRobotStateBuilder.build();
+        clearServerRobotState();
         return srs;
     }
 }

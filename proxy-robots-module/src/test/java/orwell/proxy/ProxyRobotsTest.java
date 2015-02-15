@@ -6,6 +6,8 @@ import static org.powermock.api.easymock.PowerMock.createNiceMock;
 
 import java.util.HashMap;
 
+import lejos.mf.common.UnitMessage;
+import lejos.mf.common.UnitMessageType;
 import lejos.pc.comm.NXTInfo;
 
 import org.easymock.Mock;
@@ -20,7 +22,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
+import orwell.messages.Robot;
 import orwell.messages.ServerGame;
+import orwell.messages.Controller;
 import lejos.mf.pc.MessageFramework;
 
 
@@ -38,6 +42,7 @@ public class ProxyRobotsTest {
 	private enum EnumMessageType {
 		REGISTER,
 		REGISTERED,
+        SERVERROBOTSTATE,
 		INPUT;
 	}
 	
@@ -79,8 +84,9 @@ public class ProxyRobotsTest {
 		mockedZmqSocketSend.setLinger(1000);
 		expectLastCall().once();
 
-		expect(mockedZmqSocketSend.send(myTank.getZMQRegister())).andStubReturn(true);
-		mockedZmqSocketSend.close();
+		expect(mockedZmqSocketSend.send(myTank.getZmqRegister())).andStubReturn(true);
+        expect(mockedZmqSocketSend.send(getMockRawZmqMessage(myTank, EnumMessageType.SERVERROBOTSTATE))).andStubReturn(true);
+        mockedZmqSocketSend.close();
 		expectLastCall().once();
 		replay(mockedZmqSocketSend);
 		
@@ -104,17 +110,26 @@ public class ProxyRobotsTest {
 	{
 		byte[] raw_zmq_message;
 		byte[] specificMessage = new byte[0];
-		
+        String zmqMessageHeader = null;
+
 		switch(messageType){
-		case REGISTERED:
-			specificMessage = getBytesRegistered();
-			break;
+            case REGISTERED:
+                specificMessage = getBytesRegistered();
+                zmqMessageHeader = tank.getRoutingID() + " " + "Registered" + " ";
+                break;
+            case SERVERROBOTSTATE:
+                specificMessage = getBytesServerRobotState();
+                zmqMessageHeader = tank.getRoutingID() + " " + "ServerRobotState" + " ";
+                break;
+            case INPUT:
+                specificMessage = getBytesInput();
+                zmqMessageHeader = tank.getRoutingID() + " " + "Input" + " ";
+                break;
 		default:
 			logback.error("Case : Message type " + messageType + " not handled");
 		}
-		
-		String zMQmessageHeader = tank.getRoutingID() + " " + "Registered" + " ";
-		raw_zmq_message = orwell.proxy.Utils.Concatenate(zMQmessageHeader.getBytes(),
+
+		raw_zmq_message = orwell.proxy.Utils.Concatenate(zmqMessageHeader.getBytes(),
 				specificMessage);
 		
 		return raw_zmq_message;
@@ -128,6 +143,33 @@ public class ProxyRobotsTest {
 		
 		return registeredBuilder.build().toByteArray();
 	}
+
+    public byte[] getBytesInput()
+    {
+        Controller.Input.Builder inputBuilder = Controller.Input.newBuilder();
+        Controller.Input.Fire.Builder fireBuilder = Controller.Input.Fire.newBuilder();
+        Controller.Input.Move.Builder moveBuilder = Controller.Input.Move.newBuilder();
+        fireBuilder.setWeapon1(false);
+        fireBuilder.setWeapon2(false);
+        moveBuilder.setLeft(0);
+        moveBuilder.setRight(0);
+        inputBuilder.setFire(fireBuilder.build());
+        inputBuilder.setMove(moveBuilder.build());
+
+        return inputBuilder.build().toByteArray();
+    }
+
+    public byte[] getBytesServerRobotState()
+    {
+        Robot.ServerRobotState.Builder serverRobotStateBuilder = Robot.ServerRobotState.newBuilder();
+        Robot.Rfid.Builder rfidBuilder = Robot.Rfid.newBuilder();
+        rfidBuilder.setRfid("1234");
+        rfidBuilder.setStatus(Robot.Status.ON);
+        rfidBuilder.setTimestamp(1234567890);
+        serverRobotStateBuilder.addRfid(rfidBuilder.build());
+
+        return serverRobotStateBuilder.build().toByteArray();
+    }
 
 	public void createAndInitializeTank(ProxyRobots iProxyRobots)
 	{
@@ -199,22 +241,32 @@ public class ProxyRobotsTest {
 
 		// And the communication is closed
 		PowerMock.verify(mockedZmqSocketSend);
+        PowerMock.verify(mockedZmqSocketRecv);
 
-		logback.debug("OUT");
+        logback.debug("OUT");
 	}
 
-    @Test
-    public void testSendServerRobotState() {
-        logback.info("IN");
-        createAndInitializeTank(myProxyRobots);
-
-        myProxyRobots.connectToRobots();
-        myProxyRobots.registerRobots();
-
-        myProxyRobots.startCommunication(new ZmqMessageWrapper(getMockRawZmqMessage(myTank, EnumMessageType.INPUT)));
-
-        logback.info("OUT");
-    }
+//    @Test
+//    public void testSendServerRobotState() {
+//        logback.info("IN");
+//        createAndInitializeTank(myProxyRobots);
+//
+//        myProxyRobots.connectToRobots();
+//        myProxyRobots.registerRobots();
+//
+//        myProxyRobots.startCommunication(new ZmqMessageWrapper(getMockRawZmqMessage(myTank, EnumMessageType.SERVERROBOTSTATE)));
+//
+//        //TODO properly Mock myTank to mock timestamp
+//        UnitMessage unitMessage = new UnitMessage(UnitMessageType.Rfid, "1234");
+//        myTank.receivedNewMessage(unitMessage);
+//
+//        myTank.closeConnection();
+//        myProxyRobots.stopCommunication();
+//        PowerMock.verify(mockedZmqSocketSend);
+//        PowerMock.verify(mockedZmqSocketRecv);
+//
+//        logback.info("OUT");
+//    }
 	
 	public void tearDown(){
 	}

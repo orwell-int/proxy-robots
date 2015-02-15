@@ -1,6 +1,5 @@
 package orwell.proxy;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 import lejos.mf.common.MessageListenerInterface;
@@ -14,9 +13,6 @@ import lejos.mf.common.UnitMessage;
 import lejos.mf.common.UnitMessageType;
 import lejos.mf.pc.MessageFramework;
 import orwell.messages.Controller.Input;
-import orwell.messages.Robot.Colour;
-import orwell.messages.Robot.Status;
-import orwell.messages.Robot.Rfid;
 import orwell.messages.Robot.Register;
 import orwell.messages.Robot.ServerRobotState;
 import orwell.messages.ServerGame.EnumTeam;
@@ -30,19 +26,14 @@ public class Tank implements IRobot, MessageListenerInterface {
 	private String routingID = UUID.randomUUID().toString();
 	private String bluetoothName;
 	private String bluetoothID;
-	private ServerRobotState.Builder tankStateBuilder = ServerRobotState
-			.newBuilder();
 	private Register.Builder registerBuilder = Register
 			.newBuilder();
-    private Rfid.Builder rfidBuilder = Rfid.newBuilder();
-    private Colour.Builder colourBuilder = Colour.newBuilder();
     private Input currentControllerInput;
 	private Registered serverGameRegistered;
 	private NXTInfo nxtInfo;
 	private MessageFramework mfTank;
 	private Camera camera;
 	private Register register;
-    private ServerRobotState serverRobotState;
 	private String image;
 
 	private EnumRegistrationState registrationState = EnumRegistrationState.NOT_REGISTERED;
@@ -120,18 +111,28 @@ public class Tank implements IRobot, MessageListenerInterface {
 	}
 
 	@Override
-	public byte[] getZMQRobotState() {
-		String zMQmessageHeader = getRoutingID() + " " + "RobotState" + " ";
-		return orwell.proxy.Utils.Concatenate(zMQmessageHeader.getBytes(),
-                tankCurrentState.getAndClearServerRobotState().toByteArray());
+    /*
+     * Return null is ServerRobotState is empty
+     */
+	public byte[] getAndClearZmqServerRobotState() {
+        logback.debug("getAndClearZmqServerRobotState - IN");
+        ServerRobotState srs = tankCurrentState.getAndClearServerRobotState();
+        if (srs.isInitialized()) {
+            logback.debug("getAndClearZmqServerRobotState - srs is Initialized");
+            String zmqMessageHeader = getRoutingID() + " " + "ServerRobotState" + " ";
+            return orwell.proxy.Utils.Concatenate(zmqMessageHeader.getBytes(),
+                    srs.toByteArray());
+        } else {
+            return null;
+        }
 	}
 
 	@Override
-	public byte[] getZMQRegister() {
-		String zMQmessageHeader = getRoutingID() + " " + "Register" + " ";
-		byte[] zmqRegister = orwell.proxy.Utils.Concatenate(zMQmessageHeader.getBytes(),
+	public byte[] getZmqRegister() {
+		String zmqMessageHeader = getRoutingID() + " " + "Register" + " ";
+		byte[] zmqRegister = orwell.proxy.Utils.Concatenate(zmqMessageHeader.getBytes(),
 				getRegister().toByteArray());
-		logback.info("zMQmessageHeader: " + zMQmessageHeader);
+		logback.info("zmqMessageHeader: " + zmqMessageHeader);
 		return zmqRegister;
 	}
 
@@ -205,8 +206,8 @@ public class Tank implements IRobot, MessageListenerInterface {
 	@Override
 	public String robotStateToString() {
 		String string = "RobotState of " + getRoutingID()
-				+ "\n\t|___RFID   = " + getRobotState().getRfidList()
-				+ "\n\t|___Colour = " + getRobotState().getColourList();
+				+ "\n\t|___RFID   = " + tankCurrentState.getServerRobotState().getRfidList()
+				+ "\n\t|___Colour = " + tankCurrentState.getServerRobotState().getColourList();
 		return string;
 	}
 
@@ -310,8 +311,4 @@ public class Tank implements IRobot, MessageListenerInterface {
 	private void onMsgNotDefined(String msg) {
 		logback.error("Unable to decode message received: " + msg);
 	}
-
-    private ServerRobotState getRobotState() {
-        return tankCurrentState.getServerRobotState();
-    }
 }

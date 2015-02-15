@@ -147,15 +147,16 @@ public class ProxyRobots {
 	public void registerRobots() {
 		for (IRobot tank : tanksConnectedMap.values()) {
 			tank.buildRegister();
-			sender.send(tank.getZMQRegister(), 0);
-			logback.info("TEST RegisterHeader: " + Arrays.toString(tank.getZMQRegister()));
+			sender.send(tank.getZmqRegister(), 0);
+			logback.info("TEST RegisterHeader: " + Arrays.toString(tank.getZmqRegister()));
 			logback.info("Robot [" + tank.getRoutingID()
 					+ "] is trying to register itself to the server!");
 		}
 	}
 
 	private void updateConnectedTanks() {
-		Iterator<Map.Entry<String, IRobot>> iterator = tanksConnectedMap
+        logback.debug("updateConnectedTanks - IN");
+        Iterator<Map.Entry<String, IRobot>> iterator = tanksConnectedMap
 				.entrySet().iterator();
 		while (iterator.hasNext()) {
 			Map.Entry<String, IRobot> entry = iterator.next();
@@ -173,6 +174,21 @@ public class ProxyRobots {
 		}
 	}
 
+    public void sendServerRobotState() {
+        logback.debug("sendServerRobotState - IN");
+        for (IRobot tank : tanksRegisteredMap.values()) {
+            byte[] zmqServerRobotState = tank.getAndClearZmqServerRobotState();
+            if(null == zmqServerRobotState) {
+                continue;
+            } else {
+                logback.info("TEST ServerRobotStateHeader: " + Arrays.toString(zmqServerRobotState));
+                logback.info("Robot [" + tank.getRoutingID()
+                        + "] is sending its ServerRobotState to the server!");
+                this.sender.send(zmqServerRobotState, 0);
+            }
+        }
+    }
+
 	public void startCommunication(ZmqMessageWrapper interruptMessage) {
         String zmq_previousMessage = new String();
         String previousInput = new String();
@@ -181,7 +197,6 @@ public class ProxyRobots {
         while (!Thread.currentThread().isInterrupted()
                 && !tanksConnectedMap.isEmpty()
                 && !interruptMessageReceived) {
-//			byte[] raw_zmq_message = this.receiver.recv();
             byte[] raw_zmq_message = this.receiver.recv(ZMQ.NOBLOCK);
             if (null != raw_zmq_message) {
                 zmqMessage = new ZmqMessageWrapper(raw_zmq_message);
@@ -198,7 +213,6 @@ public class ProxyRobots {
                                         .get(zmqMessage.routingId);
                                 this.tanksRegisteredMap.put(zmqMessage.routingId,
                                         registeredRobot);
-                                this.tanksConnectedMap.remove(zmqMessage.routingId);
                                 registeredRobot.setRegistered(zmqMessage.message);
                                 logback.info("Registered robot : " + registeredRobot
                                         .serverGameRegisteredToString());
@@ -225,6 +239,7 @@ public class ProxyRobots {
                             }
                             break;
                         case "GameState":
+                            logback.info("[WARNING] Received GameState - not handled");
                             break;
                         default:
                             logback.info("[WARNING] Invalid Message type");
@@ -240,6 +255,7 @@ public class ProxyRobots {
                     interruptMessageReceived = true;
                 }
             }
+            sendServerRobotState();
 			updateConnectedTanks();
 		}
 		logback.info("End of communication");
