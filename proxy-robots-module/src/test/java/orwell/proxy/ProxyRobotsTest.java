@@ -84,7 +84,7 @@ public class ProxyRobotsTest {
 		expectLastCall().once();
 		replay(mockedZmqSocketSend);
 		
-		expect(mockedZmqSocketRecv.recv()).andStubReturn(getMockRawZmqMessage(myTank, EnumMessageType.REGISTERED));
+		expect(mockedZmqSocketRecv.recv(ZMQ.NOBLOCK)).andStubReturn(getMockRawZmqMessage(myTank, EnumMessageType.REGISTERED));
 		mockedZmqSocketRecv.close();
 		expectLastCall().once();
 		replay(mockedZmqSocketRecv);

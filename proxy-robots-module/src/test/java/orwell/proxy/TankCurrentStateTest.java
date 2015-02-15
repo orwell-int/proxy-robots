@@ -74,6 +74,9 @@ public class TankCurrentStateTest {
     }
 
     @Test
+    /**
+     * Test we do not register twice in a row the same RFID value
+     */
     public void testSetSameRfid() {
         logback.info("IN");
 

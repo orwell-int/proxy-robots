@@ -174,62 +174,62 @@ public class ProxyRobots {
 	}
 
 	public void startCommunication(ZmqMessageWrapper interruptMessage) {
-		String zmq_previousMessage = new String();
-		String previousInput = new String();
-		ZmqMessageWrapper zmqMessage;
-		while (!Thread.currentThread().isInterrupted() && !tanksConnectedMap.isEmpty()) {
-			byte[] raw_zmq_message = this.receiver.recv();
-//            byte[] raw_zmq_message = this.receiver.recv(ZMQ.NOBLOCK);
+        String zmq_previousMessage = new String();
+        String previousInput = new String();
+        ZmqMessageWrapper zmqMessage;
+        boolean interruptMessageReceived = false;
+        while (!Thread.currentThread().isInterrupted()
+                && !tanksConnectedMap.isEmpty()
+                && !interruptMessageReceived) {
+//			byte[] raw_zmq_message = this.receiver.recv();
+            byte[] raw_zmq_message = this.receiver.recv(ZMQ.NOBLOCK);
             if (null != raw_zmq_message) {
-
                 zmqMessage = new ZmqMessageWrapper(raw_zmq_message);
 
                 // We do not want to uselessly flood the robot
                 if (zmqMessage.zmqMessageString.compareTo(zmq_previousMessage) == 0) {
                     logback.debug("Current zmq message identical to previous zmq message");
-                    continue;
+                } else {
+                    switch (zmqMessage.type) {
+                        case "Registered":
+                            logback.info("Setting ServerGame Registered to tank");
+                            if (this.tanksConnectedMap.containsKey(zmqMessage.routingId)) {
+                                IRobot registeredRobot = this.tanksConnectedMap
+                                        .get(zmqMessage.routingId);
+                                this.tanksRegisteredMap.put(zmqMessage.routingId,
+                                        registeredRobot);
+                                this.tanksConnectedMap.remove(zmqMessage.routingId);
+                                registeredRobot.setRegistered(zmqMessage.message);
+                                logback.info("Registered robot : " + registeredRobot
+                                        .serverGameRegisteredToString());
+                            } else {
+                                logback.info("RoutingID " + zmqMessage.routingId
+                                        + " is not an ID of a tank to register");
+                            }
+                            break;
+                        case "Input":
+                            logback.info("Setting controller Input to tank");
+                            if (previousInput.compareTo(zmqMessage.zmqMessageString) == 0) {
+                                logback.debug("Current input identical to previous input");
+                            } else {
+                                previousInput = zmqMessage.zmqMessageString;
+                                if (this.tanksRegisteredMap.containsKey(zmqMessage.routingId)) {
+                                    IRobot tankTargeted = this.tanksRegisteredMap
+                                            .get(zmqMessage.routingId);
+                                    tankTargeted.setControllerInput(zmqMessage.message);
+                                    logback.info("tankTargeted input : " + tankTargeted.controllerInputToString());
+                                } else {
+                                    logback.info("RoutingID " + zmqMessage.routingId
+                                            + " is not an ID of a tank to register");
+                                }
+                            }
+                            break;
+                        case "GameState":
+                            break;
+                        default:
+                            logback.info("[WARNING] Invalid Message type");
+                    }
                 }
-
-                switch (zmqMessage.type) {
-                    case "Registered":
-                        logback.info("Setting ServerGame Registered to tank");
-                        if (this.tanksConnectedMap.containsKey(zmqMessage.routingId)) {
-                            IRobot registeredRobot = this.tanksConnectedMap
-                                    .get(zmqMessage.routingId);
-                            this.tanksRegisteredMap.put(zmqMessage.routingId,
-                                    registeredRobot);
-                            this.tanksConnectedMap.remove(zmqMessage.routingId);
-                            registeredRobot.setRegistered(zmqMessage.message);
-                            logback.info("Registered robot : " + registeredRobot
-                                    .serverGameRegisteredToString());
-                        } else {
-                            logback.info("RoutingID " + zmqMessage.routingId
-                                    + " is not an ID of a tank to register");
-                        }
-                        break;
-                    case "Input":
-                        logback.info("Setting controller Input to tank");
-                        if (previousInput.compareTo(zmqMessage.zmqMessageString) == 0) {
-                            logback.debug("Current input identical to previous input");
-                            continue;
-                        }
-                        previousInput = zmqMessage.zmqMessageString;
-                        if (this.tanksRegisteredMap.containsKey(zmqMessage.routingId)) {
-                            IRobot tankTargeted = this.tanksRegisteredMap
-                                    .get(zmqMessage.routingId);
-                            tankTargeted.setControllerInput(zmqMessage.message);
-                            logback.info("tankTargeted input : " + tankTargeted.controllerInputToString());
-                        } else {
-                            logback.info("RoutingID " + zmqMessage.routingId
-                                    + " is not an ID of a tank to register");
-                        }
-                        break;
-                    case "GameState":
-                        break;
-                    default:
-                        logback.info("[WARNING] Invalid Message type");
-                }
-
                 zmq_previousMessage = zmqMessage.zmqMessageString;
 
                 logback.debug("zmqMessage.type = " + zmqMessage.type);
@@ -237,7 +237,7 @@ public class ProxyRobots {
 
                 if (null != interruptMessage && zmqMessage.type.equals(interruptMessage.type)) {
                     logback.info("Communication interrupted with interrupt message : " + interruptMessage.type);
-                    break;
+                    interruptMessageReceived = true;
                 }
             }
 			updateConnectedTanks();
