@@ -9,9 +9,9 @@
 			<subPort>9000</subPort>
 		</server-game>
 		<server-game name='platypus'>
-			<ip>192.168.1.46</ip>
-			<pushPort>9000</pushPort>
-			<subPort>9001</subPort>
+			<ip>192.168.1.20</ip>
+			<pushPort>9001</pushPort>
+			<subPort>9000</subPort>
 		</server-game>
 		<server-game name='localhost'>
 			<ip>localhost</ip>
@@ -25,8 +25,8 @@
 			<bluetoothName>Daneel</bluetoothName>
 			<bluetoothID>001653119482</bluetoothID>
 			<camera>
-				<ip>192.168.1.50</ip>
-				<port>9100</port>
+				<ip>192.168.1.21</ip>
+				<port>8081</port>s
 			</camera>
 			<image>Yellow hull -- TO BE BETTER CONFIGURED</image>
 		</tank>

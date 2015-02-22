@@ -155,35 +155,27 @@ public class ProxyRobots {
 	}
 
 	private void updateConnectedTanks() {
-        logback.debug("updateConnectedTanks - IN");
-        Iterator<Map.Entry<String, IRobot>> iterator = tanksConnectedMap
-				.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Map.Entry<String, IRobot> entry = iterator.next();
-			String routingId = entry.getKey();
-			IRobot tank = entry.getValue();
-
+        for (IRobot tank : tanksConnectedMap.values()) {
 			if(tank.getConnectionState() != EnumConnectionState.CONNECTED){
-				tanksConnectedMap.remove(routingId);
-				logback.info("Removing dead tank connected: " + routingId);
-				if(this.tanksRegisteredMap.containsKey(routingId)){
-					tanksRegisteredMap.remove(routingId);
-					logback.info("Removing dead tank registered: " + routingId);
+				tanksConnectedMap.remove(tank.getRoutingID());
+				logback.info("Removing dead tank connected: " + tank.getRoutingID());
+				if(this.tanksRegisteredMap.containsKey(tank.getRoutingID())){
+					tanksRegisteredMap.remove(tank.getRoutingID());
+					logback.info("Removing dead tank registered: " + tank.getRoutingID());
 				}
 			}
 		}
 	}
 
     public void sendServerRobotState() {
-        logback.debug("sendServerRobotState - IN");
         for (IRobot tank : tanksRegisteredMap.values()) {
             byte[] zmqServerRobotState = tank.getAndClearZmqServerRobotState();
             if(null == zmqServerRobotState) {
                 continue;
             } else {
-                logback.info("TEST ServerRobotStateHeader: " + Arrays.toString(zmqServerRobotState));
-                logback.info("Robot [" + tank.getRoutingID()
-                        + "] is sending its ServerRobotState to the server!");
+//                logback.debug("TEST ServerRobotStateHeader: " + Arrays.toString(zmqServerRobotState));
+//                logback.debug("Robot [" + tank.getRoutingID()
+//                        + "] is sending its ServerRobotState to the server!");
                 this.sender.send(zmqServerRobotState, 0);
             }
         }
@@ -209,11 +201,12 @@ public class ProxyRobots {
                         case "Registered":
                             logback.info("Setting ServerGame Registered to tank");
                             if (this.tanksConnectedMap.containsKey(zmqMessage.routingId)) {
+
                                 IRobot registeredRobot = this.tanksConnectedMap
                                         .get(zmqMessage.routingId);
-                                this.tanksRegisteredMap.put(zmqMessage.routingId,
-                                        registeredRobot);
                                 registeredRobot.setRegistered(zmqMessage.message);
+                                this.tanksRegisteredMap.put(registeredRobot.getRoutingID(),
+                                        registeredRobot);
                                 logback.info("Registered robot : " + registeredRobot
                                         .serverGameRegisteredToString());
                             } else {
@@ -234,7 +227,7 @@ public class ProxyRobots {
                                     logback.info("tankTargeted input : " + tankTargeted.controllerInputToString());
                                 } else {
                                     logback.info("RoutingID " + zmqMessage.routingId
-                                            + " is not an ID of a tank to register");
+                                            + " is not an ID of a registered tank");
                                 }
                             }
                             break;
@@ -248,7 +241,6 @@ public class ProxyRobots {
                 zmq_previousMessage = zmqMessage.zmqMessageString;
 
                 logback.debug("zmqMessage.type = " + zmqMessage.type);
-                logback.debug("interruptMessage.type = " + interruptMessage.type);
 
                 if (null != interruptMessage && zmqMessage.type.equals(interruptMessage.type)) {
                     logback.info("Communication interrupted with interrupt message : " + interruptMessage.type);
@@ -277,7 +269,7 @@ public class ProxyRobots {
 
 	public static void main(String[] args) throws Exception {
 		ProxyRobots proxyRobots = new ProxyRobots(
-				"/configuration.xml", "irondamien");
+				"/configuration.xml", "platypus");
 		proxyRobots.connectToServer();
 		proxyRobots.initializeTanks();
 		proxyRobots.connectToRobots();

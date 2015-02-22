@@ -37,13 +37,13 @@ public class TankCurrentState {
          */
 
         if (null == previousRfidValue) {
-            rfidBuilder.setTimestamp(System.currentTimeMillis());
+            rfidBuilder.setTimestamp(getTimeStamp());
             rfidBuilder.setStatus(Status.ON);
             rfidBuilder.setRfid(newRfidString);
             serverRobotStateBuilder.addRfid(rfidBuilder);
 
         } else if (previousRfidValue != newRfidString) {
-            long currentTime = System.currentTimeMillis();
+            long currentTime = getTimeStamp();
 
             rfidBuilder.setTimestamp(currentTime);
             rfidBuilder.setStatus(Status.OFF);
@@ -70,5 +70,9 @@ public class TankCurrentState {
         ServerRobotState srs = serverRobotStateBuilder.build();
         clearServerRobotState();
         return srs;
+    }
+
+    protected long getTimeStamp() {
+        return System.currentTimeMillis();
     }
 }

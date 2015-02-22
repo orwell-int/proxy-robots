@@ -115,10 +115,10 @@ public class Tank implements IRobot, MessageListenerInterface {
      * Return null is ServerRobotState is empty
      */
 	public byte[] getAndClearZmqServerRobotState() {
-        logback.debug("getAndClearZmqServerRobotState - IN");
-        ServerRobotState srs = tankCurrentState.getAndClearServerRobotState();
+//        logback.debug("getAndClearZmqServerRobotState - IN");
+        ServerRobotState srs = getTankCurrentState().getAndClearServerRobotState();
         if (srs.isInitialized()) {
-            logback.debug("getAndClearZmqServerRobotState - srs is Initialized");
+//            logback.debug("getAndClearZmqServerRobotState - srs is Initialized");
             String zmqMessageHeader = getRoutingID() + " " + "ServerRobotState" + " ";
             return orwell.proxy.Utils.Concatenate(zmqMessageHeader.getBytes(),
                     srs.toByteArray());
@@ -206,8 +206,8 @@ public class Tank implements IRobot, MessageListenerInterface {
 	@Override
 	public String robotStateToString() {
 		String string = "RobotState of " + getRoutingID()
-				+ "\n\t|___RFID   = " + tankCurrentState.getServerRobotState().getRfidList()
-				+ "\n\t|___Colour = " + tankCurrentState.getServerRobotState().getColourList();
+				+ "\n\t|___RFID   = " + getTankCurrentState().getServerRobotState().getRfidList()
+				+ "\n\t|___Colour = " + getTankCurrentState().getServerRobotState().getColourList();
 		return string;
 	}
 
@@ -300,7 +300,7 @@ public class Tank implements IRobot, MessageListenerInterface {
 
 	private void onMsgRfid(String rfidValue) {
 		logback.debug("RFID info received: " + rfidValue);
-        tankCurrentState.setNewRfid(rfidValue);
+        getTankCurrentState().setNewRfid(rfidValue);
     }
 
 	private void onMsgCommand(String msg) {
@@ -311,4 +311,9 @@ public class Tank implements IRobot, MessageListenerInterface {
 	private void onMsgNotDefined(String msg) {
 		logback.error("Unable to decode message received: " + msg);
 	}
+
+    protected TankCurrentState getTankCurrentState()
+    {
+        return this.tankCurrentState;
+    }
 }
