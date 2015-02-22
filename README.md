@@ -8,6 +8,15 @@ local setup for coveralls
 -------------------------
 Run with maven
 --------------
+Prerequiste: have jdk-7+ installed on your machine
+```
+javac -version
+>javac 1.7.xxx
+
+java -version                                                         
+>java version "1.7.xxx"
+```
+
 Install maven:
 ```
 sudo apt-get install maven
@@ -22,7 +31,7 @@ export NXJ_HOME=leJOS_NXJ_0.9.1beta-3
 
 Run maven (validate, build, test)
 ```
-maven clean install
+mvn clean install
 ```
 
 To update the coveralls status, export your repo token in the following environment variable:
@@ -39,6 +48,8 @@ mvn clean cobertura:cobertura coveralls:report
 
 Running it with ant (soon to be deprecated)
 -------------------------------------------
+
+You need the depencies jar already in a local folder. See build.properties for details.
 
 Show the existing targets:
 ```

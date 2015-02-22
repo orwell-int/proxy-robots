@@ -1,38 +1,25 @@
+after_success: 
+- mvn clean cobertura:cobertura coveralls:report -q
+script: 
+before_install: 
+- git submodule update --init --recursive
+- sudo apt-get install -qq libprotoc-dev protobuf-compiler
+- wget -nc --no-check-certificate http://sourceforge.net/projects/lejos/files/lejos-NXJ/0.9.1beta/leJOS_NXJ_0.9.1beta-3.tar.gz/download -O ./leJOS_NXJ_0.9.1beta-3.tar.gz
+- tar -xvf leJOS_NXJ_0.9.1beta-3.tar.gz
 language: java
-
-before_install:
-    - sudo apt-get install -qq libprotoc-dev protobuf-compiler 
-    - wget -nc --no-check-certificate http://search.maven.org/remotecontent?filepath=com/google/protobuf/protobuf-java/2.5.0/protobuf-java-2.5.0.jar -O ./protobuf-java-2.5.0.jar
-    - wget -nc --no-check-certificate http://search.maven.org/remotecontent?filepath=junit/junit/4.11/junit-4.11.jar -O ./junit-4.11.jar
-    - wget -nc --no-check-certificate http://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar -O hamcrest-core-1.3.jar
-    - wget -nc --no-check-certificate http://search.maven.org/remotecontent?filepath=org/easymock/easymock/3.2/easymock-3.2.jar -O easymock-3.2.jar
-    - wget -nc --no-check-certificate http://search.maven.org/remotecontent?filepath=cglib/cglib/3.1/cglib-3.1.jar -O cglib-3.1.jar
-    - wget -nc --no-check-certificate http://search.maven.org/remotecontent?filepath=org/objenesis/objenesis/2.1/objenesis-2.1.jar -O objenesis-2.1.jar
-    - wget -nc --no-check-certificate http://search.maven.org/remotecontent\?filepath\=org/ow2/asm/asm/5.0.3/asm-5.0.3.jar -O asm-5.0.3.jar
-    - wget -nc --no-check-certificate http://central.maven.org/maven2/org/javassist/javassist/3.18.2-GA/javassist-3.18.2-GA.jar -O javassist-3.18.2-GA.jar
-    - wget -nc --no-check-certificate http://dl.bintray.com/johanhaleby/generic/powermock-easymock-1.5.6-full.jar -O powermock-easymock-1.5.6-full.jar
-    - wget -nc --no-check-certificate http://central.maven.org/maven2/ch/qos/logback/logback-classic/1.1.2/logback-classic-1.1.2.jar -O logback-classic-1.1.2.jar
-    - wget -nc --no-check-certificate http://central.maven.org/maven2/ch/qos/logback/logback-core/1.1.2/logback-core-1.1.2.jar -O logback-core-1.1.2.jar
-    - wget -nc --no-check-certificate http://central.maven.org/maven2/org/slf4j/slf4j-api/1.7.7/slf4j-api-1.7.7.jar -O slf4j-api-1.7.7.jar
-    - wget -nc --no-check-certificate http://search.maven.org/remotecontent?filepath=org/zeromq/jeromq/0.3.4/jeromq-0.3.4.jar -O jeromq-0.3.4.jar 
-    - wget -nc --no-check-certificate http://sourceforge.net/projects/lejos/files/lejos-NXJ/0.9.1beta/leJOS_NXJ_0.9.1beta-3.tar.gz/download -O ./leJOS_NXJ_0.9.1beta-3.tar.gz
-    - tar -xvf leJOS_NXJ_0.9.1beta-3.tar.gz
-
-install:
-    - mvn validate -q
-    - mvn clean install 
-env:
-    - PROXY_ROBOTS_JARS_DIR=. NXJ_HOME=leJOS_NXJ_0.9.1beta-3 PROTOBUF_DIR=.
-
-script:
-    - ant junit-proxy -v 
-
-after_success:
-    - mvn clean cobertura:cobertura coveralls:report -q
-
-notifications:
-    recipients:
-        - miludmann+travis@gmail.com
-    email:
-        on_success: change
-        on_failure: always 
+notifications: 
+  recipients: 
+  - miludmann+travis@gmail.com
+  slack:
+    rooms:
+      secure: nCWjD+saKx7k5arMZFksP9xwHAPf1bDcluztPtYS7rwmAxhyn8v40BMwlSwUHHcjGGZB/Rp+ablnhe5AHnFtQY11C4tulScz/ruWG2L5X29m47uwr0sEzQa/rIq/Kms4ISF57zjPmppVTNKv4NbMQSL/Hcxfc69HctKJzKzcszY=
+    on_success: always
+    on_failure: always
+  email: 
+    on_success: change
+    on_failure: always
+env: 
+- NXJ_HOME=$TRAVIS_BUILD_DIR/leJOS_NXJ_0.9.1beta-3 
+install: 
+- mvn validate -q
+- mvn clean install

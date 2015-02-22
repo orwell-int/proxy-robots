@@ -29,18 +29,21 @@ import orwell.proxy.config.Configuration;
 @RunWith(JUnit4.class)
 public class ConfigurationTest {
 
-	private static final String CONFIGURATION_FILE_TEST = "src/test/resources/configurationTest.xml";
+	private static final String CONFIGURATION_FILE_TEST = "/configurationTest.xml";
 
 	private Configuration buildConfigTest() {
 		Configuration configTest = new Configuration(CONFIGURATION_FILE_TEST);
 		try {
 			configTest.populate();
-		} catch (FileNotFoundException e) {
-			fail(e.toString());
 		} catch (JAXBException e) {
 			fail(e.toString());
 		}
 		return configTest;
+	}
+	
+	@Test
+	public void testConfigFilePresent() {
+		assertNotNull("Test file missing", getClass().getResource(CONFIGURATION_FILE_TEST));
 	}
 
 	@Test

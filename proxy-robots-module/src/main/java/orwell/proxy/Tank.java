@@ -2,36 +2,33 @@ package orwell.proxy;
 
 import java.util.UUID;
 
+import lejos.mf.common.MessageListenerInterface;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import orwell.common.UnitMessage;
-import orwell.common.UnitMessageType;
+import lejos.mf.common.UnitMessage;
+import lejos.mf.common.UnitMessageType;
+import lejos.mf.pc.MessageFramework;
 import orwell.messages.Controller.Input;
 import orwell.messages.Robot.Register;
-import orwell.messages.Robot.RobotState;
+import orwell.messages.Robot.ServerRobotState;
 import orwell.messages.ServerGame.EnumTeam;
 import orwell.messages.ServerGame.Registered;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 
-public class Tank implements IRobot {
+public class Tank implements IRobot, MessageListenerInterface {
 	final static Logger logback = LoggerFactory.getLogger(Tank.class); 
 
-	private static final double STARTING_LIFE_POINTS = 100;
 	private String routingID = UUID.randomUUID().toString();
 	private String bluetoothName;
 	private String bluetoothID;
-	private RobotState.Builder tankStateBuilder = RobotState
-			.newBuilder();
-	private RobotState.Move.Builder moveBuilder = RobotState.Move
-			.newBuilder();
 	private Register.Builder registerBuilder = Register
 			.newBuilder();
-	private Input currentControllerInput;
+    private Input currentControllerInput;
 	private Registered serverGameRegistered;
 	private NXTInfo nxtInfo;
 	private MessageFramework mfTank;
@@ -43,18 +40,17 @@ public class Tank implements IRobot {
 	private EnumConnectionState connectionState = EnumConnectionState.NOT_CONNECTED;
 	private EnumTeam team;
 
+    private TankCurrentState tankCurrentState = new TankCurrentState();
+
 	public Tank(String bluetoothName, String bluetoothID, Camera camera,
 			MessageFramework mf, String image) {
 		setBluetoothName(bluetoothName);
 		setBluetoothID(bluetoothID);
 		this.camera = camera;
-		setActive(false);
-		setLifePoints(STARTING_LIFE_POINTS);
-		setMoveLeft(0);
-		setMoveRight(0);
 		nxtInfo = new NXTInfo(NXTCommFactory.BLUETOOTH, bluetoothName,
 				bluetoothID);
 		mfTank = mf;
+		mf.addMessageListener(this);
 		this.image = image;
 	}
 
@@ -73,33 +69,6 @@ public class Tank implements IRobot {
 
 	private void setBluetoothID(String bluetoothID) {
 		this.bluetoothID = bluetoothID;
-	}
-
-	@Override
-	public void setActive(boolean isActive) {
-		tankStateBuilder.setActive(isActive);
-	}
-
-	@Override
-	public void setLifePoints(double lifePoints) {
-		tankStateBuilder.setLife(lifePoints);
-	}
-
-	private void setMoveLeft(double moveLeft) {
-		moveBuilder.setLeft(moveLeft);
-	}
-
-	private void setMoveRight(double moveRight) {
-		moveBuilder.setLeft(moveRight);
-	}
-
-	private RobotState.Move getRobotStateMove() {
-		return moveBuilder.build();
-	}
-
-	private RobotState getRobotState() {
-		tankStateBuilder.setMove(getRobotStateMove());
-		return tankStateBuilder.build();
 	}
 
 	@Override
@@ -142,18 +111,28 @@ public class Tank implements IRobot {
 	}
 
 	@Override
-	public byte[] getZMQRobotState() {
-		String zMQmessageHeader = getRoutingID() + " " + "RobotState" + " ";
-		return orwell.proxy.Utils.Concatenate(zMQmessageHeader.getBytes(),
-				getRobotState().toByteArray());
+    /*
+     * Return null is ServerRobotState is empty
+     */
+	public byte[] getAndClearZmqServerRobotState() {
+//        logback.debug("getAndClearZmqServerRobotState - IN");
+        ServerRobotState srs = getTankCurrentState().getAndClearServerRobotState();
+        if (srs.isInitialized()) {
+//            logback.debug("getAndClearZmqServerRobotState - srs is Initialized");
+            String zmqMessageHeader = getRoutingID() + " " + "ServerRobotState" + " ";
+            return orwell.proxy.Utils.Concatenate(zmqMessageHeader.getBytes(),
+                    srs.toByteArray());
+        } else {
+            return null;
+        }
 	}
 
 	@Override
-	public byte[] getZMQRegister() {
-		String zMQmessageHeader = getRoutingID() + " " + "Register" + " ";
-		byte[] zmqRegister = orwell.proxy.Utils.Concatenate(zMQmessageHeader.getBytes(),
+	public byte[] getZmqRegister() {
+		String zmqMessageHeader = getRoutingID() + " " + "Register" + " ";
+		byte[] zmqRegister = orwell.proxy.Utils.Concatenate(zmqMessageHeader.getBytes(),
 				getRegister().toByteArray());
-		logback.info("zMQmessageHeader: " + zMQmessageHeader);
+		logback.info("zmqMessageHeader: " + zmqMessageHeader);
 		return zmqRegister;
 	}
 
@@ -220,18 +199,15 @@ public class Tank implements IRobot {
 		String string = "Tank {[BTName] " + getBluetoothName() + " [BTID] "
 				+ getBluetoothID() + " [RoutingID] " + getRoutingID() + "}"
 				+ "\n\t" + controllerInputToString() + "\n\t"
-				+ robotStatetoString();
+				+ robotStateToString();
 		return string;
 	}
 
 	@Override
-	public String robotStatetoString() {
+	public String robotStateToString() {
 		String string = "RobotState of " + getRoutingID()
-				+ "\n\t|___isActive   = " + getRobotState().getActive()
-				+ "\n\t|___lifePoints = " + getRobotState().getLife()
-				+ "\n\t|___MoveState  = [LEFT] "
-				+ getRobotStateMove().getLeft() + " [RIGHT] "
-				+ getRobotStateMove().getRight();
+				+ "\n\t|___RFID   = " + getTankCurrentState().getServerRobotState().getRfidList()
+				+ "\n\t|___Colour = " + getTankCurrentState().getServerRobotState().getColourList();
 		return string;
 	}
 
@@ -294,4 +270,50 @@ public class Tank implements IRobot {
 	public String getImage() {
 		return image;
 	}
+
+	public void closeConnection(){
+		mfTank.close();
+	}
+
+	public void receivedNewMessage(UnitMessage msg) {
+		switch (msg.getMsgType()){
+			case Stop:
+				onMsgStop();
+				break;
+			case Rfid:
+				onMsgRfid(msg.getPayload());
+				break;
+			case Command:
+				onMsgCommand(msg.getPayload());
+				break;
+			default:
+				onMsgNotDefined(msg.getPayload());
+				break;
+		}
+	}
+
+	private void onMsgStop() {
+		logback.info("Tank " + this.getBluetoothName() + " is stopping");
+		connectionState = EnumConnectionState.NOT_CONNECTED;
+		closeConnection();
+	}
+
+	private void onMsgRfid(String rfidValue) {
+		logback.debug("RFID info received: " + rfidValue);
+        getTankCurrentState().setNewRfid(rfidValue);
+    }
+
+	private void onMsgCommand(String msg) {
+		logback.debug("Tank is sending a command: " + msg);
+		logback.debug("This command will not be processed");
+	}
+
+	private void onMsgNotDefined(String msg) {
+		logback.error("Unable to decode message received: " + msg);
+	}
+
+    protected TankCurrentState getTankCurrentState()
+    {
+        return this.tankCurrentState;
+    }
 }

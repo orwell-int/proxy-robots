@@ -30,23 +30,22 @@ public interface IRobot {
 	 */
 	public void setImage(String image);
 	public String getImage();
-	
-	public void setActive(boolean isActive);
-	public void setLifePoints(double lifePoints);
-	
-	public byte[] getZMQRobotState();
+
+    /*
+     * This will clear the current ServerRobotState
+     */
+	public byte[] getAndClearZmqServerRobotState();
 	
 	public void setRegistered(byte[] registeredMessage);
-	public byte[] getZMQRegister();
+	public byte[] getZmqRegister();
 	
 	public void setControllerInput(byte[] inputMessage);
 	public Input getControllerInput();
 	
 	public EnumConnectionState connectToRobot();
 	
-	public String robotStatetoString();
+	public String robotStateToString();
 	public String controllerInputToString();
 	public String serverGameRegisteredToString();
 	public void buildRegister();
-	
 }

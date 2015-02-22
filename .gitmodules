@@ -1,3 +1,6 @@
 [submodule "messages"]
 	path = messages
 	url = https://github.com/orwell-int/messages
+[submodule "lejos-mf-pc"]
+	path = lejos-mf-pc
+	url = https://github.com/orwell-int/lejos-mf-pc
