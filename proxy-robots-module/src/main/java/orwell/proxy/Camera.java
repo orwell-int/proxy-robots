@@ -11,6 +11,6 @@ public class Camera {
 	}
 
 	public String getURL() {
-		return ip + ":" + port;
+		return "http://" + ip + ":" + port + "/videofeed";
 	}
 }

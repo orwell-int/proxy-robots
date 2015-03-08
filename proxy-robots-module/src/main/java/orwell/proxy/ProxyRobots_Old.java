@@ -21,17 +21,20 @@ import orwell.proxy.config.Configuration;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
 
-public class ProxyRobots implements IZmqMessageListener {
-	final static Logger logback = LoggerFactory.getLogger(ProxyRobots.class); 
+public class ProxyRobots_Old {
+	final static Logger logback = LoggerFactory.getLogger(ProxyRobots_Old.class);
 
 	private ConfigServerGame configServerGame;
 	private ConfigRobots configRobots;
-    private ZmqMessageFramework mfProxy;
+	private ZMQ.Context context;
+	private ZMQ.Socket sender;
+	private ZMQ.Socket receiver;
 	private HashMap<String, IRobot> tanksInitializedMap = new HashMap<String, IRobot>();
 	private HashMap<String, IRobot> tanksConnectedMap = new HashMap<String, IRobot>();
 	private HashMap<String, IRobot> tanksRegisteredMap = new HashMap<String, IRobot>();
 
-	public ProxyRobots(String ConfigFileAddress, String serverGame) {
+	public ProxyRobots_Old(String ConfigFileAddress, String serverGame,
+                           ZMQ.Context zmqContext) {
 		logback.info("Constructor -- IN");
 		Configuration configuration = new Configuration(ConfigFileAddress);
 		try {
@@ -49,11 +52,16 @@ public class ProxyRobots implements IZmqMessageListener {
 			e.printStackTrace();
 		}
 
-        mfProxy = new ZmqMessageFramework(
-                configProxy.getSenderLinger(),
-                configProxy.getReceiverLinger());
-        mfProxy.addZmqMessageListener(this);
+		context = zmqContext;
+		sender = context.socket(ZMQ.PUSH);
+		receiver = context.socket(ZMQ.SUB);
+		sender.setLinger(configProxy.getSenderLinger());
+		receiver.setLinger(configProxy.getReceiverLinger());
 		logback.info("Constructor -- OUT");
+	}
+
+	public ProxyRobots_Old(String ConfigFileAddress, String serverGame) {
+		this(ConfigFileAddress, serverGame, ZMQ.context(1));
 	}
 
 	public HashMap<String, IRobot> getTanksInitializedMap() {
@@ -69,10 +77,13 @@ public class ProxyRobots implements IZmqMessageListener {
 	}
 
 	public void connectToServer() {
-		mfProxy.connectToServer(
-                configServerGame.getIp(),
-                configServerGame.getPushPort(),
-                configServerGame.getSubPort());
+		sender.connect("tcp://" + configServerGame.getIp() + ":"
+				+ configServerGame.getPushPort());
+		logback.info("ProxyRobots Sender created");
+		receiver.connect("tcp://" + configServerGame.getIp() + ":"
+				+ configServerGame.getSubPort());
+		logback.info("ProxyRobots Receiver created");
+		receiver.subscribe(new String("").getBytes());
 	}
 
 	/*
@@ -87,7 +98,7 @@ public class ProxyRobots implements IZmqMessageListener {
 			//from the string (like an actual picture)
 			Tank tank = new Tank(configTank.getBluetoothName(),
 					configTank.getBluetoothID(), camera, configTank.getImage());
-			logback.info("Temporary routing ID: " + configTank.getTempRoutingID());
+			logback.info("NININININ " + configTank.getTempRoutingID());
 			tank.setRoutingID(configTank.getTempRoutingID());
 			this.tanksInitializedMap.put(tank.getRoutingID(), tank);
 		}
@@ -136,8 +147,7 @@ public class ProxyRobots implements IZmqMessageListener {
 	public void registerRobots() {
 		for (IRobot tank : tanksConnectedMap.values()) {
 			tank.buildRegister();
-			mfProxy.sendZmqMessage(EnumMessageType.REGISTER, tank.getRoutingID(),
-                    tank.getRegisterBytes());
+			sender.send(tank.getZmqRegister(), 0);
 			logback.info("TEST RegisterHeader: " + Arrays.toString(tank.getZmqRegister()));
 			logback.info("Robot [" + tank.getRoutingID()
 					+ "] is trying to register itself to the server!");
@@ -159,26 +169,57 @@ public class ProxyRobots implements IZmqMessageListener {
 
     public void sendServerRobotState() {
         for (IRobot tank : tanksConnectedMap.values()) {
-            byte[] zmqServerRobotState = tank.getAndClearZmqServerRobotStateBytes();
+            byte[] zmqServerRobotState = tank.getAndClearZmqServerRobotState();
             if(null == zmqServerRobotState) {
                 continue;
             } else {
 //                logback.debug("TEST ServerRobotStateHeader: " + Arrays.toString(zmqServerRobotState));
 //                logback.debug("Robot [" + tank.getRoutingID()
 //                        + "] is sending its ServerRobotState to the server!");
-                mfProxy.sendZmqMessage(EnumMessageType.SERVER_ROBOT_STATE,
-                        tank.getRoutingID(), zmqServerRobotState);
+                this.sender.send(zmqServerRobotState, 0);
             }
         }
     }
 
-	public void startCommunication() {
+	public void startCommunication(ZmqMessageWrapper interruptMessage) {
         String zmq_previousMessage = new String();
         String previousInput = new String();
         ZmqMessageWrapper zmqMessage;
         boolean interruptMessageReceived = false;
         while (!Thread.currentThread().isInterrupted()
-                && !tanksConnectedMap.isEmpty()) {
+                && !tanksConnectedMap.isEmpty()
+                && !interruptMessageReceived) {
+            byte[] raw_zmq_message = this.receiver.recv(ZMQ.NOBLOCK);
+            if (null != raw_zmq_message) {
+                zmqMessage = new ZmqMessageWrapper(raw_zmq_message);
+
+                // We do not want to uselessly flood the robot
+                if (zmqMessage.zmqMessageString.compareTo(zmq_previousMessage) == 0) {
+                    logback.debug("Current zmq message identical to previous zmq message");
+                } else {
+                    switch (zmqMessage.type) {
+                        case REGISTERED:
+                            onRegistered(zmqMessage);
+                            break;
+                        case INPUT:
+                            previousInput = onInput(zmqMessage, previousInput);
+                            break;
+                        case GAMESTATE:
+                            onGamestate(zmqMessage);
+                            break;
+                        default:
+                            onDefault();
+                    }
+                }
+                zmq_previousMessage = zmqMessage.zmqMessageString;
+
+                logback.debug("zmqMessage.type = " + zmqMessage.type);
+
+                if (null != interruptMessage && zmqMessage.type.equals(interruptMessage.type)) {
+                    logback.info("Communication interrupted with interrupt message : " + interruptMessage.type);
+                    interruptMessageReceived = true;
+                }
+            }
 			updateConnectedTanks();
             sendServerRobotState();
 		}
@@ -186,7 +227,11 @@ public class ProxyRobots implements IZmqMessageListener {
 	}
 
 	public void stopCommunication() {
-		mfProxy.close();
+		logback.info("Stopping communication");
+		sender.close();
+		receiver.close();
+		context.term();
+		logback.info("Communication stopped");
 	}
 
     private void onRegistered(ZmqMessageWrapper zmqMessage) {
@@ -205,25 +250,31 @@ public class ProxyRobots implements IZmqMessageListener {
         }
     }
 
-    private void onInput(ZmqMessageWrapper zmqMessage) {
+    private String onInput(ZmqMessageWrapper zmqMessage, String previousInput) {
         logback.info("Setting controller Input to tank");
-        if (this.tanksRegisteredMap.containsKey(zmqMessage.routingId)) {
-            IRobot tankTargeted = this.tanksRegisteredMap
-                    .get(zmqMessage.routingId);
-            tankTargeted.setControllerInput(zmqMessage.message);
-            logback.info("tankTargeted input : " + tankTargeted.controllerInputToString());
+        if (previousInput.compareTo(zmqMessage.zmqMessageString) == 0) {
+            logback.debug("Current input identical to previous input");
         } else {
-            logback.info("RoutingID " + zmqMessage.routingId
-                    + " is not an ID of a registered tank");
+            previousInput = zmqMessage.zmqMessageString;
+            if (this.tanksRegisteredMap.containsKey(zmqMessage.routingId)) {
+                IRobot tankTargeted = this.tanksRegisteredMap
+                        .get(zmqMessage.routingId);
+                tankTargeted.setControllerInput(zmqMessage.message);
+                logback.info("tankTargeted input : " + tankTargeted.controllerInputToString());
+            } else {
+                logback.info("RoutingID " + zmqMessage.routingId
+                        + " is not an ID of a registered tank");
+            }
         }
+        return previousInput;
     }
 
-    private void onGameState(ZmqMessageWrapper zmqMessage) {
-        logback.warn("Received GameState - not handled");
+    private void onGamestate(ZmqMessageWrapper zmqMessage) {
+        logback.info("[WARNING] Received GameState - not handled");
     }
 
     private void onDefault() {
-        logback.warn("Unknown message type");
+
     }
 
 	public void printLoggerState() {
@@ -233,13 +284,13 @@ public class ProxyRobots implements IZmqMessageListener {
 	}
 
 	public static void main(String[] args) throws Exception {
-		ProxyRobots proxyRobots = new ProxyRobots(
+		ProxyRobots_Old proxyRobots = new ProxyRobots_Old(
 				"/configuration.xml", "platypus");
 		proxyRobots.connectToServer();
 		proxyRobots.initializeTanks();
 		proxyRobots.connectToRobots();
 		proxyRobots.registerRobots();
-		proxyRobots.startCommunication();
+		proxyRobots.startCommunication(null);
 
 		// proxyRobots.sender.send(proxyRobots.tank.getZMQRobotState(), 0);
 		// logback.info("Message sent");
@@ -249,21 +300,4 @@ public class ProxyRobots implements IZmqMessageListener {
 		// logback.info("Message sent: " + request);
 		proxyRobots.stopCommunication();
 	}
-
-    @Override
-    public void receivedNewZmq(ZmqMessageWrapper msg) {
-        switch (msg.type) {
-            case REGISTERED:
-                onRegistered(msg);
-                break;
-            case INPUT:
-                onInput(msg);
-                break;
-            case GAMESTATE:
-                onGameState(msg);
-                break;
-            default:
-                onDefault();
-        }
-    }
 }

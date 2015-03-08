@@ -92,6 +92,11 @@ public class Tank implements IRobot, MessageListenerInterface {
 		return register;
 	}
 
+    @Override
+    public byte[] getRegisterBytes() {
+        return getRegister().toByteArray();
+    }
+
 	@Override
 	public Input getControllerInput() {
 		return currentControllerInput;
@@ -126,6 +131,13 @@ public class Tank implements IRobot, MessageListenerInterface {
             return null;
         }
 	}
+
+
+    @Override
+    public byte[] getAndClearZmqServerRobotStateBytes() {
+        return getTankCurrentState().getAndClearServerRobotState().toByteArray();
+    }
+
 
 	@Override
 	public byte[] getZmqRegister() {

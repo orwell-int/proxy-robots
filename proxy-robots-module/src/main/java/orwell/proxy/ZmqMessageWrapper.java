@@ -7,7 +7,8 @@ public class ZmqMessageWrapper {
 	final static Logger logback = LoggerFactory.getLogger(ZmqMessageWrapper.class); 
 
 	public String routingId;
-	public String type;
+	private String typeString;
+    public EnumMessageType type;
 	public byte[] message;
 	public static final byte SPACE_CODE = 32; // ascii code of SPACE character
 	public String zmqMessageString;
@@ -30,24 +31,40 @@ public class ZmqMessageWrapper {
 			}
 			++index;
 		}
-		// routingID type message
+		// routingID typeString message
 		//           ^    ^
 		//           |    indexMessage
 		//           indexType
 		int lengthRoutingID = indexType - 1;
 		int lengthType = indexMessage - indexType - 1;
-		this.routingId = new String(raw_zmq_message, 0, lengthRoutingID);
-		this.type = new String(raw_zmq_message, indexType, lengthType);
+		routingId = new String(raw_zmq_message, 0, lengthRoutingID);
+		typeString = new String(raw_zmq_message, indexType, lengthType);
+        switch(typeString) {
+            case "Registered":
+                type = EnumMessageType.REGISTERED;
+                break;
+            case "Input":
+                type = EnumMessageType.INPUT;
+                break;
+            case "GameState":
+                type = EnumMessageType.GAMESTATE;
+                break;
+            case "ServerRobotState":
+                type = EnumMessageType.SERVER_ROBOT_STATE;
+                break;
+            default:
+                type = EnumMessageType.UNKNOWN;
+                logback.warn("Message typeString unknown: " + typeString);
+        }
 		int lengthMessage = raw_zmq_message.length - lengthType
 				- lengthRoutingID - 2;
-		this.message = new byte[lengthMessage];
+		message = new byte[lengthMessage];
 		System.arraycopy(raw_zmq_message, indexMessage, message, 0,
 				message.length);
 
 		System.out.flush();
 		logback.info("Message received: " + zmqMessageString);
 
-		//proxyRobots.tank.setRoutingID(routingID);
 		logback.info("Message [TYPE]: " + type);
 	}
 }

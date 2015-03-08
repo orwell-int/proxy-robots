@@ -35,9 +35,12 @@ public interface IRobot {
      * This will clear the current ServerRobotState
      */
 	public byte[] getAndClearZmqServerRobotState();
+    public byte[] getAndClearZmqServerRobotStateBytes();
+
 	
 	public void setRegistered(byte[] registeredMessage);
 	public byte[] getZmqRegister();
+    public byte[] getRegisterBytes();
 	
 	public void setControllerInput(byte[] inputMessage);
 	public Input getControllerInput();
