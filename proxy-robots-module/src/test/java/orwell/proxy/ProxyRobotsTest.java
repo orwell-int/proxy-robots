@@ -12,6 +12,7 @@ import lejos.pc.comm.NXTInfo;
 
 import org.easymock.Mock;
 import org.easymock.TestSubject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -281,8 +282,8 @@ public class ProxyRobotsTest {
 //
 //        logback.info("OUT");
 //    }
-	
-	public void tearDown(){
-	}
 
+    @After
+    public void tearDown(){
+    }
 }

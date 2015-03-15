@@ -172,9 +172,6 @@ public class ProxyRobots implements IZmqMessageListener {
     }
 
 	public void startCommunication() {
-        String zmq_previousMessage = new String();
-        String previousInput = new String();
-        ZmqMessageWrapper zmqMessage;
         while (!Thread.currentThread().isInterrupted()
                 && !tanksConnectedMap.isEmpty()) {
 			updateConnectedTanks();
