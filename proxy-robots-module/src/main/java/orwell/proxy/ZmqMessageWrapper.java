@@ -6,12 +6,12 @@ import org.slf4j.LoggerFactory;
 public class ZmqMessageWrapper {
 	final static Logger logback = LoggerFactory.getLogger(ZmqMessageWrapper.class); 
 
-	public String routingId;
+	private String routingId;
 	private String typeString;
-    public EnumMessageType type;
-	public byte[] message;
-	public static final byte SPACE_CODE = 32; // ascii code of SPACE character
-	public String zmqMessageString;
+    private EnumMessageType type;
+    private byte[] message;
+    private static final byte SPACE_CODE = 32; // ascii code of SPACE character
+    private String zmqMessageString;
 	
 	public ZmqMessageWrapper(byte[] raw_zmq_message) {
 		zmqMessageString = new String(raw_zmq_message);
@@ -67,4 +67,18 @@ public class ZmqMessageWrapper {
 
 		logback.info("Message [TYPE]: " + type);
 	}
+
+    public String getZmqMessageString() { return zmqMessageString; }
+
+    public String getRoutingId() {
+        return routingId;
+    }
+
+    public EnumMessageType getMessageType() {
+        return type;
+    }
+
+    public byte[] getMessageBytes() {
+        return message;
+    }
 }

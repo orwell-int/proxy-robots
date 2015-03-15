@@ -109,12 +109,12 @@ public class ZmqMessageFramework {
                         zmqMessage = new ZmqMessageWrapper(raw_zmq_message);
 
                         // We do not want to uselessly flood the robot
-                        if (isSkipIdenticalMessages && zmqMessage.zmqMessageString.compareTo(zmqPreviousMessage) == 0) {
+                        if (isSkipIdenticalMessages && zmqMessage.getZmqMessageString().compareTo(zmqPreviousMessage) == 0) {
                             logback.debug("Current zmq message identical to previous zmq message");
                         } else {
                             receivedNewZmqMessage(zmqMessage);
                         }
-                        zmqPreviousMessage = zmqMessage.zmqMessageString;
+                        zmqPreviousMessage = zmqMessage.getZmqMessageString();
                     }
                 }
             }
@@ -124,7 +124,7 @@ public class ZmqMessageFramework {
     }
 
     private void receivedNewZmqMessage(ZmqMessageWrapper zmqMessage) {
-        logback.debug("Received New ZMQ Message : " + zmqMessage.type);
+        logback.debug("Received New ZMQ Message : " + zmqMessage.getMessageType());
         for (int j = 0; j < zmqMessageListeners.size(); j++) {
             zmqMessageListeners.get(j).receivedNewZmq(zmqMessage);
         }

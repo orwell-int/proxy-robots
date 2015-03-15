@@ -9,7 +9,6 @@ import javax.xml.bind.JAXBException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zeromq.ZMQ;
 
 import orwell.proxy.IRobot.EnumConnectionState;
 import orwell.proxy.config.ConfigModel;
@@ -176,7 +175,6 @@ public class ProxyRobots implements IZmqMessageListener {
         String zmq_previousMessage = new String();
         String previousInput = new String();
         ZmqMessageWrapper zmqMessage;
-        boolean interruptMessageReceived = false;
         while (!Thread.currentThread().isInterrupted()
                 && !tanksConnectedMap.isEmpty()) {
 			updateConnectedTanks();
@@ -191,29 +189,29 @@ public class ProxyRobots implements IZmqMessageListener {
 
     private void onRegistered(ZmqMessageWrapper zmqMessage) {
         logback.info("Setting ServerGame Registered to tank");
-        if (this.tanksConnectedMap.containsKey(zmqMessage.routingId)) {
+        if (this.tanksConnectedMap.containsKey(zmqMessage.getRoutingId())) {
             IRobot registeredRobot = this.tanksConnectedMap
-                    .get(zmqMessage.routingId);
-            registeredRobot.setRegistered(zmqMessage.message);
+                    .get(zmqMessage.getRoutingId());
+            registeredRobot.setRegistered(zmqMessage.getMessageBytes());
             this.tanksRegisteredMap.put(registeredRobot.getRoutingID(),
                     registeredRobot);
             logback.info("Registered robot : " + registeredRobot
                     .serverGameRegisteredToString());
         } else {
-            logback.info("RoutingID " + zmqMessage.routingId
+            logback.info("RoutingID " + zmqMessage.getRoutingId()
                     + " is not an ID of a tank to register");
         }
     }
 
     private void onInput(ZmqMessageWrapper zmqMessage) {
         logback.info("Setting controller Input to tank");
-        if (this.tanksRegisteredMap.containsKey(zmqMessage.routingId)) {
+        if (this.tanksRegisteredMap.containsKey(zmqMessage.getRoutingId())) {
             IRobot tankTargeted = this.tanksRegisteredMap
-                    .get(zmqMessage.routingId);
-            tankTargeted.setControllerInput(zmqMessage.message);
+                    .get(zmqMessage.getRoutingId());
+            tankTargeted.setControllerInput(zmqMessage.getMessageBytes());
             logback.info("tankTargeted input : " + tankTargeted.controllerInputToString());
         } else {
-            logback.info("RoutingID " + zmqMessage.routingId
+            logback.info("RoutingID " + zmqMessage.getRoutingId()
                     + " is not an ID of a registered tank");
         }
     }
@@ -252,7 +250,7 @@ public class ProxyRobots implements IZmqMessageListener {
 
     @Override
     public void receivedNewZmq(ZmqMessageWrapper msg) {
-        switch (msg.type) {
+        switch (msg.getMessageType()) {
             case REGISTERED:
                 onRegistered(msg);
                 break;
