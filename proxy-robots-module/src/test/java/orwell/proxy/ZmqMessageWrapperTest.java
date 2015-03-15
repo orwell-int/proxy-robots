@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Tests for {@link orwell.proxy.ZmqMessageFramework}.
+ * Tests for {@link orwell.proxy.ZmqMessageWrapper}.
  *
  * Created by parapampa on 15/03/15.
  */
@@ -62,6 +62,7 @@ public class ZmqMessageWrapperTest {
                 logback.error("Case : Message type " + messageType + " not handled");
         }
 
+        // Concatenate the two byte arrays
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
         try {
             outputStream.write(zmqMessageHeader.getBytes());
