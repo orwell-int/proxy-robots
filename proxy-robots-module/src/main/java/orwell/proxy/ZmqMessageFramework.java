@@ -67,7 +67,7 @@ public class ZmqMessageFramework {
         return connected;
     }
 
-    public void sendZmqMessage(EnumMessageType msgType,
+    public boolean sendZmqMessage(EnumMessageType msgType,
                                String routingID,
                                byte[] msgBytes) {
         String zmqMessageHeader = routingID + " ";
@@ -89,7 +89,7 @@ public class ZmqMessageFramework {
             logback.error("SendZmqMessage " + e.toString());
         }
         byte[] zmqMessage = outputStream.toByteArray();
-        sender.send(zmqMessage, 0);
+        return sender.send(zmqMessage, 0);
     }
 
     public void addZmqMessageListener(IZmqMessageListener zmqMsgListener) {

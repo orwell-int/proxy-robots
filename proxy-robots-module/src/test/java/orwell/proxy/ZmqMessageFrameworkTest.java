@@ -13,9 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
-import static org.easymock.EasyMock.anyByte;
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.powermock.api.easymock.PowerMock.createNiceMock;
@@ -51,7 +49,7 @@ public class ZmqMessageFrameworkTest {
         mockedZmqSocketRecv = createNiceMock(ZMQ.Socket.class);
         mockedZmqContext = createNiceMock(ZMQ.Context.class);
 
-        expect(mockedZmqSocketSend.send((byte[]) anyObject())).andStubReturn(true);
+        expect(mockedZmqSocketSend.send((byte[]) anyObject(), anyInt())).andStubReturn(true);
         mockedZmqSocketSend.close();
         expectLastCall().once();
         replay(mockedZmqSocketSend);
@@ -68,6 +66,7 @@ public class ZmqMessageFrameworkTest {
         try {
             MemberModifier.field(ZmqMessageFramework.class, "context").set(zmf, mockedZmqContext);
             MemberModifier.field(ZmqMessageFramework.class, "sender").set(zmf, mockedZmqSocketSend);
+            MemberModifier.field(ZmqMessageFramework.class, "receiver").set(zmf, mockedZmqSocketRecv);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -81,7 +80,8 @@ public class ZmqMessageFrameworkTest {
 
     @Test
     public void testSendZmqMessage() {
-        zmf.sendZmqMessage(EnumMessageType.REGISTER, "BananaOne", new byte[0]);
+        assertTrue(zmf.sendZmqMessage(EnumMessageType.REGISTER, "BananaOne", new byte[0]));
+        assertTrue(zmf.sendZmqMessage(EnumMessageType.SERVER_ROBOT_STATE, "BananaOne", new byte[0]));
     }
 
     @Test
