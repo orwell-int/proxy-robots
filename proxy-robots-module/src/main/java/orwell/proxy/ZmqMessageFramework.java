@@ -18,6 +18,7 @@ public class ZmqMessageFramework {
     protected ArrayList<IZmqMessageListener> zmqMessageListeners;
     protected boolean connected = false;
     private Object rXguard;
+    protected int nbMessagesSkiped = 0;
 
     private ZMQ.Context context;
     private ZMQ.Socket sender;
@@ -43,8 +44,12 @@ public class ZmqMessageFramework {
         logback.info("Constructor -- OUT");
     }
 
-    public void setSkipIdenticalMessages(boolean bool) {
-        isSkipIdenticalMessages = bool;
+    /**
+     * Decide whether to handle two identical successive messages or to ignore the second
+     * @param skipIdenticalMessages : if true, the second identical message (in a row) will be ignored
+     */
+    public void setSkipIdenticalMessages(boolean skipIdenticalMessages) {
+        isSkipIdenticalMessages = skipIdenticalMessages;
     }
 
     public boolean connectToServer(String serverIp,
@@ -110,8 +115,11 @@ public class ZmqMessageFramework {
 
                         // We do not want to uselessly flood the robot
                         if (isSkipIdenticalMessages && zmqMessage.getZmqMessageString().compareTo(zmqPreviousMessage) == 0) {
-                            logback.debug("Current zmq message identical to previous zmq message");
+                            nbMessagesSkiped++;
+                            logback.debug("Current zmq message identical to previous zmq message (already done " +
+                                    nbMessagesSkiped + " time(s) for this message)");
                         } else {
+                            nbMessagesSkiped = 0;
                             receivedNewZmqMessage(zmqMessage);
                         }
                         zmqPreviousMessage = zmqMessage.getZmqMessageString();

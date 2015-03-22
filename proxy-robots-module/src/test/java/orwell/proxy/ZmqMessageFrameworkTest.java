@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
 import static org.easymock.EasyMock.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.powermock.api.easymock.PowerMock.createNiceMock;
@@ -31,6 +32,7 @@ import static org.powermock.api.easymock.PowerMock.replay;
 public class ZmqMessageFrameworkTest {
 
     final static Logger logback = LoggerFactory.getLogger(ZmqMessageFrameworkTest.class);
+    final static long MAX_TIMEOUT_MS = 500;
 
     @TestSubject
     private ZmqMessageFramework zmf;
@@ -55,7 +57,8 @@ public class ZmqMessageFrameworkTest {
         expectLastCall().once();
         replay(mockedZmqSocketSend);
 
-        expect(mockedZmqSocketRecv.recv(ZMQ.NOBLOCK)).andStubReturn(new byte[0]);
+        byte[] raw_zmq_message = "routingIdTest Registered messageTest".getBytes();
+        expect(mockedZmqSocketRecv.recv(ZMQ.NOBLOCK)).andStubReturn(raw_zmq_message);
         mockedZmqSocketRecv.close();
         expectLastCall().once();
         replay(mockedZmqSocketRecv);
@@ -95,6 +98,28 @@ public class ZmqMessageFrameworkTest {
         logback.info("IN");
         zmf.close();
         assertFalse(zmf.connected);
+        logback.info("OUT");
+    }
+
+    @Test
+    public void testSetSkipIdenticalMessages() {
+        logback.info("IN");
+
+        zmf.connectToServer("127.0.0.1", 9000, 9001);
+        zmf.setSkipIdenticalMessages(true);
+
+        long timeout = 0;
+        while(zmf.nbMessagesSkiped < 1 && timeout < MAX_TIMEOUT_MS)
+        {
+            try {
+                Thread.sleep(5);
+                timeout+= 5;
+            } catch (InterruptedException e) {
+                logback.error(e.getStackTrace().toString());
+            }
+        }
+
+        assert(zmf.nbMessagesSkiped > 0);
         logback.info("OUT");
     }
 
