@@ -36,7 +36,9 @@ public class ZmqMessageWrapper {
 		//           |    indexMessage
 		//           indexType
 		int lengthRoutingID = indexType - 1;
+        lengthRoutingID = (lengthRoutingID < 0) ? 0 : lengthRoutingID;
 		int lengthType = indexMessage - indexType - 1;
+        lengthType = (lengthType < 0) ? 0 : lengthType;
 		routingId = new String(raw_zmq_message, 0, lengthRoutingID);
 		typeString = new String(raw_zmq_message, indexType, lengthType);
         switch(typeString) {
@@ -58,7 +60,8 @@ public class ZmqMessageWrapper {
         }
 		int lengthMessage = raw_zmq_message.length - lengthType
 				- lengthRoutingID - 2;
-		message = new byte[lengthMessage];
+        lengthMessage = (lengthMessage < 0) ? 0 : lengthMessage;
+        message = new byte[lengthMessage];
 		System.arraycopy(raw_zmq_message, indexMessage, message, 0,
 				message.length);
 

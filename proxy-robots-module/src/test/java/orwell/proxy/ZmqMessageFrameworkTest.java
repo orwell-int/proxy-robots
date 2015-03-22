@@ -42,6 +42,7 @@ public class ZmqMessageFrameworkTest {
 
     @Before
     public void setUp() {
+        logback.info("IN");
         zmf = new ZmqMessageFramework(1000, 1000);
 
         // Mock ZMQ behavior with mock sockets and context
@@ -70,28 +71,35 @@ public class ZmqMessageFrameworkTest {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+        logback.info("OUT");
     }
 
     @Test
     public void testConnect() {
+        logback.info("IN");
         assertTrue(zmf.connectToServer("127.0.0.1", 9000, 9001));
+        logback.info("OUT");
     }
 
 
     @Test
     public void testSendZmqMessage() {
+        logback.info("IN");
         assertTrue(zmf.sendZmqMessage(EnumMessageType.REGISTER, "BananaOne", new byte[0]));
         assertTrue(zmf.sendZmqMessage(EnumMessageType.SERVER_ROBOT_STATE, "BananaOne", new byte[0]));
+        logback.info("OUT");
     }
 
     @Test
     public void testClose() {
+        logback.info("IN");
         zmf.close();
         assertFalse(zmf.connected);
+        logback.info("OUT");
     }
 
     @After
     public void tearDown() {
-
+        zmf.close();
     }
 }
