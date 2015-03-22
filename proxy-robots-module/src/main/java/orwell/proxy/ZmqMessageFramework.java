@@ -39,9 +39,14 @@ public class ZmqMessageFramework {
         sender.setLinger(senderLinger);
         receiver.setLinger(receiverLinger);
 
+        setupNewReader();
+
+        logback.info("Constructor -- OUT");
+    }
+
+    private void setupNewReader() {
         reader = new ZmqReader();
         reader.setDaemon(true);
-        logback.info("Constructor -- OUT");
     }
 
     /**
@@ -63,12 +68,16 @@ public class ZmqMessageFramework {
         logback.info("ProxyRobots Receiver created");
         receiver.subscribe(new String("").getBytes());
         try {
+            if (reader.getState() != Thread.State.NEW) {
+                logback.error("Reader has already been started once");
+                setupNewReader();
+            }
             reader.start(); // Start to listen for incoming messages
+            connected = true;
         } catch (IllegalThreadStateException e) {
             // TODO Auto-generated catch block
             logback.error(e.toString());
         }
-        connected = true;
         return connected;
     }
 

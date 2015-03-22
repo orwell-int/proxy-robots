@@ -59,8 +59,6 @@ public class ZmqMessageFrameworkTest {
 
         byte[] raw_zmq_message = "routingIdTest Registered messageTest".getBytes();
         expect(mockedZmqSocketRecv.recv(ZMQ.NOBLOCK)).andStubReturn(raw_zmq_message);
-        mockedZmqSocketRecv.close();
-        expectLastCall().once();
         replay(mockedZmqSocketRecv);
 
         expect(mockedZmqContext.socket(ZMQ.PUSH)).andReturn(mockedZmqSocketSend);
@@ -120,6 +118,7 @@ public class ZmqMessageFrameworkTest {
         }
 
         assert(zmf.nbMessagesSkiped > 0);
+
         logback.info("OUT");
     }
 
