@@ -30,6 +30,9 @@ public class ProxyRobots implements IZmqMessageListener {
 	private HashMap<String, IRobot> tanksConnectedMap = new HashMap<String, IRobot>();
 	private HashMap<String, IRobot> tanksRegisteredMap = new HashMap<String, IRobot>();
 
+    protected CommunicationService communicationService = new CommunicationService();
+    private Thread communicationThread = new Thread(communicationService);
+
 	public ProxyRobots(String ConfigFileAddress, String serverGame) {
 		logback.info("Constructor -- IN");
 		Configuration configuration = new Configuration(ConfigFileAddress);
@@ -171,18 +174,26 @@ public class ProxyRobots implements IZmqMessageListener {
         }
     }
 
-	public void startCommunication() {
-        while (!Thread.currentThread().isInterrupted()
-                && !tanksConnectedMap.isEmpty()) {
-			updateConnectedTanks();
-            sendServerRobotState();
-		}
-		logback.info("End of communication");
+	public void startCommunicationService() {
+//        while (!Thread.currentThread().isInterrupted()
+//                && !tanksConnectedMap.isEmpty()) {
+//			updateConnectedTanks();
+//            sendServerRobotState();
+//            Thread.yield();
+//		}
+
+        communicationThread.start();
 	}
 
-	public void stopCommunication() {
-		mfProxy.close();
+	public void closeCommunicationService() {
+        disconnectAllTanks();
 	}
+
+    private void disconnectAllTanks() {
+        for (IRobot tank : tanksConnectedMap.values()) {
+            tank.closeConnection();
+        }
+    }
 
     private void onRegistered(ZmqMessageWrapper zmqMessage) {
         logback.info("Setting ServerGame Registered to tank");
@@ -234,15 +245,7 @@ public class ProxyRobots implements IZmqMessageListener {
 		proxyRobots.initializeTanks();
 		proxyRobots.connectToRobots();
 		proxyRobots.registerRobots();
-		proxyRobots.startCommunication();
-
-		// proxyRobots.sender.send(proxyRobots.tank.getZMQRobotState(), 0);
-		// logback.info("Message sent");
-		//
-		// String request = "Banana";
-		// proxyRobots.sender.send(request, 0);
-		// logback.info("Message sent: " + request);
-		proxyRobots.stopCommunication();
+		proxyRobots.startCommunicationService();
 	}
 
     @Override
@@ -259,6 +262,19 @@ public class ProxyRobots implements IZmqMessageListener {
                 break;
             default:
                 onDefault();
+        }
+    }
+
+    class CommunicationService implements Runnable {
+        public void run(){
+            while (!Thread.currentThread().isInterrupted() &&
+                    !tanksConnectedMap.isEmpty()) {
+                updateConnectedTanks();
+                sendServerRobotState();
+            }
+            logback.info("End of communication service");
+            mfProxy.close();
+            Thread.yield();
         }
     }
 }

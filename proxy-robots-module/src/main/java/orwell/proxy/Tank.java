@@ -284,7 +284,9 @@ public class Tank implements IRobot, MessageListenerInterface {
 	}
 
 	public void closeConnection(){
-		mfTank.close();
+		if(connectionState == EnumConnectionState.CONNECTED) {
+            mfTank.close();
+        }
 	}
 
 	public void receivedNewMessage(UnitMessage msg) {

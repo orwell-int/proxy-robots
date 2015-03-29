@@ -46,6 +46,7 @@ public interface IRobot {
 	public Input getControllerInput();
 	
 	public EnumConnectionState connectToRobot();
+    public void closeConnection();
 	
 	public String robotStateToString();
 	public String controllerInputToString();
