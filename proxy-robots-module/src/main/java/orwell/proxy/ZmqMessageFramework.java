@@ -148,11 +148,13 @@ public class ZmqMessageFramework {
     }
 
     public void close() {
-        connected = false;
         logback.info("Stopping communication");
-        sender.close();
-        receiver.close();
-        context.term();
+        if(connected) {
+            sender.close();
+            receiver.close();
+            context.term();
+        }
         logback.info("Communication stopped");
+        connected = false;
     }
 }
