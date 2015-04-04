@@ -118,10 +118,11 @@ public class Tank implements IRobot, MessageListenerInterface {
     /*
      * Return null is ServerRobotState is empty
      */
+    // TODO To be tested
 	public byte[] getAndClearZmqServerRobotState() {
 //        logback.debug("getAndClearZmqServerRobotState - IN");
         ServerRobotState srs = getTankCurrentState().getAndClearServerRobotState();
-        if (srs.isInitialized()) {
+        if (null != srs) {
 //            logback.debug("getAndClearZmqServerRobotState - srs is Initialized");
             String zmqMessageHeader = getRoutingID() + " " + "ServerRobotState" + " ";
             return orwell.proxy.Utils.Concatenate(zmqMessageHeader.getBytes(),

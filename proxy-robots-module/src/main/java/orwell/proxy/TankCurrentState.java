@@ -57,7 +57,7 @@ public class TankCurrentState {
         previousRfidValue = newRfidString;
     }
 
-    public ServerRobotState getServerRobotState() {
+    protected ServerRobotState getServerRobotState() {
         return serverRobotStateBuilder.build();
     }
 
@@ -67,6 +67,11 @@ public class TankCurrentState {
     }
 
     public ServerRobotState getAndClearServerRobotState() {
+        if(serverRobotStateBuilder.getRfidList().isEmpty() &&
+                serverRobotStateBuilder.getColourList().isEmpty())
+        {
+            return null;
+        }
         ServerRobotState srs = serverRobotStateBuilder.build();
         clearServerRobotState();
         return srs;
