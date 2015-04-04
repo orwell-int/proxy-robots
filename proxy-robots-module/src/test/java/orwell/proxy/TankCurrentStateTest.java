@@ -74,17 +74,17 @@ public class TankCurrentStateTest {
 
     @Test
     /**
-     * Test we do not register twice in a row the same RFID value
+     * Test the status stays to ON when the tank set twice in a row the same RFID value
      */
     public void testSetSameRfid() {
         logback.info("IN");
 
-        tankCurrentState.setNewRfid("0");
-        tankCurrentState.setNewRfid("0");
+        tankCurrentState.setNewRfid("123456789");
+        tankCurrentState.setNewRfid("123456789");
 
         ServerRobotState serverRobotState = tankCurrentState.getServerRobotState();
         assertEquals(1, serverRobotState.getRfidCount());
-        assertEquals("0", serverRobotState.getRfid(0).getRfid());
+        assertEquals("123456789", serverRobotState.getRfid(0).getRfid());
         assertEquals(Status.ON, serverRobotState.getRfid(0).getStatus());
 
         logback.info("OUT");
