@@ -116,7 +116,7 @@ public class ProxyRobotsTest {
     public byte[] getBytesRegistered() {
         ServerGame.Registered.Builder registeredBuilder = ServerGame.Registered.newBuilder();
         registeredBuilder.setRobotId("BananaOne");
-        registeredBuilder.setTeam(ServerGame.EnumTeam.BLU);
+        registeredBuilder.setTeam("BLUE");
 
         return registeredBuilder.build().toByteArray();
     }

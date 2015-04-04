@@ -1,7 +1,6 @@
 package orwell.proxy;
 
 import orwell.messages.Controller.Input;
-import orwell.messages.ServerGame.EnumTeam;
 
 public interface IRobot {
 	
@@ -17,7 +16,7 @@ public interface IRobot {
 		CONNECTION_FAILED;
 	}
 	
-	public EnumTeam getTeam();
+	public String getTeamName();
 	public EnumRegistrationState getRegistrationState();
 	public EnumConnectionState getConnectionState();
 

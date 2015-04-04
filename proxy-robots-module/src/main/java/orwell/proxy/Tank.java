@@ -15,7 +15,6 @@ import lejos.mf.pc.MessageFramework;
 import orwell.messages.Controller.Input;
 import orwell.messages.Robot.Register;
 import orwell.messages.Robot.ServerRobotState;
-import orwell.messages.ServerGame.EnumTeam;
 import orwell.messages.ServerGame.Registered;
 
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -38,7 +37,7 @@ public class Tank implements IRobot, MessageListenerInterface {
 
 	private EnumRegistrationState registrationState = EnumRegistrationState.NOT_REGISTERED;
 	private EnumConnectionState connectionState = EnumConnectionState.NOT_CONNECTED;
-	private EnumTeam team;
+	private String teamName;
 
     private TankCurrentState tankCurrentState = new TankCurrentState();
 
@@ -157,7 +156,7 @@ public class Tank implements IRobot, MessageListenerInterface {
 				registrationState = EnumRegistrationState.REGISTRATION_FAILED;
 			else {
 				registrationState = EnumRegistrationState.REGISTERED;
-				team = serverGameRegistered.getTeam();
+				teamName = serverGameRegistered.getTeam();
 			}
 		} catch (InvalidProtocolBufferException e) {
 			// TODO Auto-generated catch block
@@ -269,8 +268,8 @@ public class Tank implements IRobot, MessageListenerInterface {
 	}
 
 	@Override
-	public EnumTeam getTeam() {
-		return team;
+	public String getTeamName() {
+		return teamName;
 	}
 
 	@Override
