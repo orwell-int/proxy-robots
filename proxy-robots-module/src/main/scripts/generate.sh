@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 # generate java code for the protobuff definition
 
 DIR=$(cd "$(dirname "$0")" ; pwd)
