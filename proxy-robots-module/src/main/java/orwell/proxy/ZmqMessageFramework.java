@@ -135,8 +135,11 @@ public class ZmqMessageFramework {
                     }
                 }
             }
-            close();
+            sender.close();
+            receiver.close();
+            context.term();
             Thread.yield();
+            logback.info("Communication stopped");
         }
     }
 
@@ -149,12 +152,6 @@ public class ZmqMessageFramework {
 
     public void close() {
         logback.info("Stopping communication");
-        if(connected) {
-            sender.close();
-            receiver.close();
-            context.term();
-        }
-        logback.info("Communication stopped");
         connected = false;
     }
 }

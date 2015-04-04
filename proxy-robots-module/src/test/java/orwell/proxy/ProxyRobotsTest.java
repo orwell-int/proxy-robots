@@ -33,6 +33,7 @@ import orwell.messages.Controller;
 public class ProxyRobotsTest {
 
     final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class);
+    final static long MAX_TIMEOUT_MS = 500;
 
     @TestSubject
     private ProxyRobots myProxyRobots;
@@ -200,56 +201,40 @@ public class ProxyRobotsTest {
 		assertEquals(IRobot.EnumRegistrationState.REGISTERED, mockedTank.getRegistrationState());
         assertEquals("BananaOne", mockedTank.getRoutingID());
 
-        myProxyRobots.closeCommunicationService();
-        // TODO make sure we fully process closeCommunicationService()
-
         logback.info("OUT");
 	}
 
-//	@Test
-//	public void testRegister() {
-//		logback.info("IN");
-//
-//		createAndInitializeTank(myProxyRobots);
-//
-//		myProxyRobots.connectToRobots();
-//		assertEquals(IRobot.EnumRegistrationState.NOT_REGISTERED, mockedTank.getRegistrationState());
-//        assertEquals("NicolasCage", mockedTank.getRoutingID());
-//
-//		myProxyRobots.registerRobots();
-//		myProxyRobots.startCommunicationService(new ZmqMessageWrapper(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
-//
-//		assertEquals(IRobot.EnumRegistrationState.REGISTERED, mockedTank.getRegistrationState());
-//        assertEquals("BananaOne", mockedTank.getRoutingID());
-//
-//		logback.info("OUT");
-//	}
-//
-//	@Test
-//	public void testUpdateConnectedTanks() {
-//		logback.info("IN");
-//
-//		createAndInitializeTank(myProxyRobots);
-//
-//		myProxyRobots.connectToRobots();
-//		myProxyRobots.registerRobots();
-//		assert(myProxyRobots.getTanksConnectedMap().containsKey("NicolasCage"));
-//
-//		myProxyRobots.startCommunicationService(new ZmqMessageWrapper(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
-//
-//		// Tank is disconnected
-//        mockedTank.closeConnection();
-//		myProxyRobots.closeCommunicationService();
-//
-//		// So the map of connected tanks is empty
-//		assert(myProxyRobots.getTanksConnectedMap().isEmpty());
-//
-//		// And the communication is closed
-//		PowerMock.verify(mockedZmqSocketSend);
-//        PowerMock.verify(mockedZmqSocketRecv);
-//
-//        logback.debug("OUT");
-//	}
+
+	@Test
+	public void testUpdateConnectedTanks() {
+		logback.info("IN");
+
+		createAndInitializeTank(myProxyRobots);
+
+		myProxyRobots.connectToRobots();
+		myProxyRobots.registerRobots();
+		assert(myProxyRobots.getTanksConnectedMap().containsKey("NicolasCage"));
+
+		myProxyRobots.startCommunicationService();
+
+		// Tank is disconnected
+        mockedTank.closeConnection();
+
+        long timeout = 0;
+        while(!myProxyRobots.getTanksConnectedMap().isEmpty() && timeout < MAX_TIMEOUT_MS)
+        {
+            try {
+                Thread.sleep(5);
+                timeout+= 5;
+            } catch (InterruptedException e) {
+                logback.error(e.getStackTrace().toString());
+            }
+        }
+		// So the map of connected tanks is empty
+		assert(myProxyRobots.getTanksConnectedMap().isEmpty());
+
+        logback.debug("OUT");
+	}
 
 //    @Test
 //    public void testSendServerRobotState() {
@@ -274,5 +259,6 @@ public class ProxyRobotsTest {
 
     @After
     public void tearDown(){
+        myProxyRobots.closeCommunicationService();
     }
 }
