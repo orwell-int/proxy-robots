@@ -13,16 +13,16 @@ import orwell.messages.Robot.Status;
 /**
  * Created by parapampa on 01/02/15.
  */
-public class TankCurrentStateTest {
-    final static Logger logback = LoggerFactory.getLogger(TankCurrentStateTest.class);
+public class TankLatestStatesTest {
+    final static Logger logback = LoggerFactory.getLogger(TankLatestStatesTest.class);
 
     @TestSubject
-    private TankCurrentState tankCurrentState;
+    private TankDeltaState tankDeltaState;
 
     @Before
     public void setUp() {
         logback.info("IN");
-        tankCurrentState = new TankCurrentState();
+        tankDeltaState = new TankDeltaState();
         logback.info("OUT");
     }
 
@@ -30,9 +30,9 @@ public class TankCurrentStateTest {
     public void testSetNewRfid() {
         logback.info("IN");
 
-        tankCurrentState.setNewRfid("1234567890");
+        tankDeltaState.setNewState(EnumSensor.RFID, "1234567890");
 
-        ServerRobotState serverRobotState = tankCurrentState.getServerRobotState();
+        ServerRobotState serverRobotState = tankDeltaState.getServerRobotState();
         assertEquals(1, serverRobotState.getRfidCount());
         assertEquals("1234567890", serverRobotState.getRfid(0).getRfid());
         assertEquals(Status.ON, serverRobotState.getRfid(0).getStatus());
@@ -44,10 +44,10 @@ public class TankCurrentStateTest {
     public void testSetSecondNewRfid() {
         logback.info("IN");
 
-        tankCurrentState.setNewRfid("1234567890");
-        tankCurrentState.setNewRfid("1234567891");
+        tankDeltaState.setNewState(EnumSensor.RFID, "1234567890");
+        tankDeltaState.setNewState(EnumSensor.RFID, "1234567891");
 
-        ServerRobotState serverRobotState = tankCurrentState.getServerRobotState();
+        ServerRobotState serverRobotState = tankDeltaState.getServerRobotState();
         assertEquals(3, serverRobotState.getRfidCount());
         assertEquals("1234567890", serverRobotState.getRfid(0).getRfid());
         assertEquals("1234567890", serverRobotState.getRfid(1).getRfid());
@@ -62,11 +62,11 @@ public class TankCurrentStateTest {
     public void testGetAndClearServerRobotState() {
         logback.info("IN");
 
-        tankCurrentState.setNewRfid("1234567890");
+        tankDeltaState.setNewState(EnumSensor.RFID, "1234567890");
 
-        ServerRobotState serverRobotState = tankCurrentState.getAndClearServerRobotState();
+        ServerRobotState serverRobotState = tankDeltaState.getAndClearServerRobotState();
         assertEquals(1, serverRobotState.getRfidCount());
-        ServerRobotState clearedServerRobotState = tankCurrentState.getServerRobotState();
+        ServerRobotState clearedServerRobotState = tankDeltaState.getServerRobotState();
         assertEquals(0, clearedServerRobotState.getRfidCount());
 
         logback.info("OUT");
@@ -79,10 +79,10 @@ public class TankCurrentStateTest {
     public void testSetSameRfid() {
         logback.info("IN");
 
-        tankCurrentState.setNewRfid("123456789");
-        tankCurrentState.setNewRfid("123456789");
+        tankDeltaState.setNewState(EnumSensor.RFID, "123456789");
+        tankDeltaState.setNewState(EnumSensor.RFID, "123456789");
 
-        ServerRobotState serverRobotState = tankCurrentState.getServerRobotState();
+        ServerRobotState serverRobotState = tankDeltaState.getServerRobotState();
         assertEquals(1, serverRobotState.getRfidCount());
         assertEquals("123456789", serverRobotState.getRfid(0).getRfid());
         assertEquals(Status.ON, serverRobotState.getRfid(0).getStatus());

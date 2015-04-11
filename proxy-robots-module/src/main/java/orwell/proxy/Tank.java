@@ -31,7 +31,7 @@ public class Tank implements IRobot, MessageListenerInterface {
 	private Registered serverGameRegistered;
 	private NXTInfo nxtInfo;
 	private MessageFramework mfTank;
-	private Camera camera;
+	private ICamera camera;
 	private Register register;
 	private String image;
 
@@ -39,9 +39,9 @@ public class Tank implements IRobot, MessageListenerInterface {
 	private EnumConnectionState connectionState = EnumConnectionState.NOT_CONNECTED;
 	private String teamName;
 
-    private TankCurrentState tankCurrentState = new TankCurrentState();
+    private TankDeltaState tankDeltaState = new TankDeltaState();
 
-	public Tank(String bluetoothName, String bluetoothID, Camera camera,
+	public Tank(String bluetoothName, String bluetoothID, ICamera camera,
 			MessageFramework mf, String image) {
 		setBluetoothName(bluetoothName);
 		setBluetoothID(bluetoothID);
@@ -53,7 +53,7 @@ public class Tank implements IRobot, MessageListenerInterface {
 		this.image = image;
 	}
 
-	public Tank(String bluetoothName, String bluetoothID, Camera camera, String image) {
+	public Tank(String bluetoothName, String bluetoothID, ICamera camera, String image) {
 		this(bluetoothName, bluetoothID, camera, new MessageFramework(), image);
 	}
 
@@ -73,7 +73,7 @@ public class Tank implements IRobot, MessageListenerInterface {
 	@Override
 	public void buildRegister() {
 		registerBuilder.setTemporaryRobotId(routingID);
-		registerBuilder.setVideoUrl(camera.getURL());
+		registerBuilder.setVideoUrl(camera.getUrl());
 		registerBuilder.setImage(image);
 		if("" == image)
 		{
@@ -121,7 +121,7 @@ public class Tank implements IRobot, MessageListenerInterface {
     // TODO To be tested
 	public byte[] getAndClearZmqServerRobotState() {
 //        logback.debug("getAndClearZmqServerRobotState - IN");
-        ServerRobotState srs = getTankCurrentState().getAndClearServerRobotState();
+        ServerRobotState srs = getTankDeltaState().getAndClearServerRobotState();
         if (null != srs) {
 //            logback.debug("getAndClearZmqServerRobotState - srs is Initialized");
             String zmqMessageHeader = getRoutingID() + " " + "ServerRobotState" + " ";
@@ -135,7 +135,7 @@ public class Tank implements IRobot, MessageListenerInterface {
 
     @Override
     public byte[] getAndClearZmqServerRobotStateBytes() {
-        return getTankCurrentState().getAndClearServerRobotState().toByteArray();
+        return getTankDeltaState().getAndClearServerRobotState().toByteArray();
     }
 
 
@@ -218,8 +218,8 @@ public class Tank implements IRobot, MessageListenerInterface {
 	@Override
 	public String robotStateToString() {
 		String string = "RobotState of " + getRoutingID()
-				+ "\n\t|___RFID   = " + getTankCurrentState().getServerRobotState().getRfidList()
-				+ "\n\t|___Colour = " + getTankCurrentState().getServerRobotState().getColourList();
+				+ "\n\t|___RFID   = " + getTankDeltaState().getServerRobotState().getRfidList()
+				+ "\n\t|___Colour = " + getTankDeltaState().getServerRobotState().getColourList();
 		return string;
 	}
 
@@ -300,6 +300,9 @@ public class Tank implements IRobot, MessageListenerInterface {
 			case Command:
 				onMsgCommand(msg.getPayload());
 				break;
+            case Colour:
+                onMsgColour(msg.getPayload());
+                break;
 			default:
 				onMsgNotDefined(msg.getPayload());
 				break;
@@ -314,7 +317,12 @@ public class Tank implements IRobot, MessageListenerInterface {
 
 	private void onMsgRfid(String rfidValue) {
 		logback.debug("RFID info received: " + rfidValue);
-        getTankCurrentState().setNewRfid(rfidValue);
+        getTankDeltaState().setNewState(EnumSensor.RFID, rfidValue);
+    }
+
+    private void onMsgColour(String colourValue) {
+        logback.debug("Colour info received: " + colourValue);
+        getTankDeltaState().setNewState(EnumSensor.COLOUR, colourValue);
     }
 
 	private void onMsgCommand(String msg) {
@@ -326,8 +334,8 @@ public class Tank implements IRobot, MessageListenerInterface {
 		logback.error("Unable to decode message received: " + msg);
 	}
 
-    protected TankCurrentState getTankCurrentState()
+    protected TankDeltaState getTankDeltaState()
     {
-        return this.tankCurrentState;
+        return this.tankDeltaState;
     }
 }

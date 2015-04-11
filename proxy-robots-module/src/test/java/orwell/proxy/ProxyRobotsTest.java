@@ -29,7 +29,7 @@ import orwell.messages.Controller;
  */
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest( { ZMQ.Socket.class, TankCurrentState.class, Tank.class } )
+@PrepareForTest( { ZMQ.Socket.class, TankDeltaState.class, Tank.class } )
 public class ProxyRobotsTest {
 
     final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class);
@@ -42,7 +42,7 @@ public class ProxyRobotsTest {
     private Camera mockedCamera;
     //	private Tank myTank;
     private Tank mockedTank;
-    private TankCurrentState mockedTankCurrentState;
+    private TankDeltaState mockedTankDeltaState;
 
     @Before
     public void setUp() throws Exception { //expectPrivate might throw exceptions
@@ -50,14 +50,14 @@ public class ProxyRobotsTest {
 
         // Mock camera
         mockedCamera = createNiceMock(Camera.class);
-        expect(mockedCamera.getURL()).andStubReturn("192.168.1.50");
+        expect(mockedCamera.getUrl()).andStubReturn("192.168.1.50");
         replay(mockedCamera);
 
         // Mock TankCurrentState
         final String modifyTankCurrentStateTimeStamp = "getTimeStamp";
-        mockedTankCurrentState = createMockBuilder(TankCurrentState.class).withConstructor().addMockedMethod(modifyTankCurrentStateTimeStamp).createMock();
-        expect(mockedTankCurrentState.getTimeStamp()).andStubReturn(new Long(999999999));
-        replay(mockedTankCurrentState);
+        mockedTankDeltaState = createMockBuilder(TankDeltaState.class).withConstructor().addMockedMethod(modifyTankCurrentStateTimeStamp).createMock();
+        expect(mockedTankDeltaState.getTimeStamp()).andStubReturn(new Long(999999999));
+        replay(mockedTankDeltaState);
 
         // Mock one tank
         final String modifyTankCurrentState = "getTankCurrentState";
@@ -72,7 +72,7 @@ public class ProxyRobotsTest {
         expect(mockedTank.connectToRobot()).andStubReturn(IRobot.EnumConnectionState.CONNECTED);
         expect(mockedTank.getConnectionState()).andStubReturn(IRobot.EnumConnectionState.NOT_CONNECTED);
         expect(mockedTank.getConnectionState()).andReturn(IRobot.EnumConnectionState.CONNECTED).times(100);
-        expect(mockedTank.getTankCurrentState()).andStubReturn(mockedTankCurrentState);
+        expect(mockedTank.getTankDeltaState()).andStubReturn(mockedTankDeltaState);
         replay(mockedTank);
 
         // Instantiate main class with mock parameters
