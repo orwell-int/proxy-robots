@@ -135,8 +135,7 @@ public class ProxyRobots implements IZmqMessageListener {
 		}
 	}
 
-    // TODO rename : sendRegister
-	public void registerRobots() {
+	public void sendRegister() {
 		for (IRobot tank : tanksConnectedMap.values()) {
 			tank.buildRegister();
 			mfProxy.sendZmqMessage(EnumMessageType.REGISTER, tank.getRoutingID(),
@@ -245,7 +244,7 @@ public class ProxyRobots implements IZmqMessageListener {
 		proxyRobots.connectToServer();
 		proxyRobots.initializeTanks();
 		proxyRobots.connectToRobots();
-		proxyRobots.registerRobots();
+		proxyRobots.sendRegister();
 		proxyRobots.startCommunicationService();
 	}
 

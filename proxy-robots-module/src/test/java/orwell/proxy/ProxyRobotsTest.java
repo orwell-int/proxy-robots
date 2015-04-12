@@ -194,7 +194,7 @@ public class ProxyRobotsTest {
 		assertEquals(IRobot.EnumRegistrationState.NOT_REGISTERED, mockedTank.getRegistrationState());
         assertEquals("NicolasCage", mockedTank.getRoutingID());
 
-		myProxyRobots.registerRobots();
+		myProxyRobots.sendRegister();
 		myProxyRobots.startCommunicationService();
         myProxyRobots.receivedNewZmq(new ZmqMessageWrapper(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
 
@@ -212,7 +212,7 @@ public class ProxyRobotsTest {
 		createAndInitializeTank(myProxyRobots);
 
 		myProxyRobots.connectToRobots();
-		myProxyRobots.registerRobots();
+		myProxyRobots.sendRegister();
 		assert(myProxyRobots.getTanksConnectedMap().containsKey("NicolasCage"));
 
 		myProxyRobots.startCommunicationService();
@@ -242,7 +242,7 @@ public class ProxyRobotsTest {
 //        createAndInitializeTank(myProxyRobots);
 //
 //        myProxyRobots.connectToRobots();
-//        myProxyRobots.registerRobots();
+//        myProxyRobots.sendRegister();
 //
 //        myProxyRobots.startCommunicationService(new ZmqMessageWrapper(getMockRawZmqMessage(mockedTank, EnumMessageType.STOP)));
 //
