@@ -144,8 +144,6 @@ public class TankDeltaState {
         if(serverRobotStateBuilder.getRfidList().isEmpty() &&
                 serverRobotStateBuilder.getColourList().isEmpty())
         {
-            logback.debug("RfidList and ColourList are empty");
-
             return null;
         }
         ServerRobotState srs = serverRobotStateBuilder.build();

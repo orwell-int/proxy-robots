@@ -135,6 +135,7 @@ public class ProxyRobots implements IZmqMessageListener {
 		}
 	}
 
+    // TODO rename : sendRegister
 	public void registerRobots() {
 		for (IRobot tank : tanksConnectedMap.values()) {
 			tank.buildRegister();

@@ -60,12 +60,12 @@ public class ProxyRobotsTest {
         replay(mockedTankDeltaState);
 
         // Mock one tank
-        final String modifyTankCurrentState = "getTankCurrentState";
+        final String modifyTankDeltaState = "getTankDeltaState";
         final String modifyConnectionState = "getConnectionState";
         final String modifyTankConnect = "connectToRobot";
         mockedTank = createMockBuilder(Tank.class)
                 .withConstructor("Btname", "BtId", mockedCamera, "")
-                .addMockedMethods(modifyTankCurrentState, modifyTankConnect,
+                .addMockedMethods(modifyTankDeltaState, modifyTankConnect,
                                   modifyConnectionState)
                 .createMock();
         mockedTank.setRoutingID("NicolasCage");

@@ -2,6 +2,7 @@ package orwell.proxy;
 
 import java.util.UUID;
 
+import com.sun.corba.se.spi.activation.Server;
 import lejos.mf.common.MessageListenerInterface;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
@@ -93,7 +94,11 @@ public class Tank implements IRobot, MessageListenerInterface {
 
     @Override
     public byte[] getRegisterBytes() {
-        return getRegister().toByteArray();
+        Register register = getRegister();
+        if (null != register)
+            return register.toByteArray();
+        else
+            return null;
     }
 
 	@Override
@@ -118,7 +123,6 @@ public class Tank implements IRobot, MessageListenerInterface {
     /*
      * Return null is ServerRobotState is empty
      */
-    // TODO To be tested
 	public byte[] getAndClearZmqServerRobotState() {
 //        logback.debug("getAndClearZmqServerRobotState - IN");
         ServerRobotState srs = getTankDeltaState().getAndClearServerRobotState();
@@ -135,7 +139,11 @@ public class Tank implements IRobot, MessageListenerInterface {
 
     @Override
     public byte[] getAndClearZmqServerRobotStateBytes() {
-        return getTankDeltaState().getAndClearServerRobotState().toByteArray();
+        ServerRobotState srs = getTankDeltaState().getAndClearServerRobotState();
+        if (null != srs)
+            return srs.toByteArray();
+        else
+            return null;
     }
 
 
