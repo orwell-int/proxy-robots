@@ -5,13 +5,7 @@
 .idea/
 .settings/
 GeneratedMessages/orwell/com/Version1.java
-GeneratedMessages/orwell/messages/Controller.java
-GeneratedMessages/orwell/messages/Robot.java
-GeneratedMessages/orwell/messages/ServerGame.java
-GeneratedMessages/orwell/messages/ServerWeb.java
-Units/.RemoteControl.java.swp
-Units/RemoteControl.class
-bin/
+proxy-robots-module/src/main/java/orwell/messages/
 .classpath
 .project
 orwell/proxy/test/report/

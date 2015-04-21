@@ -2,6 +2,7 @@ package orwell.proxy;
 
 import java.util.UUID;
 
+import com.sun.corba.se.spi.activation.Server;
 import lejos.mf.common.MessageListenerInterface;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
@@ -15,7 +16,6 @@ import lejos.mf.pc.MessageFramework;
 import orwell.messages.Controller.Input;
 import orwell.messages.Robot.Register;
 import orwell.messages.Robot.ServerRobotState;
-import orwell.messages.ServerGame.EnumTeam;
 import orwell.messages.ServerGame.Registered;
 
 import com.google.protobuf.InvalidProtocolBufferException;
@@ -32,17 +32,17 @@ public class Tank implements IRobot, MessageListenerInterface {
 	private Registered serverGameRegistered;
 	private NXTInfo nxtInfo;
 	private MessageFramework mfTank;
-	private Camera camera;
+	private ICamera camera;
 	private Register register;
 	private String image;
 
 	private EnumRegistrationState registrationState = EnumRegistrationState.NOT_REGISTERED;
 	private EnumConnectionState connectionState = EnumConnectionState.NOT_CONNECTED;
-	private EnumTeam team;
+	private String teamName;
 
-    private TankCurrentState tankCurrentState = new TankCurrentState();
+    private TankDeltaState tankDeltaState = new TankDeltaState();
 
-	public Tank(String bluetoothName, String bluetoothID, Camera camera,
+	public Tank(String bluetoothName, String bluetoothID, ICamera camera,
 			MessageFramework mf, String image) {
 		setBluetoothName(bluetoothName);
 		setBluetoothID(bluetoothID);
@@ -54,7 +54,7 @@ public class Tank implements IRobot, MessageListenerInterface {
 		this.image = image;
 	}
 
-	public Tank(String bluetoothName, String bluetoothID, Camera camera, String image) {
+	public Tank(String bluetoothName, String bluetoothID, ICamera camera, String image) {
 		this(bluetoothName, bluetoothID, camera, new MessageFramework(), image);
 	}
 
@@ -74,7 +74,7 @@ public class Tank implements IRobot, MessageListenerInterface {
 	@Override
 	public void buildRegister() {
 		registerBuilder.setTemporaryRobotId(routingID);
-		registerBuilder.setVideoUrl(camera.getURL());
+		registerBuilder.setVideoUrl(camera.getUrl());
 		registerBuilder.setImage(image);
 		if("" == image)
 		{
@@ -91,6 +91,15 @@ public class Tank implements IRobot, MessageListenerInterface {
 		}
 		return register;
 	}
+
+    @Override
+    public byte[] getRegisterBytes() {
+        Register register = getRegister();
+        if (null != register)
+            return register.toByteArray();
+        else
+            return null;
+    }
 
 	@Override
 	public Input getControllerInput() {
@@ -116,8 +125,8 @@ public class Tank implements IRobot, MessageListenerInterface {
      */
 	public byte[] getAndClearZmqServerRobotState() {
 //        logback.debug("getAndClearZmqServerRobotState - IN");
-        ServerRobotState srs = getTankCurrentState().getAndClearServerRobotState();
-        if (srs.isInitialized()) {
+        ServerRobotState srs = getTankDeltaState().getAndClearServerRobotState();
+        if (null != srs) {
 //            logback.debug("getAndClearZmqServerRobotState - srs is Initialized");
             String zmqMessageHeader = getRoutingID() + " " + "ServerRobotState" + " ";
             return orwell.proxy.Utils.Concatenate(zmqMessageHeader.getBytes(),
@@ -126,6 +135,17 @@ public class Tank implements IRobot, MessageListenerInterface {
             return null;
         }
 	}
+
+
+    @Override
+    public byte[] getAndClearZmqServerRobotStateBytes() {
+        ServerRobotState srs = getTankDeltaState().getAndClearServerRobotState();
+        if (null != srs)
+            return srs.toByteArray();
+        else
+            return null;
+    }
+
 
 	@Override
 	public byte[] getZmqRegister() {
@@ -145,7 +165,7 @@ public class Tank implements IRobot, MessageListenerInterface {
 				registrationState = EnumRegistrationState.REGISTRATION_FAILED;
 			else {
 				registrationState = EnumRegistrationState.REGISTERED;
-				team = serverGameRegistered.getTeam();
+				teamName = serverGameRegistered.getTeam();
 			}
 		} catch (InvalidProtocolBufferException e) {
 			// TODO Auto-generated catch block
@@ -206,8 +226,8 @@ public class Tank implements IRobot, MessageListenerInterface {
 	@Override
 	public String robotStateToString() {
 		String string = "RobotState of " + getRoutingID()
-				+ "\n\t|___RFID   = " + getTankCurrentState().getServerRobotState().getRfidList()
-				+ "\n\t|___Colour = " + getTankCurrentState().getServerRobotState().getColourList();
+				+ "\n\t|___RFID   = " + getTankDeltaState().getServerRobotState().getRfidList()
+				+ "\n\t|___Colour = " + getTankDeltaState().getServerRobotState().getColourList();
 		return string;
 	}
 
@@ -257,8 +277,8 @@ public class Tank implements IRobot, MessageListenerInterface {
 	}
 
 	@Override
-	public EnumTeam getTeam() {
-		return team;
+	public String getTeamName() {
+		return teamName;
 	}
 
 	@Override
@@ -272,7 +292,9 @@ public class Tank implements IRobot, MessageListenerInterface {
 	}
 
 	public void closeConnection(){
-		mfTank.close();
+		if(connectionState == EnumConnectionState.CONNECTED) {
+            mfTank.close();
+        }
 	}
 
 	public void receivedNewMessage(UnitMessage msg) {
@@ -286,6 +308,9 @@ public class Tank implements IRobot, MessageListenerInterface {
 			case Command:
 				onMsgCommand(msg.getPayload());
 				break;
+            case Colour:
+                onMsgColour(msg.getPayload());
+                break;
 			default:
 				onMsgNotDefined(msg.getPayload());
 				break;
@@ -300,7 +325,12 @@ public class Tank implements IRobot, MessageListenerInterface {
 
 	private void onMsgRfid(String rfidValue) {
 		logback.debug("RFID info received: " + rfidValue);
-        getTankCurrentState().setNewRfid(rfidValue);
+        getTankDeltaState().setNewState(EnumSensor.RFID, rfidValue);
+    }
+
+    private void onMsgColour(String colourValue) {
+        logback.debug("Colour info received: " + colourValue);
+        getTankDeltaState().setNewState(EnumSensor.COLOUR, colourValue);
     }
 
 	private void onMsgCommand(String msg) {
@@ -312,8 +342,8 @@ public class Tank implements IRobot, MessageListenerInterface {
 		logback.error("Unable to decode message received: " + msg);
 	}
 
-    protected TankCurrentState getTankCurrentState()
+    protected TankDeltaState getTankDeltaState()
     {
-        return this.tankCurrentState;
+        return this.tankDeltaState;
     }
 }

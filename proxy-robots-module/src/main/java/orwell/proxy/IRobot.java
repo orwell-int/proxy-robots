@@ -1,7 +1,6 @@
 package orwell.proxy;
 
 import orwell.messages.Controller.Input;
-import orwell.messages.ServerGame.EnumTeam;
 
 public interface IRobot {
 	
@@ -17,7 +16,7 @@ public interface IRobot {
 		CONNECTION_FAILED;
 	}
 	
-	public EnumTeam getTeam();
+	public String getTeamName();
 	public EnumRegistrationState getRegistrationState();
 	public EnumConnectionState getConnectionState();
 
@@ -35,14 +34,18 @@ public interface IRobot {
      * This will clear the current ServerRobotState
      */
 	public byte[] getAndClearZmqServerRobotState();
+    public byte[] getAndClearZmqServerRobotStateBytes();
+
 	
 	public void setRegistered(byte[] registeredMessage);
 	public byte[] getZmqRegister();
+    public byte[] getRegisterBytes();
 	
 	public void setControllerInput(byte[] inputMessage);
 	public Input getControllerInput();
 	
 	public EnumConnectionState connectToRobot();
+    public void closeConnection();
 	
 	public String robotStateToString();
 	public String controllerInputToString();
