@@ -13,7 +13,7 @@ git clone git@github.com:orwell-int/proxy-robots.git
 
 Get the submodules
 ```
-git submodules update --init --recursive
+git submodule update --init --recursive
 ```
 
 local setup for coveralls
