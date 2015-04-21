@@ -4,6 +4,18 @@ proxy-robots
 
 Handles the communication between the server and the (real) robots.
 
+Checkout the code
+-----------------
+Get the sources
+```
+git clone git@github.com:orwell-int/proxy-robots.git
+```
+
+Get the submodules
+```
+git submodules update --init --recursive
+```
+
 local setup for coveralls
 -------------------------
 Run with maven
