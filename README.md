@@ -29,8 +29,9 @@ tar -xvf leJOS_NXJ_0.9.1beta-3.tar.gz
 export NXJ_HOME=leJOS_NXJ_0.9.1beta-3
 ```
 
-Run maven (validate, build, test)
+Run maven
 ```
+mvn validate
 mvn clean install
 ```
 
