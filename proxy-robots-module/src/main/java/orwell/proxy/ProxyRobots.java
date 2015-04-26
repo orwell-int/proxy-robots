@@ -271,6 +271,11 @@ public class ProxyRobots implements IZmqMessageListener {
                     !tanksConnectedMap.isEmpty()) {
                 updateConnectedTanks();
                 sendServerRobotState();
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    logback.error("CommunicationService thread sleep exception: " + e.getMessage());
+                }
             }
             logback.info("End of communication service");
             mfProxy.close();

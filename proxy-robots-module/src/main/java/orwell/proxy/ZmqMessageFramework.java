@@ -134,6 +134,11 @@ public class ZmqMessageFramework {
                         zmqPreviousMessage = zmqMessage.getZmqMessageString();
                     }
                 }
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    logback.error("ZmqReader thread sleep exception: " + e.getMessage());
+                }
             }
             sender.close();
             receiver.close();
