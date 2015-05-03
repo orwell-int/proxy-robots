@@ -10,7 +10,7 @@ import javax.xml.bind.Unmarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Configuration {
+public class Configuration implements IConfiguration {
 	final static Logger logback = LoggerFactory.getLogger(Configuration.class); 
 
 	private String filePath;
@@ -25,10 +25,12 @@ public class Configuration {
 		this.filePath = filePath;
 	}
 
+	@Override
 	public ConfigModel getConfigModel() {
 		return this.configuration;
 	}
 
+	@Override
 	public void populate() throws JAXBException {
 		JAXBContext jc;
 		try {

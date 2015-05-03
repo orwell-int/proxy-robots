@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 
-public class ConfigProxy {
+public class ConfigProxy implements IConfigProxy{
 
 	private List<ConfigServerGame> configServerGames;
 	private int senderLinger;
@@ -19,7 +19,8 @@ public class ConfigProxy {
 		this.configServerGames = configServerGames;
 	}
 
-	public ConfigServerGame getConfigServerGame(String name) throws Exception {
+    @Override
+    public ConfigServerGame getConfigServerGame(String name) throws Exception {
 		for (ConfigServerGame config : this.configServerGames) {
 			if (config.getName().contentEquals(name))
 				return config;
@@ -29,6 +30,7 @@ public class ConfigProxy {
 				+ " not found in the configuration file");
 	}
 
+	@Override
 	public int getSenderLinger() {
 		return senderLinger;
 	}
@@ -38,6 +40,7 @@ public class ConfigProxy {
 		this.senderLinger = senderLinger;
 	}
 
+	@Override
 	public int getReceiverLinger() {
 		return receiverLinger;
 	}

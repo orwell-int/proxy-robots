@@ -1,74 +1,42 @@
 package orwell.proxy;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-
-import javax.xml.bind.JAXBException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import orwell.proxy.IRobot.EnumConnectionState;
-import orwell.proxy.config.ConfigModel;
-import orwell.proxy.config.ConfigProxy;
-import orwell.proxy.config.ConfigRobots;
-import orwell.proxy.config.ConfigServerGame;
-import orwell.proxy.config.ConfigTank;
-import orwell.proxy.config.Configuration;
+import orwell.proxy.config.*;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.core.util.StatusPrinter;
 
 public class ProxyRobots implements IZmqMessageListener {
 	final static Logger logback = LoggerFactory.getLogger(ProxyRobots.class); 
 
-	private ConfigServerGame configServerGame;
-	private ConfigRobots configRobots;
-    private ZmqMessageFramework mfProxy;
-	private HashMap<String, IRobot> tanksInitializedMap = new HashMap<String, IRobot>();
-	private HashMap<String, IRobot> tanksConnectedMap = new HashMap<String, IRobot>();
-	private HashMap<String, IRobot> tanksRegisteredMap = new HashMap<String, IRobot>();
+	private IConfigServerGame configServerGame;
+	private IConfigRobots configRobots;
+    protected IMessageFramework mfProxy;
+	protected IRobotsMap robotsMap;
 
     protected CommunicationService communicationService = new CommunicationService();
     private Thread communicationThread = new Thread(communicationService);
 
-	public ProxyRobots(String ConfigFileAddress, String serverGame) {
+	public ProxyRobots(IMessageFramework mfProxy,
+                       IConfigServerGame configServerGame,
+                       IConfigRobots configRobots,
+                       IRobotsMap robotsMap) {
 		logback.info("Constructor -- IN");
-		Configuration configuration = new Configuration(ConfigFileAddress);
-		try {
-			// TODO Include populate into default constructor
-			configuration.populate();
-		} catch (JAXBException e1) {
-			logback.error(e1.toString());
-		}
-		ConfigModel configProxyModel = configuration.getConfigModel();
-		ConfigProxy configProxy = configProxyModel.getConfigProxy();
-		configRobots = configuration.getConfigModel().getConfigRobots();
-		try {
-			configServerGame = configProxy.getConfigServerGame(serverGame);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        assert(null != mfProxy);
+        assert(null != configServerGame);
+        assert(null != configRobots);
+        assert(null != robotsMap);
 
-        mfProxy = new ZmqMessageFramework(
-                configProxy.getSenderLinger(),
-                configProxy.getReceiverLinger());
+        this.mfProxy = mfProxy;
+        this.configServerGame = configServerGame;
+        this.configRobots = configRobots;
+        this.robotsMap = robotsMap;
+
         mfProxy.addZmqMessageListener(this);
 		logback.info("Constructor -- OUT");
 	}
 
-	public HashMap<String, IRobot> getTanksInitializedMap() {
-		return tanksInitializedMap;
-	}
-
-	public HashMap<String, IRobot> getTanksConnectedMap() {
-		return tanksConnectedMap;
-	}
-
-	public HashMap<String, IRobot> getTanksRegisteredMap() {
-		return tanksRegisteredMap;
-	}
 
 	public void connectToServer() {
 		mfProxy.connectToServer(
@@ -77,11 +45,12 @@ public class ProxyRobots implements IZmqMessageListener {
                 configServerGame.getSubPort());
 	}
 
+
 	/*
 	 * This instantiate Tanks objects from a configuration It only set up the
 	 * tanksInitializedMap
 	 */
-	public void initializeTanks() {
+	public void initializeTanksFromConfig() {
 		for (ConfigTank configTank : configRobots.getConfigRobotsToRegister()) {
 			Camera camera = new Camera(configTank.getConfigCamera().getIp(),
 					configTank.getConfigCamera().getPort());
@@ -91,97 +60,45 @@ public class ProxyRobots implements IZmqMessageListener {
 					configTank.getBluetoothID(), camera, configTank.getImage());
 			logback.info("Temporary routing ID: " + configTank.getTempRoutingID());
 			tank.setRoutingID(configTank.getTempRoutingID());
-			this.tanksInitializedMap.put(tank.getRoutingID(), tank);
+			this.robotsMap.add(tank);
 		}
 
-		logback.info("All " + this.tanksInitializedMap.size()
+		logback.info("All " + this.robotsMap.getRobotsArray().size()
 				+ " tank(s) initialized");
 	}
 
-	/*
-	 * This instantiate Tanks objects It only set up the tanksInitializedMap
-	 * from another map
-	 * 
-	 * @param map of tanks to setup
-	 */
-	public void initializeTanks(HashMap<String, Tank> tanksToInitializeMap) {
-		for (Map.Entry<String, Tank> entry : tanksToInitializeMap.entrySet()) {
-			String routingID = entry.getKey();
-			Tank tank = entry.getValue();
-			tank.setRoutingID(routingID);
-			this.tanksInitializedMap.put(routingID, tank);
-		}
-	}
 
 	public void connectToRobots() {
-		Iterator<Map.Entry<String, IRobot>> iterator = tanksInitializedMap
-				.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Map.Entry<String, IRobot> entry = iterator.next();
-			String routingID = entry.getKey();
-			IRobot tank = entry.getValue();
-			logback.info("Connecting to robot: \n" + tank.toString());
-			tank.connectToRobot();
-
-			if (tank.getConnectionState() == EnumConnectionState.CONNECTION_FAILED) {
-				logback.info("Robot [" + tank.getRoutingID()
-						+ "] failed to connect to the proxy!");
-			} else {
-				logback.info("Robot [" + tank.getRoutingID()
-						+ "] is connected to the proxy!");
-				this.tanksConnectedMap.put(routingID, tank);
-				iterator.remove();
-			}
-		}
+        for (IRobot robot : robotsMap.getNotConnectedRobots()) {
+            robot.connectToDevice();
+        }
 	}
 
+
 	public void sendRegister() {
-		for (IRobot tank : tanksConnectedMap.values()) {
-			tank.buildRegister();
-			mfProxy.sendZmqMessage(EnumMessageType.REGISTER, tank.getRoutingID(),
-                    tank.getRegisterBytes());
-			logback.info("TEST RegisterHeader: " + Arrays.toString(tank.getZmqRegister()));
-			logback.info("Robot [" + tank.getRoutingID()
+		for (IRobot robot : robotsMap.getConnectedRobots()) {
+			robot.buildRegister();
+			mfProxy.sendZmqMessage(EnumMessageType.REGISTER, robot.getRoutingID(),
+                    robot.getRegisterBytes());
+			logback.info("Robot [" + robot.getRoutingID()
 					+ "] is trying to register itself to the server!");
 		}
 	}
 
-	private void updateConnectedTanks() {
-        for (IRobot tank : tanksConnectedMap.values()) {
-			if(tank.getConnectionState() != EnumConnectionState.CONNECTED){
-				tanksConnectedMap.remove(tank.getRoutingID());
-				logback.info("Removing dead tank connected: " + tank.getRoutingID());
-				if(this.tanksRegisteredMap.containsKey(tank.getRoutingID())){
-					tanksRegisteredMap.remove(tank.getRoutingID());
-					logback.info("Removing dead tank registered: " + tank.getRoutingID());
-				}
-			}
-		}
-	}
 
-    public void sendServerRobotState() {
-        for (IRobot tank : tanksConnectedMap.values()) {
-            byte[] zmqServerRobotState = tank.getAndClearZmqServerRobotStateBytes();
+    public void sendServerRobotStates() {
+        for (IRobot robot : robotsMap.getRegisteredRobots()) {
+            byte[] zmqServerRobotState = robot.getAndClearZmqServerRobotStateBytes();
             if(null == zmqServerRobotState) {
                 continue;
             } else {
-//                logback.debug("TEST ServerRobotStateHeader: " + Arrays.toString(zmqServerRobotState));
-//                logback.debug("Robot [" + tank.getRoutingID()
-//                        + "] is sending its ServerRobotState to the server!");
                 mfProxy.sendZmqMessage(EnumMessageType.SERVER_ROBOT_STATE,
-                        tank.getRoutingID(), zmqServerRobotState);
+                        robot.getRoutingID(), zmqServerRobotState);
             }
         }
     }
 
 	public void startCommunicationService() {
-//        while (!Thread.currentThread().isInterrupted()
-//                && !tanksConnectedMap.isEmpty()) {
-//			updateConnectedTanks();
-//            sendServerRobotState();
-//            Thread.yield();
-//		}
-
         communicationThread.start();
 	}
 
@@ -190,36 +107,32 @@ public class ProxyRobots implements IZmqMessageListener {
 	}
 
     private void disconnectAllTanks() {
-        for (IRobot tank : tanksConnectedMap.values()) {
+        for (IRobot tank : robotsMap.getConnectedRobots()) {
             tank.closeConnection();
         }
     }
 
     private void onRegistered(ZmqMessageWrapper zmqMessage) {
         logback.info("Setting ServerGame Registered to tank");
-        if (this.tanksConnectedMap.containsKey(zmqMessage.getRoutingId())) {
-            IRobot registeredRobot = this.tanksConnectedMap
-                    .get(zmqMessage.getRoutingId());
+        String routingId = zmqMessage.getRoutingId();
+        if (robotsMap.isRobotConnected(routingId)) {
+            IRobot registeredRobot = robotsMap.get(routingId);
             registeredRobot.setRegistered(zmqMessage.getMessageBytes());
-            this.tanksRegisteredMap.put(registeredRobot.getRoutingID(),
-                    registeredRobot);
-            logback.info("Registered robot : " + registeredRobot
-                    .serverGameRegisteredToString());
         } else {
-            logback.info("RoutingID " + zmqMessage.getRoutingId()
+            logback.info("RoutingID " + routingId
                     + " is not an ID of a tank to register");
         }
     }
 
     private void onInput(ZmqMessageWrapper zmqMessage) {
         logback.info("Setting controller Input to tank");
-        if (this.tanksRegisteredMap.containsKey(zmqMessage.getRoutingId())) {
-            IRobot tankTargeted = this.tanksRegisteredMap
-                    .get(zmqMessage.getRoutingId());
-            tankTargeted.setControllerInput(zmqMessage.getMessageBytes());
-            logback.info("tankTargeted input : " + tankTargeted.controllerInputToString());
+        String routingId = zmqMessage.getRoutingId();
+        if (robotsMap.isRobotRegistered(routingId)) {
+            IRobot robotTargeted = robotsMap.get(routingId);
+            robotTargeted.setControllerInput(zmqMessage.getMessageBytes());
+            logback.info("tankTargeted input : " + robotTargeted.controllerInputToString());
         } else {
-            logback.info("RoutingID " + zmqMessage.getRoutingId()
+            logback.info("RoutingID " + routingId
                     + " is not an ID of a registered tank");
         }
     }
@@ -239,10 +152,10 @@ public class ProxyRobots implements IZmqMessageListener {
 	}
 
 	public static void main(String[] args) throws Exception {
-		ProxyRobots proxyRobots = new ProxyRobots(
-				"/configuration.xml", "platypus");
+		ProxyRobots proxyRobots = new ProxyRobotsFactory("/configuration.xml", "platypus").getProxyRobots();
+
 		proxyRobots.connectToServer();
-		proxyRobots.initializeTanks();
+		proxyRobots.initializeTanksFromConfig();
 		proxyRobots.connectToRobots();
 		proxyRobots.sendRegister();
 		proxyRobots.startCommunicationService();
@@ -268,9 +181,8 @@ public class ProxyRobots implements IZmqMessageListener {
     class CommunicationService implements Runnable {
         public void run(){
             while (!Thread.currentThread().isInterrupted() &&
-                    !tanksConnectedMap.isEmpty()) {
-                updateConnectedTanks();
-                sendServerRobotState();
+                    !robotsMap.getConnectedRobots().isEmpty()) {
+                sendServerRobotStates();
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException e) {

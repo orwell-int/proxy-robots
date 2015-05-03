@@ -5,13 +5,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(propOrder = { "ip", "pushPort", "subPort" })
-public class ConfigServerGame {
+public class ConfigServerGame implements IConfigServerGame {
 
 	private String name;
 	private String ip;
 	private int pushPort;
 	private int subPort;
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -21,6 +22,7 @@ public class ConfigServerGame {
 		this.name = name;
 	}
 
+	@Override
 	public String getIp() {
 		return ip;
 	}
@@ -30,6 +32,7 @@ public class ConfigServerGame {
 		this.ip = ip;
 	}
 
+	@Override
 	public int getPushPort() {
 		return pushPort;
 	}
@@ -39,6 +42,7 @@ public class ConfigServerGame {
 		this.pushPort = pushPort;
 	}
 
+	@Override
 	public int getSubPort() {
 		return subPort;
 	}

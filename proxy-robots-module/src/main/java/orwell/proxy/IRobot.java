@@ -3,52 +3,62 @@ package orwell.proxy;
 import orwell.messages.Controller.Input;
 
 public interface IRobot {
-	
-	public enum EnumRegistrationState {
-		NOT_REGISTERED,
-		REGISTERED,
-		REGISTRATION_FAILED;
-	}
-	
-	public enum EnumConnectionState {
-		NOT_CONNECTED,
-		CONNECTED,
-		CONNECTION_FAILED;
-	}
-	
-	public String getTeamName();
-	public EnumRegistrationState getRegistrationState();
-	public EnumConnectionState getConnectionState();
 
-	public void setRoutingID(String routingID);
-	public String getRoutingID();
-	
-	/*
-	 * Image is a picture of the robot itself to be sent to the
-	 * server before the start of the game
-	 */
-	public void setImage(String image);
-	public String getImage();
+    enum EnumRegistrationState {
+        NOT_REGISTERED,
+        REGISTERED,
+        REGISTRATION_FAILED
+    }
+
+    enum EnumConnectionState {
+        NOT_CONNECTED,
+        CONNECTED,
+        CONNECTION_FAILED
+    }
+
+    String getTeamName();
+
+    EnumRegistrationState getRegistrationState();
+
+    EnumConnectionState getConnectionState();
+
+    void setRoutingID(String routingID);
+
+    String getRoutingID();
+
+    /*
+     * Image is a picture of the robot itself to be sent to the
+     * server before the start of the game
+     */
+    void setImage(String image);
+
+    String getImage();
 
     /*
      * This will clear the current ServerRobotState
      */
-	public byte[] getAndClearZmqServerRobotState();
-    public byte[] getAndClearZmqServerRobotStateBytes();
+    byte[] getAndClearZmqServerRobotStateBytes();
 
-	
-	public void setRegistered(byte[] registeredMessage);
-	public byte[] getZmqRegister();
-    public byte[] getRegisterBytes();
-	
-	public void setControllerInput(byte[] inputMessage);
-	public Input getControllerInput();
-	
-	public EnumConnectionState connectToRobot();
-    public void closeConnection();
-	
-	public String robotStateToString();
-	public String controllerInputToString();
-	public String serverGameRegisteredToString();
-	public void buildRegister();
+
+    void setRegistered(byte[] registeredMessage);
+
+    byte[] getZmqRegister();
+
+    byte[] getRegisterBytes();
+
+    void setControllerInput(byte[] inputMessage);
+
+    Input getControllerInput();
+
+    EnumConnectionState connectToDevice();
+
+    void closeConnection();
+
+    String robotStateToString();
+
+    String controllerInputToString();
+
+    String serverGameRegisteredToString();
+
+    void buildRegister();
 }
