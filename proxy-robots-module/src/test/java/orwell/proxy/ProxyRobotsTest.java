@@ -1,6 +1,7 @@
 package orwell.proxy;
 
 import static org.easymock.EasyMock.*;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -175,6 +176,7 @@ public class ProxyRobotsTest {
         myProxyRobots.startCommunicationService();
 
         myProxyRobots.sendRegister();
+        // Simulate reception of a REGISTERED message
         myProxyRobots.receivedNewZmq(new ZmqMessageWrapper(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
 
 		assertEquals(IRobot.EnumRegistrationState.REGISTERED, mockedTank.getRegistrationState());
@@ -239,7 +241,9 @@ public class ProxyRobotsTest {
 
         myProxyRobots.connectToRobots();
         myProxyRobots.startCommunicationService();
+        // Robot needs to be registered in order to send a ServerRobotState
         myProxyRobots.sendRegister();
+        // Simulate reception of a REGISTERED message
         myProxyRobots.receivedNewZmq(new ZmqMessageWrapper(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
 
         myProxyRobots.sendServerRobotStates();
@@ -259,7 +263,7 @@ public class ProxyRobotsTest {
         replay(mockedZmqMessageFramework);
 
         // Instantiate main class with mock parameters
-        // We build an empty robot maps
+        // We build an empty robot map
         myProxyRobots = new ProxyRobots(mockedZmqMessageFramework,
                 configFactory.getConfigServerGame(),
                 configFactory.getConfigRobots(),
@@ -268,7 +272,8 @@ public class ProxyRobotsTest {
         myProxyRobots.start();
 
         waitForCloseOrTimeout();
-        // Map contains only one tank which failed to connect, so
+        // Map contains only one tank from the config file,
+        // this tank fails to connect because of wrong settings, so
         // the communication service should quickly stop and close
         // the message framework proxy
         verify(mockedZmqMessageFramework);
@@ -276,6 +281,30 @@ public class ProxyRobotsTest {
         logback.info("OUT");
     }
 
+
+    @Test
+    public void testOnInput() {
+        logback.info("IN");
+        instantiateBasicProxyRobots();
+
+        myProxyRobots.connectToRobots();
+
+        myProxyRobots.startCommunicationService();
+
+        // Robot needs to be registered in order to receive Input messages
+        myProxyRobots.sendRegister();
+        // Simulate reception of a REGISTERED message
+        myProxyRobots.receivedNewZmq(new ZmqMessageWrapper(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
+
+        // Now simulate reception of a INPUT message
+        myProxyRobots.receivedNewZmq(new ZmqMessageWrapper(getMockRawZmqMessage(mockedTank, EnumMessageType.INPUT)));
+
+        // Tank received the right Input correctly
+        assertArrayEquals(getBytesInput(),
+                ((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getControllerInputBytes());
+
+        logback.info("OUT");
+    }
 
     @After
     public void tearDown(){

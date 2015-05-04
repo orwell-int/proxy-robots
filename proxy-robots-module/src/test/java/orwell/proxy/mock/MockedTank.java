@@ -20,6 +20,7 @@ public class MockedTank implements IRobot {
     private EnumRegistrationState registrationState = EnumRegistrationState.NOT_REGISTERED;
     private EnumConnectionState enumConnectionState = EnumConnectionState.NOT_CONNECTED;
     private byte[] serverRobotStateBytes;
+    private byte[] inputBytes;
 
     @Override
     public String getTeamName() {
@@ -75,7 +76,6 @@ public class MockedTank implements IRobot {
 
             this.serverRobotStateBytes = serverRobotStateBuilder.build().toByteArray();
         }
-        logback.debug("getAndClearZmqServerRobotStateBytes: " + Arrays.toString(this.serverRobotStateBytes));
         return this.serverRobotStateBytes;
     }
 
@@ -101,7 +101,11 @@ public class MockedTank implements IRobot {
 
     @Override
     public void setControllerInput(byte[] inputMessage) {
+        this.inputBytes = inputMessage;
+    }
 
+    public byte[] getControllerInputBytes() {
+        return this.inputBytes;
     }
 
     @Override
