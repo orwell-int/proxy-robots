@@ -1,11 +1,5 @@
 package orwell.proxy;
 
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-
 import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.After;
@@ -15,18 +9,18 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
-import orwell.messages.Robot;
-import orwell.messages.ServerGame;
 import orwell.messages.Controller;
+import orwell.messages.ServerGame;
 import orwell.proxy.config.ConfigFactory;
 import orwell.proxy.mock.MockedTank;
+
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
 
 
 /**
  * Tests for {@link ProxyRobots}.
- * 
+ *
  * @author miludmann@gmail.com (Michael Ludmann)
  */
 
@@ -112,19 +106,17 @@ public class ProxyRobotsTest {
 
     public void waitForCloseOrTimeout() {
         long timeout = 0;
-        while(myProxyRobots.isCommunicationServiceAlive() && timeout < MAX_TIMEOUT_MS)
-        {
+        while (myProxyRobots.isCommunicationServiceAlive() && timeout < MAX_TIMEOUT_MS) {
             try {
                 Thread.sleep(5);
-                timeout+= 5;
+                timeout += 5;
             } catch (InterruptedException e) {
                 logback.error(e.getStackTrace().toString());
             }
         }
     }
 
-    public void instantiateBasicProxyRobots()
-    {
+    public void instantiateBasicProxyRobots() {
         // Build Mock of ZmqMessageFramework
         mockedZmqMessageFramework.addZmqMessageListener(anyObject(IZmqMessageListener.class));
         expectLastCall();
@@ -141,36 +133,36 @@ public class ProxyRobotsTest {
                 configFactory.getConfigRobots(),
                 robotsMap);
     }
-	
-	@Test
-	public void testInitialiseTanks() {
-		logback.info("IN");
-        instantiateBasicProxyRobots();
-
-		assertEquals(1, myProxyRobots.robotsMap.getRobotsArray().size());
-		assertEquals(mockedTank,
-                myProxyRobots.robotsMap.get("tempRoutingId"));
-		logback.info("OUT");
-	}
-
-	@Test
-	public void testConnectToRobots() {
-		logback.info("IN");
-        instantiateBasicProxyRobots();
-
-		myProxyRobots.connectToRobots();
-
-		assertEquals(1, myProxyRobots.robotsMap.getConnectedRobots().size());
-		logback.info("OUT");
-	}
 
     @Test
-	public void testRegisterFlow() {
-		logback.info("IN");
+    public void testInitialiseTanks() {
+        logback.info("IN");
         instantiateBasicProxyRobots();
 
-		myProxyRobots.connectToRobots();
-		assertEquals(IRobot.EnumRegistrationState.NOT_REGISTERED, mockedTank.getRegistrationState());
+        assertEquals(1, myProxyRobots.robotsMap.getRobotsArray().size());
+        assertEquals(mockedTank,
+                myProxyRobots.robotsMap.get("tempRoutingId"));
+        logback.info("OUT");
+    }
+
+    @Test
+    public void testConnectToRobots() {
+        logback.info("IN");
+        instantiateBasicProxyRobots();
+
+        myProxyRobots.connectToRobots();
+
+        assertEquals(1, myProxyRobots.robotsMap.getConnectedRobots().size());
+        logback.info("OUT");
+    }
+
+    @Test
+    public void testRegisterFlow() {
+        logback.info("IN");
+        instantiateBasicProxyRobots();
+
+        myProxyRobots.connectToRobots();
+        assertEquals(IRobot.EnumRegistrationState.NOT_REGISTERED, mockedTank.getRegistrationState());
         assertEquals("tempRoutingId", mockedTank.getRoutingID());
 
         myProxyRobots.startCommunicationService();
@@ -179,34 +171,34 @@ public class ProxyRobotsTest {
         // Simulate reception of a REGISTERED message
         myProxyRobots.receivedNewZmq(new ZmqMessageWrapper(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
 
-		assertEquals(IRobot.EnumRegistrationState.REGISTERED, mockedTank.getRegistrationState());
+        assertEquals(IRobot.EnumRegistrationState.REGISTERED, mockedTank.getRegistrationState());
         assertEquals("BananaOne", mockedTank.getRoutingID());
 
         logback.info("OUT");
-	}
+    }
 
 
-	@Test
-	public void testUpdateConnectedTanks() {
-		logback.info("IN");
+    @Test
+    public void testUpdateConnectedTanks() {
+        logback.info("IN");
         instantiateBasicProxyRobots();
 
-		myProxyRobots.connectToRobots();
-		assert(myProxyRobots.robotsMap.isRobotConnected("tempRoutingId"));
+        myProxyRobots.connectToRobots();
+        assert (myProxyRobots.robotsMap.isRobotConnected("tempRoutingId"));
         myProxyRobots.startCommunicationService();
 
         myProxyRobots.sendRegister();
 
-		// Tank is disconnected
+        // Tank is disconnected
         mockedTank.closeConnection();
 
         waitForCloseOrTimeout();
 
-		// So the map of connected tanks is empty
-		assert(myProxyRobots.robotsMap.getConnectedRobots().isEmpty());
+        // So the map of connected tanks is empty
+        assert (myProxyRobots.robotsMap.getConnectedRobots().isEmpty());
 
         logback.debug("OUT");
-	}
+    }
 
     @Test
     public void testInitializeTanksFromConfig() {
@@ -307,7 +299,7 @@ public class ProxyRobotsTest {
     }
 
     @After
-    public void tearDown(){
+    public void tearDown() {
         myProxyRobots.stop();
     }
 }
