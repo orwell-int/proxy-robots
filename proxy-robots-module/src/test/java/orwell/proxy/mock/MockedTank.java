@@ -7,6 +7,8 @@ import orwell.messages.Robot;
 import orwell.messages.ServerGame;
 import orwell.proxy.IRobot;
 
+import java.util.Arrays;
+
 /**
  * Created by parapampa on 03/05/15.
  */
@@ -17,6 +19,7 @@ public class MockedTank implements IRobot {
     private String routingId = "tempRoutingId";
     private EnumRegistrationState registrationState = EnumRegistrationState.NOT_REGISTERED;
     private EnumConnectionState enumConnectionState = EnumConnectionState.NOT_CONNECTED;
+    private byte[] serverRobotStateBytes;
 
     @Override
     public String getTeamName() {
@@ -62,14 +65,18 @@ public class MockedTank implements IRobot {
 
     @Override
     public byte[] getAndClearZmqServerRobotStateBytes() {
-        Robot.ServerRobotState.Builder serverRobotStateBuilder = Robot.ServerRobotState.newBuilder();
-        Robot.Rfid.Builder rfidBuilder = Robot.Rfid.newBuilder();
-        rfidBuilder.setRfid("1234");
-        rfidBuilder.setStatus(Robot.Status.ON);
-        rfidBuilder.setTimestamp(1234567890);
-        serverRobotStateBuilder.addRfid(rfidBuilder.build());
+        if(null == this.serverRobotStateBytes) {
+            Robot.ServerRobotState.Builder serverRobotStateBuilder = Robot.ServerRobotState.newBuilder();
+            Robot.Rfid.Builder rfidBuilder = Robot.Rfid.newBuilder();
+            rfidBuilder.setRfid("1234");
+            rfidBuilder.setStatus(Robot.Status.ON);
+            rfidBuilder.setTimestamp(1234567890);
+            serverRobotStateBuilder.addRfid(rfidBuilder.build());
 
-        return serverRobotStateBuilder.build().toByteArray();
+            this.serverRobotStateBytes = serverRobotStateBuilder.build().toByteArray();
+        }
+        logback.debug("getAndClearZmqServerRobotStateBytes: " + Arrays.toString(this.serverRobotStateBytes));
+        return this.serverRobotStateBytes;
     }
 
     @Override

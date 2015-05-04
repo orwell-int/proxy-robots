@@ -2,13 +2,16 @@ package orwell.proxy;
 
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import org.easymock.EasyMock;
+
 import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +21,6 @@ import orwell.messages.ServerGame;
 import orwell.messages.Controller;
 import orwell.proxy.config.ConfigFactory;
 import orwell.proxy.mock.MockedTank;
-import orwell.proxy.mock.MockedZmqMessageFramework;
 
 
 /**
@@ -28,10 +30,13 @@ import orwell.proxy.mock.MockedZmqMessageFramework;
  */
 
 
+@RunWith(JUnit4.class)
 public class ProxyRobotsTest {
 
     final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class);
     final static long MAX_TIMEOUT_MS = 500;
+    private ConfigFactory configFactory;
+    private RobotsMap robotsMap;
 
     @TestSubject
     private ProxyRobots myProxyRobots;
@@ -39,33 +44,20 @@ public class ProxyRobotsTest {
     @Mock
     //	private Tank myTank;
     private MockedTank mockedTank;
-    private TankDeltaState mockedTankDeltaState;
-    //private MockedZmqMessageFramework mockedZmqMessageFramework = new MockedZmqMessageFramework();
-    private MockedZmqMessageFramework mockedZmqMessageFramework = createNiceMock(MockedZmqMessageFramework.class);
-
+    private ZmqMessageFramework mockedZmqMessageFramework = createNiceMock(ZmqMessageFramework.class);
 
     @Before
     public void setUp() throws Exception { //expectPrivate might throw exceptions
         logback.info("IN");
 
-        // Mock TankCurrentState
-        final String modifyTankCurrentStateTimeStamp = "getTimeStamp";
-        mockedTankDeltaState = createMockBuilder(TankDeltaState.class).withConstructor().addMockedMethod(modifyTankCurrentStateTimeStamp).createMock();
-        expect(mockedTankDeltaState.getTimeStamp()).andStubReturn(new Long(999999999));
-        replay(mockedTankDeltaState);
-
-        ConfigFactory configFactory = new ConfigFactory("/configurationTest.xml", "localhost");
-
-        RobotsMap robotsMap = new RobotsMap();
+        // Build Mock of Tank
         mockedTank = new MockedTank();
+
+        configFactory = new ConfigFactory("/configurationTest.xml", "localhost");
+
+        // Create the map with one mock tank
+        robotsMap = new RobotsMap();
         robotsMap.add(mockedTank);
-
-
-        // Instantiate main class with mock parameters
-        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework,
-                configFactory.getConfigServerGame(),
-                configFactory.getConfigRobots(),
-                robotsMap);
 
         logback.info("OUT");
     }
@@ -80,17 +72,9 @@ public class ProxyRobotsTest {
                 specificMessage = getBytesRegistered();
                 zmqMessageHeader = iRobot.getRoutingID() + " " + "Registered" + " ";
                 break;
-            case SERVER_ROBOT_STATE:
-                specificMessage = getBytesServerRobotState();
-                zmqMessageHeader = iRobot.getRoutingID() + " " + "ServerRobotState" + " ";
-                break;
             case INPUT:
                 specificMessage = getBytesInput();
                 zmqMessageHeader = iRobot.getRoutingID() + " " + "Input" + " ";
-                break;
-            case STOP:
-                specificMessage = getBytesStop();
-                zmqMessageHeader = iRobot.getRoutingID() + " " + "Stop" + " ";
                 break;
             default:
                 logback.error("Case : Message type " + messageType + " not handled");
@@ -124,35 +108,55 @@ public class ProxyRobotsTest {
         return inputBuilder.build().toByteArray();
     }
 
-    public byte[] getBytesStop(){
-        return "STOP".getBytes();
+
+    public void waitForCloseOrTimeout() {
+        long timeout = 0;
+        while(myProxyRobots.isCommunicationServiceAlive() && timeout < MAX_TIMEOUT_MS)
+        {
+            try {
+                Thread.sleep(5);
+                timeout+= 5;
+            } catch (InterruptedException e) {
+                logback.error(e.getStackTrace().toString());
+            }
+        }
     }
 
-    public byte[] getBytesServerRobotState()
+    public void instantiateBasicProxyRobots()
     {
-        Robot.ServerRobotState.Builder serverRobotStateBuilder = Robot.ServerRobotState.newBuilder();
-        Robot.Rfid.Builder rfidBuilder = Robot.Rfid.newBuilder();
-        rfidBuilder.setRfid("1234");
-        rfidBuilder.setStatus(Robot.Status.ON);
-        rfidBuilder.setTimestamp(1234567890);
-        serverRobotStateBuilder.addRfid(rfidBuilder.build());
+        // Build Mock of ZmqMessageFramework
+        mockedZmqMessageFramework.addZmqMessageListener(anyObject(IZmqMessageListener.class));
+        expectLastCall();
 
-        return serverRobotStateBuilder.build().toByteArray();
+        expect(mockedZmqMessageFramework.sendZmqMessage((EnumMessageType) anyObject(),
+                anyString(),
+                (byte[]) anyObject())).andReturn(true).anyTimes();
+
+        replay(mockedZmqMessageFramework);
+
+        // Instantiate main class with mock parameters
+        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework,
+                configFactory.getConfigServerGame(),
+                configFactory.getConfigRobots(),
+                robotsMap);
     }
 	
 	@Test
 	public void testInitialiseTanks() {
 		logback.info("IN");
+        instantiateBasicProxyRobots();
 
 		assertEquals(1, myProxyRobots.robotsMap.getRobotsArray().size());
 		assertEquals(mockedTank,
-				myProxyRobots.robotsMap.get("tempRoutingId"));
+                myProxyRobots.robotsMap.get("tempRoutingId"));
 		logback.info("OUT");
 	}
 
 	@Test
 	public void testConnectToRobots() {
 		logback.info("IN");
+        instantiateBasicProxyRobots();
+
 		myProxyRobots.connectToRobots();
 
 		assertEquals(1, myProxyRobots.robotsMap.getConnectedRobots().size());
@@ -162,13 +166,15 @@ public class ProxyRobotsTest {
     @Test
 	public void testRegisterFlow() {
 		logback.info("IN");
+        instantiateBasicProxyRobots();
 
 		myProxyRobots.connectToRobots();
 		assertEquals(IRobot.EnumRegistrationState.NOT_REGISTERED, mockedTank.getRegistrationState());
         assertEquals("tempRoutingId", mockedTank.getRoutingID());
 
-		myProxyRobots.sendRegister();
-		myProxyRobots.startCommunicationService();
+        myProxyRobots.startCommunicationService();
+
+        myProxyRobots.sendRegister();
         myProxyRobots.receivedNewZmq(new ZmqMessageWrapper(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
 
 		assertEquals(IRobot.EnumRegistrationState.REGISTERED, mockedTank.getRegistrationState());
@@ -181,26 +187,19 @@ public class ProxyRobotsTest {
 	@Test
 	public void testUpdateConnectedTanks() {
 		logback.info("IN");
+        instantiateBasicProxyRobots();
 
 		myProxyRobots.connectToRobots();
 		assert(myProxyRobots.robotsMap.isRobotConnected("tempRoutingId"));
-        myProxyRobots.sendRegister();
+        myProxyRobots.startCommunicationService();
 
-		myProxyRobots.startCommunicationService();
+        myProxyRobots.sendRegister();
 
 		// Tank is disconnected
         mockedTank.closeConnection();
 
-        long timeout = 0;
-        while(!myProxyRobots.robotsMap.getConnectedRobots().isEmpty() && timeout < MAX_TIMEOUT_MS)
-        {
-            try {
-                Thread.sleep(5);
-                timeout+= 5;
-            } catch (InterruptedException e) {
-                logback.error(e.getStackTrace().toString());
-            }
-        }
+        waitForCloseOrTimeout();
+
 		// So the map of connected tanks is empty
 		assert(myProxyRobots.robotsMap.getConnectedRobots().isEmpty());
 
@@ -208,23 +207,78 @@ public class ProxyRobotsTest {
 	}
 
     @Test
-    public void testSendServerRobotState() {
+    public void testInitializeTanksFromConfig() {
         logback.info("IN");
+        instantiateBasicProxyRobots();
 
-        expect(mockedZmqMessageFramework.sendZmqMessage((EnumMessageType) anyObject(),
-                anyString(),
-                (byte[])anyObject())).andReturn(true).once();
-        replay(mockedZmqMessageFramework);
+        myProxyRobots.initializeTanksFromConfig();
 
-        myProxyRobots.sendServerRobotStates();
+        // We have two tanks: a mock and one initialized from the config file
+        assertEquals(2, myProxyRobots.robotsMap.getNotConnectedRobots().size());
+        // One tank in the map is indeed the one coming from the config file
+        assertNotNull(myProxyRobots.robotsMap.get(configFactory.getConfigRobots().getConfigRobotsToRegister().get(0).getTempRoutingID()));
 
-        //TODO fix this check
-        //verify(mockedZmqMessageFramework);
         logback.info("OUT");
     }
 
+    @Test
+    public void testSendServerRobotState() {
+        logback.info("IN");
+
+        // Build Mock of ZmqMessageFramework
+        expect(mockedZmqMessageFramework.sendZmqMessage(eq(EnumMessageType.SERVER_ROBOT_STATE),
+                anyString(),
+                (byte[]) anyObject())).andReturn(true).atLeastOnce();
+        replay(mockedZmqMessageFramework);
+
+        // Instantiate main class with mock parameters
+        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework,
+                configFactory.getConfigServerGame(),
+                configFactory.getConfigRobots(),
+                robotsMap);
+
+        myProxyRobots.connectToRobots();
+        myProxyRobots.startCommunicationService();
+        myProxyRobots.sendRegister();
+        myProxyRobots.receivedNewZmq(new ZmqMessageWrapper(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
+
+        myProxyRobots.sendServerRobotStates();
+
+        verify(mockedZmqMessageFramework);
+
+        logback.info("OUT");
+    }
+
+    @Test
+    public void testStart() {
+        logback.info("IN");
+
+        // Build Mock of ZmqMessageFramework
+        mockedZmqMessageFramework.close();
+        expectLastCall().once();
+        replay(mockedZmqMessageFramework);
+
+        // Instantiate main class with mock parameters
+        // We build an empty robot maps
+        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework,
+                configFactory.getConfigServerGame(),
+                configFactory.getConfigRobots(),
+                new RobotsMap());
+
+        myProxyRobots.start();
+
+        waitForCloseOrTimeout();
+        // Map contains only one tank which failed to connect, so
+        // the communication service should quickly stop and close
+        // the message framework proxy
+        verify(mockedZmqMessageFramework);
+
+        logback.info("OUT");
+    }
+
+
     @After
     public void tearDown(){
-        myProxyRobots.closeCommunicationService();
+        myProxyRobots.stop();
     }
 }
