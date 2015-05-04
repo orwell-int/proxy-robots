@@ -2,7 +2,6 @@ package orwell.proxy;
 
 import java.util.UUID;
 
-import com.sun.corba.se.spi.activation.Server;
 import lejos.mf.common.MessageListenerInterface;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
@@ -119,23 +118,6 @@ public class Tank implements IRobot, MessageListenerInterface {
 		return routingID;
 	}
 
-	@Override
-    /*
-     * Return null is ServerRobotState is empty
-     */
-	public byte[] getAndClearZmqServerRobotState() {
-//        logback.debug("getAndClearZmqServerRobotState - IN");
-        ServerRobotState srs = getTankDeltaState().getAndClearServerRobotState();
-        if (null != srs) {
-//            logback.debug("getAndClearZmqServerRobotState - srs is Initialized");
-            String zmqMessageHeader = getRoutingID() + " " + "ServerRobotState" + " ";
-            return orwell.proxy.Utils.Concatenate(zmqMessageHeader.getBytes(),
-                    srs.toByteArray());
-        } else {
-            return null;
-        }
-	}
-
 
     @Override
     public byte[] getAndClearZmqServerRobotStateBytes() {
@@ -161,15 +143,18 @@ public class Tank implements IRobot, MessageListenerInterface {
 		try {
 			this.serverGameRegistered = Registered.parseFrom(registeredMessage);
 			routingID = serverGameRegistered.getRobotId();
-			if (routingID.isEmpty())
-				registrationState = EnumRegistrationState.REGISTRATION_FAILED;
-			else {
+			if (routingID.isEmpty()) {
+                registrationState = EnumRegistrationState.REGISTRATION_FAILED;
+                logback.warn("Registration of robot: " + serverGameRegisteredToString() + " FAILED");
+            }
+            else {
 				registrationState = EnumRegistrationState.REGISTERED;
 				teamName = serverGameRegistered.getTeam();
-			}
+                logback.info("Registered robot: " + serverGameRegisteredToString());
+            }
 		} catch (InvalidProtocolBufferException e) {
 			// TODO Auto-generated catch block
-			logback.info("setRegistered protobuff exception");
+			logback.error("setRegistered protobuff exception");
 			e.printStackTrace();
 		}
 	}
@@ -204,12 +189,18 @@ public class Tank implements IRobot, MessageListenerInterface {
 	}
 
 	@Override
-	public EnumConnectionState connectToRobot() {
+	public EnumConnectionState connectToDevice() {
+		logback.info("Connecting to robot: \n" + toString());
+
 		Boolean isConnected = mfTank.ConnectToNXT(nxtInfo);
 		if (isConnected) {
 			this.connectionState = EnumConnectionState.CONNECTED;
+            logback.info("Robot [" + getRoutingID()
+                    + "] is connected to the proxy!");
 		} else {
 			this.connectionState = EnumConnectionState.CONNECTION_FAILED;
+            logback.warn("Robot [" + getRoutingID()
+                    + "] failed to connect to the proxy!");
 		}
 		return this.connectionState;
 	}

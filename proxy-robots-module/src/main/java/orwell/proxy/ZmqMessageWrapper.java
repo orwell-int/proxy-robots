@@ -66,9 +66,8 @@ public class ZmqMessageWrapper {
 				message.length);
 
 		System.out.flush();
-		logback.info("Message received: " + zmqMessageString);
 
-		logback.info("Message [TYPE]: " + type);
+		logback.info("Message received: [RoutingID] " + routingId + " [TYPE]: " + type);
 	}
 
     public String getZmqMessageString() { return zmqMessageString; }
