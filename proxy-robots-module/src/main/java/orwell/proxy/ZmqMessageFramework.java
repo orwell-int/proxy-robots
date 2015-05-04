@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /**
  * Created by parapampa on 08/03/15.
  */
-public class ZmqMessageFramework {
+public class ZmqMessageFramework implements IMessageFramework {
 
     final static Logger logback = LoggerFactory.getLogger(ZmqMessageFramework.class);
 
@@ -49,14 +49,12 @@ public class ZmqMessageFramework {
         reader.setDaemon(true);
     }
 
-    /**
-     * Decide whether to handle two identical successive messages or to ignore the second
-     * @param skipIdenticalMessages : if true, the second identical message (in a row) will be ignored
-     */
+    @Override
     public void setSkipIdenticalMessages(boolean skipIdenticalMessages) {
         isSkipIdenticalMessages = skipIdenticalMessages;
     }
 
+    @Override
     public boolean connectToServer(String serverIp,
                                    int pushPort,
                                    int subPort) {
@@ -81,6 +79,7 @@ public class ZmqMessageFramework {
         return connected;
     }
 
+    @Override
     public boolean sendZmqMessage(EnumMessageType msgType,
                                String routingID,
                                byte[] msgBytes) {
@@ -106,6 +105,7 @@ public class ZmqMessageFramework {
         return sender.send(zmqMessage, 0);
     }
 
+    @Override
     public void addZmqMessageListener(IZmqMessageListener zmqMsgListener) {
         zmqMessageListeners.add(zmqMsgListener);
     }
@@ -134,6 +134,11 @@ public class ZmqMessageFramework {
                         zmqPreviousMessage = zmqMessage.getZmqMessageString();
                     }
                 }
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    logback.error("ZmqReader thread sleep exception: " + e.getMessage());
+                }
             }
             sender.close();
             receiver.close();
@@ -149,7 +154,7 @@ public class ZmqMessageFramework {
             zmqMessageListeners.get(j).receivedNewZmq(zmqMessage);
         }
     }
-
+    @Override
     public void close() {
         logback.info("Stopping communication");
         connected = false;
