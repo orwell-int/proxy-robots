@@ -19,6 +19,7 @@ public class Configuration implements IConfiguration {
     public Configuration(ConfigCli configCli) {
         this.filePath = configCli.getFilePath();
         this.enumConfigFileType = configCli.getEnumConfigFileType();
+        populate();
     }
 
     @Override
@@ -26,8 +27,7 @@ public class Configuration implements IConfiguration {
         return this.configuration;
     }
 
-    @Override
-    public boolean populate() {
+    private boolean populate() {
         JAXBContext jc;
         try {
             jc = JAXBContext.newInstance(ConfigModel.class);

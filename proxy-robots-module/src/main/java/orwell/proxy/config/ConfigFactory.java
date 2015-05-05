@@ -17,8 +17,6 @@ public class ConfigFactory {
 
     public ConfigFactory(ConfigCli configCli) {
         Configuration configuration = new Configuration(configCli);
-        // TODO Include populate into default constructor
-        configuration.populate();
 
         ConfigModel configModel = configuration.getConfigModel();
         configProxy = configModel.getConfigProxy();

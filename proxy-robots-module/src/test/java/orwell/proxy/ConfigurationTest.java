@@ -35,7 +35,6 @@ public class ConfigurationTest {
     private Configuration buildConfigTest(String fileName, EnumConfigFileType configFileType) {
         configCli = new ConfigCli(fileName, configFileType);
         Configuration configTest = new Configuration(configCli);
-        configTest.populate();
         return configTest;
     }
 
