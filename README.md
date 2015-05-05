@@ -64,37 +64,3 @@ Run the jar created by the install to start the application
 java -jar proxy-robots-module/target/proxy-robots-module-0.1.0-jar-with-dependencies.jar -f proxy-robots-module/src/main/resources/configuration.xml
 ```
 
-Running it with ant (soon to be deprecated)
--------------------------------------------
-
-You need the depencies jar already in a local folder. See build.properties for details.
-
-Show the existing targets:
-```
-ant -p
-```
-
-Build, upload and run the program on the robot:
-```
-ant uploadandrun_robots
-```
-
-Build the proxy:
-```
-ant compile_proxy
-```
-
-Run the proxy:
-```
-ant run_proxy 
-```
-
-Run the junit test:
-```
-ant junit-proxy -v
-```
-
-Build a test report
-```
-ant junitreport 
-```
