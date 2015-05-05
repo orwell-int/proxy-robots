@@ -2,31 +2,28 @@ package orwell.proxy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import orwell.proxy.config.*;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.core.util.StatusPrinter;
+import orwell.proxy.config.ConfigTank;
+import orwell.proxy.config.IConfigRobots;
+import orwell.proxy.config.IConfigServerGame;
 
 public class ProxyRobots implements IZmqMessageListener {
-	final static Logger logback = LoggerFactory.getLogger(ProxyRobots.class); 
-
-	private IConfigServerGame configServerGame;
-	private IConfigRobots configRobots;
+    final static Logger logback = LoggerFactory.getLogger(ProxyRobots.class);
     protected IMessageFramework mfProxy;
-	protected IRobotsMap robotsMap;
-
+    protected IRobotsMap robotsMap;
     protected CommunicationService communicationService = new CommunicationService();
+    private IConfigServerGame configServerGame;
+    private IConfigRobots configRobots;
     private Thread communicationThread = new Thread(communicationService);
 
-	public ProxyRobots(IMessageFramework mfProxy,
+    public ProxyRobots(IMessageFramework mfProxy,
                        IConfigServerGame configServerGame,
                        IConfigRobots configRobots,
                        IRobotsMap robotsMap) {
-		logback.info("Constructor -- IN");
-        assert(null != mfProxy);
-        assert(null != configServerGame);
-        assert(null != configRobots);
-        assert(null != robotsMap);
+        logback.info("Constructor -- IN");
+        assert (null != mfProxy);
+        assert (null != configServerGame);
+        assert (null != configRobots);
+        assert (null != robotsMap);
 
         this.mfProxy = mfProxy;
         this.configServerGame = configServerGame;
@@ -34,77 +31,82 @@ public class ProxyRobots implements IZmqMessageListener {
         this.robotsMap = robotsMap;
 
         mfProxy.addZmqMessageListener(this);
-		logback.info("Constructor -- OUT");
-	}
+        logback.info("Constructor -- OUT");
+    }
 
+    public static void main(String[] args) throws Exception {
+        ProxyRobots proxyRobots = new ProxyRobotsFactory("/configuration.xml", "platypus").getProxyRobots();
+        proxyRobots.start();
+    }
 
-	public void connectToServer() {
-		mfProxy.connectToServer(
+    protected void connectToServer() {
+        mfProxy.connectToServer(
                 configServerGame.getIp(),
                 configServerGame.getPushPort(),
                 configServerGame.getSubPort());
-	}
+    }
 
+    /*
+     * This instantiate Tanks objects from a configuration It only set up the
+     * tanksInitializedMap
+     */
+    protected void initializeTanksFromConfig() {
+        for (ConfigTank configTank : configRobots.getConfigRobotsToRegister()) {
+            Camera camera = new Camera(configTank.getConfigCamera().getIp(),
+                    configTank.getConfigCamera().getPort());
+            //TODO Improve initialization of setImage to get something meaningful
+            //from the string (like an actual picture)
+            Tank tank = new Tank(configTank.getBluetoothName(),
+                    configTank.getBluetoothID(), camera, configTank.getImage());
+            logback.info("Temporary routing ID: " + configTank.getTempRoutingID());
+            tank.setRoutingID(configTank.getTempRoutingID());
+            this.robotsMap.add(tank);
+        }
 
-	/*
-	 * This instantiate Tanks objects from a configuration It only set up the
-	 * tanksInitializedMap
-	 */
-	public void initializeTanksFromConfig() {
-		for (ConfigTank configTank : configRobots.getConfigRobotsToRegister()) {
-			Camera camera = new Camera(configTank.getConfigCamera().getIp(),
-					configTank.getConfigCamera().getPort());
-			//TODO Improve initialization of setImage to get something meaningful
-			//from the string (like an actual picture)
-			Tank tank = new Tank(configTank.getBluetoothName(),
-					configTank.getBluetoothID(), camera, configTank.getImage());
-			logback.info("Temporary routing ID: " + configTank.getTempRoutingID());
-			tank.setRoutingID(configTank.getTempRoutingID());
-			this.robotsMap.add(tank);
-		}
+        logback.info("All " + this.robotsMap.getRobotsArray().size()
+                + " tank(s) initialized");
+    }
 
-		logback.info("All " + this.robotsMap.getRobotsArray().size()
-				+ " tank(s) initialized");
-	}
-
-
-	public void connectToRobots() {
+    protected void connectToRobots() {
         for (IRobot robot : robotsMap.getNotConnectedRobots()) {
             robot.connectToDevice();
         }
-	}
+    }
 
-
-	public void sendRegister() {
-		for (IRobot robot : robotsMap.getConnectedRobots()) {
-			robot.buildRegister();
-			mfProxy.sendZmqMessage(EnumMessageType.REGISTER, robot.getRoutingID(),
+    protected void sendRegister() {
+        for (IRobot robot : robotsMap.getConnectedRobots()) {
+            robot.buildRegister();
+            mfProxy.sendZmqMessage(EnumMessageType.REGISTER, robot.getRoutingID(),
                     robot.getRegisterBytes());
-			logback.info("Robot [" + robot.getRoutingID()
-					+ "] is trying to register itself to the server!");
-		}
-	}
+            logback.info("Robot [" + robot.getRoutingID()
+                    + "] is trying to register itself to the server!");
+        }
+    }
 
-
-    public void sendServerRobotStates() {
+    protected void sendServerRobotStates() {
         for (IRobot robot : robotsMap.getRegisteredRobots()) {
             byte[] zmqServerRobotState = robot.getAndClearZmqServerRobotStateBytes();
-            if(null == zmqServerRobotState) {
+            if (null == zmqServerRobotState) {
                 continue;
             } else {
+                logback.debug("Sending a ServerRobotState message");
                 mfProxy.sendZmqMessage(EnumMessageType.SERVER_ROBOT_STATE,
                         robot.getRoutingID(), zmqServerRobotState);
             }
         }
     }
 
-	public void startCommunicationService() {
+    protected void startCommunicationService() {
         communicationThread.start();
-	}
+    }
 
-	public void closeCommunicationService() {
+    protected boolean isCommunicationServiceAlive() {
+        return communicationThread.isAlive();
+    }
+
+    public void stop() {
         disconnectAllTanks();
-	}
+    }
 
     private void disconnectAllTanks() {
         for (IRobot tank : robotsMap.getConnectedRobots()) {
@@ -145,21 +147,23 @@ public class ProxyRobots implements IZmqMessageListener {
         logback.warn("Unknown message type");
     }
 
-	public void printLoggerState() {
-		// print internal state
-		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-		StatusPrinter.print(lc);
-	}
-
-	public static void main(String[] args) throws Exception {
-		ProxyRobots proxyRobots = new ProxyRobotsFactory("/configuration.xml", "platypus").getProxyRobots();
-
-		proxyRobots.connectToServer();
-		proxyRobots.initializeTanksFromConfig();
-		proxyRobots.connectToRobots();
-		proxyRobots.sendRegister();
-		proxyRobots.startCommunicationService();
-	}
+    /*
+     * Start the proxy :
+     * -connect itself to the server
+     * -initialize robots from a config
+     * -connect to those robots
+     * -start communication service with the server
+     * -send register to the server
+     */
+    public void start() {
+        this.connectToServer();
+        this.initializeTanksFromConfig();
+        this.connectToRobots();
+        //We have to start the communication service before sending Register
+        //Otherwise we risk not being ready to read Registered in time
+        this.startCommunicationService();
+        this.sendRegister();
+    }
 
     @Override
     public void receivedNewZmq(ZmqMessageWrapper msg) {
@@ -179,7 +183,9 @@ public class ProxyRobots implements IZmqMessageListener {
     }
 
     class CommunicationService implements Runnable {
-        public void run(){
+        public void run() {
+            logback.info("Start of communication service");
+
             while (!Thread.currentThread().isInterrupted() &&
                     !robotsMap.getConnectedRobots().isEmpty()) {
                 sendServerRobotStates();
