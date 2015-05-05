@@ -32,10 +32,9 @@ public class ConfigurationTest {
     public ExpectedException exception = ExpectedException.none();
     private ConfigCli configCli;
 
-    private Configuration buildConfigTest(String fileName, EnumConfigFileType configFileType) {
+    private Configuration buildConfigTest(final String fileName, final EnumConfigFileType configFileType) {
         configCli = new ConfigCli(fileName, configFileType);
-        Configuration configTest = new Configuration(configCli);
-        return configTest;
+        return  new Configuration(configCli);
     }
 
     @Before
@@ -48,15 +47,13 @@ public class ConfigurationTest {
     @Test
     public void testPopulateConfigModel() {
 
-
         assertTrue(buildConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).isPopulated);
-
     }
 
     @Test
     public void testProxyList() {
 
-        ConfigProxy configProxy = null;
+        final ConfigProxy configProxy;
 
         configProxy = buildConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                 .getConfigProxy();
@@ -77,7 +74,7 @@ public class ConfigurationTest {
     @Test
     public void testServerGameElement() {
 
-        ConfigServerGame configServerGame;
+        final ConfigServerGame configServerGame;
         try {
             configServerGame = buildConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                     .getConfigProxy().getConfigServerGame();
@@ -92,7 +89,7 @@ public class ConfigurationTest {
     @Test
     public void testCommonElements() {
 
-        ConfigProxy configProxy = null;
+        final ConfigProxy configProxy;
         configProxy = buildConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                 .getConfigProxy();
 
@@ -104,7 +101,7 @@ public class ConfigurationTest {
     @Test
     public void testRobotsList() {
 
-        ConfigRobots configRobots = null;
+        final ConfigRobots configRobots;
         configRobots = buildConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                 .getConfigRobots();
 
@@ -120,7 +117,7 @@ public class ConfigurationTest {
     @Test
     public void testTankElement() {
 
-        ConfigTank configTank;
+        final ConfigTank configTank;
         try {
             configTank = buildConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel().getConfigRobots()
                     .getConfigTank("BananaOne");
@@ -138,7 +135,7 @@ public class ConfigurationTest {
     @Test
     public void testRobotsToRegister() {
 
-        ConfigRobots configRobots = null;
+        final ConfigRobots configRobots;
         configRobots = buildConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                 .getConfigRobots();
 
