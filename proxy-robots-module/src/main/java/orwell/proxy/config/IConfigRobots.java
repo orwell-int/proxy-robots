@@ -7,5 +7,6 @@ import java.util.ArrayList;
  */
 public interface IConfigRobots {
     ConfigTank getConfigTank(String tempRoutingID) throws Exception;
+
     ArrayList<ConfigTank> getConfigRobotsToRegister();
 }

@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by parapampa on 26/04/15.
@@ -15,14 +14,12 @@ public class RobotsMap implements IRobotsMap {
 
     private ArrayList<IRobot> array = new ArrayList<>();
 
-    public RobotsMap()
-    {
+    public RobotsMap() {
 
     }
 
     @Override
-    public boolean add(IRobot robot)
-    {
+    public boolean add(IRobot robot) {
         if (this.array.contains(robot)) {
             logback.warn("Robot " + robot.getRoutingID() + " is already present in RobotsList");
             return false;
@@ -58,7 +55,7 @@ public class RobotsMap implements IRobotsMap {
     public ArrayList<IRobot> getNotConnectedRobots() {
         ArrayList<IRobot> notConnectedRobotsList = new ArrayList<>();
         for (IRobot robot : this.array) {
-            if(IRobot.EnumConnectionState.NOT_CONNECTED == robot.getConnectionState())
+            if (IRobot.EnumConnectionState.NOT_CONNECTED == robot.getConnectionState())
                 notConnectedRobotsList.add(robot);
         }
 
@@ -69,7 +66,7 @@ public class RobotsMap implements IRobotsMap {
     public ArrayList<IRobot> getConnectedRobots() {
         ArrayList<IRobot> connectedRobotsList = new ArrayList<>();
         for (IRobot robot : this.array) {
-            if(IRobot.EnumConnectionState.CONNECTED == robot.getConnectionState())
+            if (IRobot.EnumConnectionState.CONNECTED == robot.getConnectionState())
                 connectedRobotsList.add(robot);
         }
 
@@ -80,7 +77,7 @@ public class RobotsMap implements IRobotsMap {
     public ArrayList<IRobot> getRegisteredRobots() {
         ArrayList<IRobot> registeredRobotsList = new ArrayList<>();
         for (IRobot robot : this.array) {
-            if(IRobot.EnumRegistrationState.REGISTERED == robot.getRegistrationState())
+            if (IRobot.EnumRegistrationState.REGISTERED == robot.getRegistrationState())
                 registeredRobotsList.add(robot);
         }
 

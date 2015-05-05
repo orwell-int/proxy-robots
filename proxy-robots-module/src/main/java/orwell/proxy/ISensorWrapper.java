@@ -8,6 +8,8 @@ import com.google.protobuf.MessageLiteOrBuilder;
 public interface ISensorWrapper {
 
     public MessageLiteOrBuilder getBuilder();
+
     public String getPreviousValue();
+
     public void setPreviousValue(String previousValue);
 }

@@ -4,10 +4,10 @@ import com.google.protobuf.MessageLiteOrBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.messages.Robot;
-import orwell.messages.Robot.Rfid;
 import orwell.messages.Robot.Colour;
-import orwell.messages.Robot.Status;
+import orwell.messages.Robot.Rfid;
 import orwell.messages.Robot.ServerRobotState;
+import orwell.messages.Robot.Status;
 
 import java.util.HashMap;
 
@@ -117,7 +117,7 @@ public class TankDeltaState {
 
     public void setNewState(EnumSensor enumSensor, String newState) {
         MessageLiteOrBuilder builder;
-        switch (enumSensor){
+        switch (enumSensor) {
             case RFID:
                 setNewRfid(newState);
                 break;
@@ -141,9 +141,8 @@ public class TankDeltaState {
     }
 
     public ServerRobotState getAndClearServerRobotState() {
-        if(serverRobotStateBuilder.getRfidList().isEmpty() &&
-                serverRobotStateBuilder.getColourList().isEmpty())
-        {
+        if (serverRobotStateBuilder.getRfidList().isEmpty() &&
+                serverRobotStateBuilder.getColourList().isEmpty()) {
             return null;
         }
         ServerRobotState srs = serverRobotStateBuilder.build();

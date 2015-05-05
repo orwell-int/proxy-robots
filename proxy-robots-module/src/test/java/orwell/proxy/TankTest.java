@@ -1,9 +1,7 @@
 package orwell.proxy;
 
-import junit.framework.Assert;
 import lejos.mf.common.UnitMessage;
 import lejos.mf.common.UnitMessageType;
-import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.After;
 import org.junit.Before;

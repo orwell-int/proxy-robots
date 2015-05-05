@@ -9,15 +9,16 @@ public class RfidWrapper implements ISensorWrapper {
     private Robot.Rfid.Builder builder = Robot.Rfid.newBuilder();
     private String previousValue = null;
 
-    public RfidWrapper() {}
+    public RfidWrapper() {
+    }
 
     @Override
-    public Robot.Rfid.Builder getBuilder(){
+    public Robot.Rfid.Builder getBuilder() {
         return this.builder;
     }
 
     @Override
-    public String getPreviousValue(){
+    public String getPreviousValue() {
         return this.previousValue;
     }
 

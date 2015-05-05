@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
 import static org.easymock.EasyMock.*;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.powermock.api.easymock.PowerMock.createNiceMock;
@@ -23,12 +22,12 @@ import static org.powermock.api.easymock.PowerMock.replay;
 
 /**
  * Tests for {@link orwell.proxy.ZmqMessageFramework}.
- *
+ * <p/>
  * Created by parapampa on 15/03/15.
  */
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest( { ZMQ.Socket.class } )
+@PrepareForTest({ZMQ.Socket.class})
 public class ZmqMessageFrameworkTest {
 
     final static Logger logback = LoggerFactory.getLogger(ZmqMessageFrameworkTest.class);
@@ -107,17 +106,16 @@ public class ZmqMessageFrameworkTest {
         zmf.setSkipIdenticalMessages(true);
 
         long timeout = 0;
-        while(zmf.nbMessagesSkiped < 1 && timeout < MAX_TIMEOUT_MS)
-        {
+        while (zmf.nbMessagesSkiped < 1 && timeout < MAX_TIMEOUT_MS) {
             try {
                 Thread.sleep(5);
-                timeout+= 5;
+                timeout += 5;
             } catch (InterruptedException e) {
                 logback.error(e.getStackTrace().toString());
             }
         }
 
-        assert(zmf.nbMessagesSkiped > 0);
+        assert (zmf.nbMessagesSkiped > 0);
 
         logback.info("OUT");
     }

@@ -2,20 +2,15 @@ package orwell.proxy;
 
 public class Camera implements ICamera {
 
-	private String ip;
-	private int port;
+    private String ip;
+    private int port;
 
-	public Camera(String ip, int port) {
-		this.ip = ip;
-		this.port = port;
-	}
+    public Camera(String ip, int port) {
+        this.ip = ip;
+        this.port = port;
+    }
 
-    @Override
-	public String getUrl() {
-		return "http://" + ip + ":" + port + "/videofeed";
-	}
-
-    public final static ICamera getMock(){
+    public final static ICamera getMock() {
         class MockCamera implements ICamera {
 
             @Override
@@ -26,5 +21,10 @@ public class Camera implements ICamera {
 
         MockCamera camera = new MockCamera();
         return camera;
+    }
+
+    @Override
+    public String getUrl() {
+        return "http://" + ip + ":" + port + "/videofeed";
     }
 }

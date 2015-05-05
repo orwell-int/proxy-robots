@@ -6,6 +6,8 @@ package orwell.proxy.config;
 public interface IConfigProxy {
 
     ConfigServerGame getConfigServerGame(String name) throws Exception;
+
     int getReceiverLinger();
+
     int getSenderLinger();
 }

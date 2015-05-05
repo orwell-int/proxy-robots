@@ -1,7 +1,6 @@
 package orwell.proxy;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Created by parapampa on 26/04/15.

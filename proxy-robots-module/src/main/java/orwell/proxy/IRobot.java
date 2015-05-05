@@ -4,27 +4,17 @@ import orwell.messages.Controller.Input;
 
 public interface IRobot {
 
-    enum EnumRegistrationState {
-        NOT_REGISTERED,
-        REGISTERED,
-        REGISTRATION_FAILED
-    }
-
-    enum EnumConnectionState {
-        NOT_CONNECTED,
-        CONNECTED,
-        CONNECTION_FAILED
-    }
-
     String getTeamName();
 
     EnumRegistrationState getRegistrationState();
 
     EnumConnectionState getConnectionState();
 
+    String getRoutingID();
+
     void setRoutingID(String routingID);
 
-    String getRoutingID();
+    String getImage();
 
     /*
      * Image is a picture of the robot itself to be sent to the
@@ -32,13 +22,10 @@ public interface IRobot {
      */
     void setImage(String image);
 
-    String getImage();
-
     /*
      * This will clear the current ServerRobotState
      */
     byte[] getAndClearZmqServerRobotStateBytes();
-
 
     void setRegistered(byte[] registeredMessage);
 
@@ -46,9 +33,9 @@ public interface IRobot {
 
     byte[] getRegisterBytes();
 
-    void setControllerInput(byte[] inputMessage);
-
     Input getControllerInput();
+
+    void setControllerInput(byte[] inputMessage);
 
     EnumConnectionState connectToDevice();
 
@@ -61,4 +48,16 @@ public interface IRobot {
     String serverGameRegisteredToString();
 
     void buildRegister();
+
+    enum EnumRegistrationState {
+        NOT_REGISTERED,
+        REGISTERED,
+        REGISTRATION_FAILED
+    }
+
+    enum EnumConnectionState {
+        NOT_CONNECTED,
+        CONNECTED,
+        CONNECTION_FAILED
+    }
 }

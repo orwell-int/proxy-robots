@@ -7,6 +7,7 @@ public interface IMessageFramework {
 
     /**
      * Decide whether to handle two identical successive messages or to ignore the second
+     *
      * @param skipIdenticalMessages : if true, the second identical message (in a row) will be ignored
      */
     void setSkipIdenticalMessages(boolean skipIdenticalMessages);

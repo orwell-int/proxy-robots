@@ -1,7 +1,5 @@
 package orwell.proxy;
 
-import static org.junit.Assert.assertEquals;
-
 import org.easymock.TestSubject;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.messages.Robot.ServerRobotState;
 import orwell.messages.Robot.Status;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by parapampa on 01/02/15.

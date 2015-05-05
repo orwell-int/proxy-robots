@@ -7,8 +7,6 @@ import orwell.messages.Robot;
 import orwell.messages.ServerGame;
 import orwell.proxy.IRobot;
 
-import java.util.Arrays;
-
 /**
  * Created by parapampa on 03/05/15.
  */
@@ -44,13 +42,18 @@ public class MockedTank implements IRobot {
     }
 
     @Override
+    public String getRoutingID() {
+        return routingId;
+    }
+
+    @Override
     public void setRoutingID(String routingId) {
         this.routingId = routingId;
     }
 
     @Override
-    public String getRoutingID() {
-        return routingId;
+    public String getImage() {
+        return null;
     }
 
     @Override
@@ -59,14 +62,8 @@ public class MockedTank implements IRobot {
     }
 
     @Override
-    public String getImage() {
-        return null;
-    }
-
-
-    @Override
     public byte[] getAndClearZmqServerRobotStateBytes() {
-        if(null == this.serverRobotStateBytes) {
+        if (null == this.serverRobotStateBytes) {
             Robot.ServerRobotState.Builder serverRobotStateBuilder = Robot.ServerRobotState.newBuilder();
             Robot.Rfid.Builder rfidBuilder = Robot.Rfid.newBuilder();
             rfidBuilder.setRfid("1234");
@@ -99,11 +96,6 @@ public class MockedTank implements IRobot {
         return registeredBuilder.build().toByteArray();
     }
 
-    @Override
-    public void setControllerInput(byte[] inputMessage) {
-        this.inputBytes = inputMessage;
-    }
-
     public byte[] getControllerInputBytes() {
         return this.inputBytes;
     }
@@ -111,6 +103,11 @@ public class MockedTank implements IRobot {
     @Override
     public Controller.Input getControllerInput() {
         return null;
+    }
+
+    @Override
+    public void setControllerInput(byte[] inputMessage) {
+        this.inputBytes = inputMessage;
     }
 
     @Override

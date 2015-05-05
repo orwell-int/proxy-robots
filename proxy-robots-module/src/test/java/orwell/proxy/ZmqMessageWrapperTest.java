@@ -18,7 +18,7 @@ import static org.junit.Assert.assertNotNull;
 
 /**
  * Tests for {@link orwell.proxy.ZmqMessageWrapper}.
- *
+ * <p/>
  * Created by parapampa on 15/03/15.
  */
 public class ZmqMessageWrapperTest {
@@ -63,7 +63,7 @@ public class ZmqMessageWrapperTest {
         }
 
         // Concatenate the two byte arrays
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             outputStream.write(zmqMessageHeader.getBytes());
             outputStream.write(specificMessage);
@@ -96,8 +96,7 @@ public class ZmqMessageWrapperTest {
         return inputBuilder.build().toByteArray();
     }
 
-    public byte[] getBytesServerRobotState()
-    {
+    public byte[] getBytesServerRobotState() {
         Robot.ServerRobotState.Builder serverRobotStateBuilder = Robot.ServerRobotState.newBuilder();
         Robot.Rfid.Builder rfidBuilder = Robot.Rfid.newBuilder();
         rfidBuilder.setRfid("1234");
@@ -152,6 +151,6 @@ public class ZmqMessageWrapperTest {
     }
 
     @After
-    public void tearDown(){
+    public void tearDown() {
     }
 }

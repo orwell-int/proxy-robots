@@ -9,28 +9,29 @@ public class ColourWrapper implements ISensorWrapper {
     private Robot.Colour.Builder builder = Robot.Colour.newBuilder();
     private int previousValue = -1;
 
-    public ColourWrapper() {}
+    public ColourWrapper() {
+    }
 
     @Override
-    public Robot.Colour.Builder getBuilder(){
+    public Robot.Colour.Builder getBuilder() {
         return this.builder;
     }
 
     @Override
-    public String getPreviousValue(){
+    public String getPreviousValue() {
         return Integer.toString(this.previousValue);
     }
 
-    public int getPreviousValueInteger(){
+    public void setPreviousValue(int previousValue) {
+        this.previousValue = previousValue;
+    }
+
+    public int getPreviousValueInteger() {
         return this.previousValue;
     }
 
     @Override
     public void setPreviousValue(String previousValue) {
         this.previousValue = Integer.parseInt(previousValue);
-    }
-
-    public void setPreviousValue(int previousValue) {
-        this.previousValue = previousValue;
     }
 }

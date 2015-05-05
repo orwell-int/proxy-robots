@@ -33,18 +33,15 @@ public class ConfigFactory {
         }
     }
 
-    public IConfigProxy getConfigProxy()
-    {
+    public IConfigProxy getConfigProxy() {
         return configProxy;
     }
 
-    public IConfigRobots getConfigRobots()
-    {
+    public IConfigRobots getConfigRobots() {
         return configRobots;
     }
 
-    public IConfigServerGame getConfigServerGame()
-    {
+    public IConfigServerGame getConfigServerGame() {
         return configServerGame;
     }
 }

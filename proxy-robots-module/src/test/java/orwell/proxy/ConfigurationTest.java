@@ -1,137 +1,126 @@
 package orwell.proxy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.FileNotFoundException;
-
-import javax.xml.bind.JAXBException;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import orwell.proxy.config.*;
 
-import orwell.proxy.config.ConfigModel;
-import orwell.proxy.config.ConfigProxy;
-import orwell.proxy.config.ConfigRobots;
-import orwell.proxy.config.ConfigServerGame;
-import orwell.proxy.config.ConfigTank;
-import orwell.proxy.config.Configuration;
+import javax.xml.bind.JAXBException;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests for {@link ConfigModel}.
- * 
+ *
  * @author miludmann@gmail.com (Michael Ludmann)
  */
 
 @RunWith(JUnit4.class)
 public class ConfigurationTest {
 
-	private static final String CONFIGURATION_FILE_TEST = "/configurationTest.xml";
+    private static final String CONFIGURATION_FILE_TEST = "/configurationTest.xml";
 
-	private Configuration buildConfigTest() {
-		Configuration configTest = new Configuration(CONFIGURATION_FILE_TEST);
-		try {
-			configTest.populate();
-		} catch (JAXBException e) {
-			fail(e.toString());
-		}
-		return configTest;
-	}
-	
-	@Test
-	public void testConfigFilePresent() {
-		assertNotNull("Test file missing", getClass().getResource(CONFIGURATION_FILE_TEST));
-	}
+    private Configuration buildConfigTest() {
+        Configuration configTest = new Configuration(CONFIGURATION_FILE_TEST);
+        try {
+            configTest.populate();
+        } catch (JAXBException e) {
+            fail(e.toString());
+        }
+        return configTest;
+    }
 
-	@Test
-	public void testPopulateConfigModel() {
+    @Test
+    public void testConfigFilePresent() {
+        assertNotNull("Test file missing", getClass().getResource(CONFIGURATION_FILE_TEST));
+    }
 
-		assertTrue(buildConfigTest().isPopulated);
-	}
+    @Test
+    public void testPopulateConfigModel() {
 
-	@Test
-	public void testProxyList() {
+        assertTrue(buildConfigTest().isPopulated);
+    }
 
-		ConfigProxy configProxy = buildConfigTest().getConfigModel()
-				.getConfigProxy();
+    @Test
+    public void testProxyList() {
 
-		assertEquals(3, configProxy.getConfigServerGames().size());
-		try {
-			assertNotNull(configProxy.getConfigServerGame("platypus"));
-		} catch (Exception e) {
-			fail(e.toString());
-		}
+        ConfigProxy configProxy = buildConfigTest().getConfigModel()
+                .getConfigProxy();
 
-		assertEquals("localhost", configProxy.getConfigServerGames().get(2)
-				.getName());
-	}
+        assertEquals(3, configProxy.getConfigServerGames().size());
+        try {
+            assertNotNull(configProxy.getConfigServerGame("platypus"));
+        } catch (Exception e) {
+            fail(e.toString());
+        }
 
-	@Test
-	public void testServerGameElement() {
+        assertEquals("localhost", configProxy.getConfigServerGames().get(2)
+                .getName());
+    }
 
-		ConfigServerGame configServerGame;
-		try {
-			configServerGame = buildConfigTest().getConfigModel()
-					.getConfigProxy().getConfigServerGame("platypus");
-			assertEquals("192.168.1.46", configServerGame.getIp());
-			assertEquals(9000, configServerGame.getPushPort());
-			assertEquals(9001, configServerGame.getSubPort());
-		} catch (Exception e) {
-			fail(e.toString());
-		}
-	}
+    @Test
+    public void testServerGameElement() {
 
-	@Test
-	public void testCommonElements() {
+        ConfigServerGame configServerGame;
+        try {
+            configServerGame = buildConfigTest().getConfigModel()
+                    .getConfigProxy().getConfigServerGame("platypus");
+            assertEquals("192.168.1.46", configServerGame.getIp());
+            assertEquals(9000, configServerGame.getPushPort());
+            assertEquals(9001, configServerGame.getSubPort());
+        } catch (Exception e) {
+            fail(e.toString());
+        }
+    }
 
-		ConfigProxy configProxy = buildConfigTest().getConfigModel()
-				.getConfigProxy();
+    @Test
+    public void testCommonElements() {
 
-		assertEquals(1000, configProxy.getSenderLinger());
-		assertEquals(1000, configProxy.getReceiverLinger());
-	}
+        ConfigProxy configProxy = buildConfigTest().getConfigModel()
+                .getConfigProxy();
 
-	@Test
-	public void testRobotsList() {
+        assertEquals(1000, configProxy.getSenderLinger());
+        assertEquals(1000, configProxy.getReceiverLinger());
+    }
 
-		ConfigRobots configRobots = buildConfigTest().getConfigModel()
-				.getConfigRobots();
+    @Test
+    public void testRobotsList() {
 
-		assertEquals(2, configRobots.getConfigTanks().size());
-		try {
-			assertNotNull(configRobots.getConfigTank("BananaOne"));
-		} catch (Exception e) {
-			fail(e.toString());
-		}
-	}
+        ConfigRobots configRobots = buildConfigTest().getConfigModel()
+                .getConfigRobots();
 
-	@Test
-	public void testTankElement() {
+        assertEquals(2, configRobots.getConfigTanks().size());
+        try {
+            assertNotNull(configRobots.getConfigTank("BananaOne"));
+        } catch (Exception e) {
+            fail(e.toString());
+        }
+    }
 
-		ConfigTank configTank;
-		try {
-			configTank = buildConfigTest().getConfigModel().getConfigRobots()
-					.getConfigTank("BananaOne");
-			assertEquals("001653119482", configTank.getBluetoothID());
-			assertEquals("Daneel", configTank.getBluetoothName());
-			assertNotNull(configTank.getConfigCamera());
-			assertEquals("192.168.1.50", configTank.getConfigCamera().getIp());
-			assertEquals(9100, configTank.getConfigCamera().getPort());
-			assertEquals("Yellow hull -- TO BE BETTER CONFIGURED", configTank.getImage());
-		} catch (Exception e) {
-			fail(e.toString());
-		}
-	}
+    @Test
+    public void testTankElement() {
 
-	@Test
-	public void testRobotsToRegister() {
+        ConfigTank configTank;
+        try {
+            configTank = buildConfigTest().getConfigModel().getConfigRobots()
+                    .getConfigTank("BananaOne");
+            assertEquals("001653119482", configTank.getBluetoothID());
+            assertEquals("Daneel", configTank.getBluetoothName());
+            assertNotNull(configTank.getConfigCamera());
+            assertEquals("192.168.1.50", configTank.getConfigCamera().getIp());
+            assertEquals(9100, configTank.getConfigCamera().getPort());
+            assertEquals("Yellow hull -- TO BE BETTER CONFIGURED", configTank.getImage());
+        } catch (Exception e) {
+            fail(e.toString());
+        }
+    }
 
-		ConfigRobots configRobots = buildConfigTest().getConfigModel()
-				.getConfigRobots();
+    @Test
+    public void testRobotsToRegister() {
 
-		assertEquals(1, configRobots.getConfigRobotsToRegister().size());
-	}
+        ConfigRobots configRobots = buildConfigTest().getConfigModel()
+                .getConfigRobots();
+
+        assertEquals(1, configRobots.getConfigRobotsToRegister().size());
+    }
 }

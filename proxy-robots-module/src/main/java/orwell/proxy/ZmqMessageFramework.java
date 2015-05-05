@@ -17,9 +17,8 @@ public class ZmqMessageFramework implements IMessageFramework {
 
     protected ArrayList<IZmqMessageListener> zmqMessageListeners;
     protected boolean connected = false;
-    private Object rXguard;
     protected int nbMessagesSkiped = 0;
-
+    private Object rXguard;
     private ZMQ.Context context;
     private ZMQ.Socket sender;
     private ZMQ.Socket receiver;
@@ -81,8 +80,8 @@ public class ZmqMessageFramework implements IMessageFramework {
 
     @Override
     public boolean sendZmqMessage(EnumMessageType msgType,
-                               String routingID,
-                               byte[] msgBytes) {
+                                  String routingID,
+                                  byte[] msgBytes) {
         String zmqMessageHeader = routingID + " ";
         switch (msgType) {
             case REGISTER:
@@ -94,7 +93,7 @@ public class ZmqMessageFramework implements IMessageFramework {
             default:
 
         }
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             outputStream.write(zmqMessageHeader.getBytes());
             outputStream.write(msgBytes);
@@ -108,6 +107,19 @@ public class ZmqMessageFramework implements IMessageFramework {
     @Override
     public void addZmqMessageListener(IZmqMessageListener zmqMsgListener) {
         zmqMessageListeners.add(zmqMsgListener);
+    }
+
+    private void receivedNewZmqMessage(ZmqMessageWrapper zmqMessage) {
+        logback.debug("Received New ZMQ Message : " + zmqMessage.getMessageType());
+        for (int j = 0; j < zmqMessageListeners.size(); j++) {
+            zmqMessageListeners.get(j).receivedNewZmq(zmqMessage);
+        }
+    }
+
+    @Override
+    public void close() {
+        logback.info("Stopping communication");
+        connected = false;
     }
 
     private class ZmqReader extends Thread {
@@ -146,17 +158,5 @@ public class ZmqMessageFramework implements IMessageFramework {
             Thread.yield();
             logback.info("Communication stopped");
         }
-    }
-
-    private void receivedNewZmqMessage(ZmqMessageWrapper zmqMessage) {
-        logback.debug("Received New ZMQ Message : " + zmqMessage.getMessageType());
-        for (int j = 0; j < zmqMessageListeners.size(); j++) {
-            zmqMessageListeners.get(j).receivedNewZmq(zmqMessage);
-        }
-    }
-    @Override
-    public void close() {
-        logback.info("Stopping communication");
-        connected = false;
     }
 }
