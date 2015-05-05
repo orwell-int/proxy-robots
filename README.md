@@ -59,6 +59,11 @@ To update the coveralls status, export your repo token in the following environm
 mvn clean cobertura:cobertura coveralls:report
 ```
 
+Run the jar created by the install to start the application
+```
+java -jar proxy-robots-module/target/proxy-robots-module-0.1.0-jar-with-dependencies.jar
+```
+
 Running it with ant (soon to be deprecated)
 -------------------------------------------
 
