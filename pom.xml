@@ -1,11 +1,13 @@
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>orwell</groupId>
 	<artifactId>proxy-robots</artifactId>
-	<version>0.1</version>
+	<version>0.1.0</version>
+	<packaging>pom</packaging>
 	<name>Proxy robots</name>
 	<url>https://github.com/orwell-int/proxy-robots</url>
 	<description>Handles the communication between the server and the (real) robots. </description>
@@ -22,89 +24,10 @@
 		<system>travis-ci</system>
 		<url>https://travis-ci.org/orwell-int/proxy-robots</url>
 	</ciManagement>
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.protobuf</groupId>
-			<artifactId>protobuf-java</artifactId>
-			<version>2.5.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-core</artifactId>
-			<version>1.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-			<version>3.2</version>
-		</dependency>
-		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib</artifactId>
-			<version>3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.objenesis</groupId>
-			<artifactId>objenesis</artifactId>
-			<version>2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.asm</groupId>
-			<artifactId>asm</artifactId>
-			<version>5.0.3</version>
-		</dependency>
-		<dependency>
-			<groupId>org.javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<version>3.18.2-GA</version>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-easymock-release-full</artifactId>
-			<version>1.5.6</version>
-			<classifier>full</classifier>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-core</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.7</version>
-		</dependency>
-		<dependency>
-			<groupId>org.zeromq</groupId>
-			<artifactId>jeromq</artifactId>
-			<version>0.3.4</version>
-		</dependency>
-		<dependency>
-			<groupId>lejos.pc</groupId>
-			<artifactId>pccomm</artifactId>
-			<version>0.9.1beta-3</version>
-		</dependency>
-		<dependency>
-			<groupId>lejos.pc</groupId>
-			<artifactId>pctools</artifactId>
-			<version>0.9.1beta-3</version>
-		</dependency>
-		<dependency>
-			<groupId>lejos.nxt</groupId>
-			<artifactId>classes</artifactId>
-			<version>0.9.1beta-3</version>
-		</dependency>
-	</dependencies>
+	<modules>
+		<module>lejos-mf-pc</module>
+		<module>proxy-robots-module</module>
+	</modules>
 	<build>
 		<pluginManagement>
 			<plugins>
@@ -113,98 +36,15 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.2</version>
 					<configuration>
-						<source>1.7</source>
-						<target>1.7</target>
+						<source>1.5</source>
+						<target>1.5</target>
 					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-install-plugin</artifactId>
 					<version>2.5.2</version>
-					<executions>
-						<execution>
-							<id>install-jar-lib-pccomm</id>
-							<goals>
-								<goal>install-file</goal>
-							</goals>
-							<phase>validate</phase>
-							<configuration>
-								<groupId>lejos.pc</groupId>
-								<artifactId>pccomm</artifactId>
-								<version>0.9.1beta-3</version>
-								<packaging>jar</packaging>
-								<file>${NXJ_HOME}/lib/pc/pccomm.jar</file>
-								<generatePom>true</generatePom>
-							</configuration>
-						</execution>
-						<execution>
-							<id>install-jar-lib-pctools</id>
-							<goals>
-								<goal>install-file</goal>
-							</goals>
-							<phase>validate</phase>
-							<configuration>
-								<groupId>lejos.pc</groupId>
-								<artifactId>pctools</artifactId>
-								<version>0.9.1beta-3</version>
-								<packaging>jar</packaging>
-								<file>${NXJ_HOME}/lib/pc/pctools.jar</file>
-								<generatePom>true</generatePom>
-							</configuration>
-						</execution>
-						<execution>
-							<id>install-jar-lib-classes</id>
-							<goals>
-								<goal>install-file</goal>
-							</goals>
-							<phase>validate</phase>
-							<configuration>
-								<groupId>lejos.nxt</groupId>
-								<artifactId>classes</artifactId>
-								<version>0.9.1beta-3</version>
-								<packaging>jar</packaging>
-								<file>${NXJ_HOME}/lib/nxt/classes.jar</file>
-								<generatePom>true</generatePom>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.apache.maven.plugins
-										</groupId>
-										<artifactId>
-											maven-install-plugin
-										</artifactId>
-										<versionRange>
-											[2.5.2,)
-										</versionRange>
-										<goals>
-											<goal>install-file</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.17</version>
+
 				</plugin>
 				<plugin>
 					<groupId>org.eluder.coveralls</groupId>
@@ -224,6 +64,11 @@
 						<!-- aggregated reports for multi-module projects -->
 						<aggregate>true</aggregate>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.5</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
