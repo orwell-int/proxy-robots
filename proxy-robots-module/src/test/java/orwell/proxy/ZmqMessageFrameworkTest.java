@@ -21,7 +21,7 @@ import static org.powermock.api.easymock.PowerMock.expectLastCall;
 import static org.powermock.api.easymock.PowerMock.replay;
 
 /**
- * Tests for {@link orwell.proxy.ZmqMessageFramework}.
+ * Tests for {@link ZmqMessageFramework}.
  * <p/>
  * Created by parapampa on 15/03/15.
  */

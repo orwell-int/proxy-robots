@@ -12,7 +12,7 @@ public class RobotsMap implements IRobotsMap {
 
     final static Logger logback = LoggerFactory.getLogger(ZmqMessageWrapper.class);
 
-    private ArrayList<IRobot> array = new ArrayList<>();
+    private final ArrayList<IRobot> array = new ArrayList<>();
 
     public RobotsMap() {
 

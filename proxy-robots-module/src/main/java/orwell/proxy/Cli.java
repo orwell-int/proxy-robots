@@ -1,6 +1,7 @@
 package orwell.proxy;
 
 import org.apache.commons.cli.*;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.config.ConfigCli;
 import orwell.proxy.config.EnumConfigFileType;
@@ -12,9 +13,9 @@ import java.io.File;
  */
 public class Cli {
     final static protected String DEFAULT_CONFIG_FILEPATH = "/configuration.xml";
-    final static org.slf4j.Logger logback = LoggerFactory.getLogger(Cli.class);
+    final static Logger logback = LoggerFactory.getLogger(Cli.class);
     private String[] args = null;
-    private Options options = new Options();
+    private final Options options = new Options();
 
     public Cli(String[] args) {
         this.args = args;

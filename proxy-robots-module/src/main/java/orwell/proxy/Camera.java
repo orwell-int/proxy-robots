@@ -2,8 +2,8 @@ package orwell.proxy;
 
 public class Camera implements ICamera {
 
-    private String ip;
-    private int port;
+    private final String ip;
+    private final int port;
 
     public Camera(String ip, int port) {
         this.ip = ip;

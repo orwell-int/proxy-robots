@@ -18,10 +18,10 @@ public class ZmqMessageFramework implements IMessageFramework {
     protected ArrayList<IZmqMessageListener> zmqMessageListeners;
     protected boolean connected = false;
     protected int nbMessagesSkiped = 0;
-    private Object rXguard;
-    private ZMQ.Context context;
-    private ZMQ.Socket sender;
-    private ZMQ.Socket receiver;
+    private final Object rXguard;
+    private final ZMQ.Context context;
+    private final ZMQ.Socket sender;
+    private final ZMQ.Socket receiver;
     private ZmqReader reader;
 
     private boolean isSkipIdenticalMessages = false;
@@ -98,7 +98,7 @@ public class ZmqMessageFramework implements IMessageFramework {
             outputStream.write(zmqMessageHeader.getBytes());
             outputStream.write(msgBytes);
         } catch (IOException e) {
-            logback.error("SendZmqMessage " + e.toString());
+            logback.error("SendZmqMessage " + e);
         }
         byte[] zmqMessage = outputStream.toByteArray();
         return sender.send(zmqMessage, 0);

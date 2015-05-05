@@ -6,11 +6,11 @@ import org.slf4j.LoggerFactory;
 public class ZmqMessageWrapper {
     final static Logger logback = LoggerFactory.getLogger(ZmqMessageWrapper.class);
     private static final byte SPACE_CODE = 32; // ascii code of SPACE character
-    private String routingId;
-    private String typeString;
-    private EnumMessageType type;
-    private byte[] message;
-    private String zmqMessageString;
+    private final String routingId;
+    private final String typeString;
+    private final EnumMessageType type;
+    private final byte[] message;
+    private final String zmqMessageString;
 
     public ZmqMessageWrapper(byte[] raw_zmq_message) {
         zmqMessageString = new String(raw_zmq_message);

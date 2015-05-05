@@ -7,8 +7,8 @@ import orwell.proxy.config.ConfigFactory;
  * Created by parapampa on 03/05/15.
  */
 public class ProxyRobotsFactory {
-    private ConfigFactory configFactory;
-    private ZmqMessageFramework zmqMessageFramework;
+    private final ConfigFactory configFactory;
+    private final ZmqMessageFramework zmqMessageFramework;
 
     public ProxyRobotsFactory(ConfigCli configPathType, String serverName) {
         configFactory = new ConfigFactory(configPathType);

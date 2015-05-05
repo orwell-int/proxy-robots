@@ -42,7 +42,7 @@ public class ProxyRobotsTest {
     @Mock
     //	private Tank myTank;
     private MockedTank mockedTank;
-    private ZmqMessageFramework mockedZmqMessageFramework = createNiceMock(ZmqMessageFramework.class);
+    private final ZmqMessageFramework mockedZmqMessageFramework = createNiceMock(ZmqMessageFramework.class);
 
     @Before
     public void setUp() throws Exception { //expectPrivate might throw exceptions
@@ -78,7 +78,7 @@ public class ProxyRobotsTest {
                 logback.error("Case : Message type " + messageType + " not handled");
         }
 
-        raw_zmq_message = orwell.proxy.Utils.Concatenate(zmqMessageHeader.getBytes(),
+        raw_zmq_message = Utils.Concatenate(zmqMessageHeader.getBytes(),
                 specificMessage);
 
         return raw_zmq_message;

@@ -18,7 +18,7 @@ import java.util.HashMap;
 public class TankDeltaState {
     final static Logger logback = LoggerFactory.getLogger(TankDeltaState.class);
 
-    private Robot.ServerRobotState.Builder serverRobotStateBuilder = Robot.ServerRobotState.newBuilder();
+    private final Robot.ServerRobotState.Builder serverRobotStateBuilder = Robot.ServerRobotState.newBuilder();
     private HashMap<EnumSensor, ISensorWrapper> previousStateMap;
 
     public TankDeltaState() {

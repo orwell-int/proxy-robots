@@ -6,7 +6,7 @@ import orwell.messages.Robot;
  * Created by parapampa on 11/04/15.
  */
 public class ColourWrapper implements ISensorWrapper {
-    private Robot.Colour.Builder builder = Robot.Colour.newBuilder();
+    private final Robot.Colour.Builder builder = Robot.Colour.newBuilder();
     private int previousValue = -1;
 
     public ColourWrapper() {

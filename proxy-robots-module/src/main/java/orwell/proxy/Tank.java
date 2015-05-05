@@ -22,13 +22,13 @@ public class Tank implements IRobot, MessageListenerInterface {
     private String routingID = UUID.randomUUID().toString();
     private String bluetoothName;
     private String bluetoothID;
-    private Register.Builder registerBuilder = Register
+    private final Register.Builder registerBuilder = Register
             .newBuilder();
     private Input currentControllerInput;
     private Registered serverGameRegistered;
-    private NXTInfo nxtInfo;
-    private MessageFramework mfTank;
-    private ICamera camera;
+    private final NXTInfo nxtInfo;
+    private final MessageFramework mfTank;
+    private final ICamera camera;
     private Register register;
     private String image;
 
@@ -36,7 +36,7 @@ public class Tank implements IRobot, MessageListenerInterface {
     private EnumConnectionState connectionState = EnumConnectionState.NOT_CONNECTED;
     private String teamName;
 
-    private TankDeltaState tankDeltaState = new TankDeltaState();
+    private final TankDeltaState tankDeltaState = new TankDeltaState();
 
     public Tank(String bluetoothName, String bluetoothID, ICamera camera,
                 MessageFramework mf, String image) {
@@ -154,7 +154,7 @@ public class Tank implements IRobot, MessageListenerInterface {
     @Override
     public byte[] getZmqRegister() {
         String zmqMessageHeader = getRoutingID() + " " + "Register" + " ";
-        byte[] zmqRegister = orwell.proxy.Utils.Concatenate(zmqMessageHeader.getBytes(),
+        byte[] zmqRegister = Utils.Concatenate(zmqMessageHeader.getBytes(),
                 getRegister().toByteArray());
         logback.info("zmqMessageHeader: " + zmqMessageHeader);
         return zmqRegister;

@@ -17,14 +17,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Tests for {@link orwell.proxy.ZmqMessageWrapper}.
+ * Tests for {@link ZmqMessageWrapper}.
  * <p/>
  * Created by parapampa on 15/03/15.
  */
 public class ZmqMessageWrapperTest {
 
     final static Logger logback = LoggerFactory.getLogger(ZmqMessageWrapperTest.class);
-    private String routingId = "NicCage";
+    private final String routingId = "NicCage";
 
     @TestSubject
     private ZmqMessageWrapper zmw;
