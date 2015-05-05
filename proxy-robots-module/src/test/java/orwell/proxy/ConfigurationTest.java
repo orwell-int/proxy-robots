@@ -19,9 +19,10 @@ import static org.junit.Assert.*;
 public class ConfigurationTest {
 
     private static final String CONFIGURATION_FILE_TEST = "/configurationTest.xml";
+    private final ConfigCli configCli = new ConfigCli(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE);
 
     private Configuration buildConfigTest() {
-        Configuration configTest = new Configuration(CONFIGURATION_FILE_TEST);
+        Configuration configTest = new Configuration(configCli);
         try {
             configTest.populate();
         } catch (JAXBException e) {

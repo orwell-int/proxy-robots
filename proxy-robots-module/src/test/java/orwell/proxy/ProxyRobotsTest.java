@@ -11,7 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.messages.Controller;
 import orwell.messages.ServerGame;
+import orwell.proxy.config.ConfigCli;
 import orwell.proxy.config.ConfigFactory;
+import orwell.proxy.config.EnumConfigFileType;
 import orwell.proxy.mock.MockedTank;
 
 import static org.easymock.EasyMock.*;
@@ -30,6 +32,7 @@ public class ProxyRobotsTest {
 
     final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class);
     final static long MAX_TIMEOUT_MS = 500;
+    private final ConfigCli configCli = new ConfigCli("/configurationTest.xml", EnumConfigFileType.RESOURCE);
     private ConfigFactory configFactory;
     private RobotsMap robotsMap;
 
@@ -48,7 +51,7 @@ public class ProxyRobotsTest {
         // Build Mock of Tank
         mockedTank = new MockedTank();
 
-        configFactory = new ConfigFactory("/configurationTest.xml", "localhost");
+        configFactory = new ConfigFactory(configCli, "localhost");
 
         // Create the map with one mock tank
         robotsMap = new RobotsMap();

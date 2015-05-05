@@ -1,5 +1,6 @@
 package orwell.proxy;
 
+import orwell.proxy.config.ConfigCli;
 import orwell.proxy.config.ConfigFactory;
 
 /**
@@ -9,8 +10,8 @@ public class ProxyRobotsFactory {
     private ConfigFactory configFactory;
     private ZmqMessageFramework zmqMessageFramework;
 
-    public ProxyRobotsFactory(String confFileAddress, String serverName) {
-        configFactory = new ConfigFactory(confFileAddress, serverName);
+    public ProxyRobotsFactory(ConfigCli configPathType, String serverName) {
+        configFactory = new ConfigFactory(configPathType, serverName);
         zmqMessageFramework = new ZmqMessageFramework(configFactory.getConfigProxy().getSenderLinger(),
                 configFactory.getConfigProxy().getReceiverLinger());
     }

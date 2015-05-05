@@ -15,8 +15,8 @@ public class ConfigFactory {
     private IConfigRobots configRobots;
     private IConfigServerGame configServerGame;
 
-    public ConfigFactory(String configFileAddress, String serverGame) {
-        Configuration configuration = new Configuration(configFileAddress);
+    public ConfigFactory(ConfigCli configCli, String serverGame) {
+        Configuration configuration = new Configuration(configCli);
         try {
             // TODO Include populate into default constructor
             configuration.populate();
