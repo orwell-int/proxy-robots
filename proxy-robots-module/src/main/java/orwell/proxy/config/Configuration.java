@@ -19,8 +19,6 @@ public class Configuration implements IConfiguration {
     public Configuration(ConfigCli configCli) {
         this.filePath = configCli.getFilePath();
         this.enumConfigFileType = configCli.getEnumConfigFileType();
-
-        populate();
     }
 
     @Override
