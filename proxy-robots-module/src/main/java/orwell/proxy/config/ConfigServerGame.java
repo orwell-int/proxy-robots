@@ -11,6 +11,7 @@ public class ConfigServerGame implements IConfigServerGame {
     private String ip;
     private int pushPort;
     private int subPort;
+    private int priority;
 
     @Override
     public String getName() {
@@ -20,6 +21,18 @@ public class ConfigServerGame implements IConfigServerGame {
     @XmlAttribute
     public void setName(String name) {
         this.name = name;
+    }
+
+    /*
+     * @returns the priority of the server in the conf
+     */
+    public int getPriority() {
+        return priority;
+    }
+
+    @XmlAttribute
+    public void setPriority(int priority) {
+        this.priority = priority;
     }
 
     @Override

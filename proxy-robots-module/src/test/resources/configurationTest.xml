@@ -3,17 +3,17 @@
     <proxy>
         <senderLinger>1000</senderLinger>
         <receiverLinger>1000</receiverLinger>
-        <server-game name='irondamien'>
+        <server-game name='irondamien' priority="0">
             <ip>192.168.1.37</ip>
             <pushPort>9000</pushPort>
             <subPort>9001</subPort>
         </server-game>
-        <server-game name='platypus'>
+        <server-game name='platypus' priority="9">
             <ip>192.168.1.46</ip>
             <pushPort>9000</pushPort>
             <subPort>9001</subPort>
         </server-game>
-        <server-game name='localhost'>
+        <server-game name='localhost' priority="1">
             <ip>localhost</ip>
             <pushPort>9000</pushPort>
             <subPort>9001</subPort>

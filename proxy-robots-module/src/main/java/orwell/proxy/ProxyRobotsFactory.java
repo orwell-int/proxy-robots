@@ -11,7 +11,7 @@ public class ProxyRobotsFactory {
     private ZmqMessageFramework zmqMessageFramework;
 
     public ProxyRobotsFactory(ConfigCli configPathType, String serverName) {
-        configFactory = new ConfigFactory(configPathType, serverName);
+        configFactory = new ConfigFactory(configPathType);
         zmqMessageFramework = new ZmqMessageFramework(configFactory.getConfigProxy().getSenderLinger(),
                 configFactory.getConfigProxy().getReceiverLinger());
     }

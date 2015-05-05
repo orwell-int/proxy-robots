@@ -15,19 +15,16 @@ public class ConfigFactory {
     private IConfigRobots configRobots;
     private IConfigServerGame configServerGame;
 
-    public ConfigFactory(ConfigCli configCli, String serverGame) {
+    public ConfigFactory(ConfigCli configCli) {
         Configuration configuration = new Configuration(configCli);
-        try {
-            // TODO Include populate into default constructor
-            configuration.populate();
-        } catch (JAXBException e1) {
-            logback.error(e1.toString());
-        }
+        // TODO Include populate into default constructor
+        configuration.populate();
+
         ConfigModel configModel = configuration.getConfigModel();
         configProxy = configModel.getConfigProxy();
         configRobots = configuration.getConfigModel().getConfigRobots();
         try {
-            configServerGame = configProxy.getConfigServerGame(serverGame);
+            configServerGame = configProxy.getConfigServerGame();
         } catch (Exception e) {
             e.printStackTrace();
         }

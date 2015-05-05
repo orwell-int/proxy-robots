@@ -19,6 +19,8 @@ public class Configuration implements IConfiguration {
     public Configuration(ConfigCli configCli) {
         this.filePath = configCli.getFilePath();
         this.enumConfigFileType = configCli.getEnumConfigFileType();
+
+        populate();
     }
 
     @Override
@@ -27,29 +29,34 @@ public class Configuration implements IConfiguration {
     }
 
     @Override
-    public void populate() throws JAXBException {
+    public boolean populate() {
         JAXBContext jc;
         try {
             jc = JAXBContext.newInstance(ConfigModel.class);
             Unmarshaller unmarshaller = jc.createUnmarshaller();
 
-            if (EnumConfigFileType.RESOURCE == enumConfigFileType) {
-                InputStream xml = getClass().getResourceAsStream(filePath);
-                this.configuration = (ConfigModel) unmarshaller.unmarshal(xml);
-                logback.info("Configuration loaded from resource file");
-            } else if (EnumConfigFileType.FILE == enumConfigFileType) {
-                File file = new File(filePath);
-                this.configuration = (ConfigModel) unmarshaller.unmarshal(file);
-                logback.info("Configuration loaded from external file");
-            } else {
-                logback.error("Config file type of " + enumConfigFileType + " not handled");
+            switch (enumConfigFileType) {
+                case RESOURCE:
+                    InputStream xml = getClass().getResourceAsStream(filePath);
+                    this.configuration = (ConfigModel) unmarshaller.unmarshal(xml);
+                    isPopulated = true;
+                    logback.info("Configuration loaded from resource file");
+                    break;
+                case FILE:
+                    File file = new File(filePath);
+                    this.configuration = (ConfigModel) unmarshaller.unmarshal(file);
+                    isPopulated = true;
+                    logback.info("Configuration loaded from external file");
+                    break;
+                default:
+                    logback.error("Config file type of " + enumConfigFileType + " not handled");
+                    break;
             }
         } catch (JAXBException e) {
             logback.error("Configuration:populate(): Error in configuration population: "
                     + e.toString());
-            throw e;
         }
-        isPopulated = true;
+        return isPopulated;
     }
 
 }

@@ -51,7 +51,7 @@ public class ProxyRobotsTest {
         // Build Mock of Tank
         mockedTank = new MockedTank();
 
-        configFactory = new ConfigFactory(configCli, "localhost");
+        configFactory = new ConfigFactory(configCli);
 
         // Create the map with one mock tank
         robotsMap = new RobotsMap();

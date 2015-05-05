@@ -9,5 +9,5 @@ public interface IConfiguration {
 
     ConfigModel getConfigModel();
 
-    void populate() throws JAXBException;
+    boolean populate() throws JAXBException;
 }

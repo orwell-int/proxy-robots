@@ -18,15 +18,20 @@ public class ConfigProxy implements IConfigProxy {
         this.configServerGames = configServerGames;
     }
 
+    /**
+     * @return the server game configuration of the highest priority
+     *         It is the first one found by default.
+     * @throws Exception
+     */
     @Override
-    public ConfigServerGame getConfigServerGame(String name) throws Exception {
+    public ConfigServerGame getConfigServerGame() throws Exception {
+        ConfigServerGame priorityConfig = null;
         for (ConfigServerGame config : this.configServerGames) {
-            if (config.getName().contentEquals(name))
-                return config;
+            if (null == priorityConfig || config.getPriority() > priorityConfig.getPriority()) {
+                priorityConfig = config;
+            }
         }
-
-        throw new Exception("server-game " + name
-                + " not found in the configuration file");
+        return priorityConfig;
     }
 
     @Override
