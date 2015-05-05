@@ -32,9 +32,9 @@ public class ConfigurationTest {
     public ExpectedException exception = ExpectedException.none();
     private ConfigCli configCli;
 
-    private Configuration buildConfigTest(final String fileName, final EnumConfigFileType configFileType) {
+    private Configuration getConfigTest(final String fileName, final EnumConfigFileType configFileType) {
         configCli = new ConfigCli(fileName, configFileType);
-        return  new Configuration(configCli);
+        return new Configuration(configCli);
     }
 
     @Before
@@ -47,15 +47,14 @@ public class ConfigurationTest {
     @Test
     public void testPopulateConfigModel() {
 
-        assertTrue(buildConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).isPopulated);
+        assertTrue(getConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).isPopulated);
     }
 
     @Test
     public void testProxyList() {
 
         final ConfigProxy configProxy;
-
-        configProxy = buildConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
+        configProxy = getConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                 .getConfigProxy();
 
 
@@ -76,7 +75,7 @@ public class ConfigurationTest {
 
         final ConfigServerGame configServerGame;
         try {
-            configServerGame = buildConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
+            configServerGame = getConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                     .getConfigProxy().getConfigServerGame();
             assertEquals("192.168.1.46", configServerGame.getIp());
             assertEquals(9000, configServerGame.getPushPort());
@@ -90,7 +89,7 @@ public class ConfigurationTest {
     public void testCommonElements() {
 
         final ConfigProxy configProxy;
-        configProxy = buildConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
+        configProxy = getConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                 .getConfigProxy();
 
 
@@ -102,7 +101,7 @@ public class ConfigurationTest {
     public void testRobotsList() {
 
         final ConfigRobots configRobots;
-        configRobots = buildConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
+        configRobots = getConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                 .getConfigRobots();
 
 
@@ -119,7 +118,7 @@ public class ConfigurationTest {
 
         final ConfigTank configTank;
         try {
-            configTank = buildConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel().getConfigRobots()
+            configTank = getConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel().getConfigRobots()
                     .getConfigTank("BananaOne");
             assertEquals("001653119482", configTank.getBluetoothID());
             assertEquals("Daneel", configTank.getBluetoothName());
@@ -136,7 +135,7 @@ public class ConfigurationTest {
     public void testRobotsToRegister() {
 
         final ConfigRobots configRobots;
-        configRobots = buildConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
+        configRobots = getConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                 .getConfigRobots();
 
 
@@ -151,11 +150,11 @@ public class ConfigurationTest {
             // Create empty file
             file = File.createTempFile("testConfigurationWithFile", ".tmp");
         } catch (IOException e) {
-            logback.error(e.getMessage());
+            fail(e.toString());
         }
 
         // Population fails since file is empty
-        assertFalse(buildConfigTest(file.getAbsolutePath(), EnumConfigFileType.FILE).isPopulated);
+        assertFalse(getConfigTest(file.getAbsolutePath(), EnumConfigFileType.FILE).isPopulated);
 
         logback.debug("OUT");
     }
@@ -165,7 +164,7 @@ public class ConfigurationTest {
     public void testConfigurationFailsWithURL() {
         logback.debug("IN");
 
-        assertFalse(buildConfigTest(CONFIGURATION_URL_TEST, EnumConfigFileType.URL).isPopulated);
+        assertFalse(getConfigTest(CONFIGURATION_URL_TEST, EnumConfigFileType.URL).isPopulated);
 
         logback.debug("OUT");
     }

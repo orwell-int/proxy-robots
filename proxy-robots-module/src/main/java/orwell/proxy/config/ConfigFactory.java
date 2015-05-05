@@ -11,7 +11,7 @@ public class ConfigFactory {
 
     private final IConfigProxy configProxy;
     private final IConfigRobots configRobots;
-    private IConfigServerGame configServerGame;
+    private final IConfigServerGame configServerGame;
 
     public ConfigFactory(final ConfigCli configCli) {
         logback.debug("IN");
@@ -20,11 +20,8 @@ public class ConfigFactory {
         final ConfigModel configModel = configuration.getConfigModel();
         configProxy = configModel.getConfigProxy();
         configRobots = configuration.getConfigModel().getConfigRobots();
-        try {
-            configServerGame = configProxy.getConfigServerGame();
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
+        configServerGame = configProxy.getConfigServerGame();
+
         logback.debug("OUT");
     }
 

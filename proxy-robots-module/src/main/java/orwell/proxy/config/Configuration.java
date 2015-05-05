@@ -13,10 +13,10 @@ public class Configuration implements IConfiguration {
     final static Logger logback = LoggerFactory.getLogger(Configuration.class);
     public boolean isPopulated = false;
     ConfigModel configuration;
-    private String filePath;
-    private EnumConfigFileType enumConfigFileType;
+    private final String filePath;
+    private final EnumConfigFileType enumConfigFileType;
 
-    public Configuration(ConfigCli configCli) {
+    public Configuration(final ConfigCli configCli) {
         this.filePath = configCli.getFilePath();
         this.enumConfigFileType = configCli.getEnumConfigFileType();
         populate();
@@ -28,20 +28,20 @@ public class Configuration implements IConfiguration {
     }
 
     private boolean populate() {
-        JAXBContext jc;
+        final JAXBContext jc;
         try {
             jc = JAXBContext.newInstance(ConfigModel.class);
-            Unmarshaller unmarshaller = jc.createUnmarshaller();
+            final Unmarshaller unmarshaller = jc.createUnmarshaller();
 
             switch (enumConfigFileType) {
                 case RESOURCE:
-                    InputStream xml = getClass().getResourceAsStream(filePath);
+                    final InputStream xml = getClass().getResourceAsStream(filePath);
                     this.configuration = (ConfigModel) unmarshaller.unmarshal(xml);
                     isPopulated = true;
                     logback.info("Configuration loaded from resource file");
                     break;
                 case FILE:
-                    File file = new File(filePath);
+                    final File file = new File(filePath);
                     this.configuration = (ConfigModel) unmarshaller.unmarshal(file);
                     isPopulated = true;
                     logback.info("Configuration loaded from external file");
@@ -50,9 +50,9 @@ public class Configuration implements IConfiguration {
                     logback.error("Config file type of " + enumConfigFileType + " not handled");
                     break;
             }
-        } catch (JAXBException e) {
+        } catch (final JAXBException e) {
             logback.error("Configuration:populate(): Error in configuration population: "
-                    + e.toString());
+                    + e);
         }
         return isPopulated;
     }
