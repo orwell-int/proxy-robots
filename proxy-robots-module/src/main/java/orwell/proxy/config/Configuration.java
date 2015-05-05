@@ -11,10 +11,10 @@ import java.io.InputStream;
 
 public class Configuration implements IConfiguration {
     final static Logger logback = LoggerFactory.getLogger(Configuration.class);
-    public boolean isPopulated = false;
-    ConfigModel configuration;
     private final String filePath;
     private final EnumConfigFileType enumConfigFileType;
+    public boolean isPopulated = false;
+    ConfigModel configuration;
 
     public Configuration(final ConfigCli configCli) {
         this.filePath = configCli.getFilePath();

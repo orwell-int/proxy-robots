@@ -22,13 +22,13 @@ public class ColourWrapper implements ISensorWrapper {
         return Integer.toString(this.previousValue);
     }
 
+    public void setPreviousValue(int previousValue) {
+        this.previousValue = previousValue;
+    }
+
     @Override
     public void setPreviousValue(String previousValue) {
         this.previousValue = Integer.parseInt(previousValue);
-    }
-
-    public void setPreviousValue(int previousValue) {
-        this.previousValue = previousValue;
     }
 
     public int getPreviousValueInteger() {

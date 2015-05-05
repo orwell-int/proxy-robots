@@ -11,7 +11,8 @@ import orwell.proxy.config.ConfigCli;
 import orwell.proxy.config.ConfigFactory;
 import orwell.proxy.config.EnumConfigFileType;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for {@link ConfigFactory}.

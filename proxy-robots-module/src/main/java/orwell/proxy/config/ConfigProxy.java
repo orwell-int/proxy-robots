@@ -20,7 +20,7 @@ public class ConfigProxy implements IConfigProxy {
 
     /**
      * @return the server game configuration of the highest priority
-     *         It is the first one found by default.
+     * It is the first one found by default.
      */
     @Override
     public ConfigServerGame getConfigServerGame() {
