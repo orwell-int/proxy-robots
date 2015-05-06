@@ -12,15 +12,15 @@ public interface IMessageFramework {
      */
     void setSkipIdenticalMessages(boolean skipIdenticalMessages);
 
-    boolean connectToServer(String serverIp,
-                            int pushPort,
-                            int subPort);
+    boolean connectToServer(final String serverIp,
+                            final int pushPort,
+                            final int subPort);
 
-    boolean sendZmqMessage(EnumMessageType msgType,
-                           String routingID,
-                           byte[] msgBytes);
+    boolean sendZmqMessage(final EnumMessageType msgType,
+                           final String routingID,
+                           final byte[] msgBytes);
 
-    void addZmqMessageListener(IZmqMessageListener zmqMsgListener);
+    void addZmqMessageListener(final IZmqMessageListener zmqMsgListener);
 
     void close();
 }

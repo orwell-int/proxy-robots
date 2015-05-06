@@ -14,21 +14,21 @@ import java.util.ArrayList;
 public class ZmqMessageFramework implements IMessageFramework {
 
     final static Logger logback = LoggerFactory.getLogger(ZmqMessageFramework.class);
-
-    protected ArrayList<IZmqMessageListener> zmqMessageListeners;
-    protected boolean connected = false;
-    protected int nbMessagesSkiped = 0;
     private final Object rXguard;
     private final ZMQ.Context context;
     private final ZMQ.Socket sender;
     private final ZMQ.Socket receiver;
+    protected ArrayList<IZmqMessageListener> zmqMessageListeners;
+    protected boolean connected = false;
+    protected int nbMessagesSkipped = 0;
     private ZmqReader reader;
 
     private boolean isSkipIdenticalMessages = false;
 
-    public ZmqMessageFramework(int senderLinger, int receiverLinger) {
+    public ZmqMessageFramework(final int senderLinger,
+                               final int receiverLinger) {
         logback.info("Constructor -- IN");
-        zmqMessageListeners = new ArrayList<IZmqMessageListener>();
+        zmqMessageListeners = new ArrayList<>();
         rXguard = new Object();
 
         context = ZMQ.context(1);
@@ -49,14 +49,14 @@ public class ZmqMessageFramework implements IMessageFramework {
     }
 
     @Override
-    public void setSkipIdenticalMessages(boolean skipIdenticalMessages) {
+    public void setSkipIdenticalMessages(final boolean skipIdenticalMessages) {
         isSkipIdenticalMessages = skipIdenticalMessages;
     }
 
     @Override
-    public boolean connectToServer(String serverIp,
-                                   int pushPort,
-                                   int subPort) {
+    public boolean connectToServer(final String serverIp,
+                                   final int pushPort,
+                                   final int subPort) {
         sender.connect("tcp://" + serverIp + ":"
                 + pushPort);
         logback.info("ProxyRobots Sender created");
@@ -65,7 +65,7 @@ public class ZmqMessageFramework implements IMessageFramework {
         logback.info("ProxyRobots Receiver created");
         receiver.subscribe(new String("").getBytes());
         try {
-            if (reader.getState() != Thread.State.NEW) {
+            if (Thread.State.NEW != reader.getState()) {
                 logback.error("Reader has already been started once");
                 setupNewReader();
             }
@@ -73,15 +73,15 @@ public class ZmqMessageFramework implements IMessageFramework {
             connected = true;
         } catch (IllegalThreadStateException e) {
             // TODO Auto-generated catch block
-            logback.error(e.toString());
+            logback.error(e.getMessage());
         }
         return connected;
     }
 
     @Override
-    public boolean sendZmqMessage(EnumMessageType msgType,
-                                  String routingID,
-                                  byte[] msgBytes) {
+    public boolean sendZmqMessage(final EnumMessageType msgType,
+                                  final String routingID,
+                                  final byte[] msgBytes) {
         String zmqMessageHeader = routingID + " ";
         switch (msgType) {
             case REGISTER:
@@ -93,23 +93,23 @@ public class ZmqMessageFramework implements IMessageFramework {
             default:
 
         }
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             outputStream.write(zmqMessageHeader.getBytes());
             outputStream.write(msgBytes);
         } catch (IOException e) {
             logback.error("SendZmqMessage " + e);
         }
-        byte[] zmqMessage = outputStream.toByteArray();
+        final byte[] zmqMessage = outputStream.toByteArray();
         return sender.send(zmqMessage, 0);
     }
 
     @Override
-    public void addZmqMessageListener(IZmqMessageListener zmqMsgListener) {
+    public void addZmqMessageListener(final IZmqMessageListener zmqMsgListener) {
         zmqMessageListeners.add(zmqMsgListener);
     }
 
-    private void receivedNewZmqMessage(ZmqMessageWrapper zmqMessage) {
+    private void receivedNewZmqMessage(final ZmqMessageWrapper zmqMessage) {
         logback.debug("Received New ZMQ Message : " + zmqMessage.getMessageType());
         for (int j = 0; j < zmqMessageListeners.size(); j++) {
             zmqMessageListeners.get(j).receivedNewZmq(zmqMessage);
@@ -129,18 +129,18 @@ public class ZmqMessageFramework implements IMessageFramework {
         @Override
         public void run() {
             while (connected) {
-                byte[] raw_zmq_message = receiver.recv(ZMQ.NOBLOCK);
+                final byte[] raw_zmq_message = receiver.recv(ZMQ.NOBLOCK);
                 if (null != raw_zmq_message) {
                     synchronized (rXguard) {
                         zmqMessage = new ZmqMessageWrapper(raw_zmq_message);
 
                         // We do not want to uselessly flood the robot
-                        if (isSkipIdenticalMessages && zmqMessage.getZmqMessageString().compareTo(zmqPreviousMessage) == 0) {
-                            nbMessagesSkiped++;
+                        if (isSkipIdenticalMessages && 0 == zmqMessage.getZmqMessageString().compareTo(zmqPreviousMessage)) {
+                            nbMessagesSkipped++;
                             logback.debug("Current zmq message identical to previous zmq message (already done " +
-                                    nbMessagesSkiped + " time(s) for this message)");
+                                    nbMessagesSkipped + " time(s) for this message)");
                         } else {
-                            nbMessagesSkiped = 0;
+                            nbMessagesSkipped = 0;
                             receivedNewZmqMessage(zmqMessage);
                         }
                         zmqPreviousMessage = zmqMessage.getZmqMessageString();
@@ -148,7 +148,7 @@ public class ZmqMessageFramework implements IMessageFramework {
                 }
                 try {
                     Thread.sleep(10);
-                } catch (InterruptedException e) {
+                } catch (final InterruptedException e) {
                     logback.error("ZmqReader thread sleep exception: " + e.getMessage());
                 }
             }

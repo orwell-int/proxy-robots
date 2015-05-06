@@ -106,7 +106,7 @@ public class ZmqMessageFrameworkTest {
         zmf.setSkipIdenticalMessages(true);
 
         long timeout = 0;
-        while (zmf.nbMessagesSkiped < 1 && timeout < MAX_TIMEOUT_MS) {
+        while (zmf.nbMessagesSkipped < 1 && timeout < MAX_TIMEOUT_MS) {
             try {
                 Thread.sleep(5);
                 timeout += 5;
@@ -115,7 +115,7 @@ public class ZmqMessageFrameworkTest {
             }
         }
 
-        assert (zmf.nbMessagesSkiped > 0);
+        assert (zmf.nbMessagesSkipped > 0);
 
         logback.info("OUT");
     }
