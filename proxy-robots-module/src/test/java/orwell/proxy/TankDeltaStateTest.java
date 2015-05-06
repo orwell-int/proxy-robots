@@ -13,8 +13,8 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by parapampa on 01/02/15.
  */
-public class TankLatestStatesTest {
-    final static Logger logback = LoggerFactory.getLogger(TankLatestStatesTest.class);
+public class TankDeltaStateTest {
+    final static Logger logback = LoggerFactory.getLogger(TankDeltaStateTest.class);
 
     @TestSubject
     private TankDeltaState tankDeltaState;
