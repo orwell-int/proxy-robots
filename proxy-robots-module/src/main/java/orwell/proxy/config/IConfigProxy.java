@@ -10,4 +10,6 @@ public interface IConfigProxy {
     int getReceiverLinger();
 
     int getSenderLinger();
+
+    int getOutgoingMsgFrequency();
 }

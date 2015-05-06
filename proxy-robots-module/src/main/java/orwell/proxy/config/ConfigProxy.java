@@ -8,13 +8,14 @@ public class ConfigProxy implements IConfigProxy {
     private List<ConfigServerGame> configServerGames;
     private int senderLinger;
     private int receiverLinger;
+    private int outgoingMsgFrequency;
 
     @XmlElement(name = "server-game")
     public List<ConfigServerGame> getConfigServerGames() {
         return configServerGames;
     }
 
-    public void setConfigServerGames(List<ConfigServerGame> configServerGames) {
+    public void setConfigServerGames(final List<ConfigServerGame> configServerGames) {
         this.configServerGames = configServerGames;
     }
 
@@ -25,7 +26,7 @@ public class ConfigProxy implements IConfigProxy {
     @Override
     public ConfigServerGame getConfigServerGame() {
         ConfigServerGame priorityConfig = null;
-        for (ConfigServerGame config : this.configServerGames) {
+        for (final ConfigServerGame config : this.configServerGames) {
             if (null == priorityConfig || config.getPriority() > priorityConfig.getPriority()) {
                 priorityConfig = config;
             }
@@ -39,7 +40,7 @@ public class ConfigProxy implements IConfigProxy {
     }
 
     @XmlElement(name = "senderLinger")
-    public void setSenderLinger(int senderLinger) {
+    public void setSenderLinger(final int senderLinger) {
         this.senderLinger = senderLinger;
     }
 
@@ -49,7 +50,17 @@ public class ConfigProxy implements IConfigProxy {
     }
 
     @XmlElement(name = "receiverLinger")
-    public void setReceiverLinger(int receiverLinger) {
+    public void setReceiverLinger(final int receiverLinger) {
         this.receiverLinger = receiverLinger;
+    }
+
+    @Override
+    public int getOutgoingMsgFrequency() {
+        return outgoingMsgFrequency;
+    }
+
+    @XmlElement(name = "outgoingMsgFrequency")
+    public void setOutgoingMsgFrequency(final int outgoingMsgFrequency) {
+        this.outgoingMsgFrequency = outgoingMsgFrequency;
     }
 }

@@ -86,15 +86,15 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void testCommonElements() {
+    public void testConfigProxy() {
 
         final ConfigProxy configProxy;
         configProxy = getConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                 .getConfigProxy();
 
-
         assertEquals(1000, configProxy.getSenderLinger());
         assertEquals(1000, configProxy.getReceiverLinger());
+        assertEquals(50, configProxy.getOutgoingMsgFrequency());
     }
 
     @Test
