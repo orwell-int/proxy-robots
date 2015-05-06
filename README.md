@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/orwell-int/proxy-robots.svg?branch=master)](https://travis-ci.org/orwell-int/proxy-robots) [![Stories in Ready](https://badge.waffle.io/orwell-int/proxy-robots.png?label=ready&title=Ready)](https://waffle.io/orwell-int/proxy-robots) [![Coverage Status](https://img.shields.io/coveralls/orwell-int/proxy-robots.svg)](https://coveralls.io/r/orwell-int/proxy-robots)
+[![Build Status](https://travis-ci.org/orwell-int/proxy-robots.svg?branch=master)](https://travis-ci.org/orwell-int/proxy-robots) [![Stories in Ready](https://badge.waffle.io/orwell-int/proxy-robots.png?label=ready&title=Ready)](https://waffle.io/orwell-int/proxy-robots) [![Coverage Status](https://coveralls.io/repos/orwell-int/proxy-robots/badge.svg?branch=master)](https://coveralls.io/r/orwell-int/proxy-robots?branch=master)
 proxy-robots
 ============
 
