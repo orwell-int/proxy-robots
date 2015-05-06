@@ -17,21 +17,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Tests for {@link ZmqMessageWrapper}.
+ * Tests for {@link ZmqMessageDecoder}.
  * <p/>
  * Created by parapampa on 15/03/15.
  */
-public class ZmqMessageWrapperTest {
+public class ZmqMessageDecoderTest {
 
-    final static Logger logback = LoggerFactory.getLogger(ZmqMessageWrapperTest.class);
+    final static Logger logback = LoggerFactory.getLogger(ZmqMessageDecoderTest.class);
     private final String routingId = "NicCage";
 
     @TestSubject
-    private ZmqMessageWrapper zmw;
+    private ZmqMessageDecoder zmw;
 
     @Before
     public void setUp() {
-        zmw = new ZmqMessageWrapper(getRawZmqMessage(EnumMessageType.REGISTERED));
+        zmw = new ZmqMessageDecoder(getRawZmqMessage(EnumMessageType.REGISTERED));
     }
 
     private byte[] getRawZmqMessage(EnumMessageType messageType) {
@@ -121,22 +121,22 @@ public class ZmqMessageWrapperTest {
 
     @Test
     public void testGetMessageType() {
-        zmw = new ZmqMessageWrapper(getRawZmqMessage(EnumMessageType.REGISTERED));
+        zmw = new ZmqMessageDecoder(getRawZmqMessage(EnumMessageType.REGISTERED));
         assertEquals(EnumMessageType.REGISTERED, zmw.getMessageType());
 
-        zmw = new ZmqMessageWrapper(getRawZmqMessage(EnumMessageType.INPUT));
+        zmw = new ZmqMessageDecoder(getRawZmqMessage(EnumMessageType.INPUT));
         assertEquals(EnumMessageType.INPUT, zmw.getMessageType());
 
-        zmw = new ZmqMessageWrapper(getRawZmqMessage(EnumMessageType.GAMESTATE));
+        zmw = new ZmqMessageDecoder(getRawZmqMessage(EnumMessageType.GAMESTATE));
         assertEquals(EnumMessageType.GAMESTATE, zmw.getMessageType());
 
-        zmw = new ZmqMessageWrapper(getRawZmqMessage(EnumMessageType.SERVER_ROBOT_STATE));
+        zmw = new ZmqMessageDecoder(getRawZmqMessage(EnumMessageType.SERVER_ROBOT_STATE));
         assertEquals(EnumMessageType.SERVER_ROBOT_STATE, zmw.getMessageType());
     }
 
     @Test
     public void testGetMessageTypeUnknown() {
-        zmw = new ZmqMessageWrapper(getRawZmqMessage(EnumMessageType.UNKNOWN));
+        zmw = new ZmqMessageDecoder(getRawZmqMessage(EnumMessageType.UNKNOWN));
         assertEquals(EnumMessageType.UNKNOWN, zmw.getMessageType());
     }
 

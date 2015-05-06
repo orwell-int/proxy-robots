@@ -3,7 +3,7 @@ package orwell.proxy;
 /**
  * Created by parapampa on 03/05/15.
  */
-public interface IMessageFramework {
+public interface IZmqMessageFramework {
 
     /**
      * Decide whether to handle two identical successive messages or to ignore the second
@@ -16,9 +16,7 @@ public interface IMessageFramework {
                             final int pushPort,
                             final int subPort);
 
-    boolean sendZmqMessage(final EnumMessageType msgType,
-                           final String routingID,
-                           final byte[] msgBytes);
+    boolean sendZmqMessage(final ZmqMessageBOM zmqMessageBOM);
 
     void addZmqMessageListener(final IZmqMessageListener zmqMsgListener);
 

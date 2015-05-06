@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public class RobotsMap implements IRobotsMap {
 
-    final static Logger logback = LoggerFactory.getLogger(ZmqMessageWrapper.class);
+    final static Logger logback = LoggerFactory.getLogger(ZmqMessageDecoder.class);
 
     private final ArrayList<IRobot> array = new ArrayList<>();
 

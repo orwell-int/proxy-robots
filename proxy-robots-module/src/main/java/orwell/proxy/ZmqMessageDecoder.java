@@ -3,8 +3,8 @@ package orwell.proxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ZmqMessageWrapper {
-    final static Logger logback = LoggerFactory.getLogger(ZmqMessageWrapper.class);
+public class ZmqMessageDecoder {
+    final static Logger logback = LoggerFactory.getLogger(ZmqMessageDecoder.class);
     private static final byte SPACE_CODE = 32; // ascii code of SPACE character
     private final String routingId;
     private final String typeString;
@@ -12,7 +12,7 @@ public class ZmqMessageWrapper {
     private final byte[] message;
     private final String zmqMessageString;
 
-    public ZmqMessageWrapper(byte[] raw_zmq_message) {
+    public ZmqMessageDecoder(byte[] raw_zmq_message) {
         zmqMessageString = new String(raw_zmq_message);
         int indexType = 0;
         int indexMessage = 0;

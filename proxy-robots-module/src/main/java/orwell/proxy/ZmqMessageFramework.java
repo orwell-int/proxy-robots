@@ -4,14 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
  * Created by parapampa on 08/03/15.
  */
-public class ZmqMessageFramework implements IMessageFramework {
+public class ZmqMessageFramework implements IZmqMessageFramework {
 
     final static Logger logback = LoggerFactory.getLogger(ZmqMessageFramework.class);
     private final Object rXguard;
@@ -79,29 +77,13 @@ public class ZmqMessageFramework implements IMessageFramework {
     }
 
     @Override
-    public boolean sendZmqMessage(final EnumMessageType msgType,
-                                  final String routingID,
-                                  final byte[] msgBytes) {
-        String zmqMessageHeader = routingID + " ";
-        switch (msgType) {
-            case REGISTER:
-                zmqMessageHeader += "Register ";
-                break;
-            case SERVER_ROBOT_STATE:
-                zmqMessageHeader += "ServerRobotState ";
-                break;
-            default:
+    public boolean sendZmqMessage(ZmqMessageBOM zmqMessageBOM) {
 
-        }
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try {
-            outputStream.write(zmqMessageHeader.getBytes());
-            outputStream.write(msgBytes);
-        } catch (IOException e) {
-            logback.error("SendZmqMessage " + e);
-        }
-        final byte[] zmqMessage = outputStream.toByteArray();
-        return sender.send(zmqMessage, 0);
+
+        if(zmqMessageBOM.isEmpty())
+            return false;
+        else
+            return sender.send(zmqMessageBOM.getZmqMessageBytes(), 0);
     }
 
     @Override
@@ -109,7 +91,7 @@ public class ZmqMessageFramework implements IMessageFramework {
         zmqMessageListeners.add(zmqMsgListener);
     }
 
-    private void receivedNewZmqMessage(final ZmqMessageWrapper zmqMessage) {
+    private void receivedNewZmqMessage(final ZmqMessageDecoder zmqMessage) {
         logback.debug("Received New ZMQ Message : " + zmqMessage.getMessageType());
         for (int j = 0; j < zmqMessageListeners.size(); j++) {
             zmqMessageListeners.get(j).receivedNewZmq(zmqMessage);
@@ -124,7 +106,7 @@ public class ZmqMessageFramework implements IMessageFramework {
 
     private class ZmqReader extends Thread {
         String zmqPreviousMessage = new String();
-        ZmqMessageWrapper zmqMessage;
+        ZmqMessageDecoder zmqMessage;
 
         @Override
         public void run() {
@@ -132,7 +114,7 @@ public class ZmqMessageFramework implements IMessageFramework {
                 final byte[] raw_zmq_message = receiver.recv(ZMQ.NOBLOCK);
                 if (null != raw_zmq_message) {
                     synchronized (rXguard) {
-                        zmqMessage = new ZmqMessageWrapper(raw_zmq_message);
+                        zmqMessage = new ZmqMessageDecoder(raw_zmq_message);
 
                         // We do not want to uselessly flood the robot
                         if (isSkipIdenticalMessages && 0 == zmqMessage.getZmqMessageString().compareTo(zmqPreviousMessage)) {

@@ -11,12 +11,12 @@ public class ProxyRobots implements IZmqMessageListener {
     final static Logger logback = LoggerFactory.getLogger(ProxyRobots.class);
     private final IConfigServerGame configServerGame;
     private final IConfigRobots configRobots;
-    protected IMessageFramework mfProxy;
+    protected IZmqMessageFramework mfProxy;
     protected IRobotsMap robotsMap;
     protected CommunicationService communicationService = new CommunicationService();
     private final Thread communicationThread = new Thread(communicationService);
 
-    public ProxyRobots(final IMessageFramework mfProxy,
+    public ProxyRobots(final IZmqMessageFramework mfProxy,
                        final IConfigServerGame configServerGame,
                        final IConfigRobots configRobots,
                        IRobotsMap robotsMap) {
@@ -79,8 +79,9 @@ public class ProxyRobots implements IZmqMessageListener {
     protected void sendRegister() {
         for (IRobot robot : robotsMap.getConnectedRobots()) {
             robot.buildRegister();
-            mfProxy.sendZmqMessage(EnumMessageType.REGISTER, robot.getRoutingID(),
+            final ZmqMessageBOM zmqMessageBOM = new ZmqMessageBOM(EnumMessageType.REGISTER, robot.getRoutingID(),
                     robot.getRegisterBytes());
+            mfProxy.sendZmqMessage(zmqMessageBOM);
             logback.info("Robot [" + robot.getRoutingID()
                     + "] is trying to register itself to the server!");
         }
@@ -93,8 +94,9 @@ public class ProxyRobots implements IZmqMessageListener {
                 continue;
             } else {
                 logback.debug("Sending a ServerRobotState message");
-                mfProxy.sendZmqMessage(EnumMessageType.SERVER_ROBOT_STATE,
-                        robot.getRoutingID(), zmqServerRobotState);
+                final ZmqMessageBOM zmqMessageBOM = new ZmqMessageBOM(EnumMessageType.REGISTER, robot.getRoutingID(),
+                        robot.getRegisterBytes());
+                mfProxy.sendZmqMessage(zmqMessageBOM);
             }
         }
     }
@@ -117,7 +119,7 @@ public class ProxyRobots implements IZmqMessageListener {
         }
     }
 
-    private void onRegistered(final ZmqMessageWrapper zmqMessage) {
+    private void onRegistered(final ZmqMessageDecoder zmqMessage) {
         logback.info("Setting ServerGame Registered to tank");
         final String routingId = zmqMessage.getRoutingId();
         if (robotsMap.isRobotConnected(routingId)) {
@@ -129,7 +131,7 @@ public class ProxyRobots implements IZmqMessageListener {
         }
     }
 
-    private void onInput(final ZmqMessageWrapper zmqMessage) {
+    private void onInput(final ZmqMessageDecoder zmqMessage) {
         logback.info("Setting controller Input to tank");
         final String routingId = zmqMessage.getRoutingId();
         if (robotsMap.isRobotRegistered(routingId)) {
@@ -142,7 +144,7 @@ public class ProxyRobots implements IZmqMessageListener {
         }
     }
 
-    private void onGameState(ZmqMessageWrapper zmqMessage) {
+    private void onGameState(ZmqMessageDecoder zmqMessage) {
         logback.warn("Received GameState - not handled");
     }
 
@@ -169,7 +171,7 @@ public class ProxyRobots implements IZmqMessageListener {
     }
 
     @Override
-    public void receivedNewZmq(final ZmqMessageWrapper msg) {
+    public void receivedNewZmq(final ZmqMessageDecoder msg) {
         switch (msg.getMessageType()) {
             case REGISTERED:
                 onRegistered(msg);
