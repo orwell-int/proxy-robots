@@ -43,7 +43,7 @@ public class ZmqMessageFrameworkTest {
     @Before
     public void setUp() {
         logback.info("IN");
-        zmf = new ZmqMessageFramework(1000, 1000);
+        zmf = new ZmqMessageFramework(1000, 1000, null);
 
         // Mock ZMQ behavior with mock sockets and context
         mockedZmqSocketSend = createNiceMock(ZMQ.Socket.class);
@@ -67,8 +67,8 @@ public class ZmqMessageFrameworkTest {
             MemberModifier.field(ZmqMessageFramework.class, "context").set(zmf, mockedZmqContext);
             MemberModifier.field(ZmqMessageFramework.class, "sender").set(zmf, mockedZmqSocketSend);
             MemberModifier.field(ZmqMessageFramework.class, "receiver").set(zmf, mockedZmqSocketRecv);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (final IllegalAccessException e) {
+            logback.error(e.getMessage());
         }
         logback.info("OUT");
     }
@@ -128,6 +128,9 @@ public class ZmqMessageFrameworkTest {
 
         logback.info("OUT");
     }
+
+    //TODO new test for filtering step
+
 
     @After
     public void tearDown() {

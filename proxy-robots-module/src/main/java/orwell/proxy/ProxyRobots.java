@@ -38,7 +38,7 @@ public class ProxyRobots implements IZmqMessageListener {
     public static void main(String[] args) throws Exception {
         final ConfigCli configPathType = new Cli(args).parse();
 
-        final ProxyRobots proxyRobots = new ProxyRobotsFactory(configPathType, "platypus").getProxyRobots();
+        final ProxyRobots proxyRobots = new ProxyRobotsFactory(configPathType).getProxyRobots();
         proxyRobots.start();
     }
 

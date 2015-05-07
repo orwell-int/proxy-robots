@@ -72,7 +72,7 @@ public class ZmqMessageBOM {
         return (null == msgBytes || 0 == msgBytes.length || routingId.isEmpty() || null == msgType);
     }
 
-    /*
+    /**
      * Set core content of ZmqMessage to null
      */
     public void clearMsgBytes() {

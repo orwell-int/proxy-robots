@@ -16,15 +16,16 @@ public class ZmqMessageFramework implements IZmqMessageFramework {
     private final ZMQ.Context context;
     private final ZMQ.Socket sender;
     private final ZMQ.Socket receiver;
+    final private ArrayList<IFilter> filterList;
     protected ArrayList<IZmqMessageListener> zmqMessageListeners;
     protected boolean connected = false;
     protected int nbMessagesSkipped = 0;
     private ZmqReader reader;
-
     private boolean isSkipIdenticalMessages = false;
 
     public ZmqMessageFramework(final int senderLinger,
-                               final int receiverLinger) {
+                               final int receiverLinger,
+                               ArrayList<IFilter> filterList) {
         logback.info("Constructor -- IN");
         zmqMessageListeners = new ArrayList<>();
         rXguard = new Object();
@@ -37,6 +38,8 @@ public class ZmqMessageFramework implements IZmqMessageFramework {
         receiver.setLinger(receiverLinger);
 
         setupNewReader();
+
+        this.filterList = filterList;
 
         logback.info("Constructor -- OUT");
     }
@@ -79,7 +82,12 @@ public class ZmqMessageFramework implements IZmqMessageFramework {
     @Override
     public boolean sendZmqMessage(ZmqMessageBOM zmqMessageBOM) {
 
-        //TODO add filter
+        // We apply the filters sequentially
+        if (null != this.filterList) {
+            for (final IFilter filter : this.filterList) {
+                zmqMessageBOM = filter.getFilteredMessage(zmqMessageBOM);
+            }
+        }
 
         if (zmqMessageBOM.isEmpty())
             return false;
