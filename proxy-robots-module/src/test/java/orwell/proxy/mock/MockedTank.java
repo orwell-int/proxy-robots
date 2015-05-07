@@ -42,12 +42,12 @@ public class MockedTank implements IRobot {
     }
 
     @Override
-    public String getRoutingID() {
+    public String getRoutingId() {
         return routingId;
     }
 
     @Override
-    public void setRoutingID(String routingId) {
+    public void setRoutingId(String routingId) {
         this.routingId = routingId;
     }
 

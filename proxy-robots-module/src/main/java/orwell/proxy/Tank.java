@@ -133,13 +133,13 @@ public class Tank implements IRobot, MessageListenerInterface {
     }
 
     @Override
-    public String getRoutingID() {
+    public String getRoutingId() {
         return routingID;
     }
 
     @Override
-    public void setRoutingID(String routingID) {
-        this.routingID = routingID;
+    public void setRoutingId(String routingId) {
+        this.routingID = routingId;
     }
 
     @Override
@@ -153,7 +153,7 @@ public class Tank implements IRobot, MessageListenerInterface {
 
     @Override
     public byte[] getZmqRegister() {
-        String zmqMessageHeader = getRoutingID() + " " + "Register" + " ";
+        String zmqMessageHeader = getRoutingId() + " " + "Register" + " ";
         byte[] zmqRegister = Utils.Concatenate(zmqMessageHeader.getBytes(),
                 getRegister().toByteArray());
         logback.info("zmqMessageHeader: " + zmqMessageHeader);
@@ -187,11 +187,11 @@ public class Tank implements IRobot, MessageListenerInterface {
         Boolean isConnected = mfTank.ConnectToNXT(nxtInfo);
         if (isConnected) {
             this.connectionState = EnumConnectionState.CONNECTED;
-            logback.info("Robot [" + getRoutingID()
+            logback.info("Robot [" + getRoutingId()
                     + "] is connected to the proxy!");
         } else {
             this.connectionState = EnumConnectionState.CONNECTION_FAILED;
-            logback.warn("Robot [" + getRoutingID()
+            logback.warn("Robot [" + getRoutingId()
                     + "] failed to connect to the proxy!");
         }
         return this.connectionState;
@@ -200,7 +200,7 @@ public class Tank implements IRobot, MessageListenerInterface {
     @Override
     public String toString() {
         String string = "Tank {[BTName] " + getBluetoothName() + " [BTID] "
-                + getBluetoothID() + " [RoutingID] " + getRoutingID() + "}"
+                + getBluetoothID() + " [RoutingID] " + getRoutingId() + "}"
                 + "\n\t" + controllerInputToString() + "\n\t"
                 + robotStateToString();
         return string;
@@ -208,7 +208,7 @@ public class Tank implements IRobot, MessageListenerInterface {
 
     @Override
     public String robotStateToString() {
-        String string = "RobotState of " + getRoutingID()
+        String string = "RobotState of " + getRoutingId()
                 + "\n\t|___RFID   = " + getTankDeltaState().getServerRobotState().getRfidList()
                 + "\n\t|___Colour = " + getTankDeltaState().getServerRobotState().getColourList();
         return string;
@@ -218,7 +218,7 @@ public class Tank implements IRobot, MessageListenerInterface {
     public String controllerInputToString() {
         String string;
         if (null != currentControllerInput) {
-            string = "Controller INPUT of Robot [" + getRoutingID() + "]:"
+            string = "Controller INPUT of Robot [" + getRoutingId() + "]:"
                     + "\n\t|___Move order: [LEFT] "
                     + currentControllerInput.getMove().getLeft()
                     + " \t\t[RIGHT] "
@@ -228,7 +228,7 @@ public class Tank implements IRobot, MessageListenerInterface {
                     + " \t[WEAPON2] "
                     + currentControllerInput.getFire().getWeapon2();
         } else {
-            string = "Controller INPUT of Robot [" + getRoutingID()
+            string = "Controller INPUT of Robot [" + getRoutingId()
                     + "] NOT initialized!";
         }
         return string;
@@ -238,12 +238,12 @@ public class Tank implements IRobot, MessageListenerInterface {
     public String serverGameRegisteredToString() {
         String string;
         if (null != serverGameRegistered) {
-            string = "ServerGame REGISTERED of Robot [" + getRoutingID() + "]:"
+            string = "ServerGame REGISTERED of Robot [" + getRoutingId() + "]:"
                     + "\n\t|___final RoutingID: "
                     + serverGameRegistered.getRobotId() + "\n\t|___team: "
                     + serverGameRegistered.getTeam();
         } else {
-            string = "ServerGame REGISTERED of Robot [" + getRoutingID()
+            string = "ServerGame REGISTERED of Robot [" + getRoutingId()
                     + "] NOT initialized!";
         }
         return string;

@@ -27,7 +27,7 @@ import static org.powermock.api.easymock.PowerMock.replay;
  */
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ZMQ.Socket.class})
+@PrepareForTest(ZMQ.Socket.class)
 public class ZmqMessageFrameworkTest {
 
     final static Logger logback = LoggerFactory.getLogger(ZmqMessageFrameworkTest.class);
@@ -38,7 +38,6 @@ public class ZmqMessageFrameworkTest {
 
     @Mock
     private ZMQ.Socket mockedZmqSocketSend;
-    private ZMQ.Socket mockedZmqSocketRecv;
     private ZMQ.Context mockedZmqContext;
 
     @Before
@@ -48,7 +47,7 @@ public class ZmqMessageFrameworkTest {
 
         // Mock ZMQ behavior with mock sockets and context
         mockedZmqSocketSend = createNiceMock(ZMQ.Socket.class);
-        mockedZmqSocketRecv = createNiceMock(ZMQ.Socket.class);
+        final ZMQ.Socket mockedZmqSocketRecv = createNiceMock(ZMQ.Socket.class);
         mockedZmqContext = createNiceMock(ZMQ.Context.class);
 
         expect(mockedZmqSocketSend.send((byte[]) anyObject(), anyInt())).andStubReturn(true);
@@ -56,7 +55,7 @@ public class ZmqMessageFrameworkTest {
         expectLastCall().once();
         replay(mockedZmqSocketSend);
 
-        byte[] raw_zmq_message = "routingIdTest Registered messageTest".getBytes();
+        final byte[] raw_zmq_message = "routingIdTest Registered messageTest".getBytes();
         expect(mockedZmqSocketRecv.recv(ZMQ.NOBLOCK)).andStubReturn(raw_zmq_message);
         replay(mockedZmqSocketRecv);
 
@@ -85,8 +84,18 @@ public class ZmqMessageFrameworkTest {
     @Test
     public void testSendZmqMessage() {
         logback.info("IN");
-        assertTrue(zmf.sendZmqMessage(EnumMessageType.REGISTER, "BananaOne", new byte[0]));
-        assertTrue(zmf.sendZmqMessage(EnumMessageType.SERVER_ROBOT_STATE, "BananaOne", new byte[0]));
+        final byte[] msgBody = new String("msgBody").getBytes();
+
+        final ZmqMessageBOM registerMsg = new ZmqMessageBOM(EnumMessageType.REGISTER, "BananaOne", msgBody);
+        assertTrue(zmf.sendZmqMessage(registerMsg));
+
+        final ZmqMessageBOM serverRobotStateMsg = new ZmqMessageBOM(EnumMessageType.SERVER_ROBOT_STATE, "BananaOne", msgBody);
+        assertTrue(zmf.sendZmqMessage(serverRobotStateMsg));
+
+        final ZmqMessageBOM registerEmptyBodyMsg = new ZmqMessageBOM(EnumMessageType.REGISTER, "BananaOne", new byte[0]);
+        assertFalse("Zmq message should be empty and not sent",
+                zmf.sendZmqMessage(registerEmptyBodyMsg));
+
         logback.info("OUT");
     }
 
@@ -106,7 +115,7 @@ public class ZmqMessageFrameworkTest {
         zmf.setSkipIdenticalMessages(true);
 
         long timeout = 0;
-        while (zmf.nbMessagesSkipped < 1 && timeout < MAX_TIMEOUT_MS) {
+        while (1 > zmf.nbMessagesSkipped && MAX_TIMEOUT_MS > timeout) {
             try {
                 Thread.sleep(5);
                 timeout += 5;
@@ -115,7 +124,7 @@ public class ZmqMessageFrameworkTest {
             }
         }
 
-        assert (zmf.nbMessagesSkipped > 0);
+        assert (0 < zmf.nbMessagesSkipped);
 
         logback.info("OUT");
     }

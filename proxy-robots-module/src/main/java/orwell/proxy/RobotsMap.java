@@ -21,10 +21,10 @@ public class RobotsMap implements IRobotsMap {
     @Override
     public boolean add(IRobot robot) {
         if (this.array.contains(robot)) {
-            logback.warn("Robot " + robot.getRoutingID() + " is already present in RobotsList");
+            logback.warn("Robot " + robot.getRoutingId() + " is already present in RobotsList");
             return false;
         } else {
-            logback.debug("Adding robot " + robot.getRoutingID() + " to RobotsMap");
+            logback.debug("Adding robot " + robot.getRoutingId() + " to RobotsMap");
             return this.array.add(robot);
         }
     }
@@ -39,7 +39,7 @@ public class RobotsMap implements IRobotsMap {
     @Override
     public IRobot get(String routingId) {
         for (IRobot robot : this.array) {
-            if (robot.getRoutingID().compareTo(routingId) == 0) {
+            if (robot.getRoutingId().compareTo(routingId) == 0) {
                 return robot;
             }
         }

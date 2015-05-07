@@ -20,7 +20,7 @@ public class FrequencyFilter implements IFilter {
 
     @Override
     public ZmqMessageBOM getfilteredMessage(ZmqMessageBOM inputMessage) {
-        String routingId = inputMessage.getRoutingID();
+        String routingId = inputMessage.getRoutingId();
         EnumMessageType enumMessageType = inputMessage.getMsgType();
 
         if(!timeRegistry.containsKey(routingId))

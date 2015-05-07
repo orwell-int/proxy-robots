@@ -1,5 +1,6 @@
 package orwell.proxy;
 
+import org.easymock.Capture;
 import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.After;
@@ -32,6 +33,7 @@ public class ProxyRobotsTest {
 
     final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class);
     final static long MAX_TIMEOUT_MS = 500;
+    private static final String REGISTERED_ID = "BananaOne";
     private final ConfigCli configCli = new ConfigCli("/configurationTest.xml", EnumConfigFileType.RESOURCE);
     private ConfigFactory configFactory;
     private RobotsMap robotsMap;
@@ -68,11 +70,11 @@ public class ProxyRobotsTest {
         switch (messageType) {
             case REGISTERED:
                 specificMessage = getBytesRegistered();
-                zmqMessageHeader = iRobot.getRoutingID() + " " + "Registered" + " ";
+                zmqMessageHeader = iRobot.getRoutingId() + " " + "Registered" + " ";
                 break;
             case INPUT:
                 specificMessage = getBytesInput();
-                zmqMessageHeader = iRobot.getRoutingID() + " " + "Input" + " ";
+                zmqMessageHeader = iRobot.getRoutingId() + " " + "Input" + " ";
                 break;
             default:
                 logback.error("Case : Message type " + messageType + " not handled");
@@ -86,7 +88,7 @@ public class ProxyRobotsTest {
 
     public byte[] getBytesRegistered() {
         ServerGame.Registered.Builder registeredBuilder = ServerGame.Registered.newBuilder();
-        registeredBuilder.setRobotId("BananaOne");
+        registeredBuilder.setRobotId(REGISTERED_ID);
         registeredBuilder.setTeam("BLUE");
 
         return registeredBuilder.build().toByteArray();
@@ -124,9 +126,7 @@ public class ProxyRobotsTest {
         mockedZmqMessageFramework.addZmqMessageListener(anyObject(IZmqMessageListener.class));
         expectLastCall();
 
-        expect(mockedZmqMessageFramework.sendZmqMessage((EnumMessageType) anyObject(),
-                anyString(),
-                (byte[]) anyObject())).andReturn(true).anyTimes();
+        expect(mockedZmqMessageFramework.sendZmqMessage((ZmqMessageBOM) anyObject())).andReturn(true).anyTimes();
 
         replay(mockedZmqMessageFramework);
 
@@ -166,7 +166,7 @@ public class ProxyRobotsTest {
 
         myProxyRobots.connectToRobots();
         assertEquals(IRobot.EnumRegistrationState.NOT_REGISTERED, mockedTank.getRegistrationState());
-        assertEquals("tempRoutingId", mockedTank.getRoutingID());
+        assertEquals("tempRoutingId", mockedTank.getRoutingId());
 
         myProxyRobots.startCommunicationService();
 
@@ -175,7 +175,7 @@ public class ProxyRobotsTest {
         myProxyRobots.receivedNewZmq(new ZmqMessageDecoder(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
 
         assertEquals(IRobot.EnumRegistrationState.REGISTERED, mockedTank.getRegistrationState());
-        assertEquals("BananaOne", mockedTank.getRoutingID());
+        assertEquals("BananaOne", mockedTank.getRoutingId());
 
         logback.info("OUT");
     }
@@ -223,9 +223,8 @@ public class ProxyRobotsTest {
         logback.info("IN");
 
         // Build Mock of ZmqMessageFramework
-        expect(mockedZmqMessageFramework.sendZmqMessage(eq(EnumMessageType.SERVER_ROBOT_STATE),
-                anyString(),
-                (byte[]) anyObject())).andReturn(true).atLeastOnce();
+        final Capture<ZmqMessageBOM> captureMsg = new Capture<>();
+        expect(mockedZmqMessageFramework.sendZmqMessage(capture(captureMsg))).andReturn(true).atLeastOnce();
         replay(mockedZmqMessageFramework);
 
         // Instantiate main class with mock parameters
@@ -243,7 +242,11 @@ public class ProxyRobotsTest {
 
         myProxyRobots.sendServerRobotStates();
 
+        // ProxyRobot is expected to send a ServerRobotState message
         verify(mockedZmqMessageFramework);
+        assertEquals(EnumMessageType.SERVER_ROBOT_STATE, captureMsg.getValue().getMsgType());
+        assertEquals("RoutingId is supposed to have changed to the one provided by registered",
+                REGISTERED_ID, captureMsg.getValue().getRoutingId());
 
         logback.info("OUT");
     }

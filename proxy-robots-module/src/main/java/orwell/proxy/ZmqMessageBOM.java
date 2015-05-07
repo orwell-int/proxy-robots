@@ -13,14 +13,14 @@ public class ZmqMessageBOM {
     final static Logger logback = LoggerFactory.getLogger(ZmqMessageBOM.class);
 
     private final EnumMessageType msgType;
-    private final String routingID;
+    private final String routingId;
     private byte[] msgBytes;
 
     public ZmqMessageBOM(final EnumMessageType msgType,
-                         final String routingID,
+                         final String routingId,
                          final byte[] msgBytes) {
         this.msgType = msgType;
-        this.routingID = routingID;
+        this.routingId = routingId;
         this.msgBytes = msgBytes;
     }
 
@@ -28,8 +28,8 @@ public class ZmqMessageBOM {
         return msgType;
     }
 
-    public String getRoutingID() {
-        return routingID;
+    public String getRoutingId() {
+        return routingId;
     }
 
     /*
@@ -40,8 +40,8 @@ public class ZmqMessageBOM {
     }
 
     public byte[] getZmqMessageBytes() {
-        StringBuilder zmqMessageHeaderBuilder = new StringBuilder();
-        zmqMessageHeaderBuilder.append(routingID).append(" ");
+        final StringBuilder zmqMessageHeaderBuilder = new StringBuilder();
+        zmqMessageHeaderBuilder.append(routingId).append(" ");
 
 //        String zmqMessageHeader = routingID + " ";
         switch (msgType) {
@@ -70,7 +70,7 @@ public class ZmqMessageBOM {
     }
 
     public boolean isEmpty() {
-        return (null == msgBytes || routingID.isEmpty() || null == msgType);
+        return (null == msgBytes || 0 == msgBytes.length || routingId.isEmpty() || null == msgType);
     }
 
     /*
@@ -79,4 +79,5 @@ public class ZmqMessageBOM {
     public void clearMsgBytes() {
         this.msgBytes = null;
     }
+
 }

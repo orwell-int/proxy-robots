@@ -62,7 +62,7 @@ public class ProxyRobots implements IZmqMessageListener {
             Tank tank = new Tank(configTank.getBluetoothName(),
                     configTank.getBluetoothID(), camera, configTank.getImage());
             logback.info("Temporary routing ID: " + configTank.getTempRoutingID());
-            tank.setRoutingID(configTank.getTempRoutingID());
+            tank.setRoutingId(configTank.getTempRoutingID());
             this.robotsMap.add(tank);
         }
 
@@ -79,10 +79,10 @@ public class ProxyRobots implements IZmqMessageListener {
     protected void sendRegister() {
         for (IRobot robot : robotsMap.getConnectedRobots()) {
             robot.buildRegister();
-            final ZmqMessageBOM zmqMessageBOM = new ZmqMessageBOM(EnumMessageType.REGISTER, robot.getRoutingID(),
+            final ZmqMessageBOM zmqMessageBOM = new ZmqMessageBOM(EnumMessageType.REGISTER, robot.getRoutingId(),
                     robot.getRegisterBytes());
             mfProxy.sendZmqMessage(zmqMessageBOM);
-            logback.info("Robot [" + robot.getRoutingID()
+            logback.info("Robot [" + robot.getRoutingId()
                     + "] is trying to register itself to the server!");
         }
     }
@@ -94,8 +94,10 @@ public class ProxyRobots implements IZmqMessageListener {
                 continue;
             } else {
                 logback.debug("Sending a ServerRobotState message");
-                final ZmqMessageBOM zmqMessageBOM = new ZmqMessageBOM(EnumMessageType.REGISTER, robot.getRoutingID(),
-                        robot.getRegisterBytes());
+                final ZmqMessageBOM zmqMessageBOM =
+                        new ZmqMessageBOM(EnumMessageType.SERVER_ROBOT_STATE,
+                                robot.getRoutingId(),
+                                robot.getRegisterBytes());
                 mfProxy.sendZmqMessage(zmqMessageBOM);
             }
         }

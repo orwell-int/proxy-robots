@@ -10,9 +10,9 @@ public interface IRobot {
 
     EnumConnectionState getConnectionState();
 
-    String getRoutingID();
+    String getRoutingId();
 
-    void setRoutingID(String routingID);
+    void setRoutingId(String routingId);
 
     String getImage();
 
