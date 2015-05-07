@@ -5,5 +5,5 @@ package orwell.proxy;
  */
 public interface IFilter {
 
-    ZmqMessageBOM getfilteredMessage(ZmqMessageBOM inputMessage);
+    ZmqMessageBOM getFilteredMessage(ZmqMessageBOM inputMessage);
 }

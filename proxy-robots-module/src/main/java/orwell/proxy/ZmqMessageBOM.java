@@ -32,25 +32,25 @@ public class ZmqMessageBOM {
         return routingId;
     }
 
-    /*
-     * returns body of the message
+    /**
+     * @return the body of the message
      */
     public byte[] getMsgBodyBytes() {
         return msgBytes;
     }
 
+    /**
+     * @return the whole Zmq message that can be sent as is
+     */
     public byte[] getZmqMessageBytes() {
         final StringBuilder zmqMessageHeaderBuilder = new StringBuilder();
         zmqMessageHeaderBuilder.append(routingId).append(" ");
 
-//        String zmqMessageHeader = routingID + " ";
         switch (msgType) {
             case REGISTER:
-//                zmqMessageHeader += "Register ";
                 zmqMessageHeaderBuilder.append("Register ");
                 break;
             case SERVER_ROBOT_STATE:
-//                zmqMessageHeader += "ServerRobotState ";
                 zmqMessageHeaderBuilder.append("ServerRobotState ");
                 break;
             default:
@@ -59,7 +59,6 @@ public class ZmqMessageBOM {
 
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
-//            outputStream.write(zmqMessageHeader.getBytes());
             outputStream.write(zmqMessageHeaderBuilder.toString().getBytes());
             outputStream.write(msgBytes);
         } catch (IOException e) {

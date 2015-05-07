@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
 @RunWith(JUnit4.class)
 public class ConfigurationTest {
 
-    final static Logger logback = LoggerFactory.getLogger(ConfigurationTest.class);
+    private final static Logger logback = LoggerFactory.getLogger(ConfigurationTest.class);
     private static final String CONFIGURATION_FILE_TEST = "/configurationTest.xml";
     private static final String CONFIGURATION_URL_TEST = "https://github.com/orwell-int/proxy-robots/blob/master/proxy-robots-module/src/main/resources/configuration.xml";
 

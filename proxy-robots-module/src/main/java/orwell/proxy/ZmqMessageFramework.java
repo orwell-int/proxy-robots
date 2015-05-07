@@ -79,8 +79,9 @@ public class ZmqMessageFramework implements IZmqMessageFramework {
     @Override
     public boolean sendZmqMessage(ZmqMessageBOM zmqMessageBOM) {
 
+        //TODO add filter
 
-        if(zmqMessageBOM.isEmpty())
+        if (zmqMessageBOM.isEmpty())
             return false;
         else
             return sender.send(zmqMessageBOM.getZmqMessageBytes(), 0);
