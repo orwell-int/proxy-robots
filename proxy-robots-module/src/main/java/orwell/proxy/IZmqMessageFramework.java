@@ -10,7 +10,7 @@ public interface IZmqMessageFramework {
      *
      * @param skipIdenticalMessages : if true, the second identical message (in a row) will be ignored
      */
-    void setSkipIdenticalMessages(boolean skipIdenticalMessages);
+    void setSkipIncomingIdenticalMessages(boolean skipIdenticalMessages);
 
     boolean connectToServer(final String serverIp,
                             final int pushPort,

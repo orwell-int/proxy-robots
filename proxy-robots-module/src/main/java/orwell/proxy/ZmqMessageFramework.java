@@ -50,7 +50,7 @@ public class ZmqMessageFramework implements IZmqMessageFramework {
     }
 
     @Override
-    public void setSkipIdenticalMessages(final boolean skipIdenticalMessages) {
+    public void setSkipIncomingIdenticalMessages(final boolean skipIdenticalMessages) {
         isSkipIdenticalMessages = skipIdenticalMessages;
     }
 

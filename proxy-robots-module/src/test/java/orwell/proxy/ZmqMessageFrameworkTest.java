@@ -13,6 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
+import java.util.ArrayList;
+
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -32,6 +34,10 @@ public class ZmqMessageFrameworkTest {
 
     final static Logger logback = LoggerFactory.getLogger(ZmqMessageFrameworkTest.class);
     final static long MAX_TIMEOUT_MS = 500;
+    private final String TEST_ROUTING_ID_1 = "testRoutingId_1";
+    private final String TEST_ROUTING_ID_2 = "testRoutingId_2";
+    private final long OUTGOING_MSG_PERIOD_HIGH = 50000;
+    private final FrequencyFilter frequencyFilter = new FrequencyFilter(OUTGOING_MSG_PERIOD_HIGH);
 
     @TestSubject
     private ZmqMessageFramework zmf;
@@ -43,7 +49,9 @@ public class ZmqMessageFrameworkTest {
     @Before
     public void setUp() {
         logback.info("IN");
-        zmf = new ZmqMessageFramework(1000, 1000, null);
+        ArrayList<IFilter> filters = new ArrayList<>();
+        filters.add(frequencyFilter);
+        zmf = new ZmqMessageFramework(1000, 1000, filters);
 
         // Mock ZMQ behavior with mock sockets and context
         mockedZmqSocketSend = createNiceMock(ZMQ.Socket.class);
@@ -86,13 +94,13 @@ public class ZmqMessageFrameworkTest {
         logback.info("IN");
         final byte[] msgBody = new String("msgBody").getBytes();
 
-        final ZmqMessageBOM registerMsg = new ZmqMessageBOM(EnumMessageType.REGISTER, "BananaOne", msgBody);
+        final ZmqMessageBOM registerMsg = new ZmqMessageBOM(EnumMessageType.REGISTER, TEST_ROUTING_ID_1, msgBody);
         assertTrue(zmf.sendZmqMessage(registerMsg));
 
-        final ZmqMessageBOM serverRobotStateMsg = new ZmqMessageBOM(EnumMessageType.SERVER_ROBOT_STATE, "BananaOne", msgBody);
+        final ZmqMessageBOM serverRobotStateMsg = new ZmqMessageBOM(EnumMessageType.SERVER_ROBOT_STATE, TEST_ROUTING_ID_1, msgBody);
         assertTrue(zmf.sendZmqMessage(serverRobotStateMsg));
 
-        final ZmqMessageBOM registerEmptyBodyMsg = new ZmqMessageBOM(EnumMessageType.REGISTER, "BananaOne", new byte[0]);
+        final ZmqMessageBOM registerEmptyBodyMsg = new ZmqMessageBOM(EnumMessageType.REGISTER, TEST_ROUTING_ID_1, new byte[0]);
         assertFalse("Zmq message should be empty and not sent",
                 zmf.sendZmqMessage(registerEmptyBodyMsg));
 
@@ -108,11 +116,11 @@ public class ZmqMessageFrameworkTest {
     }
 
     @Test
-    public void testSetSkipIdenticalMessages() {
+    public void testSetSkipIncomingIdenticalMessages() {
         logback.info("IN");
 
         zmf.connectToServer("127.0.0.1", 9000, 9001);
-        zmf.setSkipIdenticalMessages(true);
+        zmf.setSkipIncomingIdenticalMessages(true);
 
         long timeout = 0;
         while (1 > zmf.nbMessagesSkipped && MAX_TIMEOUT_MS > timeout) {
@@ -129,8 +137,33 @@ public class ZmqMessageFrameworkTest {
         logback.info("OUT");
     }
 
-    //TODO new test for filtering step
+    @Test
+    public void testSendZmqMessage_withFilter() throws Exception {
+        logback.info("IN");
+        final byte[] msgBody = new String("msgBody").getBytes();
 
+        final ZmqMessageBOM registerMsg =
+                new ZmqMessageBOM(EnumMessageType.REGISTER, TEST_ROUTING_ID_1, msgBody);
+        assertTrue(zmf.sendZmqMessage(registerMsg));
+
+        // Second identical message trying to be sent during the filtering period,
+        // So the sending fails
+        Thread.sleep(1);
+        assertFalse(zmf.sendZmqMessage(registerMsg));
+
+        // Third message is of a different type, so it is not filtered
+        Thread.sleep(1);
+        final ZmqMessageBOM serverRobotStateMsg =
+                new ZmqMessageBOM(EnumMessageType.SERVER_ROBOT_STATE, TEST_ROUTING_ID_1, msgBody);
+        assertTrue(zmf.sendZmqMessage(serverRobotStateMsg));
+
+        // Fourth message is of a different routingId, so it is not filtered
+        Thread.sleep(1);
+        final ZmqMessageBOM serverRobotStateMsg_r2 =
+                new ZmqMessageBOM(EnumMessageType.SERVER_ROBOT_STATE, TEST_ROUTING_ID_2, msgBody);
+        assertTrue(zmf.sendZmqMessage(serverRobotStateMsg_r2));
+        logback.info("OUT");
+    }
 
     @After
     public void tearDown() {
