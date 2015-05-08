@@ -266,6 +266,12 @@ public class ProxyRobotsTest {
         expectLastCall().once();
         replay(mockedZmqMessageFramework);
 
+        // We are testing the real class, so we do not want to lose time
+        // trying to connect to robots by bluetooth
+        // Hence we provide an empty config file
+        final ConfigCli localConfigCli = new ConfigCli("/configurationTest_NoRobots.xml", EnumConfigFileType.RESOURCE);
+        configFactory = new ConfigFactory(localConfigCli);
+
         // Instantiate main class with mock parameters
         // We build an empty robot map
         myProxyRobots = new ProxyRobots(mockedZmqMessageFramework,

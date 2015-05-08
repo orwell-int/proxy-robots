@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding='utf-8'?>
+<setup>
+    <proxy>
+        <senderLinger>1000</senderLinger>
+        <receiverLinger>1000</receiverLinger>
+        <outgoingMsgFrequency>50</outgoingMsgFrequency>
+        <server-game name='localhost' priority="1">
+            <ip>localhost</ip>
+            <pushPort>9000</pushPort>
+            <subPort>9001</subPort>
+        </server-game>
+    </proxy>
+
+    <robots>
+        <tank tempRoutingID='BananaOne' toRegister='0'>
+            <bluetoothName>Daneel</bluetoothName>
+            <bluetoothID>001653119482</bluetoothID>
+            <camera>
+                <ip>192.168.1.50</ip>
+                <port>9100</port>
+            </camera>
+            <image>Yellow hull -- TO BE BETTER CONFIGURED</image>
+        </tank>
+    </robots>
+</setup>
