@@ -110,9 +110,8 @@ public class Tank implements IRobot, MessageListenerInterface {
                 mfTank.SendMessage(msg);
             }
         } catch (InvalidProtocolBufferException e) {
-            // TODO Auto-generated catch block
             logback.info("setControllerInput protobuff exception");
-            e.printStackTrace();
+            logback.error(e.getMessage());
         }
     }
 
@@ -174,9 +173,8 @@ public class Tank implements IRobot, MessageListenerInterface {
                 logback.info("Registered robot: " + serverGameRegisteredToString());
             }
         } catch (InvalidProtocolBufferException e) {
-            // TODO Auto-generated catch block
             logback.error("setRegistered protobuff exception");
-            e.printStackTrace();
+            logback.error(e.getMessage());
         }
     }
 

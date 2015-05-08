@@ -4,6 +4,8 @@ import com.google.protobuf.InvalidProtocolBufferException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import orwell.messages.Controller;
 
 import static org.junit.Assert.*;
@@ -16,6 +18,7 @@ import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
 public class ProtobufTest {
+    final static Logger logback = LoggerFactory.getLogger(ProtobufTest.class);
 
     private Controller.Input buildTestInput() {
         Controller.Input.Builder testInput = Controller.Input.newBuilder();
@@ -37,6 +40,8 @@ public class ProtobufTest {
 
     @Test
     public void testControllerInput() {
+        logback.debug("IN");
+
         Controller.Input input;
 
         try {
@@ -50,10 +55,11 @@ public class ProtobufTest {
             assertFalse(input.getFire().getWeapon1());
             assertTrue(input.getFire().getWeapon2());
         } catch (InvalidProtocolBufferException e) {
-            // TODO Auto-generated catch block
-            System.out.println("setControllerInput protobuff exception");
+            logback.error("setControllerInput protobuff exception");
+            logback.error(e.getMessage());
             fail(e.toString());
         }
+        logback.debug("OUT");
     }
 
 }

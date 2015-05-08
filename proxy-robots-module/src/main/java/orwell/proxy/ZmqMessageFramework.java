@@ -73,7 +73,6 @@ public class ZmqMessageFramework implements IZmqMessageFramework {
             reader.start(); // Start to listen for incoming messages
             connected = true;
         } catch (IllegalThreadStateException e) {
-            // TODO Auto-generated catch block
             logback.error(e.getMessage());
         }
         return connected;
