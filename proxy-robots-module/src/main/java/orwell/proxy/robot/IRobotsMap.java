@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.robot;
 
 import java.util.ArrayList;
 
@@ -19,12 +19,12 @@ public interface IRobotsMap {
     ArrayList<IRobot> getRobotsArray();
 
     /*
-     * @returns all robots not connected to the proxy
+     * @returns all robots not isConnected to the proxy
      */
     public ArrayList<IRobot> getNotConnectedRobots();
 
     /*
-     * @returns all robots connected to the proxy
+     * @returns all robots isConnected to the proxy
      */
     ArrayList<IRobot> getConnectedRobots();
 

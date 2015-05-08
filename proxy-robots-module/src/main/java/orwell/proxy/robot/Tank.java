@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.robot;
 
 import com.google.protobuf.InvalidProtocolBufferException;
 import lejos.mf.common.MessageListenerInterface;
@@ -13,6 +13,7 @@ import orwell.messages.Controller.Input;
 import orwell.messages.Robot.Register;
 import orwell.messages.Robot.ServerRobotState;
 import orwell.messages.ServerGame.Registered;
+import orwell.proxy.Utils;
 
 import java.util.UUID;
 
@@ -143,7 +144,7 @@ public class Tank implements IRobot, MessageListenerInterface {
 
     @Override
     public byte[] getAndClearZmqServerRobotStateBytes() {
-        ServerRobotState srs = getTankDeltaState().getAndClearServerRobotState();
+        ServerRobotState srs = getTankDeltaState().getServerRobotState_And_ClearDelta();
         if (null != srs)
             return srs.toByteArray();
         else
@@ -186,7 +187,7 @@ public class Tank implements IRobot, MessageListenerInterface {
         if (isConnected) {
             this.connectionState = EnumConnectionState.CONNECTED;
             logback.info("Robot [" + getRoutingId()
-                    + "] is connected to the proxy!");
+                    + "] is isConnected to the proxy!");
         } else {
             this.connectionState = EnumConnectionState.CONNECTION_FAILED;
             logback.warn("Robot [" + getRoutingId()

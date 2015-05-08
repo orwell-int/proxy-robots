@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.robot;
 
 /**
  * Created by parapampa on 11/04/15.

@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import orwell.messages.Controller;
 import orwell.messages.Robot;
 import orwell.messages.ServerGame;
-import orwell.proxy.IRobot;
+import orwell.proxy.robot.IRobot;
 
 /**
  * Created by parapampa on 03/05/15.

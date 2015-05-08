@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.config;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -8,7 +8,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.config.*;
 
 import java.io.File;
 import java.io.IOException;

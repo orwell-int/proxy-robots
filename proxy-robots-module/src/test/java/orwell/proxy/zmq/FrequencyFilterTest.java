@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.zmq;
 
 import org.junit.After;
 import org.junit.Before;
@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import orwell.proxy.EnumMessageType;
 
 import static org.junit.Assert.*;
 

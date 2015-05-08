@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.zmq;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,8 +18,8 @@ public class ZmqMessageFramework implements IZmqMessageFramework {
     private final ZMQ.Socket receiver;
     final private ArrayList<IFilter> filterList;
     protected ArrayList<IZmqMessageListener> zmqMessageListeners;
-    protected boolean connected = false;
-    protected int nbMessagesSkipped = 0;
+    private boolean isConnected = false;
+    private int nbMessagesSkipped = 0;
     private ZmqReader reader;
     private boolean isSkipIdenticalMessages = false;
 
@@ -71,11 +71,11 @@ public class ZmqMessageFramework implements IZmqMessageFramework {
                 setupNewReader();
             }
             reader.start(); // Start to listen for incoming messages
-            connected = true;
+            isConnected = true;
         } catch (IllegalThreadStateException e) {
             logback.error(e.getMessage());
         }
-        return connected;
+        return isConnected;
     }
 
     @Override
@@ -109,7 +109,7 @@ public class ZmqMessageFramework implements IZmqMessageFramework {
     @Override
     public void close() {
         logback.info("Stopping communication");
-        connected = false;
+        isConnected = false;
     }
 
     private class ZmqReader extends Thread {
@@ -118,7 +118,7 @@ public class ZmqMessageFramework implements IZmqMessageFramework {
 
         @Override
         public void run() {
-            while (connected) {
+            while (isConnected) {
                 final byte[] raw_zmq_message = receiver.recv(ZMQ.NOBLOCK);
                 if (null != raw_zmq_message) {
                     synchronized (rXguard) {
@@ -148,5 +148,14 @@ public class ZmqMessageFramework implements IZmqMessageFramework {
             Thread.yield();
             logback.info("Communication stopped");
         }
+    }
+
+    @Override
+    public boolean isConnectedToServer() {
+        return isConnected;
+    }
+
+    public int getNbMessagesSkipped() {
+        return nbMessagesSkipped;
     }
 }

@@ -16,6 +16,12 @@ import orwell.proxy.config.ConfigCli;
 import orwell.proxy.config.ConfigFactory;
 import orwell.proxy.config.EnumConfigFileType;
 import orwell.proxy.mock.MockedTank;
+import orwell.proxy.robot.IRobot;
+import orwell.proxy.robot.RobotsMap;
+import orwell.proxy.zmq.IZmqMessageListener;
+import orwell.proxy.zmq.ZmqMessageBOM;
+import orwell.proxy.zmq.ZmqMessageDecoder;
+import orwell.proxy.zmq.ZmqMessageFramework;
 
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
@@ -197,7 +203,7 @@ public class ProxyRobotsTest {
 
         waitForCloseOrTimeout();
 
-        // So the map of connected tanks is empty
+        // So the map of isConnected tanks is empty
         assert (myProxyRobots.robotsMap.getConnectedRobots().isEmpty());
 
         logback.debug("OUT");

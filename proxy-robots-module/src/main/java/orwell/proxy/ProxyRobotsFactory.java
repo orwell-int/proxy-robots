@@ -2,6 +2,10 @@ package orwell.proxy;
 
 import orwell.proxy.config.ConfigCli;
 import orwell.proxy.config.ConfigFactory;
+import orwell.proxy.robot.RobotsMap;
+import orwell.proxy.zmq.FrequencyFilter;
+import orwell.proxy.zmq.IFilter;
+import orwell.proxy.zmq.ZmqMessageFramework;
 
 import java.util.ArrayList;
 

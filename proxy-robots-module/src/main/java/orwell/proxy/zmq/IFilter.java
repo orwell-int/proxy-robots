@@ -1,4 +1,6 @@
-package orwell.proxy;
+package orwell.proxy.zmq;
+
+import orwell.proxy.zmq.ZmqMessageBOM;
 
 /**
  * Created by miludmann on 5/6/15.

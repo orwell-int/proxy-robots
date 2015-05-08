@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.robot;
 
 public class Camera implements ICamera {
 

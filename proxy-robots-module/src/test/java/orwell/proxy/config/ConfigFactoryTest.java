@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.config;
 
 import org.junit.After;
 import org.junit.Before;
@@ -7,9 +7,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.config.ConfigCli;
-import orwell.proxy.config.ConfigFactory;
-import orwell.proxy.config.EnumConfigFileType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

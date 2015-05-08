@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.robot;
 
 import lejos.mf.common.UnitMessage;
 import lejos.mf.common.UnitMessageType;

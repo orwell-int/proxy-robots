@@ -6,6 +6,14 @@ import orwell.proxy.config.ConfigCli;
 import orwell.proxy.config.ConfigTank;
 import orwell.proxy.config.IConfigRobots;
 import orwell.proxy.config.IConfigServerGame;
+import orwell.proxy.robot.Camera;
+import orwell.proxy.robot.IRobot;
+import orwell.proxy.robot.IRobotsMap;
+import orwell.proxy.robot.Tank;
+import orwell.proxy.zmq.IZmqMessageFramework;
+import orwell.proxy.zmq.IZmqMessageListener;
+import orwell.proxy.zmq.ZmqMessageBOM;
+import orwell.proxy.zmq.ZmqMessageDecoder;
 
 public class ProxyRobots implements IZmqMessageListener {
     final static Logger logback = LoggerFactory.getLogger(ProxyRobots.class);

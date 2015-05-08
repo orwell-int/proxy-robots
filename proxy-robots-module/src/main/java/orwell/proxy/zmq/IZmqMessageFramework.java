@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.zmq;
 
 /**
  * Created by parapampa on 03/05/15.
@@ -21,4 +21,6 @@ public interface IZmqMessageFramework {
     void addZmqMessageListener(final IZmqMessageListener zmqMsgListener);
 
     void close();
+
+    boolean isConnectedToServer();
 }

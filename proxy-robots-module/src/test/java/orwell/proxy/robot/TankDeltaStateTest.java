@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.robot;
 
 import org.easymock.TestSubject;
 import org.junit.Before;
@@ -64,7 +64,7 @@ public class TankDeltaStateTest {
 
         tankDeltaState.setNewState(EnumSensor.RFID, "1234567890");
 
-        ServerRobotState serverRobotState = tankDeltaState.getAndClearServerRobotState();
+        ServerRobotState serverRobotState = tankDeltaState.getServerRobotState_And_ClearDelta();
         assertEquals(1, serverRobotState.getRfidCount());
         ServerRobotState clearedServerRobotState = tankDeltaState.getServerRobotState();
         assertEquals(0, clearedServerRobotState.getRfidCount());

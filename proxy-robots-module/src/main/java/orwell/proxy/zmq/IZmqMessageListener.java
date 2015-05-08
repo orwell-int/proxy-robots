@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.zmq;
 
 /**
  * Created by parapampa on 08/03/15.

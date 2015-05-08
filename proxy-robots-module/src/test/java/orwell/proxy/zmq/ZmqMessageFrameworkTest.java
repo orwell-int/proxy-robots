@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.zmq;
 
 import org.easymock.Mock;
 import org.easymock.TestSubject;
@@ -12,6 +12,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
+import orwell.proxy.EnumMessageType;
 
 import java.util.ArrayList;
 
@@ -111,7 +112,7 @@ public class ZmqMessageFrameworkTest {
     public void testClose() {
         logback.info("IN");
         zmf.close();
-        assertFalse(zmf.connected);
+        assertFalse(zmf.isConnectedToServer());
         logback.info("OUT");
     }
 
@@ -123,7 +124,7 @@ public class ZmqMessageFrameworkTest {
         zmf.setSkipIncomingIdenticalMessages(true);
 
         long timeout = 0;
-        while (1 > zmf.nbMessagesSkipped && MAX_TIMEOUT_MS > timeout) {
+        while (1 > zmf.getNbMessagesSkipped() && MAX_TIMEOUT_MS > timeout) {
             try {
                 Thread.sleep(5);
                 timeout += 5;
@@ -132,7 +133,7 @@ public class ZmqMessageFrameworkTest {
             }
         }
 
-        assert (0 < zmf.nbMessagesSkipped);
+        assert (0 < zmf.getNbMessagesSkipped());
 
         logback.info("OUT");
     }

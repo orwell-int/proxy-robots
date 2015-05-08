@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.robot;
 
 import com.google.protobuf.MessageLiteOrBuilder;
 

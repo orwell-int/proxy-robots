@@ -1,7 +1,8 @@
-package orwell.proxy;
+package orwell.proxy.zmq;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import orwell.proxy.EnumMessageType;
 
 import java.util.HashMap;
 

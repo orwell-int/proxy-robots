@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.robot;
 
 import com.google.protobuf.MessageLiteOrBuilder;
 import org.slf4j.Logger;
@@ -131,7 +131,12 @@ public class TankDeltaState {
         previousStateMap.get(enumSensor).setPreviousValue(newState);
     }
 
-    protected ServerRobotState getServerRobotState() {
+    /**
+     * This will not clear the delta state,
+     * future access will continue to build on the previous state
+     * @return latest ServerRobotState
+     */
+    public ServerRobotState getServerRobotState() {
         return serverRobotStateBuilder.build();
     }
 
@@ -140,7 +145,13 @@ public class TankDeltaState {
         serverRobotStateBuilder.clearColour();
     }
 
-    public ServerRobotState getAndClearServerRobotState() {
+    /**
+     * This will clear the ServerRobotState jut got by the method
+     * so as to build a real delta state
+     * This should be used in a normal real-time run
+     * @return latest ServerRobotState
+     */
+    public ServerRobotState getServerRobotState_And_ClearDelta() {
         if (serverRobotStateBuilder.getRfidList().isEmpty() &&
                 serverRobotStateBuilder.getColourList().isEmpty()) {
             return null;

@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.zmq;
 
 import org.easymock.TestSubject;
 import org.junit.After;
@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import orwell.messages.Controller;
 import orwell.messages.Robot;
 import orwell.messages.ServerGame;
+import orwell.proxy.EnumMessageType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
