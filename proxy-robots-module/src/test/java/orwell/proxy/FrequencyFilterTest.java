@@ -21,23 +21,25 @@ public class FrequencyFilterTest {
     private final static Logger logback = LoggerFactory.getLogger(FrequencyFilterTest.class);
     private final long OUTGOING_MSG_PERIOD_HIGH = 50000;
     private final long OUTGOING_MSG_PERIOD_LOW = 0;
-    private final String TEST_ROUTING_ID = "testRoutingId" ;
-    private final String TEST_MSG_BODY = "testMsgBody" ;
+    private final String TEST_ROUTING_ID_1 = "testRoutingId_1";
+    private final String TEST_ROUTING_ID_2 = "testRoutingId_2";
+    private final String TEST_MSG_BODY = "testMsgBody";
     private FrequencyFilter frequencyFilter;
-    private ZmqMessageBOM zmqRegisterBOM;
+    private ZmqMessageBOM zmqRegisterBOM_1;
+    private ZmqMessageBOM zmqRegisterBOM_2;
     private ZmqMessageBOM zmqServerRobotStateBOM;
-
 
 
     @Before
     public void setUp() throws Exception {
-        zmqRegisterBOM = getTestMessageBom(EnumMessageType.REGISTER);
-        zmqServerRobotStateBOM = getTestMessageBom(EnumMessageType.SERVER_ROBOT_STATE);
+        zmqRegisterBOM_1 = getTestMessageBom(EnumMessageType.REGISTER, TEST_ROUTING_ID_1);
+        zmqRegisterBOM_2 = getTestMessageBom(EnumMessageType.REGISTER, TEST_ROUTING_ID_2);
+        zmqServerRobotStateBOM = getTestMessageBom(EnumMessageType.SERVER_ROBOT_STATE, TEST_ROUTING_ID_1);
     }
 
-    private ZmqMessageBOM getTestMessageBom(final EnumMessageType messageType) {
+    private ZmqMessageBOM getTestMessageBom(final EnumMessageType messageType, String routingId) {
         final byte[] msgBody = new String(TEST_MSG_BODY).getBytes();
-        return new ZmqMessageBOM(messageType, TEST_ROUTING_ID, msgBody);
+        return new ZmqMessageBOM(messageType, routingId, msgBody);
     }
 
     @Test
@@ -45,11 +47,11 @@ public class FrequencyFilterTest {
         logback.debug("IN");
         frequencyFilter = new FrequencyFilter(OUTGOING_MSG_PERIOD_HIGH);
 
-        final ZmqMessageBOM filteredZmqMessage = frequencyFilter.getFilteredMessage(zmqRegisterBOM);
+        final ZmqMessageBOM filteredZmqMessage = frequencyFilter.getFilteredMessage(zmqRegisterBOM_1);
         assertNotNull("Filtered message should not be empty",
                 filteredZmqMessage.getMsgBodyBytes());
         assertArrayEquals("Filtered message body should not be altered",
-                zmqRegisterBOM.getMsgBodyBytes(),
+                zmqRegisterBOM_1.getMsgBodyBytes(),
                 filteredZmqMessage.getMsgBodyBytes());
         logback.debug("OUT");
     }
@@ -59,11 +61,11 @@ public class FrequencyFilterTest {
         logback.debug("IN");
         frequencyFilter = new FrequencyFilter(OUTGOING_MSG_PERIOD_HIGH);
 
-        assertNotNull(frequencyFilter.getFilteredMessage(zmqRegisterBOM));
+        assertNotNull(frequencyFilter.getFilteredMessage(zmqRegisterBOM_1));
 
         // The period of the filter is of a low tolerance,
         // so the second message should be empty as filtered
-        assertTrue(frequencyFilter.getFilteredMessage(zmqRegisterBOM).isEmpty());
+        assertTrue(frequencyFilter.getFilteredMessage(zmqRegisterBOM_1).isEmpty());
         logback.debug("OUT");
     }
 
@@ -72,11 +74,11 @@ public class FrequencyFilterTest {
         logback.debug("IN");
         frequencyFilter = new FrequencyFilter(OUTGOING_MSG_PERIOD_LOW);
 
-        assertNotNull(frequencyFilter.getFilteredMessage(zmqRegisterBOM));
+        assertNotNull(frequencyFilter.getFilteredMessage(zmqRegisterBOM_1));
         Thread.sleep(1);
         // The period of the filter is of a high tolerance,
         // so the second message should not be filtered
-        assertFalse(frequencyFilter.getFilteredMessage(zmqRegisterBOM).isEmpty());
+        assertFalse(frequencyFilter.getFilteredMessage(zmqRegisterBOM_1).isEmpty());
         logback.debug("OUT");
     }
 
@@ -85,7 +87,7 @@ public class FrequencyFilterTest {
         logback.debug("IN");
         frequencyFilter = new FrequencyFilter(OUTGOING_MSG_PERIOD_HIGH);
 
-        assertNotNull(frequencyFilter.getFilteredMessage(zmqRegisterBOM));
+        assertNotNull(frequencyFilter.getFilteredMessage(zmqRegisterBOM_1));
         Thread.sleep(1);
         // The period of the filter is of a low tolerance,
         // but the message type is different
@@ -94,8 +96,23 @@ public class FrequencyFilterTest {
         logback.debug("OUT");
     }
 
+    @Test
+    public void testGetFilteredMessage_DifferentRoutingIds() throws Exception {
+        logback.debug("IN");
+        frequencyFilter = new FrequencyFilter(OUTGOING_MSG_PERIOD_HIGH);
 
-    // TODO new test with multiple routingIds
+        assertNotNull(frequencyFilter.getFilteredMessage(zmqRegisterBOM_1));
+        Thread.sleep(1);
+        // The period of the filter is of a high tolerance,
+        // so the identical second message should be filtered
+        assertTrue(frequencyFilter.getFilteredMessage(zmqRegisterBOM_1).isEmpty());
+
+        Thread.sleep(1);
+        // A third message with different routingId should NOT be filtered
+        assertFalse(frequencyFilter.getFilteredMessage(zmqRegisterBOM_2).isEmpty());
+
+        logback.debug("OUT");
+    }
 
     @After
     public void tearDown() throws Exception {
