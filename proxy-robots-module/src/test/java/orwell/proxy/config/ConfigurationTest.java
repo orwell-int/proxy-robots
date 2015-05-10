@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
 public class ConfigurationTest {
 
     private final static Logger logback = LoggerFactory.getLogger(ConfigurationTest.class);
-    private static final String CONFIGURATION_FILE_TEST = "/configurationTest.xml";
+    private static final String CONFIGURATION_RESOURCE_TEST = "/configurationTest.xml";
     private static final String CONFIGURATION_URL_TEST = "https://github.com/orwell-int/proxy-robots/blob/master/proxy-robots-module/src/main/resources/configuration.xml";
 
     @Rule
@@ -39,21 +39,21 @@ public class ConfigurationTest {
     @Before
     public void setUp() {
 
-        assertNotNull("Test file missing", getClass().getResource(CONFIGURATION_FILE_TEST));
+        assertNotNull("Test file missing", getClass().getResource(CONFIGURATION_RESOURCE_TEST));
     }
 
 
     @Test
     public void testPopulateConfigModel() {
 
-        assertTrue(getConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).isPopulated);
+        assertTrue(getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).isPopulated);
     }
 
     @Test
     public void testProxyList() {
 
         final ConfigProxy configProxy;
-        configProxy = getConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
+        configProxy = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                 .getConfigProxy();
 
 
@@ -74,7 +74,7 @@ public class ConfigurationTest {
 
         final ConfigServerGame configServerGame;
         try {
-            configServerGame = getConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
+            configServerGame = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                     .getConfigProxy().getConfigServerGame();
             assertEquals("192.168.1.46", configServerGame.getIp());
             assertEquals(9000, configServerGame.getPushPort());
@@ -88,7 +88,7 @@ public class ConfigurationTest {
     public void testConfigProxy() {
 
         final ConfigProxy configProxy;
-        configProxy = getConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
+        configProxy = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                 .getConfigProxy();
 
         assertEquals(1000, configProxy.getSenderLinger());
@@ -100,7 +100,7 @@ public class ConfigurationTest {
     public void testRobotsList() {
 
         final ConfigRobots configRobots;
-        configRobots = getConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
+        configRobots = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                 .getConfigRobots();
 
 
@@ -117,7 +117,7 @@ public class ConfigurationTest {
 
         final ConfigTank configTank;
         try {
-            configTank = getConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel().getConfigRobots()
+            configTank = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel().getConfigRobots()
                     .getConfigTank("BananaOne");
             assertEquals("001653119482", configTank.getBluetoothID());
             assertEquals("Daneel", configTank.getBluetoothName());
@@ -134,7 +134,7 @@ public class ConfigurationTest {
     public void testRobotsToRegister() {
 
         final ConfigRobots configRobots;
-        configRobots = getConfigTest(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
+        configRobots = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                 .getConfigRobots();
 
 
