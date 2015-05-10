@@ -24,16 +24,16 @@ import static org.powermock.api.easymock.PowerMock.expectLastCall;
 import static org.powermock.api.easymock.PowerMock.replay;
 
 /**
- * Tests for {@link ZmqMessageFramework}.
+ * Tests for {@link ZmqMessageBroker}.
  * <p/>
  * Created by parapampa on 15/03/15.
  */
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ZMQ.Socket.class)
-public class ZmqMessageFrameworkTest {
+public class ZmqMessageBrokerTest {
 
-    final static Logger logback = LoggerFactory.getLogger(ZmqMessageFrameworkTest.class);
+    final static Logger logback = LoggerFactory.getLogger(ZmqMessageBrokerTest.class);
     final static long MAX_TIMEOUT_MS = 500;
     private final String TEST_ROUTING_ID_1 = "testRoutingId_1";
     private final String TEST_ROUTING_ID_2 = "testRoutingId_2";
@@ -41,7 +41,7 @@ public class ZmqMessageFrameworkTest {
     private final FrequencyFilter frequencyFilter = new FrequencyFilter(OUTGOING_MSG_PERIOD_HIGH);
 
     @TestSubject
-    private ZmqMessageFramework zmf;
+    private ZmqMessageBroker zmf;
 
     @Mock
     private ZMQ.Socket mockedZmqSocketSend;
@@ -52,7 +52,7 @@ public class ZmqMessageFrameworkTest {
         logback.info("IN");
         ArrayList<IFilter> filters = new ArrayList<>();
         filters.add(frequencyFilter);
-        zmf = new ZmqMessageFramework(1000, 1000, filters);
+        zmf = new ZmqMessageBroker(1000, 1000, filters);
 
         // Mock ZMQ behavior with mock sockets and context
         mockedZmqSocketSend = createNiceMock(ZMQ.Socket.class);
@@ -73,9 +73,9 @@ public class ZmqMessageFrameworkTest {
         replay(mockedZmqContext);
 
         try {
-            MemberModifier.field(ZmqMessageFramework.class, "context").set(zmf, mockedZmqContext);
-            MemberModifier.field(ZmqMessageFramework.class, "sender").set(zmf, mockedZmqSocketSend);
-            MemberModifier.field(ZmqMessageFramework.class, "receiver").set(zmf, mockedZmqSocketRecv);
+            MemberModifier.field(ZmqMessageBroker.class, "context").set(zmf, mockedZmqContext);
+            MemberModifier.field(ZmqMessageBroker.class, "sender").set(zmf, mockedZmqSocketSend);
+            MemberModifier.field(ZmqMessageBroker.class, "receiver").set(zmf, mockedZmqSocketRecv);
         } catch (final IllegalAccessException e) {
             logback.error(e.getMessage());
         }

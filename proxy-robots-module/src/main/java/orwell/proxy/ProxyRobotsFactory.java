@@ -5,7 +5,7 @@ import orwell.proxy.config.ConfigFactory;
 import orwell.proxy.robot.RobotsMap;
 import orwell.proxy.zmq.FrequencyFilter;
 import orwell.proxy.zmq.IFilter;
-import orwell.proxy.zmq.ZmqMessageFramework;
+import orwell.proxy.zmq.ZmqMessageBroker;
 
 import java.util.ArrayList;
 
@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public class ProxyRobotsFactory {
     private final ConfigFactory configFactory;
-    private final ZmqMessageFramework zmqMessageFramework;
+    private final ZmqMessageBroker zmqMessageFramework;
 
     public ProxyRobotsFactory(final ConfigCli configPathType) {
         configFactory = new ConfigFactory(configPathType);
@@ -22,7 +22,7 @@ public class ProxyRobotsFactory {
         if (null == configFactory.getConfigProxy()) {
             zmqMessageFramework = null;
         } else {
-            zmqMessageFramework = new ZmqMessageFramework(configFactory.getConfigProxy().getSenderLinger(),
+            zmqMessageFramework = new ZmqMessageBroker(configFactory.getConfigProxy().getSenderLinger(),
                     configFactory.getConfigProxy().getReceiverLinger(),
                     null);
         }

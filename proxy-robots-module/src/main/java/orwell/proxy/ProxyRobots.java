@@ -10,7 +10,7 @@ import orwell.proxy.robot.Camera;
 import orwell.proxy.robot.IRobot;
 import orwell.proxy.robot.IRobotsMap;
 import orwell.proxy.robot.Tank;
-import orwell.proxy.zmq.IZmqMessageFramework;
+import orwell.proxy.zmq.IZmqMessageBroker;
 import orwell.proxy.zmq.IZmqMessageListener;
 import orwell.proxy.zmq.ZmqMessageBOM;
 import orwell.proxy.zmq.ZmqMessageDecoder;
@@ -19,12 +19,12 @@ public class ProxyRobots implements IZmqMessageListener {
     final static Logger logback = LoggerFactory.getLogger(ProxyRobots.class);
     private final IConfigServerGame configServerGame;
     private final IConfigRobots configRobots;
-    protected IZmqMessageFramework mfProxy;
+    protected IZmqMessageBroker mfProxy;
     protected IRobotsMap robotsMap;
     protected CommunicationService communicationService = new CommunicationService();
     private final Thread communicationThread = new Thread(communicationService);
 
-    public ProxyRobots(final IZmqMessageFramework mfProxy,
+    public ProxyRobots(final IZmqMessageBroker mfProxy,
                        final IConfigServerGame configServerGame,
                        final IConfigRobots configRobots,
                        IRobotsMap robotsMap) {

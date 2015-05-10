@@ -9,9 +9,9 @@ import java.util.ArrayList;
 /**
  * Created by parapampa on 08/03/15.
  */
-public class ZmqMessageFramework implements IZmqMessageFramework {
+public class ZmqMessageBroker implements IZmqMessageBroker {
 
-    final static Logger logback = LoggerFactory.getLogger(ZmqMessageFramework.class);
+    final static Logger logback = LoggerFactory.getLogger(ZmqMessageBroker.class);
     private final Object rXguard;
     private final ZMQ.Context context;
     private final ZMQ.Socket sender;
@@ -23,9 +23,9 @@ public class ZmqMessageFramework implements IZmqMessageFramework {
     private ZmqReader reader;
     private boolean isSkipIdenticalMessages = false;
 
-    public ZmqMessageFramework(final int senderLinger,
-                               final int receiverLinger,
-                               ArrayList<IFilter> filterList) {
+    public ZmqMessageBroker(final int senderLinger,
+                            final int receiverLinger,
+                            ArrayList<IFilter> filterList) {
         logback.info("Constructor -- IN");
         zmqMessageListeners = new ArrayList<>();
         rXguard = new Object();

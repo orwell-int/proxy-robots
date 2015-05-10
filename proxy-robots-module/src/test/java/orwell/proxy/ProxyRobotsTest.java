@@ -20,8 +20,8 @@ import orwell.proxy.robot.IRobot;
 import orwell.proxy.robot.RobotsMap;
 import orwell.proxy.zmq.IZmqMessageListener;
 import orwell.proxy.zmq.ZmqMessageBOM;
+import orwell.proxy.zmq.ZmqMessageBroker;
 import orwell.proxy.zmq.ZmqMessageDecoder;
-import orwell.proxy.zmq.ZmqMessageFramework;
 
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
@@ -50,7 +50,7 @@ public class ProxyRobotsTest {
     @Mock
     //	private Tank myTank;
     private MockedTank mockedTank;
-    private final ZmqMessageFramework mockedZmqMessageFramework = createNiceMock(ZmqMessageFramework.class);
+    private final ZmqMessageBroker mockedZmqMessageFramework = createNiceMock(ZmqMessageBroker.class);
 
     @Before
     public void setUp() throws Exception { //expectPrivate might throw exceptions
@@ -128,7 +128,7 @@ public class ProxyRobotsTest {
     }
 
     public void instantiateBasicProxyRobots() {
-        // Build Mock of ZmqMessageFramework
+        // Build Mock of ZmqMessageBroker
         mockedZmqMessageFramework.addZmqMessageListener(anyObject(IZmqMessageListener.class));
         expectLastCall();
 
@@ -228,7 +228,7 @@ public class ProxyRobotsTest {
     public void testSendServerRobotState() {
         logback.info("IN");
 
-        // Build Mock of ZmqMessageFramework
+        // Build Mock of ZmqMessageBroker
         final Capture<ZmqMessageBOM> captureMsg = new Capture<>();
         expect(mockedZmqMessageFramework.sendZmqMessage(capture(captureMsg))).andReturn(true).atLeastOnce();
         replay(mockedZmqMessageFramework);
@@ -261,7 +261,7 @@ public class ProxyRobotsTest {
     public void testStart() {
         logback.info("IN");
 
-        // Build Mock of ZmqMessageFramework
+        // Build Mock of ZmqMessageBroker
         mockedZmqMessageFramework.close();
         expectLastCall().once();
         replay(mockedZmqMessageFramework);

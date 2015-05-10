@@ -12,7 +12,7 @@ import java.io.File;
  * Created by miludmann on 5/5/15.
  */
 public class Cli {
-    final static protected String DEFAULT_CONFIG_FILEPATH = "/configuration.xml";
+    final static protected String CONFIG_FILEPATH_INSIDE_JAR = "/configuration.xml";
     final static Logger logback = LoggerFactory.getLogger(Cli.class);
     private String[] args = null;
     private final Options options = new Options();
@@ -89,7 +89,7 @@ public class Cli {
 
     private ConfigCli resource() {
         logback.info("No argument given to jar, taking default resource configuration file " +
-                DEFAULT_CONFIG_FILEPATH);
-        return new ConfigCli(DEFAULT_CONFIG_FILEPATH, EnumConfigFileType.RESOURCE);
+                CONFIG_FILEPATH_INSIDE_JAR);
+        return new ConfigCli(CONFIG_FILEPATH_INSIDE_JAR, EnumConfigFileType.RESOURCE);
     }
 }

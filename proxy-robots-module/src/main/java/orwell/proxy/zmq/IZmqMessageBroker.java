@@ -3,7 +3,7 @@ package orwell.proxy.zmq;
 /**
  * Created by parapampa on 03/05/15.
  */
-public interface IZmqMessageFramework {
+public interface IZmqMessageBroker {
 
     /**
      * Decide whether to handle two identical successive messages or to ignore the second
