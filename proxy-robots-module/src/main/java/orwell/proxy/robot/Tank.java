@@ -101,8 +101,9 @@ public class Tank implements IRobot, MessageListenerInterface {
                 mfTank.SendMessage(msg);
             }
             if (currentControllerInput.hasFire()
-                    && (currentControllerInput.getFire().getWeapon1() || currentControllerInput
-                    .getFire().getWeapon2())) {
+                    && (currentControllerInput.getFire().getWeapon1() ||
+                        currentControllerInput.getFire().getWeapon2())
+                    ) {
                 String payloadFire = "input fire ";
                 payloadFire += currentControllerInput.getFire().getWeapon1()
                         + " " + currentControllerInput.getFire().getWeapon2();
