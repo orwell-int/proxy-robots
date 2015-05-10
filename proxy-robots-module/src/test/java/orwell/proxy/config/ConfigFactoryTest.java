@@ -26,8 +26,8 @@ public class ConfigFactoryTest {
 
     @Before
     public void setUp() throws Exception {
-        final ConfigCli configCliResource = new ConfigCli(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE);
-        configFactory = new ConfigFactory(configCliResource);
+        final ConfigFactoryParameters configFactoryParametersResource = new ConfigFactoryParameters(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE);
+        configFactory = new ConfigFactory(configFactoryParametersResource);
     }
 
     @Test

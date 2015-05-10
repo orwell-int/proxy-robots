@@ -1,6 +1,6 @@
 package orwell.proxy;
 
-import orwell.proxy.config.ConfigCli;
+import orwell.proxy.config.ConfigFactoryParameters;
 import orwell.proxy.config.ConfigFactory;
 import orwell.proxy.robot.RobotsMap;
 import orwell.proxy.zmq.FrequencyFilter;
@@ -16,7 +16,7 @@ public class ProxyRobotsFactory {
     private final ConfigFactory configFactory;
     private final ZmqMessageBroker zmqMessageFramework;
 
-    public ProxyRobotsFactory(final ConfigCli configPathType) {
+    public ProxyRobotsFactory(final ConfigFactoryParameters configPathType) {
         configFactory = new ConfigFactory(configPathType);
 
         if (null == configFactory.getConfigProxy()) {

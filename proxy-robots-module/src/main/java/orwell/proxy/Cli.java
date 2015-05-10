@@ -3,7 +3,7 @@ package orwell.proxy;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.config.ConfigCli;
+import orwell.proxy.config.ConfigFactoryParameters;
 import orwell.proxy.config.EnumConfigFileType;
 
 import java.io.File;
@@ -34,7 +34,7 @@ public class Cli {
         options.addOptionGroup(optionGroup);
     }
 
-    public ConfigCli parse() {
+    public ConfigFactoryParameters parse() {
         CommandLineParser parser = new BasicParser();
         CommandLine cmd;
 
@@ -72,24 +72,24 @@ public class Cli {
         System.exit(0);
     }
 
-    private ConfigCli file(String filePath) {
+    private ConfigFactoryParameters file(String filePath) {
         File f = new File(filePath);
         if (!f.exists() || f.isDirectory()) {
             logback.error("File " + filePath + " not found, exiting program");
             System.exit(0);
         }
         logback.info("Using configuration file given as parameter: " + filePath);
-        return new ConfigCli(filePath, EnumConfigFileType.FILE);
+        return new ConfigFactoryParameters(filePath, EnumConfigFileType.FILE);
     }
 
-    private ConfigCli url(String url) {
+    private ConfigFactoryParameters url(String url) {
         logback.info("Using file retrieved from URL given as parameter: " + url);
-        return new ConfigCli(url, EnumConfigFileType.URL);
+        return new ConfigFactoryParameters(url, EnumConfigFileType.URL);
     }
 
-    private ConfigCli resource() {
+    private ConfigFactoryParameters resource() {
         logback.info("No argument given to jar, taking default resource configuration file " +
                 CONFIG_FILEPATH_INSIDE_JAR);
-        return new ConfigCli(CONFIG_FILEPATH_INSIDE_JAR, EnumConfigFileType.RESOURCE);
+        return new ConfigFactoryParameters(CONFIG_FILEPATH_INSIDE_JAR, EnumConfigFileType.RESOURCE);
     }
 }

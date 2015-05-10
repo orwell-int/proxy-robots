@@ -2,7 +2,7 @@ package orwell.proxy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.config.ConfigCli;
+import orwell.proxy.config.ConfigFactoryParameters;
 import orwell.proxy.config.ConfigTank;
 import orwell.proxy.config.IConfigRobots;
 import orwell.proxy.config.IConfigServerGame;
@@ -44,7 +44,7 @@ public class ProxyRobots implements IZmqMessageListener {
     }
 
     public static void main(String[] args) throws Exception {
-        final ConfigCli configPathType = new Cli(args).parse();
+        final ConfigFactoryParameters configPathType = new Cli(args).parse();
 
         final ProxyRobots proxyRobots = new ProxyRobotsFactory(configPathType).getProxyRobots();
         if (null == proxyRobots) {

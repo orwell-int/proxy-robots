@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.messages.Controller;
 import orwell.messages.ServerGame;
-import orwell.proxy.config.ConfigCli;
+import orwell.proxy.config.ConfigFactoryParameters;
 import orwell.proxy.config.ConfigFactory;
 import orwell.proxy.config.EnumConfigFileType;
 import orwell.proxy.mock.MockedTank;
@@ -40,7 +40,7 @@ public class ProxyRobotsTest {
     final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class);
     final static long MAX_TIMEOUT_MS = 500;
     private static final String REGISTERED_ID = "BananaOne";
-    private final ConfigCli configCli = new ConfigCli("/configurationTest.xml", EnumConfigFileType.RESOURCE);
+    private final ConfigFactoryParameters configFactoryParameters = new ConfigFactoryParameters("/configurationTest.xml", EnumConfigFileType.RESOURCE);
     private ConfigFactory configFactory;
     private RobotsMap robotsMap;
 
@@ -59,7 +59,7 @@ public class ProxyRobotsTest {
         // Build Mock of Tank
         mockedTank = new MockedTank();
 
-        configFactory = new ConfigFactory(configCli);
+        configFactory = new ConfigFactory(configFactoryParameters);
 
         // Create the map with one mock tank
         robotsMap = new RobotsMap();
@@ -269,8 +269,8 @@ public class ProxyRobotsTest {
         // We are testing the real class, so we do not want to lose time
         // trying to connect to robots by bluetooth
         // Hence we provide an empty config file
-        final ConfigCli localConfigCli = new ConfigCli("/configurationTest_NoRobots.xml", EnumConfigFileType.RESOURCE);
-        configFactory = new ConfigFactory(localConfigCli);
+        final ConfigFactoryParameters localConfigFactoryParameters = new ConfigFactoryParameters("/configurationTest_NoRobots.xml", EnumConfigFileType.RESOURCE);
+        configFactory = new ConfigFactory(localConfigFactoryParameters);
 
         // Instantiate main class with mock parameters
         // We build an empty robot map

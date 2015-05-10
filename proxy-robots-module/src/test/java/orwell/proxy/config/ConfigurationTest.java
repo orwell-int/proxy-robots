@@ -29,11 +29,11 @@ public class ConfigurationTest {
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
-    private ConfigCli configCli;
+    private ConfigFactoryParameters configFactoryParameters;
 
     private Configuration getConfigTest(final String fileName, final EnumConfigFileType configFileType) {
-        configCli = new ConfigCli(fileName, configFileType);
-        return new Configuration(configCli);
+        configFactoryParameters = new ConfigFactoryParameters(fileName, configFileType);
+        return new Configuration(configFactoryParameters);
     }
 
     @Before

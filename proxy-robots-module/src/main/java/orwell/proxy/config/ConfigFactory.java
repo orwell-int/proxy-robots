@@ -13,9 +13,9 @@ public class ConfigFactory {
     private final IConfigRobots configRobots;
     private final IConfigServerGame configServerGame;
 
-    public ConfigFactory(final ConfigCli configCli) {
+    public ConfigFactory(final ConfigFactoryParameters configFactoryParameters) {
         logback.debug("IN");
-        final Configuration configuration = new Configuration(configCli);
+        final Configuration configuration = new Configuration(configFactoryParameters);
 
         if (false == configuration.isPopulated) {
             logback.error("Configuration loading error");

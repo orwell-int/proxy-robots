@@ -16,9 +16,9 @@ public class Configuration implements IConfiguration {
     public boolean isPopulated = false;
     ConfigModel configuration;
 
-    public Configuration(final ConfigCli configCli) {
-        this.filePath = configCli.getFilePath();
-        this.enumConfigFileType = configCli.getEnumConfigFileType();
+    public Configuration(final ConfigFactoryParameters configFactoryParameters) {
+        this.filePath = configFactoryParameters.getFilePath();
+        this.enumConfigFileType = configFactoryParameters.getEnumConfigFileType();
         populate();
     }
 
