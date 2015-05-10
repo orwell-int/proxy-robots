@@ -14,7 +14,7 @@ public class ZmqMessageDecoder {
 
     public ZmqMessageDecoder(byte[] raw_zmq_message) {
         zmqMessageString = new String(raw_zmq_message);
-        final String[] zmqMessageStringArray = zmqMessageString.split(" ", 2);
+        final String[] zmqMessageStringArray = zmqMessageString.split(" ", 3);
 
         // raw_zmq_message format (split by spaces):
         // routingID typeString message
