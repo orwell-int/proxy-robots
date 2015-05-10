@@ -21,7 +21,7 @@ public class ProxyRobotsFactory {
 
         zmqMessageFramework = new ZmqMessageFramework(configFactory.getConfigProxy().getSenderLinger(),
                 configFactory.getConfigProxy().getReceiverLinger(),
-                getFilterList());
+                null);
     }
 
     public ProxyRobots getProxyRobots() {
@@ -31,6 +31,8 @@ public class ProxyRobotsFactory {
                 new RobotsMap());
     }
 
+    // TODO Frequency filter should be revised ; we do not want to filter
+    // necessary messages for the server
     private ArrayList<IFilter> getFilterList(){
         final ArrayList<IFilter> filterList = new ArrayList<>();
         filterList.add(new FrequencyFilter(configFactory.getConfigProxy().getOutgoingMsgFrequency()));
