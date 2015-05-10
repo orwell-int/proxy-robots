@@ -34,7 +34,7 @@ public class ConfigFactoryTest {
     public void testGetConfigProxy() throws Exception {
         logback.debug("IN");
         // Simple test to check the class is well populated
-        assertEquals("Receiver linger from configuration.xml should be 10000",
+        assertEquals("Receiver linger from configuration.xml should be 1000",
                 1000, configFactory.getConfigProxy().getReceiverLinger());
         logback.debug("OUT");
     }
