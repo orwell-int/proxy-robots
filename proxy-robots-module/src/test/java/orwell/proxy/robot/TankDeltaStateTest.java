@@ -48,8 +48,10 @@ public class TankDeltaStateTest {
         tankDeltaState.setNewState(EnumSensor.RFID, "1234567891");
 
         ServerRobotState serverRobotState = tankDeltaState.getServerRobotState();
+        // First Rfid ON -> First Rfid OFF -> Second Rfid ON
         assertEquals(3, serverRobotState.getRfidCount());
         assertEquals("1234567890", serverRobotState.getRfid(0).getRfid());
+        assertEquals(Status.ON, serverRobotState.getRfid(0).getStatus());
         assertEquals("1234567890", serverRobotState.getRfid(1).getRfid());
         assertEquals(Status.OFF, serverRobotState.getRfid(1).getStatus());
         assertEquals("1234567891", serverRobotState.getRfid(2).getRfid());
@@ -86,6 +88,66 @@ public class TankDeltaStateTest {
         assertEquals(1, serverRobotState.getRfidCount());
         assertEquals("123456789", serverRobotState.getRfid(0).getRfid());
         assertEquals(Status.ON, serverRobotState.getRfid(0).getStatus());
+
+        logback.info("OUT");
+    }
+
+
+    @Test
+    /**
+     * Test the status stays to ON when the tank set twice in a row the same RFID value
+     */
+    public void testTransitionToNoRfid() {
+        logback.info("IN");
+
+        tankDeltaState.setNewState(EnumSensor.RFID, "123456789");
+        tankDeltaState.setNewState(EnumSensor.RFID, "0");
+
+        ServerRobotState serverRobotState = tankDeltaState.getServerRobotState();
+        assertEquals(2, serverRobotState.getRfidCount());
+        assertEquals("123456789", serverRobotState.getRfid(0).getRfid());
+        assertEquals(Status.ON, serverRobotState.getRfid(0).getStatus());
+        assertEquals("123456789", serverRobotState.getRfid(1).getRfid());
+        assertEquals(Status.OFF, serverRobotState.getRfid(1).getStatus());
+
+        logback.info("OUT");
+    }
+
+    @Test
+    /**
+     * Test the status stays to ON when the tank set twice in a row the same RFID value
+     */
+    public void testTransitionFromNoRfid() {
+        logback.info("IN");
+
+        tankDeltaState.setNewState(EnumSensor.RFID, "0");
+        tankDeltaState.setNewState(EnumSensor.RFID, "123456789");
+
+        ServerRobotState serverRobotState = tankDeltaState.getServerRobotState();
+        assertEquals(1, serverRobotState.getRfidCount());
+        assertEquals("123456789", serverRobotState.getRfid(0).getRfid());
+        assertEquals(Status.ON, serverRobotState.getRfid(0).getStatus());
+
+        logback.info("OUT");
+    }
+
+    @Test
+    /**
+     * Test the status stays to ON when the tank set twice in a row the same RFID value
+     */
+    public void testTransition_dirac() {
+        logback.info("IN");
+
+        tankDeltaState.setNewState(EnumSensor.RFID, "0");
+        tankDeltaState.setNewState(EnumSensor.RFID, "123456789");
+        tankDeltaState.setNewState(EnumSensor.RFID, "0");
+
+        ServerRobotState serverRobotState = tankDeltaState.getServerRobotState();
+        assertEquals(2, serverRobotState.getRfidCount());
+        assertEquals("123456789", serverRobotState.getRfid(0).getRfid());
+        assertEquals(Status.ON, serverRobotState.getRfid(0).getStatus());
+        assertEquals("123456789", serverRobotState.getRfid(1).getRfid());
+        assertEquals(Status.OFF, serverRobotState.getRfid(1).getStatus());
 
         logback.info("OUT");
     }

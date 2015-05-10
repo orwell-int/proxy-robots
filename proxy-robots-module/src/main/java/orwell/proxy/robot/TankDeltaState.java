@@ -17,6 +17,7 @@ import java.util.HashMap;
  */
 public class TankDeltaState {
     final static Logger logback = LoggerFactory.getLogger(TankDeltaState.class);
+    final static String NO_RFID_VALUE = "0";
 
     private final Robot.ServerRobotState.Builder serverRobotStateBuilder = Robot.ServerRobotState.newBuilder();
     private HashMap<EnumSensor, ISensorWrapper> previousStateMap;
@@ -27,7 +28,7 @@ public class TankDeltaState {
     }
 
     private void initPreviousStateMap() {
-        previousStateMap = new HashMap<EnumSensor, ISensorWrapper>(2);
+        previousStateMap = new HashMap<>(2);
         previousStateMap.put(EnumSensor.RFID, new RfidWrapper());
         previousStateMap.put(EnumSensor.COLOUR, new ColourWrapper());
     }
@@ -49,27 +50,40 @@ public class TankDeltaState {
          * Previous value == x     |
          *                         |> Status x ON, do nothing
          * Current value == x      |
+         *
+         * If newRfidString is equal to NO_RFID_VALUE, it means the robot is
+         * no longer reading Rfid values, so the previous value should
+         * be set to OFF
          */
         String previousValue = previousStateMap.get(EnumSensor.RFID).getPreviousValue();
         Rfid.Builder builder = (Rfid.Builder) previousStateMap.get(EnumSensor.RFID).getBuilder();
 
+        // if previousValue is not initialised and the new value is NO_RFID_VALUE
+        // then there is nothing to do
+        if(null == previousValue && 0 == newRfidString.compareTo(NO_RFID_VALUE)) {
+            return;
+        }
+        // If this is the first read, we initialise the builder
         if (null == previousValue) {
             builder.setTimestamp(getTimeStamp());
             builder.setStatus(Status.ON);
             builder.setRfid(newRfidString);
             serverRobotStateBuilder.addRfid(builder);
-
+        // else we register the transition
         } else if (previousValue != newRfidString) {
-            long currentTime = getTimeStamp();
-
-            builder.setTimestamp(currentTime);
+            builder.setTimestamp(getTimeStamp());
             builder.setStatus(Status.OFF);
             builder.setRfid(previousValue);
             serverRobotStateBuilder.addRfid(builder);
 
-            builder.setStatus(Status.ON);
-            builder.setRfid(newRfidString);
-            serverRobotStateBuilder.addRfid(builder);
+            // If the tank reads NO_RFID_VALUE, we do not register
+            // it as a value in itself
+            if(0 != newRfidString.compareTo(NO_RFID_VALUE)) {
+                builder.setTimestamp(getTimeStamp());
+                builder.setStatus(Status.ON);
+                builder.setRfid(newRfidString);
+                serverRobotStateBuilder.addRfid(builder);
+            }
         }
     }
 
@@ -116,19 +130,22 @@ public class TankDeltaState {
     }
 
     public void setNewState(EnumSensor enumSensor, String newState) {
-        MessageLiteOrBuilder builder;
         switch (enumSensor) {
             case RFID:
                 setNewRfid(newState);
+                // We do not register NO_RFID_VALUE
+                if (0 != newState.compareTo(NO_RFID_VALUE)) {
+                    previousStateMap.get(enumSensor).setPreviousValue(newState);
+                }
                 break;
             case COLOUR:
                 setNewColour(newState);
+                previousStateMap.get(enumSensor).setPreviousValue(newState);
                 break;
             default:
                 logback.warn("Sensor not handled: " + enumSensor);
                 return;
         }
-        previousStateMap.get(enumSensor).setPreviousValue(newState);
     }
 
     /**
