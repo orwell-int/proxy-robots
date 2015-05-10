@@ -164,6 +164,7 @@ public class ConfigurationTest {
         logback.debug("IN");
 
         assertFalse(getConfigTest(CONFIGURATION_URL_TEST, EnumConfigFileType.URL).isPopulated);
+        assertNull(getConfigTest(CONFIGURATION_URL_TEST, EnumConfigFileType.URL).getConfigModel());
 
         logback.debug("OUT");
     }
