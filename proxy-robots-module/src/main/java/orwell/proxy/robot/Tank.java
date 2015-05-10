@@ -152,15 +152,6 @@ public class Tank implements IRobot, MessageListenerInterface {
     }
 
     @Override
-    public byte[] getZmqRegister() {
-        String zmqMessageHeader = getRoutingId() + " " + "Register" + " ";
-        byte[] zmqRegister = Utils.Concatenate(zmqMessageHeader.getBytes(),
-                getRegister().toByteArray());
-        logback.info("zmqMessageHeader: " + zmqMessageHeader);
-        return zmqRegister;
-    }
-
-    @Override
     public void setRegistered(byte[] registeredMessage) {
         try {
             this.serverGameRegistered = Registered.parseFrom(registeredMessage);

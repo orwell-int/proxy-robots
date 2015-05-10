@@ -29,8 +29,6 @@ public interface IRobot {
 
     void setRegistered(byte[] registeredMessage);
 
-    byte[] getZmqRegister();
-
     byte[] getRegisterBytes();
 
     Input getControllerInput();

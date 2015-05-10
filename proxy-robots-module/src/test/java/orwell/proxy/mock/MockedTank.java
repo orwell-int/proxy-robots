@@ -83,11 +83,6 @@ public class MockedTank implements IRobot {
     }
 
     @Override
-    public byte[] getZmqRegister() {
-        return new byte[0];
-    }
-
-    @Override
     public byte[] getRegisterBytes() {
         ServerGame.Registered.Builder registeredBuilder = ServerGame.Registered.newBuilder();
         registeredBuilder.setRobotId("BananaOne");
