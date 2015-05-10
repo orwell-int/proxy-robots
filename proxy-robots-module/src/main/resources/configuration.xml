@@ -22,7 +22,7 @@
     </proxy>
 
     <robots>
-        <tank tempRoutingID='BananaOne' toRegister='1'>
+        <tank tempRoutingID='BananaOne' shouldRegister='1'>
             <bluetoothName>Daneel</bluetoothName>
             <bluetoothID>001653119482</bluetoothID>
             <camera>

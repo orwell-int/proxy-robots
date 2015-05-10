@@ -31,7 +31,7 @@ public class ConfigRobots implements IConfigRobots {
     public ArrayList<ConfigTank> getConfigRobotsToRegister() {
         ArrayList<ConfigTank> configRobotsToRegister = new ArrayList<ConfigTank>();
         for (ConfigTank configTank : this.configTanks) {
-            if (1 == configTank.getToRegister()) {
+            if (configTank.shouldRegister()) {
                 configRobotsToRegister.add(configTank);
             }
         }

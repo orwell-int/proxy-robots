@@ -22,7 +22,7 @@
     </proxy>
 
     <robots>
-        <tank tempRoutingID='BananaOne' toRegister='1'>
+        <tank tempRoutingID='BananaOne' shouldRegister='1'>
             <bluetoothName>Daneel</bluetoothName>
             <bluetoothID>001653119482</bluetoothID>
             <camera>
@@ -31,7 +31,7 @@
             </camera>
             <image>Yellow hull -- TO BE BETTER CONFIGURED</image>
         </tank>
-        <tank tempRoutingID='BananaTwo' toRegister='0'>
+        <tank tempRoutingID='BananaTwo' shouldRegister='0'>
             <bluetoothName>Cage</bluetoothName>
             <bluetoothID>777777777777</bluetoothID>
             <camera>

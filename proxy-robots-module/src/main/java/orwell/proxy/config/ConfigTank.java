@@ -11,7 +11,7 @@ public class ConfigTank {
     private String bluetoothName;
     private String bluetoothID;
     private ConfigCamera camera;
-    private int toRegister;
+    private boolean shouldRegister;
     private String image;
 
     public String getTempRoutingID() {
@@ -23,13 +23,13 @@ public class ConfigTank {
         this.tempRoutingID = tempRoutingID;
     }
 
-    public int getToRegister() {
-        return toRegister;
+    public boolean shouldRegister() {
+        return shouldRegister;
     }
 
     @XmlAttribute
-    public void setToRegister(int toRegister) {
-        this.toRegister = toRegister;
+    public void setShouldRegister(boolean shouldRegister) {
+        this.shouldRegister = shouldRegister;
     }
 
     public String getBluetoothName() {
