@@ -21,12 +21,12 @@ import static org.junit.Assert.assertTrue;
 public class ConfigFactoryTest {
 
     final static Logger logback = LoggerFactory.getLogger(ConfigFactoryTest.class);
-    private static final String CONFIGURATION_FILE_TEST = "/configurationTest.xml";
+    private static final String CONFIGURATION_RESOURCE_TEST = "/configurationTest.xml";
     private ConfigFactory configFactory;
 
     @Before
     public void setUp() throws Exception {
-        final ConfigCli configCliResource = new ConfigCli(CONFIGURATION_FILE_TEST, EnumConfigFileType.RESOURCE);
+        final ConfigCli configCliResource = new ConfigCli(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE);
         configFactory = new ConfigFactory(configCliResource);
     }
 
