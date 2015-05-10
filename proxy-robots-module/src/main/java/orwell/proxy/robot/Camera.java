@@ -10,19 +10,6 @@ public class Camera implements ICamera {
         this.port = port;
     }
 
-    public final static ICamera getMock() {
-        class MockCamera implements ICamera {
-
-            @Override
-            public String getUrl() {
-                return "http://fake.url";
-            }
-        }
-
-        MockCamera camera = new MockCamera();
-        return camera;
-    }
-
     @Override
     public String getUrl() {
         return "http://" + ip + ":" + port + "/videofeed";

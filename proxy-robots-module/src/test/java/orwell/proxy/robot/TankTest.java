@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import orwell.proxy.mock.MockedCamera;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -27,7 +28,7 @@ public class TankTest {
     @Before
     public void setUp() {
         logback.info("IN");
-        tank = new Tank("BtName", "BtId", Camera.getMock(), "Image");
+        tank = new Tank("BtName", "BtId", new MockedCamera(), "Image");
         logback.info("OUT");
     }
 
