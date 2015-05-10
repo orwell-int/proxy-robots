@@ -34,7 +34,7 @@ public class TankTest {
 
     @Test
     /**
-     * 1. Tank reads a RFID value: first read of ServerRobotState is not null
+     * 1. Tank reads an RFID value: first read of ServerRobotState is not null
      * 2. Nothing happens: second read of ServerRobotState is null
      * 3. Tank reads a Color value: third read of ServerRobotState is not null
      */
