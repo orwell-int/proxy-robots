@@ -154,4 +154,6 @@ public class ZmqMessageDecoderTest {
     @After
     public void tearDown() {
     }
+
+    //TODO add test to test split function (in case there are spaces in the message body
 }
