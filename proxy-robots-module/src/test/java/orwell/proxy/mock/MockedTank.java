@@ -35,10 +35,6 @@ public class MockedTank implements IRobot {
     public EnumConnectionState getConnectionState() {
         getConnectionStateCounter++;
         return enumConnectionState;
-//        if(0 == getConnectionStateCounter || 100 < getConnectionStateCounter)
-//            return EnumConnectionState.NOT_CONNECTED;
-//        else
-//            return EnumConnectionState.CONNECTED;
     }
 
     @Override
