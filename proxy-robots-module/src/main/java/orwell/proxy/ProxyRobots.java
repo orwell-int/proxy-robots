@@ -149,9 +149,9 @@ public class ProxyRobots implements IZmqMessageListener {
         logback.info("Setting controller Input to tank");
         final String routingId = zmqMessage.getRoutingId();
         if (robotsMap.isRobotRegistered(routingId)) {
-            IRobot robotTargeted = robotsMap.get(routingId);
-            robotTargeted.setControllerInput(zmqMessage.getMessageBytes());
-            logback.info("tankTargeted input : " + robotTargeted.controllerInputToString());
+            IRobot targetedRobot = robotsMap.get(routingId);
+            targetedRobot.setControllerInput(zmqMessage.getMessageBytes());
+            logback.info("tankTargeted input : " + targetedRobot.controllerInputToString());
         } else {
             logback.info("RoutingID " + routingId
                     + " is not an ID of a registered tank");
