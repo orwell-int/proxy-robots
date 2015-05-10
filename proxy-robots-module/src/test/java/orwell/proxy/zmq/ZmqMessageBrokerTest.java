@@ -54,7 +54,7 @@ public class ZmqMessageBrokerTest {
         filters.add(frequencyFilter);
         zmf = new ZmqMessageBroker(1000, 1000, filters);
 
-        // Mock ZMQ behavior with mock sockets and context
+        // Mock ZMQ behaviour with mock sockets and context
         mockedZmqSocketSend = createNiceMock(ZMQ.Socket.class);
         final ZMQ.Socket mockedZmqSocketRecv = createNiceMock(ZMQ.Socket.class);
         mockedZmqContext = createNiceMock(ZMQ.Context.class);
