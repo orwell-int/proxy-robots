@@ -4,12 +4,12 @@
         <senderLinger>1000</senderLinger>
         <receiverLinger>1000</receiverLinger>
         <outgoingMsgFrequency>50</outgoingMsgFrequency>
-        <server-game name='irondamien' priority="1">
+        <server-game name='irondamien' priority="10">
             <ip>192.168.1.37</ip>
             <pushPort>9001</pushPort>
             <subPort>9000</subPort>
         </server-game>
-        <server-game name='platypus' priority="10">
+        <server-game name='platypus' priority="1">
             <ip>192.168.1.11</ip>
             <pushPort>9001</pushPort>
             <subPort>9000</subPort>
@@ -26,7 +26,7 @@
             <bluetoothName>Daneel</bluetoothName>
             <bluetoothID>001653119482</bluetoothID>
             <camera>
-                <ip>192.168.1.12</ip>
+                <ip>192.168.1.15</ip>
                 <port>8081</port>
             </camera>
             <image>Yellow hull -- TO BE BETTER CONFIGURED</image>
