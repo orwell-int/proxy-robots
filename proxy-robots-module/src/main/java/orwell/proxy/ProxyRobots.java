@@ -193,7 +193,7 @@ public class ProxyRobots implements IZmqMessageListener {
             case INPUT:
                 onInput(msg);
                 break;
-            case GAMESTATE:
+            case GAME_STATE:
                 onGameState(msg);
                 break;
             default:

@@ -8,7 +8,7 @@ public enum EnumMessageType {
     REGISTERED,
     SERVER_ROBOT_STATE,
     INPUT,
-    GAMESTATE,
+    GAME_STATE,
     STOP,
     UNKNOWN,
 }

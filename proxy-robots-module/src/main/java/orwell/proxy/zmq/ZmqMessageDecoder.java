@@ -49,7 +49,7 @@ public class ZmqMessageDecoder {
                 type = EnumMessageType.INPUT;
                 break;
             case "GameState":
-                type = EnumMessageType.GAMESTATE;
+                type = EnumMessageType.GAME_STATE;
                 break;
             case "ServerRobotState":
                 type = EnumMessageType.SERVER_ROBOT_STATE;

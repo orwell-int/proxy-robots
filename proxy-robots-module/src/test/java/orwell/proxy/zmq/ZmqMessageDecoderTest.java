@@ -52,7 +52,7 @@ public class ZmqMessageDecoderTest {
                 specificMessage = getBytesInput();
                 zmqMessageHeader = routingId + " " + "Input" + " ";
                 break;
-            case GAMESTATE:
+            case GAME_STATE:
                 specificMessage = getBytesGameState();
                 zmqMessageHeader = routingId + " " + "GameState" + " ";
                 break;
@@ -128,8 +128,8 @@ public class ZmqMessageDecoderTest {
         zmw = new ZmqMessageDecoder(getRawZmqMessage(EnumMessageType.INPUT));
         assertEquals(EnumMessageType.INPUT, zmw.getMessageType());
 
-        zmw = new ZmqMessageDecoder(getRawZmqMessage(EnumMessageType.GAMESTATE));
-        assertEquals(EnumMessageType.GAMESTATE, zmw.getMessageType());
+        zmw = new ZmqMessageDecoder(getRawZmqMessage(EnumMessageType.GAME_STATE));
+        assertEquals(EnumMessageType.GAME_STATE, zmw.getMessageType());
 
         zmw = new ZmqMessageDecoder(getRawZmqMessage(EnumMessageType.SERVER_ROBOT_STATE));
         assertEquals(EnumMessageType.SERVER_ROBOT_STATE, zmw.getMessageType());
