@@ -17,11 +17,17 @@ public class ConfigFactory {
         logback.debug("IN");
         final Configuration configuration = new Configuration(configCli);
 
-        final ConfigModel configModel = configuration.getConfigModel();
-        configProxy = configModel.getConfigProxy();
-        configRobots = configuration.getConfigModel().getConfigRobots();
-        configServerGame = configProxy.getConfigServerGame();
-
+        if (false == configuration.isPopulated) {
+            logback.error("Configuration loading error");
+            configProxy = null;
+            configRobots = null;
+            configServerGame = null;
+        } else {
+            final ConfigModel configModel = configuration.getConfigModel();
+            configProxy = configModel.getConfigProxy();
+            configRobots = configuration.getConfigModel().getConfigRobots();
+            configServerGame = configProxy.getConfigServerGame();
+        }
         logback.debug("OUT");
     }
 

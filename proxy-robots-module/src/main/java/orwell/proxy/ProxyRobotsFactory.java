@@ -19,21 +19,29 @@ public class ProxyRobotsFactory {
     public ProxyRobotsFactory(final ConfigCli configPathType) {
         configFactory = new ConfigFactory(configPathType);
 
-        zmqMessageFramework = new ZmqMessageFramework(configFactory.getConfigProxy().getSenderLinger(),
-                configFactory.getConfigProxy().getReceiverLinger(),
-                null);
+        if (null == configFactory.getConfigProxy()) {
+            zmqMessageFramework = null;
+        } else {
+            zmqMessageFramework = new ZmqMessageFramework(configFactory.getConfigProxy().getSenderLinger(),
+                    configFactory.getConfigProxy().getReceiverLinger(),
+                    null);
+        }
     }
 
     public ProxyRobots getProxyRobots() {
+        if (null == zmqMessageFramework) {
+            return null;
+        }
         return new ProxyRobots(zmqMessageFramework,
                 configFactory.getConfigServerGame(),
                 configFactory.getConfigRobots(),
                 new RobotsMap());
+
     }
 
     // TODO Frequency filter should be revised ; we do not want to filter
     // necessary messages for the server
-    private ArrayList<IFilter> getFilterList(){
+    private ArrayList<IFilter> getFilterList() {
         final ArrayList<IFilter> filterList = new ArrayList<>();
         filterList.add(new FrequencyFilter(configFactory.getConfigProxy().getOutgoingMsgFrequency()));
 

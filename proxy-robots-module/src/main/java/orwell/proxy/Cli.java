@@ -20,9 +20,18 @@ public class Cli {
     public Cli(String[] args) {
         this.args = args;
 
-        options.addOption("h", "help", false, "shows help.");
-        options.addOption("f", "file", true, "optional filepath for external configuration file");
-        options.addOption("u", "url", true, "optional url for external configuration file, NOT HANDLED YET");
+        final Option optionHelp = new Option("h", "help", false, "shows help.");
+        options.addOption(optionHelp);
+
+        // Add a new optionGroup to make --file and --url mutually exclusive
+        final Option optionFile = new Option("f", "file", true, "optional filepath for external configuration file");
+        final Option optionUrl = new Option("u", "url", true, "optional url for external configuration file, NOT HANDLED YET");
+        final OptionGroup optionGroup = new OptionGroup();
+        optionGroup.setRequired(true);
+        optionGroup.addOption(optionFile);
+        optionGroup.addOption(optionUrl);
+
+        options.addOptionGroup(optionGroup);
     }
 
     public ConfigCli parse() {
@@ -59,7 +68,7 @@ public class Cli {
         // This prints out some help
         HelpFormatter formatter = new HelpFormatter();
 
-        formatter.printHelp("Main", options);
+        formatter.printHelp("-f filepath OR -u http://fake.url", options);
         System.exit(0);
     }
 

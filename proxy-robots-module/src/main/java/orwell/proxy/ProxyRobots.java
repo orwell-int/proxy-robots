@@ -47,7 +47,11 @@ public class ProxyRobots implements IZmqMessageListener {
         final ConfigCli configPathType = new Cli(args).parse();
 
         final ProxyRobots proxyRobots = new ProxyRobotsFactory(configPathType).getProxyRobots();
-        proxyRobots.start();
+        if (null == proxyRobots) {
+            logback.error("Error when creating ProxyRobots");
+        } else {
+            proxyRobots.start();
+        }
     }
 
     protected void connectToServer() {
