@@ -1,6 +1,5 @@
 package orwell.proxy.zmq;
 
-import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.After;
 import org.junit.Before;
@@ -26,38 +25,37 @@ import static org.powermock.api.easymock.PowerMock.replay;
 /**
  * Tests for {@link ZmqMessageBroker}.
  * <p/>
- * Created by parapampa on 15/03/15.
+ * Created by Michael Ludmann on 15/03/15.
  */
 
+@SuppressWarnings("unused")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ZMQ.Socket.class)
 public class ZmqMessageBrokerTest {
 
-    final static Logger logback = LoggerFactory.getLogger(ZmqMessageBrokerTest.class);
-    final static long MAX_TIMEOUT_MS = 500;
-    private final String TEST_ROUTING_ID_1 = "testRoutingId_1";
-    private final String TEST_ROUTING_ID_2 = "testRoutingId_2";
-    private final long OUTGOING_MSG_PERIOD_HIGH = 50000;
+    static final String TEST_ROUTING_ID_1 = "testRoutingId_1";
+    static final String TEST_ROUTING_ID_2 = "testRoutingId_2";
+    static final long OUTGOING_MSG_PERIOD_HIGH = 50000;
+    private final static Logger logback = LoggerFactory.getLogger(ZmqMessageBrokerTest.class);
+    private final static long MAX_TIMEOUT_MS = 500;
+    private final static int PUSH_PORT = 9000;
+    private final static int SUB_PORT = 9001;
     private final FrequencyFilter frequencyFilter = new FrequencyFilter(OUTGOING_MSG_PERIOD_HIGH);
 
     @TestSubject
     private ZmqMessageBroker zmf;
 
-    @Mock
-    private ZMQ.Socket mockedZmqSocketSend;
-    private ZMQ.Context mockedZmqContext;
-
     @Before
     public void setUp() {
         logback.info("IN");
-        ArrayList<IFilter> filters = new ArrayList<>();
+        final ArrayList<IFilter> filters = new ArrayList<>();
         filters.add(frequencyFilter);
         zmf = new ZmqMessageBroker(1000, 1000, filters);
 
         // Mock ZMQ behaviour with mock sockets and context
-        mockedZmqSocketSend = createNiceMock(ZMQ.Socket.class);
+        final ZMQ.Socket mockedZmqSocketSend = createNiceMock(ZMQ.Socket.class);
         final ZMQ.Socket mockedZmqSocketRecv = createNiceMock(ZMQ.Socket.class);
-        mockedZmqContext = createNiceMock(ZMQ.Context.class);
+        final ZMQ.Context mockedZmqContext = createNiceMock(ZMQ.Context.class);
 
         expect(mockedZmqSocketSend.send((byte[]) anyObject(), anyInt())).andStubReturn(true);
         mockedZmqSocketSend.close();
@@ -85,7 +83,7 @@ public class ZmqMessageBrokerTest {
     @Test
     public void testConnect() {
         logback.info("IN");
-        assertTrue(zmf.connectToServer("127.0.0.1", 9000, 9001));
+        assertTrue(zmf.connectToServer("127.0.0.1", PUSH_PORT, SUB_PORT));
         logback.info("OUT");
     }
 
@@ -93,7 +91,7 @@ public class ZmqMessageBrokerTest {
     @Test
     public void testSendZmqMessage() {
         logback.info("IN");
-        final byte[] msgBody = new String("msgBody").getBytes();
+        final byte[] msgBody = "msgBody".getBytes();
 
         final ZmqMessageBOM registerMsg = new ZmqMessageBOM(EnumMessageType.REGISTER, TEST_ROUTING_ID_1, msgBody);
         assertTrue(zmf.sendZmqMessage(registerMsg));
@@ -120,16 +118,17 @@ public class ZmqMessageBrokerTest {
     public void testSetSkipIncomingIdenticalMessages() {
         logback.info("IN");
 
-        zmf.connectToServer("127.0.0.1", 9000, 9001);
+        zmf.connectToServer("127.0.0.1", PUSH_PORT, SUB_PORT);
         zmf.setSkipIncomingIdenticalMessages(true);
 
         long timeout = 0;
         while (1 > zmf.getNbMessagesSkipped() && MAX_TIMEOUT_MS > timeout) {
             try {
+                //noinspection BusyWait
                 Thread.sleep(5);
                 timeout += 5;
-            } catch (InterruptedException e) {
-                logback.error(e.getStackTrace().toString());
+            } catch (final InterruptedException e) {
+                logback.error(e.getMessage());
             }
         }
 
@@ -141,7 +140,7 @@ public class ZmqMessageBrokerTest {
     @Test
     public void testSendZmqMessage_withFilter() throws Exception {
         logback.info("IN");
-        final byte[] msgBody = new String("msgBody").getBytes();
+        final byte[] msgBody = "msgBody".getBytes();
 
         final ZmqMessageBOM registerMsg =
                 new ZmqMessageBOM(EnumMessageType.REGISTER, TEST_ROUTING_ID_1, msgBody);

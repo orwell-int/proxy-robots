@@ -35,7 +35,7 @@ public class ZmqMessageDecoderTest {
         zmw = new ZmqMessageDecoder(getRawZmqMessage(EnumMessageType.REGISTERED));
     }
 
-    private byte[] getRawZmqMessage(EnumMessageType messageType) {
+    private byte[] getRawZmqMessage(final EnumMessageType messageType) {
         byte[] specificMessage = new byte[0];
         String zmqMessageHeader = null;
 
@@ -64,7 +64,7 @@ public class ZmqMessageDecoderTest {
         }
 
         // Concatenate the two byte arrays
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             outputStream.write(zmqMessageHeader.getBytes());
             outputStream.write(specificMessage);
