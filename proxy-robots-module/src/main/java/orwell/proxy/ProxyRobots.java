@@ -170,7 +170,7 @@ public class ProxyRobots implements IZmqMessageListener {
     /**
      * Starts the proxy :
      * -connect itself to the server
-     * -initialize robots from a config
+     * -initialize robots from a config if the provided map is empty
      * -connect to those robots
      * -start communication service with the server
      * -send register to the server
