@@ -34,11 +34,12 @@ import static org.junit.Assert.*;
  */
 
 
+@SuppressWarnings("unused")
 @RunWith(JUnit4.class)
 public class ProxyRobotsTest {
 
-    final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class);
-    final static long MAX_TIMEOUT_MS = 500;
+    private final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class);
+    private final static long MAX_TIMEOUT_MS = 500;
     private static final String REGISTERED_ID = "BananaOne";
     private final ConfigFactoryParameters configFactoryParameters = new ConfigFactoryParameters("/configurationTest.xml", EnumConfigFileType.RESOURCE);
     private ConfigFactory configFactory;
@@ -53,7 +54,7 @@ public class ProxyRobotsTest {
     private final ZmqMessageBroker mockedZmqMessageFramework = createNiceMock(ZmqMessageBroker.class);
 
     @Before
-    public void setUp() throws Exception { //expectPrivate might throw exceptions
+    public void setUp() {
         logback.info("IN");
 
         // Build Mock of Tank
@@ -68,8 +69,8 @@ public class ProxyRobotsTest {
         logback.info("OUT");
     }
 
-    public byte[] getMockRawZmqMessage(IRobot iRobot, EnumMessageType messageType) {
-        byte[] raw_zmq_message;
+    private byte[] getMockRawZmqMessage(final IRobot iRobot, final EnumMessageType messageType) {
+        final byte[] raw_zmq_message;
         byte[] specificMessage = new byte[0];
         String zmqMessageHeader = null;
 
@@ -86,24 +87,25 @@ public class ProxyRobotsTest {
                 logback.error("Case : Message type " + messageType + " not handled");
         }
 
+        assert null != zmqMessageHeader;
         raw_zmq_message = Utils.Concatenate(zmqMessageHeader.getBytes(),
                 specificMessage);
 
         return raw_zmq_message;
     }
 
-    public byte[] getBytesRegistered() {
-        ServerGame.Registered.Builder registeredBuilder = ServerGame.Registered.newBuilder();
+    private byte[] getBytesRegistered() {
+        final ServerGame.Registered.Builder registeredBuilder = ServerGame.Registered.newBuilder();
         registeredBuilder.setRobotId(REGISTERED_ID);
         registeredBuilder.setTeam("BLUE");
 
         return registeredBuilder.build().toByteArray();
     }
 
-    public byte[] getBytesInput() {
-        Controller.Input.Builder inputBuilder = Controller.Input.newBuilder();
-        Controller.Input.Fire.Builder fireBuilder = Controller.Input.Fire.newBuilder();
-        Controller.Input.Move.Builder moveBuilder = Controller.Input.Move.newBuilder();
+    private byte[] getBytesInput() {
+        final Controller.Input.Builder inputBuilder = Controller.Input.newBuilder();
+        final Controller.Input.Fire.Builder fireBuilder = Controller.Input.Fire.newBuilder();
+        final Controller.Input.Move.Builder moveBuilder = Controller.Input.Move.newBuilder();
         fireBuilder.setWeapon1(false);
         fireBuilder.setWeapon2(false);
         moveBuilder.setLeft(0);
@@ -115,19 +117,20 @@ public class ProxyRobotsTest {
     }
 
 
-    public void waitForCloseOrTimeout() {
+    private void waitForCloseOrTimeout() {
         long timeout = 0;
-        while (myProxyRobots.isCommunicationServiceAlive() && timeout < MAX_TIMEOUT_MS) {
+        while (myProxyRobots.isCommunicationServiceAlive() && MAX_TIMEOUT_MS > timeout) {
             try {
+                //noinspection BusyWait
                 Thread.sleep(5);
                 timeout += 5;
-            } catch (InterruptedException e) {
-                logback.error(e.getStackTrace().toString());
+            } catch (final InterruptedException e) {
+                logback.error(e.getMessage());
             }
         }
     }
 
-    public void instantiateBasicProxyRobots() {
+    private void instantiateBasicProxyRobots() {
         // Build Mock of ZmqMessageBroker
         mockedZmqMessageFramework.addZmqMessageListener(anyObject(IZmqMessageListener.class));
         expectLastCall();
