@@ -13,7 +13,6 @@ import orwell.proxy.robot.Tank;
 import orwell.proxy.zmq.IZmqMessageBroker;
 import orwell.proxy.zmq.IZmqMessageListener;
 import orwell.proxy.zmq.ZmqMessageBOM;
-import orwell.proxy.zmq.ZmqMessageDecoder;
 
 public class ProxyRobots implements IZmqMessageListener {
     private final static Logger logback = LoggerFactory.getLogger(ProxyRobots.class);
@@ -91,7 +90,7 @@ public class ProxyRobots implements IZmqMessageListener {
     protected void sendRegister() {
         for (final IRobot robot : robotsMap.getConnectedRobots()) {
             robot.buildRegister();
-            final ZmqMessageBOM zmqMessageBOM = new ZmqMessageBOM(EnumMessageType.REGISTER, robot.getRoutingId(),
+            final ZmqMessageBOM zmqMessageBOM = new ZmqMessageBOM(robot.getRoutingId(), EnumMessageType.REGISTER,
                     robot.getRegisterBytes());
             mfProxy.sendZmqMessage(zmqMessageBOM);
             logback.info("Robot [" + robot.getRoutingId()
@@ -105,8 +104,7 @@ public class ProxyRobots implements IZmqMessageListener {
             if (null != zmqServerRobotState) {
                 logback.debug("Sending a ServerRobotState message");
                 final ZmqMessageBOM zmqMessageBOM =
-                        new ZmqMessageBOM(EnumMessageType.SERVER_ROBOT_STATE,
-                                robot.getRoutingId(),
+                        new ZmqMessageBOM(robot.getRoutingId(), EnumMessageType.SERVER_ROBOT_STATE,
                                 robot.getRegisterBytes());
                 mfProxy.sendZmqMessage(zmqMessageBOM);
             }
@@ -131,24 +129,24 @@ public class ProxyRobots implements IZmqMessageListener {
         }
     }
 
-    private void onRegistered(final ZmqMessageDecoder zmqMessage) {
+    private void onRegistered(final ZmqMessageBOM zmqMessageBOM) {
         logback.info("Setting ServerGame Registered to tank");
-        final String routingId = zmqMessage.getRoutingId();
+        final String routingId = zmqMessageBOM.getRoutingId();
         if (robotsMap.isRobotConnected(routingId)) {
             final IRobot registeredRobot = robotsMap.get(routingId);
-            registeredRobot.setRegistered(zmqMessage.getMessageBytes());
+            registeredRobot.setRegistered(zmqMessageBOM.getMessageBodyBytes());
         } else {
             logback.info("RoutingID " + routingId
                     + " is not an ID of a tank to register");
         }
     }
 
-    private void onInput(final ZmqMessageDecoder zmqMessage) {
+    private void onInput(final ZmqMessageBOM zmqMessageBOM) {
         logback.info("Setting controller Input to tank");
-        final String routingId = zmqMessage.getRoutingId();
+        final String routingId = zmqMessageBOM.getRoutingId();
         if (robotsMap.isRobotRegistered(routingId)) {
             final IRobot targetedRobot = robotsMap.get(routingId);
-            targetedRobot.setControllerInput(zmqMessage.getMessageBytes());
+            targetedRobot.setControllerInput(zmqMessageBOM.getMessageBodyBytes());
             logback.info("tankTargeted input : " + targetedRobot.controllerInputToString());
         } else {
             logback.info("RoutingID " + routingId
@@ -156,7 +154,7 @@ public class ProxyRobots implements IZmqMessageListener {
         }
     }
 
-    private void onGameState(final ZmqMessageDecoder zmqMessage) {
+    private void onGameState(final ZmqMessageBOM zmqMessageBOM) {
         logback.warn("Received GameState - not handled");
     }
 
@@ -183,16 +181,16 @@ public class ProxyRobots implements IZmqMessageListener {
     }
 
     @Override
-    public void receivedNewZmq(final ZmqMessageDecoder msg) {
-        switch (msg.getMessageType()) {
+    public void receivedNewZmq(final ZmqMessageBOM zmqMessageBOM) {
+        switch (zmqMessageBOM.getMessageType()) {
             case REGISTERED:
-                onRegistered(msg);
+                onRegistered(zmqMessageBOM);
                 break;
             case INPUT:
-                onInput(msg);
+                onInput(zmqMessageBOM);
                 break;
             case GAME_STATE:
-                onGameState(msg);
+                onGameState(zmqMessageBOM);
                 break;
             default:
                 onDefault();

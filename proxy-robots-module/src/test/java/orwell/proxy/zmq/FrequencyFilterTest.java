@@ -40,7 +40,7 @@ public class FrequencyFilterTest {
 
     private ZmqMessageBOM getTestMessageBom(final EnumMessageType messageType, String routingId) {
         final byte[] msgBody = new String(TEST_MSG_BODY).getBytes();
-        return new ZmqMessageBOM(messageType, routingId, msgBody);
+        return new ZmqMessageBOM(routingId, messageType, msgBody);
     }
 
     @Test
@@ -50,10 +50,10 @@ public class FrequencyFilterTest {
 
         final ZmqMessageBOM filteredZmqMessage = frequencyFilter.getFilteredMessage(zmqRegisterBOM_1);
         assertNotNull("Filtered message should not be empty",
-                filteredZmqMessage.getMsgBodyBytes());
+                filteredZmqMessage.getMessageBodyBytes());
         assertArrayEquals("Filtered message body should not be altered",
-                zmqRegisterBOM_1.getMsgBodyBytes(),
-                filteredZmqMessage.getMsgBodyBytes());
+                zmqRegisterBOM_1.getMessageBodyBytes(),
+                filteredZmqMessage.getMessageBodyBytes());
         logback.debug("OUT");
     }
 

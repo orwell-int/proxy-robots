@@ -21,7 +21,6 @@ import orwell.proxy.robot.RobotsMap;
 import orwell.proxy.zmq.IZmqMessageListener;
 import orwell.proxy.zmq.ZmqMessageBOM;
 import orwell.proxy.zmq.ZmqMessageBroker;
-import orwell.proxy.zmq.ZmqMessageDecoder;
 
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
@@ -169,7 +168,7 @@ public class ProxyRobotsTest {
     }
 
     @Test
-    public void testRegisterFlow() {
+    public void testRegisterFlow() throws Exception {
         logback.info("IN");
         instantiateBasicProxyRobots();
 
@@ -181,7 +180,7 @@ public class ProxyRobotsTest {
 
         myProxyRobots.sendRegister();
         // Simulate reception of a REGISTERED message
-        myProxyRobots.receivedNewZmq(new ZmqMessageDecoder(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
+        myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
 
         assertEquals(IRobot.EnumRegistrationState.REGISTERED, mockedTank.getRegistrationState());
         assertEquals("BananaOne", mockedTank.getRoutingId());
@@ -228,7 +227,7 @@ public class ProxyRobotsTest {
     }
 
     @Test
-    public void testSendServerRobotState() {
+    public void testSendServerRobotState() throws Exception{
         logback.info("IN");
 
         // Build Mock of ZmqMessageBroker
@@ -247,13 +246,13 @@ public class ProxyRobotsTest {
         // Robot needs to be registered in order to send a ServerRobotState
         myProxyRobots.sendRegister();
         // Simulate reception of a REGISTERED message
-        myProxyRobots.receivedNewZmq(new ZmqMessageDecoder(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
+        myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
 
         myProxyRobots.sendServerRobotStates();
 
         // ProxyRobot is expected to send a ServerRobotState message
         verify(mockedZmqMessageFramework);
-        assertEquals(EnumMessageType.SERVER_ROBOT_STATE, captureMsg.getValue().getMsgType());
+        assertEquals(EnumMessageType.SERVER_ROBOT_STATE, captureMsg.getValue().getMessageType());
         assertEquals("RoutingId is supposed to have changed to the one provided by registered",
                 REGISTERED_ID, captureMsg.getValue().getRoutingId());
 
@@ -296,7 +295,7 @@ public class ProxyRobotsTest {
 
 
     @Test
-    public void testOnInput() {
+    public void testOnInput() throws Exception {
         logback.info("IN");
         instantiateBasicProxyRobots();
 
@@ -307,10 +306,10 @@ public class ProxyRobotsTest {
         // Robot needs to be registered in order to receive Input messages
         myProxyRobots.sendRegister();
         // Simulate reception of a REGISTERED message
-        myProxyRobots.receivedNewZmq(new ZmqMessageDecoder(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
+        myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
 
         // Now simulate reception of a INPUT message
-        myProxyRobots.receivedNewZmq(new ZmqMessageDecoder(getMockRawZmqMessage(mockedTank, EnumMessageType.INPUT)));
+        myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.INPUT)));
 
         // Tank received the right Input correctly
         assertArrayEquals(getBytesInput(),

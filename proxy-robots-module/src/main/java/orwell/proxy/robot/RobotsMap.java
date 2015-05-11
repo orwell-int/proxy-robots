@@ -2,7 +2,6 @@ package orwell.proxy.robot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.zmq.ZmqMessageDecoder;
 
 import java.util.ArrayList;
 
@@ -11,7 +10,7 @@ import java.util.ArrayList;
  */
 public class RobotsMap implements IRobotsMap {
 
-    final static Logger logback = LoggerFactory.getLogger(ZmqMessageDecoder.class);
+    final static Logger logback = LoggerFactory.getLogger(RobotsMap.class);
 
     private final ArrayList<IRobot> array = new ArrayList<>();
 

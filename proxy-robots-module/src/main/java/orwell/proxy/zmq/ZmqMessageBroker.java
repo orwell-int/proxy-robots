@@ -4,10 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 /**
- * Created by parapampa on 08/03/15.
+ * Created by Michael Ludmann on 08/03/15.
  */
 public class ZmqMessageBroker implements IZmqMessageBroker {
 
@@ -72,7 +73,7 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
             }
             reader.start(); // Start to listen for incoming messages
             isConnected = true;
-        } catch (IllegalThreadStateException e) {
+        } catch (final IllegalThreadStateException e) {
             logback.error(e.getMessage());
         }
         return isConnected;
@@ -99,10 +100,10 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
         zmqMessageListeners.add(zmqMsgListener);
     }
 
-    private void receivedNewZmqMessage(final ZmqMessageDecoder zmqMessage) {
-        logback.debug("Received New ZMQ Message : " + zmqMessage.getMessageType());
+    private void receivedNewZmqMessage(final ZmqMessageBOM zmqMessageBOM) {
+        logback.debug("Received New ZMQ Message : " + zmqMessageBOM.getMessageType());
         for (int j = 0; j < zmqMessageListeners.size(); j++) {
-            zmqMessageListeners.get(j).receivedNewZmq(zmqMessage);
+            zmqMessageListeners.get(j).receivedNewZmq(zmqMessageBOM);
         }
     }
 
@@ -112,9 +113,18 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
         isConnected = false;
     }
 
+    @Override
+    public boolean isConnectedToServer() {
+        return isConnected;
+    }
+
+    public int getNbMessagesSkipped() {
+        return nbMessagesSkipped;
+    }
+
     private class ZmqReader extends Thread {
-        String zmqPreviousMessage = new String();
-        ZmqMessageDecoder zmqMessage;
+        ZmqMessageBOM previousZmqMessage;
+        ZmqMessageBOM newZmqMessage;
 
         @Override
         public void run() {
@@ -122,18 +132,22 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
                 final byte[] raw_zmq_message = receiver.recv(ZMQ.NOBLOCK);
                 if (null != raw_zmq_message) {
                     synchronized (rXguard) {
-                        zmqMessage = new ZmqMessageDecoder(raw_zmq_message);
+                        try {
+                            newZmqMessage = ZmqMessageBOM.parseFrom(raw_zmq_message);
 
-                        // We do not want to uselessly flood the robot
-                        if (isSkipIdenticalMessages && 0 == zmqMessage.getZmqMessageString().compareTo(zmqPreviousMessage)) {
-                            nbMessagesSkipped++;
-                            logback.debug("Current zmq message identical to previous zmq message (already done " +
-                                    nbMessagesSkipped + " time(s) for this message)");
-                        } else {
-                            nbMessagesSkipped = 0;
-                            receivedNewZmqMessage(zmqMessage);
+                            // We do not want to uselessly flood the robot
+                            if (isSkipIdenticalMessages && 0 == newZmqMessage.compareTo(previousZmqMessage)) {
+                                nbMessagesSkipped++;
+                                logback.debug("Current zmq message identical to previous zmq message (already done " +
+                                        nbMessagesSkipped + " time(s) for this message)");
+                            } else {
+                                nbMessagesSkipped = 0;
+                                receivedNewZmqMessage(newZmqMessage);
+                            }
+                            previousZmqMessage = newZmqMessage;
+                        } catch (final ParseException e) {
+                            logback.warn("Message received ignored: " + e.getMessage());
                         }
-                        zmqPreviousMessage = zmqMessage.getZmqMessageString();
                     }
                 }
                 try {
@@ -148,14 +162,5 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
             Thread.yield();
             logback.info("Communication stopped");
         }
-    }
-
-    @Override
-    public boolean isConnectedToServer() {
-        return isConnected;
-    }
-
-    public int getNbMessagesSkipped() {
-        return nbMessagesSkipped;
     }
 }

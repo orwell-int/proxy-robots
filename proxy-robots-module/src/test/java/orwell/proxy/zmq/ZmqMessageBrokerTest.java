@@ -51,6 +51,12 @@ public class ZmqMessageBrokerTest {
         final ArrayList<IFilter> filters = new ArrayList<>();
         filters.add(frequencyFilter);
         zmf = new ZmqMessageBroker(1000, 1000, filters);
+        logback.info("OUT");
+    }
+
+    public void initZmqMocks() {
+        logback.info("IN");
+
 
         // Mock ZMQ behaviour with mock sockets and context
         final ZMQ.Socket mockedZmqSocketSend = createNiceMock(ZMQ.Socket.class);
@@ -83,6 +89,7 @@ public class ZmqMessageBrokerTest {
     @Test
     public void testConnect() {
         logback.info("IN");
+        initZmqMocks();
         assertTrue(zmf.connectToServer("127.0.0.1", PUSH_PORT, SUB_PORT));
         logback.info("OUT");
     }
@@ -91,15 +98,17 @@ public class ZmqMessageBrokerTest {
     @Test
     public void testSendZmqMessage() {
         logback.info("IN");
+        initZmqMocks();
+
         final byte[] msgBody = "msgBody".getBytes();
 
-        final ZmqMessageBOM registerMsg = new ZmqMessageBOM(EnumMessageType.REGISTER, TEST_ROUTING_ID_1, msgBody);
+        final ZmqMessageBOM registerMsg = new ZmqMessageBOM(TEST_ROUTING_ID_1, EnumMessageType.REGISTER, msgBody);
         assertTrue(zmf.sendZmqMessage(registerMsg));
 
-        final ZmqMessageBOM serverRobotStateMsg = new ZmqMessageBOM(EnumMessageType.SERVER_ROBOT_STATE, TEST_ROUTING_ID_1, msgBody);
+        final ZmqMessageBOM serverRobotStateMsg = new ZmqMessageBOM(TEST_ROUTING_ID_1, EnumMessageType.SERVER_ROBOT_STATE, msgBody);
         assertTrue(zmf.sendZmqMessage(serverRobotStateMsg));
 
-        final ZmqMessageBOM registerEmptyBodyMsg = new ZmqMessageBOM(EnumMessageType.REGISTER, TEST_ROUTING_ID_1, new byte[0]);
+        final ZmqMessageBOM registerEmptyBodyMsg = new ZmqMessageBOM(TEST_ROUTING_ID_1, EnumMessageType.REGISTER, new byte[0]);
         assertFalse("Zmq message should be empty and not sent",
                 zmf.sendZmqMessage(registerEmptyBodyMsg));
 
@@ -109,6 +118,8 @@ public class ZmqMessageBrokerTest {
     @Test
     public void testClose() {
         logback.info("IN");
+        initZmqMocks();
+
         zmf.close();
         assertFalse(zmf.isConnectedToServer());
         logback.info("OUT");
@@ -117,6 +128,7 @@ public class ZmqMessageBrokerTest {
     @Test
     public void testSetSkipIncomingIdenticalMessages() {
         logback.info("IN");
+        initZmqMocks();
 
         zmf.connectToServer("127.0.0.1", PUSH_PORT, SUB_PORT);
         zmf.setSkipIncomingIdenticalMessages(true);
@@ -140,10 +152,12 @@ public class ZmqMessageBrokerTest {
     @Test
     public void testSendZmqMessage_withFilter() throws Exception {
         logback.info("IN");
+        initZmqMocks();
+
         final byte[] msgBody = "msgBody".getBytes();
 
         final ZmqMessageBOM registerMsg =
-                new ZmqMessageBOM(EnumMessageType.REGISTER, TEST_ROUTING_ID_1, msgBody);
+                new ZmqMessageBOM(TEST_ROUTING_ID_1, EnumMessageType.REGISTER, msgBody);
         assertTrue(zmf.sendZmqMessage(registerMsg));
 
         // Second identical message trying to be sent during the filtering period,
@@ -154,15 +168,46 @@ public class ZmqMessageBrokerTest {
         // Third message is of a different type, so it is not filtered
         Thread.sleep(1);
         final ZmqMessageBOM serverRobotStateMsg =
-                new ZmqMessageBOM(EnumMessageType.SERVER_ROBOT_STATE, TEST_ROUTING_ID_1, msgBody);
+                new ZmqMessageBOM(TEST_ROUTING_ID_1, EnumMessageType.SERVER_ROBOT_STATE, msgBody);
         assertTrue(zmf.sendZmqMessage(serverRobotStateMsg));
 
         // Fourth message is of a different routingId, so it is not filtered
         Thread.sleep(1);
         final ZmqMessageBOM serverRobotStateMsg_r2 =
-                new ZmqMessageBOM(EnumMessageType.SERVER_ROBOT_STATE, TEST_ROUTING_ID_2, msgBody);
+                new ZmqMessageBOM(TEST_ROUTING_ID_2, EnumMessageType.SERVER_ROBOT_STATE, msgBody);
         assertTrue(zmf.sendZmqMessage(serverRobotStateMsg_r2));
         logback.info("OUT");
+    }
+
+    @Test
+    public void testReceiveBadMessage() {
+        // Mock ZMQ behaviour with mock sockets and context
+        final ZMQ.Socket mockedZmqSocketSend = createNiceMock(ZMQ.Socket.class);
+        final ZMQ.Socket mockedZmqSocketRecv = createNiceMock(ZMQ.Socket.class);
+        final ZMQ.Context mockedZmqContext = createNiceMock(ZMQ.Context.class);
+
+        expect(mockedZmqSocketSend.send((byte[]) anyObject(), anyInt())).andStubReturn(true);
+        mockedZmqSocketSend.close();
+        expectLastCall().once();
+        replay(mockedZmqSocketSend);
+
+        final byte[] raw_zmq_message_bad = "routingIdTest Registered".getBytes();
+        expect(mockedZmqSocketRecv.recv(ZMQ.NOBLOCK)).andStubReturn(raw_zmq_message_bad);
+        replay(mockedZmqSocketRecv);
+
+        expect(mockedZmqContext.socket(ZMQ.PUSH)).andReturn(mockedZmqSocketSend);
+        expect(mockedZmqContext.socket(ZMQ.SUB)).andReturn(mockedZmqSocketRecv);
+        replay(mockedZmqContext);
+
+        try {
+            MemberModifier.field(ZmqMessageBroker.class, "context").set(zmf, mockedZmqContext);
+            MemberModifier.field(ZmqMessageBroker.class, "sender").set(zmf, mockedZmqSocketSend);
+            MemberModifier.field(ZmqMessageBroker.class, "receiver").set(zmf, mockedZmqSocketRecv);
+        } catch (final IllegalAccessException e) {
+            logback.error(e.getMessage());
+        }
+
+        zmf.connectToServer("127.0.0.1", PUSH_PORT, SUB_PORT);
     }
 
     @After

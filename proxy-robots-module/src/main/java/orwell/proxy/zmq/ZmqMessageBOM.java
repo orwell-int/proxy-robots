@@ -6,38 +6,80 @@ import orwell.proxy.EnumMessageType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.util.Arrays;
 
 /**
- * Created by miludmann on 5/6/15.
+ * Created by Michaël Ludmann on 5/6/15.
  */
-public class ZmqMessageBOM {
-    final static Logger logback = LoggerFactory.getLogger(ZmqMessageBOM.class);
+public class ZmqMessageBOM implements Comparable<ZmqMessageBOM> {
+    private final static Logger logback = LoggerFactory.getLogger(ZmqMessageBOM.class);
 
-    private final EnumMessageType msgType;
+    private final EnumMessageType messageType;
     private final String routingId;
-    private byte[] msgBytes;
+    private byte[] messageBodyBytes;
 
-    public ZmqMessageBOM(final EnumMessageType msgType,
-                         final String routingId,
-                         final byte[] msgBytes) {
-        this.msgType = msgType;
+    public ZmqMessageBOM(final String routingId, final EnumMessageType messageType,
+                         final byte[] messageBodyBytes) {
+        this.messageType = messageType;
         this.routingId = routingId;
-        this.msgBytes = msgBytes;
+        this.messageBodyBytes = messageBodyBytes;
     }
 
-    public EnumMessageType getMsgType() {
-        return msgType;
+    /**
+     * @param raw_zmq_message Message receive through zmq protocol, with
+     *                        the following format (split by spaces):
+     *                        routingID typeString message
+     */
+    public static ZmqMessageBOM parseFrom(final byte[] raw_zmq_message) throws ParseException {
+        final String zmqMessageString = new String(raw_zmq_message);
+        final String[] zmqMessageStringArray = zmqMessageString.split(" ", 3);
+
+        if (3 != zmqMessageStringArray.length) {
+            logback.warn("ZmqMessage failed to split incoming message: " +
+                    zmqMessageString);
+            throw new ParseException("Message does not contain all three mandatory items", 3);
+        }
+
+        final String routingId = zmqMessageStringArray[0];
+        final String typeString = zmqMessageStringArray[1];
+        final byte[] messageBodyBytes = zmqMessageStringArray[2].getBytes();
+        final EnumMessageType type;
+        switch (typeString) {
+            case "Registered":
+                type = EnumMessageType.REGISTERED;
+                break;
+            case "Input":
+                type = EnumMessageType.INPUT;
+                break;
+            case "GameState":
+                type = EnumMessageType.GAME_STATE;
+                break;
+            case "ServerRobotState":
+                type = EnumMessageType.SERVER_ROBOT_STATE;
+                break;
+            default:
+                type = EnumMessageType.UNKNOWN;
+                logback.warn("Message typeString unknown: " + typeString);
+        }
+
+        logback.info("Message received: [RoutingID] " + routingId + " [TYPE]: " + type);
+        return new ZmqMessageBOM(routingId, type, messageBodyBytes);
     }
 
     public String getRoutingId() {
         return routingId;
     }
 
+    public EnumMessageType getMessageType() {
+        return messageType;
+    }
+
     /**
      * @return the body of the message
      */
-    public byte[] getMsgBodyBytes() {
-        return msgBytes;
+    public byte[] getMessageBodyBytes() {
+        return messageBodyBytes;
     }
 
     /**
@@ -47,7 +89,7 @@ public class ZmqMessageBOM {
         final StringBuilder zmqMessageHeaderBuilder = new StringBuilder();
         zmqMessageHeaderBuilder.append(routingId).append(" ");
 
-        switch (msgType) {
+        switch (messageType) {
             case REGISTER:
                 zmqMessageHeaderBuilder.append("Register ");
                 break;
@@ -61,23 +103,35 @@ public class ZmqMessageBOM {
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             outputStream.write(zmqMessageHeaderBuilder.toString().getBytes());
-            outputStream.write(msgBytes);
-        } catch (IOException e) {
+            outputStream.write(messageBodyBytes);
+        } catch (final IOException e) {
             logback.error("Error while building zmqMessage " + e.getMessage());
             return null;
         }
         return outputStream.toByteArray();
     }
 
+    /**
+     * @return true is body or routingId or type is empty
+     */
     public boolean isEmpty() {
-        return (null == msgBytes || 0 == msgBytes.length || routingId.isEmpty() || null == msgType);
+        return (null == messageBodyBytes || 0 == messageBodyBytes.length ||
+                routingId.isEmpty() || null == messageType);
     }
 
     /**
-     * Set core content of ZmqMessage to null
+     * Set the body content of ZmqMessage to null
      */
     public void clearMsgBytes() {
-        this.msgBytes = null;
+        this.messageBodyBytes = null;
     }
 
+    @Override
+    public int compareTo(final ZmqMessageBOM zmqMessageBOM) {
+        if (null == zmqMessageBOM || messageType != zmqMessageBOM.getMessageType() ||
+                0 != routingId.compareTo(zmqMessageBOM.getRoutingId()) ||
+                !Arrays.equals(messageBodyBytes, zmqMessageBOM.getMessageBodyBytes()))
+            return 1;
+        else return 0;
+    }
 }

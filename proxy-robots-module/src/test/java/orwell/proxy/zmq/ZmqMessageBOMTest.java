@@ -2,7 +2,9 @@ package orwell.proxy.zmq;
 
 import org.easymock.TestSubject;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.messages.Controller;
@@ -12,27 +14,31 @@ import orwell.proxy.EnumMessageType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 /**
- * Tests for {@link ZmqMessageDecoder}.
+ * Tests for {@link ZmqMessageBOM}.
  * <p/>
  * Created by Michael Ludmann on 15/03/15.
  */
-public class ZmqMessageDecoderTest {
+public class ZmqMessageBOMTest {
 
-    private final static Logger logback = LoggerFactory.getLogger(ZmqMessageDecoderTest.class);
+    private final static Logger logback = LoggerFactory.getLogger(ZmqMessageBOMTest.class);
     private static final String ROUTING_ID = "NicCage";
     private static final long TIMESTAMP = 1234567890;
 
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
     @TestSubject
-    private ZmqMessageDecoder zmw;
+    private ZmqMessageBOM zmqMessageBom;
 
     @Before
-    public void setUp() {
-        zmw = new ZmqMessageDecoder(getRawZmqMessage(EnumMessageType.REGISTERED));
+    public void setUp() throws Exception {
+        zmqMessageBom = ZmqMessageBOM.parseFrom(getRawZmqMessage(EnumMessageType.REGISTERED));
     }
 
     private byte[] getRawZmqMessage(final EnumMessageType messageType) {
@@ -118,38 +124,41 @@ public class ZmqMessageDecoderTest {
 
     @Test
     public void testGetRoutingId() {
-        assertEquals(ROUTING_ID, zmw.getRoutingId());
+        assertEquals(ROUTING_ID, zmqMessageBom.getRoutingId());
     }
 
     @Test
-    public void testGetMessageType() {
-        zmw = new ZmqMessageDecoder(getRawZmqMessage(EnumMessageType.REGISTERED));
-        assertEquals(EnumMessageType.REGISTERED, zmw.getMessageType());
+    public void testGetMessageType() throws Exception {
+        zmqMessageBom = ZmqMessageBOM.parseFrom(getRawZmqMessage(EnumMessageType.REGISTERED));
+        assertEquals(EnumMessageType.REGISTERED, zmqMessageBom.getMessageType());
 
-        zmw = new ZmqMessageDecoder(getRawZmqMessage(EnumMessageType.INPUT));
-        assertEquals(EnumMessageType.INPUT, zmw.getMessageType());
+        zmqMessageBom = ZmqMessageBOM.parseFrom(getRawZmqMessage(EnumMessageType.INPUT));
+        assertEquals(EnumMessageType.INPUT, zmqMessageBom.getMessageType());
 
-        zmw = new ZmqMessageDecoder(getRawZmqMessage(EnumMessageType.GAME_STATE));
-        assertEquals(EnumMessageType.GAME_STATE, zmw.getMessageType());
+        zmqMessageBom = ZmqMessageBOM.parseFrom(getRawZmqMessage(EnumMessageType.GAME_STATE));
+        assertEquals(EnumMessageType.GAME_STATE, zmqMessageBom.getMessageType());
 
-        zmw = new ZmqMessageDecoder(getRawZmqMessage(EnumMessageType.SERVER_ROBOT_STATE));
-        assertEquals(EnumMessageType.SERVER_ROBOT_STATE, zmw.getMessageType());
+        zmqMessageBom = ZmqMessageBOM.parseFrom(getRawZmqMessage(EnumMessageType.SERVER_ROBOT_STATE));
+        assertEquals(EnumMessageType.SERVER_ROBOT_STATE, zmqMessageBom.getMessageType());
     }
 
     @Test
-    public void testGetMessageTypeUnknown() {
-        zmw = new ZmqMessageDecoder(getRawZmqMessage(EnumMessageType.UNKNOWN));
-        assertEquals(EnumMessageType.UNKNOWN, zmw.getMessageType());
+    public void testGetMessageTypeUnknown() throws Exception {
+        zmqMessageBom = ZmqMessageBOM.parseFrom(getRawZmqMessage(EnumMessageType.UNKNOWN));
+        assertEquals(EnumMessageType.UNKNOWN, zmqMessageBom.getMessageType());
     }
 
     @Test
     public void testGetMessageBytes() {
-        assertNotNull(zmw.getMessageBytes());
+        assertNotNull(zmqMessageBom.getMessageBodyBytes());
     }
 
     @Test
-    public void testGetZmqMessageString() {
-        assertEquals(new String(getRawZmqMessage(EnumMessageType.REGISTERED)), zmw.getZmqMessageString());
+    public void testParseFrom_Exception() throws Exception {
+        logback.info("IN");
+        exception.expect(ParseException.class);
+        zmqMessageBom = ZmqMessageBOM.parseFrom(new String(ROUTING_ID + " Registered" + "").getBytes());
+        logback.info("OUT");
     }
 
     //TODO add test to test split function (in case there are spaces in the message body

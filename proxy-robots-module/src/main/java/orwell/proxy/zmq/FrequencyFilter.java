@@ -22,7 +22,7 @@ public class FrequencyFilter implements IFilter {
     @Override
     public ZmqMessageBOM getFilteredMessage(ZmqMessageBOM inputMessage) {
         final String routingId = inputMessage.getRoutingId();
-        final EnumMessageType enumMessageType = inputMessage.getMsgType();
+        final EnumMessageType enumMessageType = inputMessage.getMessageType();
         final long currentTime = System.currentTimeMillis();
 
         // If the routingId is new, we make a new entry, and return the inputMessage
