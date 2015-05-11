@@ -1,7 +1,6 @@
 package orwell.proxy.zmq;
 
 import org.easymock.TestSubject;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -20,12 +19,13 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Tests for {@link ZmqMessageDecoder}.
  * <p/>
- * Created by parapampa on 15/03/15.
+ * Created by Michael Ludmann on 15/03/15.
  */
 public class ZmqMessageDecoderTest {
 
-    final static Logger logback = LoggerFactory.getLogger(ZmqMessageDecoderTest.class);
-    private final String routingId = "NicCage";
+    private final static Logger logback = LoggerFactory.getLogger(ZmqMessageDecoderTest.class);
+    private static final String ROUTING_ID = "NicCage";
+    private static final long TIMESTAMP = 1234567890;
 
     @TestSubject
     private ZmqMessageDecoder zmw;
@@ -42,23 +42,23 @@ public class ZmqMessageDecoderTest {
         switch (messageType) {
             case REGISTERED:
                 specificMessage = getBytesRegistered();
-                zmqMessageHeader = routingId + " " + "Registered" + " ";
+                zmqMessageHeader = ROUTING_ID + " " + "Registered" + " ";
                 break;
             case SERVER_ROBOT_STATE:
                 specificMessage = getBytesServerRobotState();
-                zmqMessageHeader = routingId + " " + "ServerRobotState" + " ";
+                zmqMessageHeader = ROUTING_ID + " " + "ServerRobotState" + " ";
                 break;
             case INPUT:
                 specificMessage = getBytesInput();
-                zmqMessageHeader = routingId + " " + "Input" + " ";
+                zmqMessageHeader = ROUTING_ID + " " + "Input" + " ";
                 break;
             case GAME_STATE:
                 specificMessage = getBytesGameState();
-                zmqMessageHeader = routingId + " " + "GameState" + " ";
+                zmqMessageHeader = ROUTING_ID + " " + "GameState" + " ";
                 break;
             case UNKNOWN:
                 specificMessage = new byte[1];
-                zmqMessageHeader = routingId + " " + "bananaCage" + " ";
+                zmqMessageHeader = ROUTING_ID + " " + "bananaCage" + " ";
             default:
                 logback.error("Case : Message type " + messageType + " not handled");
         }
@@ -66,27 +66,28 @@ public class ZmqMessageDecoderTest {
         // Concatenate the two byte arrays
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
+            assert null != zmqMessageHeader;
             outputStream.write(zmqMessageHeader.getBytes());
             outputStream.write(specificMessage);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (final IOException e) {
+            logback.error(e.getMessage());
         }
 
         return outputStream.toByteArray();
     }
 
-    public byte[] getBytesRegistered() {
-        ServerGame.Registered.Builder registeredBuilder = ServerGame.Registered.newBuilder();
+    private byte[] getBytesRegistered() {
+        final ServerGame.Registered.Builder registeredBuilder = ServerGame.Registered.newBuilder();
         registeredBuilder.setRobotId("BananaOne");
         registeredBuilder.setTeam("BLUE");
 
         return registeredBuilder.build().toByteArray();
     }
 
-    public byte[] getBytesInput() {
-        Controller.Input.Builder inputBuilder = Controller.Input.newBuilder();
-        Controller.Input.Fire.Builder fireBuilder = Controller.Input.Fire.newBuilder();
-        Controller.Input.Move.Builder moveBuilder = Controller.Input.Move.newBuilder();
+    private byte[] getBytesInput() {
+        final Controller.Input.Builder inputBuilder = Controller.Input.newBuilder();
+        final Controller.Input.Fire.Builder fireBuilder = Controller.Input.Fire.newBuilder();
+        final Controller.Input.Move.Builder moveBuilder = Controller.Input.Move.newBuilder();
         fireBuilder.setWeapon1(false);
         fireBuilder.setWeapon2(false);
         moveBuilder.setLeft(0);
@@ -97,19 +98,19 @@ public class ZmqMessageDecoderTest {
         return inputBuilder.build().toByteArray();
     }
 
-    public byte[] getBytesServerRobotState() {
-        Robot.ServerRobotState.Builder serverRobotStateBuilder = Robot.ServerRobotState.newBuilder();
-        Robot.Rfid.Builder rfidBuilder = Robot.Rfid.newBuilder();
+    private byte[] getBytesServerRobotState() {
+        final Robot.ServerRobotState.Builder serverRobotStateBuilder = Robot.ServerRobotState.newBuilder();
+        final Robot.Rfid.Builder rfidBuilder = Robot.Rfid.newBuilder();
         rfidBuilder.setRfid("1234");
         rfidBuilder.setStatus(Robot.Status.ON);
-        rfidBuilder.setTimestamp(1234567890);
+        rfidBuilder.setTimestamp(TIMESTAMP);
         serverRobotStateBuilder.addRfid(rfidBuilder.build());
 
         return serverRobotStateBuilder.build().toByteArray();
     }
 
-    public byte[] getBytesGameState() {
-        ServerGame.GameState.Builder gameStateBuilder = ServerGame.GameState.newBuilder();
+    private byte[] getBytesGameState() {
+        final ServerGame.GameState.Builder gameStateBuilder = ServerGame.GameState.newBuilder();
         gameStateBuilder.setPlaying(true);
 
         return gameStateBuilder.build().toByteArray();
@@ -117,7 +118,7 @@ public class ZmqMessageDecoderTest {
 
     @Test
     public void testGetRoutingId() {
-        assertEquals(routingId, zmw.getRoutingId());
+        assertEquals(ROUTING_ID, zmw.getRoutingId());
     }
 
     @Test
@@ -149,10 +150,6 @@ public class ZmqMessageDecoderTest {
     @Test
     public void testGetZmqMessageString() {
         assertEquals(new String(getRawZmqMessage(EnumMessageType.REGISTERED)), zmw.getZmqMessageString());
-    }
-
-    @After
-    public void tearDown() {
     }
 
     //TODO add test to test split function (in case there are spaces in the message body
