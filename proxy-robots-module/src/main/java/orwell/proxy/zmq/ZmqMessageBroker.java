@@ -7,17 +7,18 @@ import org.zeromq.ZMQ;
 import java.util.ArrayList;
 
 /**
- * Created by parapampa on 08/03/15.
+ * Created by Michaël Ludmann on 08/03/15.
  */
 public class ZmqMessageBroker implements IZmqMessageBroker {
 
-    final static Logger logback = LoggerFactory.getLogger(ZmqMessageBroker.class);
+    private final static Logger logback = LoggerFactory.getLogger(ZmqMessageBroker.class);
+    private static final long THREAD_SLEEP_MS = 10;
     private final Object rXguard;
     private final ZMQ.Context context;
     private final ZMQ.Socket sender;
     private final ZMQ.Socket receiver;
     final private ArrayList<IFilter> filterList;
-    protected ArrayList<IZmqMessageListener> zmqMessageListeners;
+    private final ArrayList<IZmqMessageListener> zmqMessageListeners;
     private boolean isConnected = false;
     private int nbMessagesSkipped = 0;
     private ZmqReader reader;
@@ -25,7 +26,7 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
 
     public ZmqMessageBroker(final int senderLinger,
                             final int receiverLinger,
-                            ArrayList<IFilter> filterList) {
+                            final ArrayList<IFilter> filterList) {
         logback.info("Constructor -- IN");
         zmqMessageListeners = new ArrayList<>();
         rXguard = new Object();
@@ -64,7 +65,7 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
         receiver.connect("tcp://" + serverIp + ":"
                 + subPort);
         logback.info("ProxyRobots Receiver created");
-        receiver.subscribe(new String("").getBytes());
+        receiver.subscribe("".getBytes());
         try {
             if (Thread.State.NEW != reader.getState()) {
                 logback.error("Reader has already been started once");
@@ -72,7 +73,7 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
             }
             reader.start(); // Start to listen for incoming messages
             isConnected = true;
-        } catch (IllegalThreadStateException e) {
+        } catch (final IllegalThreadStateException e) {
             logback.error(e.getMessage());
         }
         return isConnected;
@@ -101,8 +102,8 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
 
     private void receivedNewZmqMessage(final ZmqMessageDecoder zmqMessage) {
         logback.debug("Received New ZMQ Message : " + zmqMessage.getMessageType());
-        for (int j = 0; j < zmqMessageListeners.size(); j++) {
-            zmqMessageListeners.get(j).receivedNewZmq(zmqMessage);
+        for (final IZmqMessageListener zmqMessageListener : zmqMessageListeners) {
+            zmqMessageListener.receivedNewZmq(zmqMessage);
         }
     }
 
@@ -112,12 +113,22 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
         isConnected = false;
     }
 
+    @Override
+    public boolean isConnectedToServer() {
+        return isConnected;
+    }
+
+    public int getNbMessagesSkipped() {
+        return nbMessagesSkipped;
+    }
+
     private class ZmqReader extends Thread {
-        String zmqPreviousMessage = new String();
+        String zmqPreviousMessage = "";
         ZmqMessageDecoder zmqMessage;
 
         @Override
         public void run() {
+            logback.info("ZmqReader has been started");
             while (isConnected) {
                 final byte[] raw_zmq_message = receiver.recv(ZMQ.NOBLOCK);
                 if (null != raw_zmq_message) {
@@ -137,7 +148,8 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
                     }
                 }
                 try {
-                    Thread.sleep(10);
+                    // This is performed to avoid high CPU consumption
+                    Thread.sleep(THREAD_SLEEP_MS);
                 } catch (final InterruptedException e) {
                     logback.error("ZmqReader thread sleep exception: " + e.getMessage());
                 }
@@ -148,14 +160,5 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
             Thread.yield();
             logback.info("Communication stopped");
         }
-    }
-
-    @Override
-    public boolean isConnectedToServer() {
-        return isConnected;
-    }
-
-    public int getNbMessagesSkipped() {
-        return nbMessagesSkipped;
     }
 }
