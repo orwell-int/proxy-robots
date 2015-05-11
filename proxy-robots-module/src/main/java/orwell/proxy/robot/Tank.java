@@ -162,8 +162,7 @@ public class Tank implements IRobot, MessageListenerInterface {
                 logback.info("Registered robot: " + serverGameRegisteredToString());
             }
         } catch (final InvalidProtocolBufferException e) {
-            logback.error("setRegistered protobuf exception");
-            logback.error(e.getMessage());
+            logback.error("setRegistered protobuf exception: " + e.getMessage());
         }
     }
 

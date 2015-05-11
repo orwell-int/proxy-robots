@@ -61,8 +61,8 @@ public class ProxyRobots implements IZmqMessageListener {
                 configServerGame.getSubPort());
     }
 
-    /*
-     * This instantiate Tanks objects from a configuration It only set up the
+    /**
+     * This instantiates Tanks objects from a configuration It only set up the
      * tanksInitializedMap
      */
     protected void initializeTanksFromConfig() {
@@ -164,8 +164,8 @@ public class ProxyRobots implements IZmqMessageListener {
         logback.warn("Unknown message type");
     }
 
-    /*
-     * Start the proxy :
+    /**
+     * Starts the proxy :
      * -connect itself to the server
      * -initialize robots from a config
      * -connect to those robots
