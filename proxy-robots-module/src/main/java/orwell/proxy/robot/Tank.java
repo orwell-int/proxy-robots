@@ -57,7 +57,7 @@ public class Tank implements IRobot, MessageListenerInterface {
         registerBuilder.setVideoUrl(camera.getUrl());
         registerBuilder.setImage(image);
         if (0 == image.compareTo("")) {
-            logback.info("Image of tank " + routingID + " is empty. "
+            logback.warn("Image of tank " + routingID + " is empty. "
                     + "This will probably be an issue for the serverGame");
         }
         register = registerBuilder.build();
@@ -140,7 +140,7 @@ public class Tank implements IRobot, MessageListenerInterface {
     }
 
     @Override
-    public byte[] getAndClearZmqServerRobotStateBytes() {
+    public byte[] getServerRobotStateBytes_And_ClearDelta() {
         final ServerRobotState srs = getTankDeltaState().getServerRobotState_And_ClearDelta();
         if (null != srs)
             return srs.toByteArray();

@@ -11,5 +11,5 @@ public interface IConfigProxy {
 
     int getSenderLinger();
 
-    int getOutgoingMsgFrequency();
+    int getOutgoingMsgPeriod();
 }

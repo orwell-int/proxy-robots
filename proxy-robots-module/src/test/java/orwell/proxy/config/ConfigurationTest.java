@@ -93,7 +93,7 @@ public class ConfigurationTest {
 
         assertEquals(1000, configProxy.getSenderLinger());
         assertEquals(1000, configProxy.getReceiverLinger());
-        assertEquals(50, configProxy.getOutgoingMsgFrequency());
+        assertEquals(50, configProxy.getOutgoingMsgPeriod());
     }
 
     @Test

@@ -12,8 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.messages.Controller;
 import orwell.messages.ServerGame;
-import orwell.proxy.config.ConfigFactoryParameters;
 import orwell.proxy.config.ConfigFactory;
+import orwell.proxy.config.ConfigFactoryParameters;
 import orwell.proxy.config.EnumConfigFileType;
 import orwell.proxy.mock.MockedTank;
 import orwell.proxy.robot.IRobot;
@@ -42,16 +42,14 @@ public class ProxyRobotsTest {
     private final static long MAX_TIMEOUT_MS = 500;
     private static final String REGISTERED_ID = "BananaOne";
     private final ConfigFactoryParameters configFactoryParameters = new ConfigFactoryParameters("/configurationTest.xml", EnumConfigFileType.RESOURCE);
+    private final ZmqMessageBroker mockedZmqMessageFramework = createNiceMock(ZmqMessageBroker.class);
     private ConfigFactory configFactory;
     private RobotsMap robotsMap;
-
     @TestSubject
     private ProxyRobots myProxyRobots;
-
     @Mock
     //	private Tank myTank;
     private MockedTank mockedTank;
-    private final ZmqMessageBroker mockedZmqMessageFramework = createNiceMock(ZmqMessageBroker.class);
 
     @Before
     public void setUp() {
@@ -140,9 +138,7 @@ public class ProxyRobotsTest {
         replay(mockedZmqMessageFramework);
 
         // Instantiate main class with mock parameters
-        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework,
-                configFactory.getConfigServerGame(),
-                configFactory.getConfigRobots(),
+        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework, configFactory,
                 robotsMap);
     }
 
@@ -237,9 +233,7 @@ public class ProxyRobotsTest {
         replay(mockedZmqMessageFramework);
 
         // Instantiate main class with mock parameters
-        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework,
-                configFactory.getConfigServerGame(),
-                configFactory.getConfigRobots(),
+        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework, configFactory,
                 robotsMap);
 
         myProxyRobots.connectToRobots();
@@ -277,9 +271,7 @@ public class ProxyRobotsTest {
 
         // Instantiate main class with mock parameters
         // We build an empty robot map
-        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework,
-                configFactory.getConfigServerGame(),
-                configFactory.getConfigRobots(),
+        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework, configFactory,
                 new RobotsMap());
 
         myProxyRobots.start();

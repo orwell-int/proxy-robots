@@ -101,6 +101,4 @@ public class RobotsMap implements IRobotsMap {
         else
             return (IRobot.EnumRegistrationState.REGISTERED == robot.getRegistrationState());
     }
-
-
 }

@@ -2,10 +2,7 @@ package orwell.proxy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.config.ConfigFactoryParameters;
-import orwell.proxy.config.ConfigTank;
-import orwell.proxy.config.IConfigRobots;
-import orwell.proxy.config.IConfigServerGame;
+import orwell.proxy.config.*;
 import orwell.proxy.robot.Camera;
 import orwell.proxy.robot.IRobot;
 import orwell.proxy.robot.IRobotsMap;
@@ -23,21 +20,22 @@ public class ProxyRobots implements IZmqMessageListener {
     protected IRobotsMap robotsMap;
     private final CommunicationService communicationService = new CommunicationService();
     private final Thread communicationThread = new Thread(communicationService);
+    private final long outgoingMessagePeriod;
 
     public ProxyRobots(final IZmqMessageBroker mfProxy,
-                       final IConfigServerGame configServerGame,
-                       final IConfigRobots configRobots,
+                       final IConfigFactory configFactory,
                        final IRobotsMap robotsMap) {
         logback.info("Constructor -- IN");
         assert (null != mfProxy);
-        assert (null != configServerGame);
-        assert (null != configRobots);
+        assert (null != configFactory);
+        assert (null != configFactory.getConfigProxy());
         assert (null != robotsMap);
 
         this.mfProxy = mfProxy;
-        this.configServerGame = configServerGame;
-        this.configRobots = configRobots;
+        this.configServerGame = configFactory.getConfigServerGame();
+        this.configRobots = configFactory.getConfigRobots();
         this.robotsMap = robotsMap;
+        this.outgoingMessagePeriod = configFactory.getConfigProxy().getOutgoingMsgPeriod();
 
         mfProxy.addZmqMessageListener(this);
         logback.info("Constructor -- OUT");
@@ -99,9 +97,12 @@ public class ProxyRobots implements IZmqMessageListener {
         }
     }
 
+    /**
+     * Sends a delta of each robot state since last call
+     */
     protected void sendServerRobotStates() {
         for (final IRobot robot : robotsMap.getRegisteredRobots()) {
-            final byte[] zmqServerRobotState = robot.getAndClearZmqServerRobotStateBytes();
+            final byte[] zmqServerRobotState = robot.getServerRobotStateBytes_And_ClearDelta();
             if (null != zmqServerRobotState) {
                 logback.debug("Sending a ServerRobotState message");
                 final ZmqMessageBOM zmqMessageBOM =
@@ -202,11 +203,20 @@ public class ProxyRobots implements IZmqMessageListener {
     private class CommunicationService implements Runnable {
         public void run() {
             logback.info("Start of communication service");
+            long lastSendTime = System.currentTimeMillis();
 
+            // We stop the service once there are no more robots
+            // connected to the proxy
             while (!Thread.currentThread().isInterrupted() &&
                     !robotsMap.getConnectedRobots().isEmpty()) {
-                sendServerRobotStates();
+
+                // We avoid flooding the server
+                if(outgoingMessagePeriod < System.currentTimeMillis() - lastSendTime) {
+                    sendServerRobotStates();
+                    lastSendTime = System.currentTimeMillis();
+                }
                 try {
+                    // This is performed to avoid high CPU consumption
                     Thread.sleep(10);
                 } catch (final InterruptedException e) {
                     logback.error("CommunicationService thread sleep exception: " + e.getMessage());
