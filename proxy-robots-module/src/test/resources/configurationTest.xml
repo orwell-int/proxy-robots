@@ -3,7 +3,7 @@
     <proxy>
         <senderLinger>1000</senderLinger>
         <receiverLinger>1000</receiverLinger>
-        <outgoingMsgPeriod>0</outgoingMsgPeriod>
+        <outgoingMsgPeriod>500</outgoingMsgPeriod>
         <server-game name='irondamien'>
             <ip>192.168.1.37</ip>
             <pushPort>9000</pushPort>

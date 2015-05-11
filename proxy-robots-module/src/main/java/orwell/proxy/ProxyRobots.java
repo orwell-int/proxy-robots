@@ -14,13 +14,15 @@ import orwell.proxy.zmq.ZmqMessageDecoder;
 
 public class ProxyRobots implements IZmqMessageListener {
     private final static Logger logback = LoggerFactory.getLogger(ProxyRobots.class);
+    private static final long THREAD_SLEEP_MS = 10;
     private final IConfigServerGame configServerGame;
     private final IConfigRobots configRobots;
     private final IZmqMessageBroker mfProxy;
-    protected IRobotsMap robotsMap;
     private final CommunicationService communicationService = new CommunicationService();
     private final Thread communicationThread = new Thread(communicationService);
     private final long outgoingMessagePeriod;
+    protected IRobotsMap robotsMap;
+    private int outgoingMessageFiltered;
 
     public ProxyRobots(final IZmqMessageBroker mfProxy,
                        final IConfigFactory configFactory,
@@ -175,7 +177,8 @@ public class ProxyRobots implements IZmqMessageListener {
      */
     public void start() {
         this.connectToServer();
-        this.initializeTanksFromConfig();
+        if (robotsMap.getRobotsArray().isEmpty())
+            this.initializeTanksFromConfig();
         this.connectToRobots();
         //We have to start the communication service before sending Register
         //Otherwise we risk not being ready to read Registered in time
@@ -200,6 +203,10 @@ public class ProxyRobots implements IZmqMessageListener {
         }
     }
 
+    protected int getNbOutgoingMessageFiltered() {
+        return outgoingMessageFiltered;
+    }
+
     private class CommunicationService implements Runnable {
         public void run() {
             logback.info("Start of communication service");
@@ -211,13 +218,15 @@ public class ProxyRobots implements IZmqMessageListener {
                     !robotsMap.getConnectedRobots().isEmpty()) {
 
                 // We avoid flooding the server
-                if(outgoingMessagePeriod < System.currentTimeMillis() - lastSendTime) {
+                if (outgoingMessagePeriod < System.currentTimeMillis() - lastSendTime) {
                     sendServerRobotStates();
                     lastSendTime = System.currentTimeMillis();
+                } else {
+                    outgoingMessageFiltered++;
                 }
                 try {
                     // This is performed to avoid high CPU consumption
-                    Thread.sleep(10);
+                    Thread.sleep(THREAD_SLEEP_MS);
                 } catch (final InterruptedException e) {
                     logback.error("CommunicationService thread sleep exception: " + e.getMessage());
                 }
