@@ -63,7 +63,7 @@ public class ZmqMessageBOM implements Comparable<ZmqMessageBOM> {
                 logback.warn("Message typeString unknown: " + typeString);
         }
 
-        logback.info("Message received: [RoutingID] " + routingId + " [TYPE]: " + type);
+        logback.info("Message parsed: [RoutingID] " + routingId + " [TYPE]: " + type);
         return new ZmqMessageBOM(routingId, type, messageBodyBytes);
     }
 
