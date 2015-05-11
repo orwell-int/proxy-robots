@@ -12,8 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.messages.Controller;
 import orwell.messages.ServerGame;
-import orwell.proxy.config.ConfigFactoryParameters;
 import orwell.proxy.config.ConfigFactory;
+import orwell.proxy.config.ConfigFactoryParameters;
 import orwell.proxy.config.EnumConfigFileType;
 import orwell.proxy.mock.MockedTank;
 import orwell.proxy.robot.IRobot;
@@ -38,19 +38,16 @@ import static org.junit.Assert.*;
 public class ProxyRobotsTest {
 
     private final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class);
-    private final static long MAX_TIMEOUT_MS = 500;
     private static final String REGISTERED_ID = "BananaOne";
     private final ConfigFactoryParameters configFactoryParameters = new ConfigFactoryParameters("/configurationTest.xml", EnumConfigFileType.RESOURCE);
+    private final ZmqMessageBroker mockedZmqMessageFramework = createNiceMock(ZmqMessageBroker.class);
     private ConfigFactory configFactory;
     private RobotsMap robotsMap;
-
     @TestSubject
     private ProxyRobots myProxyRobots;
-
     @Mock
     //	private Tank myTank;
     private MockedTank mockedTank;
-    private final ZmqMessageBroker mockedZmqMessageFramework = createNiceMock(ZmqMessageBroker.class);
 
     @Before
     public void setUp() {
@@ -115,10 +112,13 @@ public class ProxyRobotsTest {
         return inputBuilder.build().toByteArray();
     }
 
-
+    // Wait for a max timeout or for communicationService to stop
     private void waitForCloseOrTimeout() {
         long timeout = 0;
-        while (myProxyRobots.isCommunicationServiceAlive() && MAX_TIMEOUT_MS > timeout) {
+
+        // We use the value of the config for OutgoingMsgPeriod
+        final long MAX_TIMEOUT = configFactory.getConfigProxy().getOutgoingMsgPeriod();
+        while (myProxyRobots.isCommunicationServiceAlive() && MAX_TIMEOUT > timeout) {
             try {
                 //noinspection BusyWait
                 Thread.sleep(5);
@@ -139,9 +139,7 @@ public class ProxyRobotsTest {
         replay(mockedZmqMessageFramework);
 
         // Instantiate main class with mock parameters
-        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework,
-                configFactory.getConfigServerGame(),
-                configFactory.getConfigRobots(),
+        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework, configFactory,
                 robotsMap);
     }
 
@@ -236,9 +234,7 @@ public class ProxyRobotsTest {
         replay(mockedZmqMessageFramework);
 
         // Instantiate main class with mock parameters
-        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework,
-                configFactory.getConfigServerGame(),
-                configFactory.getConfigRobots(),
+        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework, configFactory,
                 robotsMap);
 
         myProxyRobots.connectToRobots();
@@ -276,9 +272,7 @@ public class ProxyRobotsTest {
 
         // Instantiate main class with mock parameters
         // We build an empty robot map
-        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework,
-                configFactory.getConfigServerGame(),
-                configFactory.getConfigRobots(),
+        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework, configFactory,
                 new RobotsMap());
 
         myProxyRobots.start();
@@ -314,6 +308,25 @@ public class ProxyRobotsTest {
         // Tank received the right Input correctly
         assertArrayEquals(getBytesInput(),
                 ((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getControllerInputBytes());
+
+        logback.info("OUT");
+    }
+
+    @Test
+    public void testGetNbOutgoingMessageFiltered() {
+        logback.info("IN");
+
+        instantiateBasicProxyRobots();
+        myProxyRobots.start();
+
+        // We run the proxy for maxTimeoutMs
+        waitForCloseOrTimeout();
+
+        // Since we wait for a timeout as long as outgoingMessagePeriod
+        // during which the proxy runs and tries to send messages,
+        // we should filter some messages
+        logback.debug("getNbOutgoingMessageFiltered: " + myProxyRobots.getNbOutgoingMessageFiltered());
+        assertTrue("There should be at least one filtered message", 0 < myProxyRobots.getNbOutgoingMessageFiltered());
 
         logback.info("OUT");
     }

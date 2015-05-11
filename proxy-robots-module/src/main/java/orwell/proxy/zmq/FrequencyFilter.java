@@ -20,7 +20,7 @@ public class FrequencyFilter implements IFilter {
     }
 
     @Override
-    public ZmqMessageBOM getFilteredMessage(ZmqMessageBOM inputMessage) {
+    public ZmqMessageBOM getFilteredMessage(final ZmqMessageBOM inputMessage) {
         final String routingId = inputMessage.getRoutingId();
         final EnumMessageType enumMessageType = inputMessage.getMessageType();
         final long currentTime = System.currentTimeMillis();

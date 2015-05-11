@@ -25,7 +25,7 @@ public interface IRobot {
     /*
      * This will clear the current ServerRobotState
      */
-    byte[] getAndClearZmqServerRobotStateBytes();
+    byte[] getServerRobotStateBytes_And_ClearDelta();
 
     void setRegistered(byte[] registeredMessage);
 

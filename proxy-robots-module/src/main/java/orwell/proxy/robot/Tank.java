@@ -13,34 +13,30 @@ import orwell.messages.Controller.Input;
 import orwell.messages.Robot.Register;
 import orwell.messages.Robot.ServerRobotState;
 import orwell.messages.ServerGame.Registered;
-import orwell.proxy.Utils;
 
 import java.util.UUID;
 
 public class Tank implements IRobot, MessageListenerInterface {
-    final static Logger logback = LoggerFactory.getLogger(Tank.class);
-
-    private String routingID = UUID.randomUUID().toString();
-    private String bluetoothName;
-    private String bluetoothID;
+    private final static Logger logback = LoggerFactory.getLogger(Tank.class);
     private final Register.Builder registerBuilder = Register
             .newBuilder();
-    private Input currentControllerInput;
-    private Registered serverGameRegistered;
     private final NXTInfo nxtInfo;
     private final MessageFramework mfTank;
     private final ICamera camera;
+    private final TankDeltaState tankDeltaState = new TankDeltaState();
+    private String routingID = UUID.randomUUID().toString();
+    private String bluetoothName;
+    private String bluetoothID;
+    private Input currentControllerInput;
+    private Registered serverGameRegistered;
     private Register register;
     private String image;
-
     private EnumRegistrationState registrationState = EnumRegistrationState.NOT_REGISTERED;
     private EnumConnectionState connectionState = EnumConnectionState.NOT_CONNECTED;
     private String teamName;
 
-    private final TankDeltaState tankDeltaState = new TankDeltaState();
-
-    public Tank(String bluetoothName, String bluetoothID, ICamera camera,
-                MessageFramework mf, String image) {
+    private Tank(final String bluetoothName, final String bluetoothID, final ICamera camera,
+                 final MessageFramework mf, final String image) {
         setBluetoothName(bluetoothName);
         setBluetoothID(bluetoothID);
         this.camera = camera;
@@ -51,7 +47,7 @@ public class Tank implements IRobot, MessageListenerInterface {
         this.image = image;
     }
 
-    public Tank(String bluetoothName, String bluetoothID, ICamera camera, String image) {
+    public Tank(final String bluetoothName, final String bluetoothID, final ICamera camera, final String image) {
         this(bluetoothName, bluetoothID, camera, new MessageFramework(), image);
     }
 
@@ -60,8 +56,8 @@ public class Tank implements IRobot, MessageListenerInterface {
         registerBuilder.setTemporaryRobotId(routingID);
         registerBuilder.setVideoUrl(camera.getUrl());
         registerBuilder.setImage(image);
-        if ("" == image) {
-            logback.info("Image of tank " + routingID + " is empty. "
+        if (0 == image.compareTo("")) {
+            logback.warn("Image of tank " + routingID + " is empty. "
                     + "This will probably be an issue for the serverGame");
         }
         register = registerBuilder.build();
@@ -76,7 +72,7 @@ public class Tank implements IRobot, MessageListenerInterface {
 
     @Override
     public byte[] getRegisterBytes() {
-        Register register = getRegister();
+        final Register register = getRegister();
         if (null != register)
             return register.toByteArray();
         else
@@ -89,30 +85,30 @@ public class Tank implements IRobot, MessageListenerInterface {
     }
 
     @Override
-    public void setControllerInput(byte[] inputMessage) {
+    public void setControllerInput(final byte[] inputMessage) {
         try {
             this.currentControllerInput = Input.parseFrom(inputMessage);
             if (currentControllerInput.hasMove()) {
                 String payloadMove = "input move ";
                 payloadMove += currentControllerInput.getMove().getLeft() + " "
                         + currentControllerInput.getMove().getRight();
-                UnitMessage msg = new UnitMessage(UnitMessageType.Command,
+                final UnitMessage msg = new UnitMessage(UnitMessageType.Command,
                         payloadMove);
                 mfTank.SendMessage(msg);
             }
             if (currentControllerInput.hasFire()
                     && (currentControllerInput.getFire().getWeapon1() ||
-                        currentControllerInput.getFire().getWeapon2())
+                    currentControllerInput.getFire().getWeapon2())
                     ) {
                 String payloadFire = "input fire ";
                 payloadFire += currentControllerInput.getFire().getWeapon1()
                         + " " + currentControllerInput.getFire().getWeapon2();
-                UnitMessage msg = new UnitMessage(UnitMessageType.Command,
+                final UnitMessage msg = new UnitMessage(UnitMessageType.Command,
                         payloadFire);
                 mfTank.SendMessage(msg);
             }
-        } catch (InvalidProtocolBufferException e) {
-            logback.info("setControllerInput protobuff exception");
+        } catch (final InvalidProtocolBufferException e) {
+            logback.info("setControllerInput protobuf exception");
             logback.error(e.getMessage());
         }
     }
@@ -121,7 +117,7 @@ public class Tank implements IRobot, MessageListenerInterface {
         return bluetoothName;
     }
 
-    private void setBluetoothName(String bluetoothName) {
+    private void setBluetoothName(final String bluetoothName) {
         this.bluetoothName = bluetoothName;
     }
 
@@ -129,7 +125,7 @@ public class Tank implements IRobot, MessageListenerInterface {
         return bluetoothID;
     }
 
-    private void setBluetoothID(String bluetoothID) {
+    private void setBluetoothID(final String bluetoothID) {
         this.bluetoothID = bluetoothID;
     }
 
@@ -139,13 +135,13 @@ public class Tank implements IRobot, MessageListenerInterface {
     }
 
     @Override
-    public void setRoutingId(String routingId) {
+    public void setRoutingId(final String routingId) {
         this.routingID = routingId;
     }
 
     @Override
-    public byte[] getAndClearZmqServerRobotStateBytes() {
-        ServerRobotState srs = getTankDeltaState().getServerRobotState_And_ClearDelta();
+    public byte[] getServerRobotStateBytes_And_ClearDelta() {
+        final ServerRobotState srs = getTankDeltaState().getServerRobotState_And_ClearDelta();
         if (null != srs)
             return srs.toByteArray();
         else
@@ -153,7 +149,7 @@ public class Tank implements IRobot, MessageListenerInterface {
     }
 
     @Override
-    public void setRegistered(byte[] registeredMessage) {
+    public void setRegistered(final byte[] registeredMessage) {
         try {
             this.serverGameRegistered = Registered.parseFrom(registeredMessage);
             routingID = serverGameRegistered.getRobotId();
@@ -165,9 +161,8 @@ public class Tank implements IRobot, MessageListenerInterface {
                 teamName = serverGameRegistered.getTeam();
                 logback.info("Registered robot: " + serverGameRegisteredToString());
             }
-        } catch (InvalidProtocolBufferException e) {
-            logback.error("setRegistered protobuff exception");
-            logback.error(e.getMessage());
+        } catch (final InvalidProtocolBufferException e) {
+            logback.error("setRegistered protobuf exception: " + e.getMessage());
         }
     }
 
@@ -175,7 +170,7 @@ public class Tank implements IRobot, MessageListenerInterface {
     public EnumConnectionState connectToDevice() {
         logback.info("Connecting to robot: \n" + toString());
 
-        Boolean isConnected = mfTank.ConnectToNXT(nxtInfo);
+        final Boolean isConnected = mfTank.ConnectToNXT(nxtInfo);
         if (isConnected) {
             this.connectionState = EnumConnectionState.CONNECTED;
             logback.info("Robot [" + getRoutingId()
@@ -190,24 +185,22 @@ public class Tank implements IRobot, MessageListenerInterface {
 
     @Override
     public String toString() {
-        String string = "Tank {[BTName] " + getBluetoothName() + " [BTID] "
+        return "Tank {[BTName] " + getBluetoothName() + " [BT-ID] "
                 + getBluetoothID() + " [RoutingID] " + getRoutingId() + "}"
                 + "\n\t" + controllerInputToString() + "\n\t"
                 + robotStateToString();
-        return string;
     }
 
     @Override
     public String robotStateToString() {
-        String string = "RobotState of " + getRoutingId()
+        return "RobotState of " + getRoutingId()
                 + "\n\t|___RFID   = " + getTankDeltaState().getServerRobotState().getRfidList()
                 + "\n\t|___Colour = " + getTankDeltaState().getServerRobotState().getColourList();
-        return string;
     }
 
     @Override
     public String controllerInputToString() {
-        String string;
+        final String string;
         if (null != currentControllerInput) {
             string = "Controller INPUT of Robot [" + getRoutingId() + "]:"
                     + "\n\t|___Move order: [LEFT] "
@@ -227,7 +220,7 @@ public class Tank implements IRobot, MessageListenerInterface {
 
     @Override
     public String serverGameRegisteredToString() {
-        String string;
+        final String string;
         if (null != serverGameRegistered) {
             string = "ServerGame REGISTERED of Robot [" + getRoutingId() + "]:"
                     + "\n\t|___final RoutingID: "
@@ -261,17 +254,17 @@ public class Tank implements IRobot, MessageListenerInterface {
     }
 
     @Override
-    public void setImage(String image) {
+    public void setImage(final String image) {
         this.image = image;
     }
 
     public void closeConnection() {
-        if (connectionState == EnumConnectionState.CONNECTED) {
+        if (EnumConnectionState.CONNECTED == connectionState) {
             mfTank.close();
         }
     }
 
-    public void receivedNewMessage(UnitMessage msg) {
+    public void receivedNewMessage(final UnitMessage msg) {
         switch (msg.getMsgType()) {
             case Stop:
                 onMsgStop();
@@ -297,26 +290,26 @@ public class Tank implements IRobot, MessageListenerInterface {
         closeConnection();
     }
 
-    private void onMsgRfid(String rfidValue) {
+    private void onMsgRfid(final String rfidValue) {
         logback.debug("RFID info received: " + rfidValue);
         getTankDeltaState().setNewState(EnumSensor.RFID, rfidValue);
     }
 
-    private void onMsgColour(String colourValue) {
+    private void onMsgColour(final String colourValue) {
         logback.debug("Colour info received: " + colourValue);
         getTankDeltaState().setNewState(EnumSensor.COLOUR, colourValue);
     }
 
-    private void onMsgCommand(String msg) {
+    private void onMsgCommand(final String msg) {
         logback.debug("Tank is sending a command: " + msg);
         logback.debug("This command will not be processed");
     }
 
-    private void onMsgNotDefined(String msg) {
+    private void onMsgNotDefined(final String msg) {
         logback.error("Unable to decode message received: " + msg);
     }
 
-    protected TankDeltaState getTankDeltaState() {
+    private TankDeltaState getTankDeltaState() {
         return this.tankDeltaState;
     }
 }

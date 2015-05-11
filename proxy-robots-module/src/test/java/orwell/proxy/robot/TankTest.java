@@ -44,14 +44,14 @@ public class TankTest {
         UnitMessage unitMessage = new UnitMessage(UnitMessageType.Rfid, "123");
         tank.receivedNewMessage(unitMessage);
 
-        assertNotNull(tank.getAndClearZmqServerRobotStateBytes());
+        assertNotNull(tank.getServerRobotStateBytes_And_ClearDelta());
 
-        assertNull(tank.getAndClearZmqServerRobotStateBytes());
+        assertNull(tank.getServerRobotStateBytes_And_ClearDelta());
 
         unitMessage = new UnitMessage(UnitMessageType.Colour, "2");
         tank.receivedNewMessage(unitMessage);
 
-        assertNotNull(tank.getAndClearZmqServerRobotStateBytes());
+        assertNotNull(tank.getServerRobotStateBytes_And_ClearDelta());
 
         logback.info("OUT");
     }

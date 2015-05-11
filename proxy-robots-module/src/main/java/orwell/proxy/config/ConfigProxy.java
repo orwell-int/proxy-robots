@@ -8,7 +8,7 @@ public class ConfigProxy implements IConfigProxy {
     private List<ConfigServerGame> configServerGames;
     private int senderLinger;
     private int receiverLinger;
-    private int outgoingMsgFrequency;
+    private int outgoingMsgPeriod;
 
     @XmlElement(name = "server-game")
     public List<ConfigServerGame> getConfigServerGames() {
@@ -55,12 +55,12 @@ public class ConfigProxy implements IConfigProxy {
     }
 
     @Override
-    public int getOutgoingMsgFrequency() {
-        return outgoingMsgFrequency;
+    public int getOutgoingMsgPeriod() {
+        return outgoingMsgPeriod;
     }
 
-    @XmlElement(name = "outgoingMsgFrequency")
-    public void setOutgoingMsgFrequency(final int outgoingMsgFrequency) {
-        this.outgoingMsgFrequency = outgoingMsgFrequency;
+    @XmlElement(name = "outgoingMsgPeriod")
+    public void setOutgoingMsgPeriod(final int outgoingMsgPeriod) {
+        this.outgoingMsgPeriod = outgoingMsgPeriod;
     }
 }

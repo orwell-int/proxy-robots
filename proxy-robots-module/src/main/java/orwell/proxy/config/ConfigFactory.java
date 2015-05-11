@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by parapampa on 03/05/15.
  */
-public class ConfigFactory {
+public class ConfigFactory implements IConfigFactory {
     final static Logger logback = LoggerFactory.getLogger(ConfigFactory.class);
 
     private final IConfigProxy configProxy;
@@ -31,14 +31,17 @@ public class ConfigFactory {
         logback.debug("OUT");
     }
 
+    @Override
     public IConfigProxy getConfigProxy() {
         return configProxy;
     }
 
+    @Override
     public IConfigRobots getConfigRobots() {
         return configRobots;
     }
 
+    @Override
     public IConfigServerGame getConfigServerGame() {
         return configServerGame;
     }

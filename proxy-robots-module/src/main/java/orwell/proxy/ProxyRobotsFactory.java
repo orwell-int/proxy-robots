@@ -32,10 +32,7 @@ public class ProxyRobotsFactory {
         if (null == zmqMessageFramework) {
             return null;
         }
-        return new ProxyRobots(zmqMessageFramework,
-                configFactory.getConfigServerGame(),
-                configFactory.getConfigRobots(),
-                new RobotsMap());
+        return new ProxyRobots(zmqMessageFramework, configFactory, new RobotsMap());
 
     }
 
@@ -43,7 +40,8 @@ public class ProxyRobotsFactory {
     // necessary messages for the server
     private ArrayList<IFilter> getFilterList() {
         final ArrayList<IFilter> filterList = new ArrayList<>();
-        filterList.add(new FrequencyFilter(configFactory.getConfigProxy().getOutgoingMsgFrequency()));
+        if(null != configFactory.getConfigProxy())
+            filterList.add(new FrequencyFilter(configFactory.getConfigProxy().getOutgoingMsgPeriod()));
 
         return filterList;
     }

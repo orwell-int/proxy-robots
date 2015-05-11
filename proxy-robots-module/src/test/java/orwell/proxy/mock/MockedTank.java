@@ -58,7 +58,7 @@ public class MockedTank implements IRobot {
     }
 
     @Override
-    public byte[] getAndClearZmqServerRobotStateBytes() {
+    public byte[] getServerRobotStateBytes_And_ClearDelta() {
         if (null == this.serverRobotStateBytes) {
             Robot.ServerRobotState.Builder serverRobotStateBuilder = Robot.ServerRobotState.newBuilder();
             Robot.Rfid.Builder rfidBuilder = Robot.Rfid.newBuilder();
