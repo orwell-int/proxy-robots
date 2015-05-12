@@ -10,7 +10,7 @@ import orwell.proxy.zmq.ZmqMessageBroker;
 import java.util.ArrayList;
 
 /**
- * Created by parapampa on 03/05/15.
+ * Created by Michaël Ludmann on 03/05/15.
  */
 public class ProxyRobotsFactory {
     private final ConfigFactory configFactory;

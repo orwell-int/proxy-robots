@@ -1,7 +1,7 @@
 package orwell.proxy.config;
 
 /**
- * Created by parapampa on 03/05/15.
+ * Created by Michaël Ludmann on 03/05/15.
  */
 public interface IConfigProxy {
 

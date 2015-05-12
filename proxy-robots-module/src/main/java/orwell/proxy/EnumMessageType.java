@@ -1,7 +1,7 @@
 package orwell.proxy;
 
 /**
- * Created by parapampa on 08/03/15.
+ * Created by Michaël Ludmann on 08/03/15.
  */
 public enum EnumMessageType {
     REGISTER,

@@ -8,7 +8,7 @@ import orwell.messages.ServerGame;
 import orwell.proxy.robot.IRobot;
 
 /**
- * Created by parapampa on 03/05/15.
+ * Created by Michaël Ludmann on 03/05/15.
  */
 public class MockedTank implements IRobot {
     final static Logger logback = LoggerFactory.getLogger(MockedTank.class);

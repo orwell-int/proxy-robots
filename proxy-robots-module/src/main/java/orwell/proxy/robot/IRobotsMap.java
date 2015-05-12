@@ -3,7 +3,7 @@ package orwell.proxy.robot;
 import java.util.ArrayList;
 
 /**
- * Created by parapampa on 26/04/15.
+ * Created by Michaël Ludmann on 26/04/15.
  */
 public interface IRobotsMap {
 

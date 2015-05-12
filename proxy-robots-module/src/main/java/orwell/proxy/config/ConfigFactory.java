@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by parapampa on 03/05/15.
+ * Created by Michaël Ludmann on 03/05/15.
  */
 public class ConfigFactory implements IConfigFactory {
     final static Logger logback = LoggerFactory.getLogger(ConfigFactory.class);

@@ -16,7 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 /**
- * Created by parapampa on 11/04/15.
+ * Created by Michaël Ludmann on 11/04/15.
  */
 @RunWith(PowerMockRunner.class)
 public class TankTest {

@@ -11,7 +11,7 @@ import orwell.messages.Robot.Status;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Created by parapampa on 01/02/15.
+ * Created by Michaël Ludmann on 01/02/15.
  */
 public class TankDeltaStateTest {
     final static Logger logback = LoggerFactory.getLogger(TankDeltaStateTest.class);
