@@ -16,13 +16,13 @@ public interface IRobot {
 
     String getImage();
 
-    /*
+    /**
      * Image is a picture of the robot itself to be sent to the
      * server before the start of the game
      */
     void setImage(String image);
 
-    /*
+    /**
      * This will clear the current ServerRobotState
      */
     byte[] getServerRobotStateBytes_And_ClearDelta();

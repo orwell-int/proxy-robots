@@ -115,13 +115,12 @@ public class TankDeltaState {
             serverRobotStateBuilder.addColour(builder);
 
         } else if (previousValue != newColourInt) {
-            final long currentTime = getTimeStamp();
-
-            builder.setTimestamp(currentTime);
+            builder.setTimestamp(getTimeStamp());
             builder.setStatus(Status.OFF);
             builder.setColour(previousValue);
             serverRobotStateBuilder.addColour(builder);
 
+            builder.setTimestamp(getTimeStamp());
             builder.setStatus(Status.ON);
             builder.setColour(newColourInt);
             serverRobotStateBuilder.addColour(builder);
