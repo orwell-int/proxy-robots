@@ -1,6 +1,5 @@
 package orwell.proxy.robot;
 
-import com.google.protobuf.MessageLiteOrBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.messages.Robot;
@@ -16,8 +15,8 @@ import java.util.HashMap;
  * read by the robot (not a list of the last values)
  */
 public class TankDeltaState {
-    final static Logger logback = LoggerFactory.getLogger(TankDeltaState.class);
-    final static String NO_RFID_VALUE = "0";
+    private final static Logger logback = LoggerFactory.getLogger(TankDeltaState.class);
+    private final static String NO_RFID_VALUE = "0";
 
     private final Robot.ServerRobotState.Builder serverRobotStateBuilder = Robot.ServerRobotState.newBuilder();
     private HashMap<EnumSensor, ISensorWrapper> previousStateMap;
@@ -33,7 +32,7 @@ public class TankDeltaState {
         previousStateMap.put(EnumSensor.COLOUR, new ColourWrapper());
     }
 
-    private void setNewRfid(String newRfidString) {
+    private void setNewRfid(final String newRfidString) {
         /**
          * Status marks the transition for a value in the table
          * If ON: this is the current value read by the robot
@@ -55,12 +54,12 @@ public class TankDeltaState {
          * no longer reading Rfid values, so the previous value should
          * be set to OFF
          */
-        String previousValue = previousStateMap.get(EnumSensor.RFID).getPreviousValue();
-        Rfid.Builder builder = (Rfid.Builder) previousStateMap.get(EnumSensor.RFID).getBuilder();
+        final String previousValue = previousStateMap.get(EnumSensor.RFID).getPreviousValue();
+        final Rfid.Builder builder = (Rfid.Builder) previousStateMap.get(EnumSensor.RFID).getBuilder();
 
         // if previousValue is not initialised and the new value is NO_RFID_VALUE
         // then there is nothing to do
-        if(null == previousValue && 0 == newRfidString.compareTo(NO_RFID_VALUE)) {
+        if (null == previousValue && 0 == newRfidString.compareTo(NO_RFID_VALUE)) {
             return;
         }
         // If this is the first read, we initialise the builder
@@ -69,8 +68,8 @@ public class TankDeltaState {
             builder.setStatus(Status.ON);
             builder.setRfid(newRfidString);
             serverRobotStateBuilder.addRfid(builder);
-        // else we register the transition
-        } else if (previousValue != newRfidString) {
+            // else we register the transition
+        } else if (0 != previousValue.compareTo(newRfidString)) {
             builder.setTimestamp(getTimeStamp());
             builder.setStatus(Status.OFF);
             builder.setRfid(previousValue);
@@ -78,7 +77,7 @@ public class TankDeltaState {
 
             // If the tank reads NO_RFID_VALUE, we do not register
             // it as a value in itself
-            if(0 != newRfidString.compareTo(NO_RFID_VALUE)) {
+            if (0 != newRfidString.compareTo(NO_RFID_VALUE)) {
                 builder.setTimestamp(getTimeStamp());
                 builder.setStatus(Status.ON);
                 builder.setRfid(newRfidString);
@@ -87,7 +86,7 @@ public class TankDeltaState {
         }
     }
 
-    private void setNewColour(String newColourString) {
+    private void setNewColour(final String newColourString) {
         /**
          * Status marks the transition for a value in the table
          * If ON: this is the current value read by the robot
@@ -105,9 +104,9 @@ public class TankDeltaState {
          *                         |> Status x ON, do nothing
          * Current value == x      |
          */
-        int newColourInt = Integer.parseInt(newColourString);
-        int previousValue = ((ColourWrapper) previousStateMap.get(EnumSensor.COLOUR)).getPreviousValueInteger();
-        Colour.Builder builder = (Colour.Builder) previousStateMap.get(EnumSensor.COLOUR).getBuilder();
+        final int newColourInt = Integer.parseInt(newColourString);
+        final int previousValue = ((ColourWrapper) previousStateMap.get(EnumSensor.COLOUR)).getPreviousValueInteger();
+        final Colour.Builder builder = (Colour.Builder) previousStateMap.get(EnumSensor.COLOUR).getBuilder();
 
         if (-1 == previousValue) {
             builder.setTimestamp(getTimeStamp());
@@ -116,7 +115,7 @@ public class TankDeltaState {
             serverRobotStateBuilder.addColour(builder);
 
         } else if (previousValue != newColourInt) {
-            long currentTime = getTimeStamp();
+            final long currentTime = getTimeStamp();
 
             builder.setTimestamp(currentTime);
             builder.setStatus(Status.OFF);
@@ -129,7 +128,7 @@ public class TankDeltaState {
         }
     }
 
-    public void setNewState(EnumSensor enumSensor, String newState) {
+    public void setNewState(final EnumSensor enumSensor, final String newState) {
         switch (enumSensor) {
             case RFID:
                 setNewRfid(newState);
@@ -144,20 +143,20 @@ public class TankDeltaState {
                 break;
             default:
                 logback.warn("Sensor not handled: " + enumSensor);
-                return;
         }
     }
 
     /**
      * This will not clear the delta state,
      * future access will continue to build on the previous state
+     *
      * @return latest ServerRobotState
      */
     public ServerRobotState getServerRobotState() {
         return serverRobotStateBuilder.build();
     }
 
-    public void clearServerRobotState() {
+    private void clearServerRobotState() {
         serverRobotStateBuilder.clearRfid();
         serverRobotStateBuilder.clearColour();
     }
@@ -166,6 +165,7 @@ public class TankDeltaState {
      * This will clear the ServerRobotState jut got by the method
      * so as to build a real delta state
      * This should be used in a normal real-time run
+     *
      * @return latest ServerRobotState
      */
     public ServerRobotState getServerRobotState_And_ClearDelta() {
@@ -173,12 +173,12 @@ public class TankDeltaState {
                 serverRobotStateBuilder.getColourList().isEmpty()) {
             return null;
         }
-        ServerRobotState srs = serverRobotStateBuilder.build();
+        final ServerRobotState srs = serverRobotStateBuilder.build();
         clearServerRobotState();
         return srs;
     }
 
-    protected long getTimeStamp() {
+    private long getTimeStamp() {
         return System.currentTimeMillis();
     }
 }
