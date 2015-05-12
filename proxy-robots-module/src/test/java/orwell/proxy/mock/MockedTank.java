@@ -6,6 +6,7 @@ import orwell.messages.Controller;
 import orwell.messages.Robot;
 import orwell.messages.ServerGame;
 import orwell.proxy.robot.IRobot;
+import orwell.proxy.robot.IRobotElementVisitor;
 
 /**
  * Created by Michaël Ludmann on 03/05/15.
@@ -132,5 +133,10 @@ public class MockedTank implements IRobot {
     @Override
     public void buildRegister() {
 
+    }
+
+    @Override
+    public void accept(final IRobotElementVisitor visitor) {
+        visitor.visit(this);
     }
 }

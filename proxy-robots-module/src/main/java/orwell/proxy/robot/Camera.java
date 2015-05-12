@@ -14,4 +14,9 @@ public class Camera implements ICamera {
     public String getUrl() {
         return "http://" + ip + ":" + port + "/videofeed";
     }
+
+    @Override
+    public void accept(final IRobotElementVisitor visitor) {
+        visitor.visit(this);
+    }
 }

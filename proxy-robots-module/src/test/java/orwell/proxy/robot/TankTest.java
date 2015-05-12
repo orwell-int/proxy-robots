@@ -28,33 +28,53 @@ public class TankTest {
     @Before
     public void setUp() {
         logback.info("IN");
-        tank = new Tank("BtName", "BtId", new MockedCamera(), "Image");
+        tank = new Tank(new MockedCamera());
         logback.info("OUT");
     }
 
     @Test
-    /**
-     * 1. Tank reads an RFID value: first read of ServerRobotState is not null
-     * 2. Nothing happens: second read of ServerRobotState is null
-     * 3. Tank reads a Color value: third read of ServerRobotState is not null
-     */
-    public void testGetAndClearZmqServerRobotState() {
-        logback.info("IN");
-
-        UnitMessage unitMessage = new UnitMessage(UnitMessageType.Rfid, "123");
-        tank.receivedNewMessage(unitMessage);
-
-        assertNotNull(tank.getServerRobotStateBytes_And_ClearDelta());
-
-        assertNull(tank.getServerRobotStateBytes_And_ClearDelta());
-
-        unitMessage = new UnitMessage(UnitMessageType.Colour, "2");
-        tank.receivedNewMessage(unitMessage);
-
-        assertNotNull(tank.getServerRobotStateBytes_And_ClearDelta());
-
-        logback.info("OUT");
+    public void testPrintVisitor() {
+        tank.accept(new RobotElementPrintVisitor());
     }
+
+    @Test
+    public void testStateVisitor() {
+        final RobotElementStateVisitor stateVisitor = new RobotElementStateVisitor();
+        tank.accept(stateVisitor);
+
+
+    }
+
+//    @Before
+//    public void setUp() {
+//        logback.info("IN");
+//        tank = new Tank("BtName", "BtId", new MockedCamera(), "Image");
+//        logback.info("OUT");
+//    }
+//
+//    @Test
+//    /**
+//     * 1. Tank reads an RFID value: first read of ServerRobotState is not null
+//     * 2. Nothing happens: second read of ServerRobotState is null
+//     * 3. Tank reads a Color value: third read of ServerRobotState is not null
+//     */
+//    public void testGetAndClearZmqServerRobotState() {
+//        logback.info("IN");
+//
+//        UnitMessage unitMessage = new UnitMessage(UnitMessageType.Rfid, "123");
+//        tank.receivedNewMessage(unitMessage);
+//
+//        assertNotNull(tank.getServerRobotStateBytes_And_ClearDelta());
+//
+//        assertNull(tank.getServerRobotStateBytes_And_ClearDelta());
+//
+//        unitMessage = new UnitMessage(UnitMessageType.Colour, "2");
+//        tank.receivedNewMessage(unitMessage);
+//
+//        assertNotNull(tank.getServerRobotStateBytes_And_ClearDelta());
+//
+//        logback.info("OUT");
+//    }
 
     @After
     public void tearDown() {

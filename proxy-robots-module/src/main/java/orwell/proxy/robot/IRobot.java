@@ -2,7 +2,8 @@ package orwell.proxy.robot;
 
 import orwell.messages.Controller.Input;
 
-public interface IRobot {
+public interface IRobot extends IRobotElement {
+
 
     String getTeamName();
 
@@ -58,4 +59,5 @@ public interface IRobot {
         CONNECTED,
         CONNECTION_FAILED
     }
+
 }

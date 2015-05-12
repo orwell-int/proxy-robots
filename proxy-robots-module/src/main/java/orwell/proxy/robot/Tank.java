@@ -18,11 +18,52 @@ import java.util.UUID;
 
 public class Tank implements IRobot, MessageListenerInterface {
     private final static Logger logback = LoggerFactory.getLogger(Tank.class);
+    private IRobotElement[] robotElements;
+
+    @Override
+    public void accept(final IRobotElementVisitor visitor) {
+        for(final IRobotElement element: robotElements) {
+            element.accept(visitor);
+        }
+        visitor.visit(this);
+    }
+
+    public Tank(final ICamera camera) {
+        this.robotElements = new IRobotElement[] {camera, new RfidSensor(), new ColourSensor()};
+    }
+
+    @Override
+    public void receivedNewMessage(final UnitMessage msg) {
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     private final Register.Builder registerBuilder = Register
             .newBuilder();
-    private final NXTInfo nxtInfo;
-    private final MessageFramework mfTank;
-    private final ICamera camera;
+    private  NXTInfo nxtInfo;
+    private  MessageFramework mfTank;
+    private  ICamera camera;
     private final TankDeltaState tankDeltaState = new TankDeltaState();
     private String routingID = UUID.randomUUID().toString();
     private String bluetoothName;
@@ -264,25 +305,25 @@ public class Tank implements IRobot, MessageListenerInterface {
         }
     }
 
-    public void receivedNewMessage(final UnitMessage msg) {
-        switch (msg.getMsgType()) {
-            case Stop:
-                onMsgStop();
-                break;
-            case Rfid:
-                onMsgRfid(msg.getPayload());
-                break;
-            case Command:
-                onMsgCommand(msg.getPayload());
-                break;
-            case Colour:
-                onMsgColour(msg.getPayload());
-                break;
-            default:
-                onMsgNotDefined(msg.getPayload());
-                break;
-        }
-    }
+//    public void receivedNewMessage(final UnitMessage msg) {
+//        switch (msg.getMsgType()) {
+//            case Stop:
+//                onMsgStop();
+//                break;
+//            case Rfid:
+//                onMsgRfid(msg.getPayload());
+//                break;
+//            case Command:
+//                onMsgCommand(msg.getPayload());
+//                break;
+//            case Colour:
+//                onMsgColour(msg.getPayload());
+//                break;
+//            default:
+//                onMsgNotDefined(msg.getPayload());
+//                break;
+//        }
+//    }
 
     private void onMsgStop() {
         logback.info("Tank " + this.getBluetoothName() + " is stopping");
@@ -312,4 +353,6 @@ public class Tank implements IRobot, MessageListenerInterface {
     private TankDeltaState getTankDeltaState() {
         return this.tankDeltaState;
     }
+
+
 }
