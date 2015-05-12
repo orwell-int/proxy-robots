@@ -108,7 +108,7 @@ public class TankDeltaState {
         final int previousValue = ((ColourWrapper) previousStateMap.get(EnumSensor.COLOUR)).getPreviousValueInteger();
         final Colour.Builder builder = (Colour.Builder) previousStateMap.get(EnumSensor.COLOUR).getBuilder();
 
-        if (-1 == previousValue) {
+        if (ColourWrapper.INIT_VALUE == previousValue) {
             builder.setTimestamp(getTimeStamp());
             builder.setStatus(Status.ON);
             builder.setColour(newColourInt);

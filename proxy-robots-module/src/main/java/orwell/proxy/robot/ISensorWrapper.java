@@ -3,7 +3,7 @@ package orwell.proxy.robot;
 import com.google.protobuf.MessageLiteOrBuilder;
 
 /**
- * Created by parapampa on 11/04/15.
+ * Created by Michaël Ludmann on 11/04/15.
  */
 public interface ISensorWrapper {
 
@@ -11,5 +11,5 @@ public interface ISensorWrapper {
 
     public String getPreviousValue();
 
-    public void setPreviousValue(String previousValue);
+    public void setPreviousValue(final String previousValue);
 }

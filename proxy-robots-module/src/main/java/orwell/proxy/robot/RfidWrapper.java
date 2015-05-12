@@ -3,7 +3,7 @@ package orwell.proxy.robot;
 import orwell.messages.Robot;
 
 /**
- * Created by parapampa on 11/04/15.
+ * Created by Michaël Ludmann on 11/04/15.
  */
 public class RfidWrapper implements ISensorWrapper {
     private final Robot.Rfid.Builder builder = Robot.Rfid.newBuilder();
@@ -23,7 +23,7 @@ public class RfidWrapper implements ISensorWrapper {
     }
 
     @Override
-    public void setPreviousValue(String previousValue) {
+    public void setPreviousValue(final String previousValue) {
         this.previousValue = previousValue;
     }
 }
