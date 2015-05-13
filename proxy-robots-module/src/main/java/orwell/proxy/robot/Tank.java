@@ -32,6 +32,11 @@ public class Tank implements IRobot, MessageListenerInterface {
         this.robotElements = new IRobotElement[] {camera, new RfidSensor(), new ColourSensor()};
     }
 
+
+    public void setRfidValue(final String rfidValue) {
+        ((RfidSensor) robotElements[1]).setValue(rfidValue);
+    }
+
     @Override
     public void receivedNewMessage(final UnitMessage msg) {
 

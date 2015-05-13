@@ -7,18 +7,20 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import orwell.messages.Robot;
 import orwell.proxy.mock.MockedCamera;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
+
 
 /**
  * Created by Michaël Ludmann on 11/04/15.
  */
-@RunWith(PowerMockRunner.class)
+@RunWith(JUnit4.class)
 public class TankTest {
     final static Logger logback = LoggerFactory.getLogger(TankTest.class);
 
@@ -39,8 +41,11 @@ public class TankTest {
 
     @Test
     public void testStateVisitor() {
+        tank.setRfidValue("2");
         final RobotElementStateVisitor stateVisitor = new RobotElementStateVisitor();
         tank.accept(stateVisitor);
+        assertEquals("2", stateVisitor.getServerRobotState().getRfid(0).getRfid());
+        assertEquals(Robot.Status.ON, stateVisitor.getServerRobotState().getRfid(0).getStatus());
 
 
     }

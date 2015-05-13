@@ -15,17 +15,16 @@ public class RobotElementStateVisitor implements IRobotElementVisitor{
     private final Robot.ServerRobotState.Builder serverRobotStateBuilder = Robot.ServerRobotState.newBuilder();
 
 
+    public Robot.ServerRobotState getServerRobotState() {
+        return serverRobotStateBuilder.build();
+    }
 
     @Override
-    public void visit(final RfidSensor rfid) {
+    public void visit(final RfidSensor rfidSensor) {
         logback.debug("State rfid");
 
-
-        serverRobotStateBuilder.addAllRfid(rfid.getRfidSensorReads());
-        while(!rfid.getRfidSensorReads().isEmpty()) {
-            serverRobotStateBuilder.addRfid(rfid.getRfidSensorReads().pollLast());
-        }
-
+        serverRobotStateBuilder.addAllRfid(rfidSensor.getRfidSensorReads());
+        rfidSensor.clear();
     }
 
     @Override
