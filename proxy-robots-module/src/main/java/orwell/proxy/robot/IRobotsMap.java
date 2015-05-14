@@ -13,23 +13,23 @@ public interface IRobotsMap {
 
     IRobot get(String routingId);
 
-    /*
-     * @returns all robots setup from the configuration
+    /**
+     * @return all robots setup from the configuration
      */
     ArrayList<IRobot> getRobotsArray();
 
-    /*
-     * @returns all robots not isConnected to the proxy
+    /**
+     * @return all robots not connected to the proxy
      */
     public ArrayList<IRobot> getNotConnectedRobots();
 
-    /*
-     * @returns all robots isConnected to the proxy
+    /**
+     * @return all robots connected to the proxy
      */
     ArrayList<IRobot> getConnectedRobots();
 
-    /*
-     * @returns all robots registered on the server
+    /**
+     * @return all robots registered on the server
      */
     ArrayList<IRobot> getRegisteredRobots();
 
