@@ -4,10 +4,31 @@ proxy-robots
 
 Handles the communication between the server and the (real) robots.
 
+Checkout the code
+-----------------
+Get the sources
+```
+git clone git@github.com:orwell-int/proxy-robots.git
+```
+
+Get the submodules
+```
+git submodule update --init --recursive
+```
+
 local setup for coveralls
 -------------------------
 Run with maven
 --------------
+Prerequiste: have jdk-7+ installed on your machine
+```
+javac -version
+>javac 1.7.xxx
+
+java -version                                                         
+>java version "1.7.xxx"
+```
+
 Install maven:
 ```
 sudo apt-get install maven
@@ -20,9 +41,10 @@ tar -xvf leJOS_NXJ_0.9.1beta-3.tar.gz
 export NXJ_HOME=leJOS_NXJ_0.9.1beta-3
 ```
 
-Run maven (validate, build, test)
+Run maven
 ```
-maven clean install
+mvn validate
+mvn clean install
 ```
 
 To update the coveralls status, export your repo token in the following environment variable:
@@ -37,35 +59,8 @@ To update the coveralls status, export your repo token in the following environm
 mvn clean cobertura:cobertura coveralls:report
 ```
 
-Running it with ant (soon to be deprecated)
--------------------------------------------
-
-Show the existing targets:
+Run the jar created by the install to start the application
 ```
-ant -p
+java -jar proxy-robots-module/target/proxy-robots-module-0.1.0-jar-with-dependencies.jar -f proxy-robots-module/src/main/resources/configuration.xml
 ```
 
-Build, upload and run the program on the robot:
-```
-ant uploadandrun_robots
-```
-
-Build the proxy:
-```
-ant compile_proxy
-```
-
-Run the proxy:
-```
-ant run_proxy 
-```
-
-Run the junit test:
-```
-ant junit-proxy -v
-```
-
-Build a test report
-```
-ant junitreport 
-```

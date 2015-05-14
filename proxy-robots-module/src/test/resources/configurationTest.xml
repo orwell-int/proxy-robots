@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding='utf-8'?>
+<setup>
+    <proxy>
+        <senderLinger>1000</senderLinger>
+        <receiverLinger>1000</receiverLinger>
+        <outgoingMsgPeriod>500</outgoingMsgPeriod>
+        <server-game name='irondamien'>
+            <ip>192.168.1.37</ip>
+            <pushPort>9000</pushPort>
+            <subPort>9001</subPort>
+        </server-game>
+        <server-game name='platypus' priority="9">
+            <ip>192.168.1.46</ip>
+            <pushPort>9000</pushPort>
+            <subPort>9001</subPort>
+        </server-game>
+        <server-game name='localhost' priority="1">
+            <ip>localhost</ip>
+            <pushPort>9000</pushPort>
+            <subPort>9001</subPort>
+        </server-game>
+    </proxy>
+
+    <robots>
+        <tank tempRoutingID='BananaOne' shouldRegister='1'>
+            <bluetoothName>Daneel</bluetoothName>
+            <bluetoothID>001653119482</bluetoothID>
+            <camera>
+                <ip>192.168.1.50</ip>
+                <port>9100</port>
+            </camera>
+            <image>Yellow hull -- TO BE BETTER CONFIGURED</image>
+        </tank>
+        <tank tempRoutingID='BananaTwo' shouldRegister='0'>
+            <bluetoothName>Cage</bluetoothName>
+            <bluetoothID>777777777777</bluetoothID>
+            <camera>
+                <ip>192.168.1.51</ip>
+                <port>9101</port>
+            </camera>
+            <image>Blue hull -- TO BE BETTER CONFIGURED</image>
+        </tank>
+    </robots>
+</setup>
