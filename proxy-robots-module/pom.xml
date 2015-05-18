@@ -167,6 +167,12 @@
                     <maxmem>256m</maxmem>
                     <!-- aggregated reports for multi-module projects -->
                     <aggregate>true</aggregate>
+                    <instrumentation>
+                        <ignores>
+                            <!-- ignore all auto-generated code by protoc -->
+                            <ignore>orwell.messages.*</ignore>
+                        </ignores>
+                    </instrumentation>
                 </configuration>
             </plugin>
             <plugin>
