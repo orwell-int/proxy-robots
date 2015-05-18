@@ -62,6 +62,13 @@
 						<maxmem>256m</maxmem>
 						<!-- aggregated reports for multi-module projects -->
 						<aggregate>true</aggregate>
+						<instrumentation>
+							<!-- excludes all submodules code -->
+							<ignores>
+								<ignore>lejos.mf.common.*</ignore>
+								<ignore>lejos.mf.pc.*</ignore>
+							</ignores>
+						</instrumentation>
 					</configuration>
 				</plugin>
 				<plugin>
