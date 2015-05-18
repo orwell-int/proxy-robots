@@ -7,5 +7,5 @@ public interface IRobotElementVisitor {
     void visit(final RfidSensor rfidSensor);
     void visit(final ColourSensor colourSensor);
     void visit(final ICamera camera);
-    void visit(final IRobot robot);
+    void visit(final IRobot2 robot);
 }

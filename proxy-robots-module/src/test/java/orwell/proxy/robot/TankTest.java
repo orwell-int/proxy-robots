@@ -1,14 +1,11 @@
 package orwell.proxy.robot;
 
-import lejos.mf.common.UnitMessage;
-import lejos.mf.common.UnitMessageType;
 import org.easymock.TestSubject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.messages.Robot;
@@ -25,28 +22,18 @@ public class TankTest {
     final static Logger logback = LoggerFactory.getLogger(TankTest.class);
 
     @TestSubject
-    private Tank tank;
+    private Tank2 tank;
 
     @Before
     public void setUp() {
         logback.info("IN");
-        tank = new Tank(new MockedCamera());
+        tank = new Tank2(new MockedCamera());
         logback.info("OUT");
     }
 
-    @Test
-    public void testPrintVisitor() {
-        tank.accept(new RobotElementPrintVisitor());
-    }
 
     @Test
     public void testStateVisitor() {
-        tank.setRfidValue("2");
-        final RobotElementStateVisitor stateVisitor = new RobotElementStateVisitor();
-        tank.accept(stateVisitor);
-        assertEquals("2", stateVisitor.getServerRobotState().getRfid(0).getRfid());
-        assertEquals(Robot.Status.ON, stateVisitor.getServerRobotState().getRfid(0).getStatus());
-
 
     }
 

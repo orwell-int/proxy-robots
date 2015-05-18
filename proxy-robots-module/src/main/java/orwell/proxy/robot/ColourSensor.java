@@ -41,7 +41,7 @@ public class ColourSensor implements IRobotElement {
         final Robot.Colour previousRead = colourSensorReads.peekFirst();
         return (null != previousRead &&
                 Robot.Status.ON == previousRead.getStatus() &&
-                0 == value.compareTo(previousRead.getColour()));
+                previousRead.getColour() == Integer.parseInt(value));
     }
 
     public void setValue(final String currentValue) {

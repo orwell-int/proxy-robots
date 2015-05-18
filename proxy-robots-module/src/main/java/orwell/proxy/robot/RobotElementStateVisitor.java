@@ -21,15 +21,18 @@ public class RobotElementStateVisitor implements IRobotElementVisitor{
 
     @Override
     public void visit(final RfidSensor rfidSensor) {
-        logback.debug("State rfid");
 
+        logback.debug("State rfid");
         serverRobotStateBuilder.addAllRfid(rfidSensor.getRfidSensorReads());
         rfidSensor.clear();
     }
 
     @Override
     public void visit(final ColourSensor colourSensor) {
+
         logback.debug("State colour");
+        serverRobotStateBuilder.addAllColour(colourSensor.getColourSensorReads());
+        colourSensor.clear();
     }
 
     @Override
@@ -38,7 +41,7 @@ public class RobotElementStateVisitor implements IRobotElementVisitor{
     }
 
     @Override
-    public void visit(final IRobot robot) {
+    public void visit(final IRobot2 robot) {
         logback.debug("State robot");
     }
 }

@@ -2,7 +2,7 @@ package orwell.proxy.robot;
 
 import orwell.messages.Controller.Input;
 
-public interface IRobot extends IRobotElement {
+public interface IRobot {
 
 
     String getTeamName();

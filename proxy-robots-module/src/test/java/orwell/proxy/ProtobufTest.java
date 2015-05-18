@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 public class ProtobufTest {
     final static Logger logback = LoggerFactory.getLogger(ProtobufTest.class);
 
-    private Controller.Input buildTestInput() {
+    public static Controller.Input buildTestInput() {
         Controller.Input.Builder testInput = Controller.Input.newBuilder();
         Controller.Input.Move.Builder testMove = Controller.Input.Move
                 .newBuilder();

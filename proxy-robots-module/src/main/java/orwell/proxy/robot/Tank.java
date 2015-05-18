@@ -18,24 +18,7 @@ import java.util.UUID;
 
 public class Tank implements IRobot, MessageListenerInterface {
     private final static Logger logback = LoggerFactory.getLogger(Tank.class);
-    private IRobotElement[] robotElements;
 
-    @Override
-    public void accept(final IRobotElementVisitor visitor) {
-        for(final IRobotElement element: robotElements) {
-            element.accept(visitor);
-        }
-        visitor.visit(this);
-    }
-
-    public Tank(final ICamera camera) {
-        this.robotElements = new IRobotElement[] {camera, new RfidSensor(), new ColourSensor()};
-    }
-
-
-    public void setRfidValue(final String rfidValue) {
-        ((RfidSensor) robotElements[1]).setValue(rfidValue);
-    }
 
     @Override
     public void receivedNewMessage(final UnitMessage msg) {

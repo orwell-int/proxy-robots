@@ -134,9 +134,4 @@ public class MockedTank implements IRobot {
     public void buildRegister() {
 
     }
-
-    @Override
-    public void accept(final IRobotElementVisitor visitor) {
-        visitor.visit(this);
-    }
 }
