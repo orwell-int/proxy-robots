@@ -1,5 +1,6 @@
 package orwell.proxy.robot;
 
+import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.After;
 import org.junit.Before;
@@ -20,7 +21,9 @@ import static org.junit.Assert.assertEquals;
 @RunWith(JUnit4.class)
 public class RobotElementStateVisitorTest {
     final static Logger logback = LoggerFactory.getLogger(RobotElementStateVisitorTest.class);
-    private final Tank2 tank = new Tank2(new MockedCamera());
+
+    @Mock
+    private final LegoTank tank = new LegoTank("", "", new MockedCamera(), "");
 
     @TestSubject
     private RobotElementStateVisitor stateVisitor;

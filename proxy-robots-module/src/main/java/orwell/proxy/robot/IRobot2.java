@@ -5,9 +5,22 @@ import lejos.mf.common.UnitMessage;
 /**
  * Created by Michaël Ludmann on 5/18/15.
  */
-public interface IRobot2 extends IRobotElement, IRobotInput {
+public abstract class IRobot2 implements IRobotElement, IRobotInput {
 
-    void sendInput(UnitMessage unitMessage);
+    public String routingId;
+    public EnumRegistrationState registrationState;
+    public String cameraUrl;
+    public String image;
+    public String teamName;
+    protected EnumConnectionState connectionState;
 
+    abstract void sendUnitMessage(UnitMessage unitMessage);
 
+    abstract EnumConnectionState connect();
+
+    abstract void closeConnection();
+
+    EnumConnectionState getConnectionState() {
+        return connectionState;
+    }
 }

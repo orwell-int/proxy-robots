@@ -1,5 +1,8 @@
 package orwell.proxy.robot;
 
+import junit.framework.AssertionFailedError;
+import lejos.mf.common.UnitMessage;
+import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.After;
 import org.junit.Before;
@@ -8,11 +11,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.messages.Robot;
 import orwell.proxy.ProtobufTest;
-import orwell.proxy.mock.MockedCamera;
 
-import static org.junit.Assert.assertEquals;
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
 
 
 /**
@@ -21,10 +23,12 @@ import static org.junit.Assert.assertEquals;
 @RunWith(JUnit4.class)
 public class RobotInputSetVisitorTest {
     final static Logger logback = LoggerFactory.getLogger(RobotInputSetVisitorTest.class);
-    private final Tank2 tank = new Tank2(new MockedCamera());
 
     @TestSubject
     private RobotInputSetVisitor inputSetVisitor;
+
+    @Mock
+    private LegoTank tank;
 
 
     @Before
@@ -39,16 +43,63 @@ public class RobotInputSetVisitorTest {
     @Test
     public void testVisit_RobotMove() {
 
-        tank.accept(inputSetVisitor);
+        final RobotMove robotMove = new RobotMove();
+        assertFalse(robotMove.hasMove());
 
+        inputSetVisitor.visit(robotMove);
+        assertTrue(robotMove.hasMove());
     }
 
 
     @Test
     public void testVisit_RobotFire() {
 
-        tank.accept(inputSetVisitor);
+        final RobotFire robotFire = new RobotFire();
+        assertFalse(robotFire.hasFire());
+
+        inputSetVisitor.visit(robotFire);
+        assertTrue(robotFire.hasFire());
     }
+
+
+    @Test
+    public void testVisit_Robot_Empty() {
+
+        // Mock the tank
+        tank = createMock(LegoTank.class);
+        tank.sendUnitMessage(anyObject(UnitMessage.class));
+        // We should not send any unitMessage (or we throw an exception)
+        expectLastCall().andThrow(new AssertionFailedError("Tank should not send an unitMessage")).anyTimes();
+        replay(tank);
+
+        // Perform the actual visit
+        inputSetVisitor.visit(tank);
+
+        verify(tank);
+    }
+
+
+    @Test
+    public void testVisit_Robot_Full() {
+
+        // Setup the class
+        final RobotMove robotMove = new RobotMove();
+        inputSetVisitor.visit(robotMove);
+        final RobotFire robotFire = new RobotFire();
+        inputSetVisitor.visit(robotFire);
+
+        // Mock the tank
+        tank = createMock(LegoTank.class);
+        tank.sendUnitMessage(anyObject(UnitMessage.class));
+        expectLastCall().times(2); // we should send two unitMessages
+        replay(tank);
+
+        // Perform the actual visit
+        inputSetVisitor.visit(tank);
+
+        verify(tank);
+    }
+
 
 
     @After

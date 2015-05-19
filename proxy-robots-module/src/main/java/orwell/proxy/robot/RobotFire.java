@@ -22,17 +22,17 @@ public class RobotFire implements IRobotInput {
         return hasFire;
     }
 
-    public UnitMessage getUnitMessage() {
+    @Override
+    public void accept(final IRobotInputVisitor visitor) {
+        visitor.visit(this);
+    }
+
+    public void sendUnitMessageTo(final IRobot2 robot) {
         final StringBuilder stringBuilder = new StringBuilder(FIRE_PAYLOAD_HEADER);
         stringBuilder.append(fire.getWeapon1());
         stringBuilder.append(" ");
         stringBuilder.append(fire.getWeapon2());
 
-        return new UnitMessage(UnitMessageType.Command, stringBuilder.toString());
-    }
-
-    @Override
-    public void accept(final IRobotInputVisitor visitor) {
-        visitor.visit(this);
+        robot.sendUnitMessage(new UnitMessage(UnitMessageType.Command, stringBuilder.toString()));
     }
 }

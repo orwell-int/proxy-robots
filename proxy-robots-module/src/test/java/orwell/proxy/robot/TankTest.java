@@ -8,10 +8,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.messages.Robot;
 import orwell.proxy.mock.MockedCamera;
-
-import static org.junit.Assert.*;
 
 
 /**
@@ -22,12 +19,12 @@ public class TankTest {
     final static Logger logback = LoggerFactory.getLogger(TankTest.class);
 
     @TestSubject
-    private Tank2 tank;
+    private LegoTank tank;
 
     @Before
     public void setUp() {
         logback.info("IN");
-        tank = new Tank2(new MockedCamera());
+        tank = new LegoTank("", "", new MockedCamera(), "");
         logback.info("OUT");
     }
 

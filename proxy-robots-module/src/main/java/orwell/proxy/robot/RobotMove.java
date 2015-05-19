@@ -25,19 +25,17 @@ public class RobotMove implements IRobotInput {
         return hasMove;
     }
 
+    @Override
+    public void accept(final IRobotInputVisitor visitor) {
+        visitor.visit(this);
+    }
 
-    public UnitMessage getUnitMessage() {
+    public void sendUnitMessageTo(final IRobot2 robot) {
         final StringBuilder stringBuilder = new StringBuilder(MOVE_PAYLOAD_HEADER);
         stringBuilder.append(move.getLeft());
         stringBuilder.append(" ");
         stringBuilder.append(move.getRight());
 
-        return new UnitMessage(UnitMessageType.Command, stringBuilder.toString());
-    }
-
-
-    @Override
-    public void accept(final IRobotInputVisitor visitor) {
-        visitor.visit(this);
+        robot.sendUnitMessage(new UnitMessage(UnitMessageType.Command, stringBuilder.toString()));
     }
 }

@@ -24,6 +24,25 @@ public class RobotInputSetVisitor implements IRobotInputVisitor {
         }
     }
 
+    public String inputToString(final IRobot2 robot) {
+        final String string;
+        if (null != input) {
+            string = "Controller INPUT of Robot [" + robot.routingId + "]:"
+                    + "\n\t|___Move order: [LEFT] "
+                    + input.getMove().getLeft()
+                    + " \t\t[RIGHT] "
+                    + input.getMove().getRight()
+                    + "\n\t|___Fire order: [WEAPON1] "
+                    + input.getFire().getWeapon1()
+                    + " \t[WEAPON2] "
+                    + input.getFire().getWeapon2();
+        } else {
+            string = "Controller INPUT of Robot [" + robot.routingId
+                    + "] NOT initialized!";
+        }
+        return string;
+    }
+
     @Override
     public void visit(final RobotMove robotMove) {
 
@@ -40,7 +59,7 @@ public class RobotInputSetVisitor implements IRobotInputVisitor {
         logback.debug("Set fire");
         this.robotFire = robotFire;
         if(input.hasFire() &&
-                (input.getFire().getWeapon1() ||input.getFire().getWeapon2()))
+                (input.getFire().getWeapon1() || input.getFire().getWeapon2()))
         {
             this.robotFire.setFire(input.getFire());
         }
@@ -51,9 +70,11 @@ public class RobotInputSetVisitor implements IRobotInputVisitor {
     public void visit(final IRobot2 robot) {
 
         logback.debug("Set robot");
-        if(this.robotMove.hasMove())
-            robot.sendInput(robotMove.getUnitMessage());
-        if(this.robotFire.hasFire())
-            robot.sendInput(robotFire.getUnitMessage());
+        if(null != this.robotMove && this.robotMove.hasMove()) {
+            robotMove.sendUnitMessageTo(robot);
+        }
+        if(null != this.robotFire && this.robotFire.hasFire()) {
+            robotFire.sendUnitMessageTo(robot);
+        }
     }
 }
