@@ -25,7 +25,7 @@ public class RobotElementPrintVisitor implements IRobotElementVisitor {
     }
 
     @Override
-    public void visit(final IRobot2 robot) {
+    public void visit(final IRobot robot) {
         logback.info(robot.toString());
     }
 }

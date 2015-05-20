@@ -20,27 +20,27 @@ public class Registered {
         }
     }
 
-    public void setToRobot(final IRobot2 robot) {
-        robot.routingId = serverGameRegistered.getRobotId();
-        if (robot.routingId.isEmpty()) {
-            robot.registrationState = EnumRegistrationState.REGISTRATION_FAILED;
+    public void setToRobot(final IRobot robot) {
+        robot.setRoutingId(serverGameRegistered.getRobotId());
+        if (robot.getRoutingId().isEmpty()) {
+            robot.setRegistrationState(EnumRegistrationState.REGISTRATION_FAILED);
             logback.warn("Registration of robot: " + serverGameRegisteredToString(robot) + " FAILED");
         } else {
-            robot.registrationState = EnumRegistrationState.REGISTERED;
-            robot.teamName = serverGameRegistered.getTeam();
+            robot.setRegistrationState(EnumRegistrationState.REGISTERED);
+            robot.setTeamName(serverGameRegistered.getTeam());
             logback.info("Registered robot: " + serverGameRegisteredToString(robot));
         }
     }
 
-    public String serverGameRegisteredToString(final IRobot2 robot) {
+    public String serverGameRegisteredToString(final IRobot robot) {
         final String string;
         if (null != serverGameRegistered) {
-            string = "ServerGame REGISTERED of Robot [" + robot.routingId + "]:"
+            string = "ServerGame REGISTERED of Robot [" + robot.getRoutingId() + "]:"
                     + "\n\t|___final RoutingID: "
                     + serverGameRegistered.getRobotId() + "\n\t|___team: "
                     + serverGameRegistered.getTeam();
         } else {
-            string = "ServerGame REGISTERED of Robot [" + robot.routingId
+            string = "ServerGame REGISTERED of Robot [" + robot.getRoutingId()
                     + "] NOT initialized!";
         }
         return string;

@@ -43,22 +43,22 @@ public class RobotInputSetVisitorTest {
     @Test
     public void testVisit_RobotMove() {
 
-        final RobotMove robotMove = new RobotMove();
-        assertFalse(robotMove.hasMove());
+        final InputMove inputMove = new InputMove();
+        assertFalse(inputMove.hasMove());
 
-        inputSetVisitor.visit(robotMove);
-        assertTrue(robotMove.hasMove());
+        inputSetVisitor.visit(inputMove);
+        assertTrue(inputMove.hasMove());
     }
 
 
     @Test
     public void testVisit_RobotFire() {
 
-        final RobotFire robotFire = new RobotFire();
-        assertFalse(robotFire.hasFire());
+        final InputFire inputFire = new InputFire();
+        assertFalse(inputFire.hasFire());
 
-        inputSetVisitor.visit(robotFire);
-        assertTrue(robotFire.hasFire());
+        inputSetVisitor.visit(inputFire);
+        assertTrue(inputFire.hasFire());
     }
 
 
@@ -83,10 +83,10 @@ public class RobotInputSetVisitorTest {
     public void testVisit_Robot_Full() {
 
         // Setup the class
-        final RobotMove robotMove = new RobotMove();
-        inputSetVisitor.visit(robotMove);
-        final RobotFire robotFire = new RobotFire();
-        inputSetVisitor.visit(robotFire);
+        final InputMove inputMove = new InputMove();
+        inputSetVisitor.visit(inputMove);
+        final InputFire inputFire = new InputFire();
+        inputSetVisitor.visit(inputFire);
 
         // Mock the tank
         tank = createMock(LegoTank.class);

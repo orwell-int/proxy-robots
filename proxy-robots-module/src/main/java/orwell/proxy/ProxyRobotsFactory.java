@@ -1,7 +1,7 @@
 package orwell.proxy;
 
-import orwell.proxy.config.ConfigFactoryParameters;
 import orwell.proxy.config.ConfigFactory;
+import orwell.proxy.config.ConfigFactoryParameters;
 import orwell.proxy.robot.RobotsMap;
 import orwell.proxy.zmq.FrequencyFilter;
 import orwell.proxy.zmq.IFilter;
@@ -40,7 +40,7 @@ public class ProxyRobotsFactory {
     // necessary messages for the server
     private ArrayList<IFilter> getFilterList() {
         final ArrayList<IFilter> filterList = new ArrayList<>();
-        if(null != configFactory.getConfigProxy())
+        if (null != configFactory.getConfigProxy())
             filterList.add(new FrequencyFilter(configFactory.getConfigProxy().getOutgoingMsgPeriod()));
 
         return filterList;

@@ -2,21 +2,26 @@ package orwell.proxy.robot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import orwell.messages.Robot;
-import orwell.messages.Robot.Rfid;
 
 
 /**
  * Created by Michaël Ludmann on 5/12/15.
  */
-public class RobotElementStateVisitor implements IRobotElementVisitor{
+public class RobotElementStateVisitor implements IRobotElementVisitor {
     private final static Logger logback = LoggerFactory.getLogger(RobotElementStateVisitor.class);
     private final Robot.ServerRobotState.Builder serverRobotStateBuilder = Robot.ServerRobotState.newBuilder();
 
-
-    public Robot.ServerRobotState getServerRobotState() {
+    protected Robot.ServerRobotState getServerRobotState() {
         return serverRobotStateBuilder.build();
+    }
+
+    public byte[] getServerRobotStateBytes() {
+        final Robot.ServerRobotState serverRobotState = getServerRobotState();
+        if (null == serverRobotState)
+            return null;
+        else
+            return serverRobotState.toByteArray();
     }
 
     @Override
@@ -41,7 +46,7 @@ public class RobotElementStateVisitor implements IRobotElementVisitor{
     }
 
     @Override
-    public void visit(final IRobot2 robot) {
+    public void visit(final IRobot robot) {
         logback.debug("State robot");
     }
 }

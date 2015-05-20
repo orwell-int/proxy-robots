@@ -7,7 +7,7 @@ import orwell.messages.Controller.Input;
 /**
  * Created by Michaël Ludmann on 5/18/15.
  */
-public class RobotMove implements IRobotInput {
+public class InputMove implements IRobotInput {
 
     private final static String MOVE_PAYLOAD_HEADER = "input move ";
     private Input.Move move;
@@ -30,7 +30,7 @@ public class RobotMove implements IRobotInput {
         visitor.visit(this);
     }
 
-    public void sendUnitMessageTo(final IRobot2 robot) {
+    public void sendUnitMessageTo(final IRobot robot) {
         final StringBuilder stringBuilder = new StringBuilder(MOVE_PAYLOAD_HEADER);
         stringBuilder.append(move.getLeft());
         stringBuilder.append(" ");

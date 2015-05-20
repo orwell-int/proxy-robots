@@ -38,8 +38,8 @@ public class UnitMessageBroker {
 
     private void onMsgStop() {
 
-        logback.info("Tank " + tank.routingId + " is stopping");
-        tank.connectionState = EnumConnectionState.NOT_CONNECTED;
+        logback.info("Tank " + tank.getRoutingId() + " is stopping");
+        tank.setConnectionState(EnumConnectionState.NOT_CONNECTED);
         tank.closeConnection();
     }
 

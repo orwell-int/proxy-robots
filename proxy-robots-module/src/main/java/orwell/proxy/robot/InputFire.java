@@ -7,7 +7,7 @@ import orwell.messages.Controller;
 /**
  * Created by Michaël Ludmann on 5/18/15.
  */
-public class RobotFire implements IRobotInput {
+public class InputFire implements IRobotInput {
 
     private final static String FIRE_PAYLOAD_HEADER = "input fire ";
     private Controller.Input.Fire fire;
@@ -27,7 +27,7 @@ public class RobotFire implements IRobotInput {
         visitor.visit(this);
     }
 
-    public void sendUnitMessageTo(final IRobot2 robot) {
+    public void sendUnitMessageTo(final IRobot robot) {
         final StringBuilder stringBuilder = new StringBuilder(FIRE_PAYLOAD_HEADER);
         stringBuilder.append(fire.getWeapon1());
         stringBuilder.append(" ");

@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class LegoTank extends IRobot2 implements MessageListenerInterface {
+public class LegoTank extends IRobot implements MessageListenerInterface {
     private final static Logger logback = LoggerFactory.getLogger(LegoTank.class);
     private final IRobotElement[] robotElements;
     private final IRobotInput[] robotActions;
@@ -23,12 +23,12 @@ public class LegoTank extends IRobot2 implements MessageListenerInterface {
                     final MessageFramework messageFramework,
                     final ICamera camera, final String image) {
         this.robotElements = new IRobotElement[]{camera, new RfidSensor(), new ColourSensor()};
-        this.robotActions = new IRobotInput[]{new RobotMove(), new RobotFire()};
+        this.robotActions = new IRobotInput[]{new InputMove(), new InputFire()};
         this.nxtInfo = new NXTInfo(NXTCommFactory.BLUETOOTH, bluetoothName, bluetoothId);
         this.messageFramework = messageFramework;
         messageFramework.addMessageListener(this);
-        this.image = image;
-        this.cameraUrl = camera.getUrl();
+        setImage(image);
+        setCameraUrl(camera.getUrl());
     }
 
     public LegoTank(final String bluetoothName, final String bluetoothId,
@@ -75,23 +75,23 @@ public class LegoTank extends IRobot2 implements MessageListenerInterface {
     }
 
     @Override
-    EnumConnectionState connect() {
+    public EnumConnectionState connect() {
         logback.info("Connecting to robot: \n" + toString());
 
         final Boolean isConnected = messageFramework.ConnectToNXT(nxtInfo);
         if (isConnected) {
-            this.connectionState = EnumConnectionState.CONNECTED;
-            logback.info("Robot [" + routingId + "] is isConnected to the proxy!");
+            this.setConnectionState(EnumConnectionState.CONNECTED);
+            logback.info("Robot [" + getRoutingId() + "] is isConnected to the proxy!");
         } else {
-            this.connectionState = EnumConnectionState.CONNECTION_FAILED;
-            logback.warn("Robot [" + routingId + "] failed to connect to the proxy!");
+            this.setConnectionState(EnumConnectionState.CONNECTION_FAILED);
+            logback.warn("Robot [" + getRoutingId() + "] failed to connect to the proxy!");
         }
-        return this.connectionState;
+        return this.getConnectionState();
     }
 
     @Override
-    void closeConnection() {
-        if (EnumConnectionState.CONNECTED == connectionState
+    public void closeConnection() {
+        if (EnumConnectionState.CONNECTED == getConnectionState()
                 && NXTConnectionState.DISCONNECTED != nxtInfo.connectionState) {
             messageFramework.close();
         }
@@ -100,6 +100,6 @@ public class LegoTank extends IRobot2 implements MessageListenerInterface {
     @Override
     public String toString() {
         return "Tank {[BTName] " + nxtInfo.name + " [BT-ID] "
-                + nxtInfo.deviceAddress + " [RoutingID] " + routingId + "}";
+                + nxtInfo.deviceAddress + " [RoutingID] " + getRoutingId() + "}";
     }
 }

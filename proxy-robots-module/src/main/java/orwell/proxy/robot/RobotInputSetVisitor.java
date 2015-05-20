@@ -12,8 +12,8 @@ import orwell.messages.Controller;
 public class RobotInputSetVisitor implements IRobotInputVisitor {
     private final static Logger logback = LoggerFactory.getLogger(RobotInputSetVisitor.class);
     private Controller.Input input;
-    private RobotMove robotMove;
-    private RobotFire robotFire;
+    private InputMove inputMove;
+    private InputFire inputFire;
 
     public RobotInputSetVisitor(final byte[] inputMessage) {
 
@@ -24,10 +24,10 @@ public class RobotInputSetVisitor implements IRobotInputVisitor {
         }
     }
 
-    public String inputToString(final IRobot2 robot) {
+    public String inputToString(final IRobot robot) {
         final String string;
         if (null != input) {
-            string = "Controller INPUT of Robot [" + robot.routingId + "]:"
+            string = "Controller INPUT of Robot [" + robot.getRoutingId() + "]:"
                     + "\n\t|___Move order: [LEFT] "
                     + input.getMove().getLeft()
                     + " \t\t[RIGHT] "
@@ -37,44 +37,43 @@ public class RobotInputSetVisitor implements IRobotInputVisitor {
                     + " \t[WEAPON2] "
                     + input.getFire().getWeapon2();
         } else {
-            string = "Controller INPUT of Robot [" + robot.routingId
+            string = "Controller INPUT of Robot [" + robot.getRoutingId()
                     + "] NOT initialized!";
         }
         return string;
     }
 
     @Override
-    public void visit(final RobotMove robotMove) {
+    public void visit(final InputMove inputMove) {
 
         logback.debug("Set move");
-        this.robotMove = robotMove;
-        if(input.hasMove()) {
-            this.robotMove.setMove(input.getMove());
+        this.inputMove = inputMove;
+        if (input.hasMove()) {
+            this.inputMove.setMove(input.getMove());
         }
     }
 
     @Override
-    public void visit(final RobotFire robotFire) {
+    public void visit(final InputFire inputFire) {
 
         logback.debug("Set fire");
-        this.robotFire = robotFire;
-        if(input.hasFire() &&
-                (input.getFire().getWeapon1() || input.getFire().getWeapon2()))
-        {
-            this.robotFire.setFire(input.getFire());
+        this.inputFire = inputFire;
+        if (input.hasFire() &&
+                (input.getFire().getWeapon1() || input.getFire().getWeapon2())) {
+            this.inputFire.setFire(input.getFire());
         }
     }
 
 
     @Override
-    public void visit(final IRobot2 robot) {
+    public void visit(final IRobot robot) {
 
         logback.debug("Set robot");
-        if(null != this.robotMove && this.robotMove.hasMove()) {
-            robotMove.sendUnitMessageTo(robot);
+        if (null != this.inputMove && this.inputMove.hasMove()) {
+            inputMove.sendUnitMessageTo(robot);
         }
-        if(null != this.robotFire && this.robotFire.hasFire()) {
-            robotFire.sendUnitMessageTo(robot);
+        if (null != this.inputFire && this.inputFire.hasFire()) {
+            inputFire.sendUnitMessageTo(robot);
         }
     }
 }

@@ -14,8 +14,8 @@ import java.io.File;
 public class Cli {
     final static protected String CONFIG_FILEPATH_INSIDE_JAR = "/configuration.xml";
     final static Logger logback = LoggerFactory.getLogger(Cli.class);
-    private String[] args = null;
     private final Options options = new Options();
+    private String[] args = null;
 
     public Cli(String[] args) {
         this.args = args;

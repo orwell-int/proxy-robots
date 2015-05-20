@@ -44,6 +44,23 @@ public class ColourSensor implements IRobotElement {
                 previousRead.getColour() == Integer.parseInt(value));
     }
 
+    /**
+     * Status marks the transition for a value in the table
+     * If ON: this is the current value read by the robot
+     * If OFF: this value is no longer read by the robot
+     * <p/>
+     * Previous value == null   |
+     *                          |> Status x ON
+     * Current value == x       |
+     * <p/>
+     * Previous value == x      |
+     *                          |> Status x OFF, Status y ON
+     * Current value == y       |
+     * <p/>
+     * Previous value == x      |
+     *                          |> Status x ON, do nothing
+     * Current value == x       |
+     */
     public void setValue(final String currentValue) {
         logback.debug("Setting Colour value: " + currentValue);
         if (!isPreviousIdentical(currentValue)) {

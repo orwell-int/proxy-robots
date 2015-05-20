@@ -16,8 +16,8 @@ import orwell.proxy.config.ConfigFactory;
 import orwell.proxy.config.ConfigFactoryParameters;
 import orwell.proxy.config.EnumConfigFileType;
 import orwell.proxy.mock.MockedTank;
+import orwell.proxy.robot.*;
 import orwell.proxy.robot.IRobot;
-import orwell.proxy.robot.RobotsMap;
 import orwell.proxy.zmq.IZmqMessageListener;
 import orwell.proxy.zmq.ZmqMessageBOM;
 import orwell.proxy.zmq.ZmqMessageBroker;
@@ -102,9 +102,9 @@ public class ProxyRobotsTest {
         final Controller.Input.Builder inputBuilder = Controller.Input.newBuilder();
         final Controller.Input.Fire.Builder fireBuilder = Controller.Input.Fire.newBuilder();
         final Controller.Input.Move.Builder moveBuilder = Controller.Input.Move.newBuilder();
-        fireBuilder.setWeapon1(false);
+        fireBuilder.setWeapon1(true);
         fireBuilder.setWeapon2(false);
-        moveBuilder.setLeft(0);
+        moveBuilder.setLeft(100);
         moveBuilder.setRight(0);
         inputBuilder.setFire(fireBuilder.build());
         inputBuilder.setMove(moveBuilder.build());
@@ -171,7 +171,7 @@ public class ProxyRobotsTest {
         instantiateBasicProxyRobots();
 
         myProxyRobots.connectToRobots();
-        assertEquals(IRobot.EnumRegistrationState.NOT_REGISTERED, mockedTank.getRegistrationState());
+        assertEquals(EnumRegistrationState.NOT_REGISTERED, mockedTank.getRegistrationState());
         assertEquals("tempRoutingId", mockedTank.getRoutingId());
 
         myProxyRobots.startCommunicationService();
@@ -180,7 +180,7 @@ public class ProxyRobotsTest {
         // Simulate reception of a REGISTERED message
         myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
 
-        assertEquals(IRobot.EnumRegistrationState.REGISTERED, mockedTank.getRegistrationState());
+        assertEquals(EnumRegistrationState.REGISTERED, mockedTank.getRegistrationState());
         assertEquals("BananaOne", mockedTank.getRoutingId());
 
         logback.info("OUT");
@@ -204,7 +204,7 @@ public class ProxyRobotsTest {
         waitForCloseOrTimeout();
 
         // So the map of isConnected tanks is empty
-        assert (myProxyRobots.robotsMap.getConnectedRobots().isEmpty());
+        assertTrue(myProxyRobots.robotsMap.getConnectedRobots().isEmpty());
 
         logback.debug("OUT");
     }
@@ -302,12 +302,16 @@ public class ProxyRobotsTest {
         // Simulate reception of a REGISTERED message
         myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
 
+        // Tank has for now no Input registered
+        assertFalse(((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getInputFire().hasFire());
+        assertFalse(((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getInputMove().hasMove());
+
         // Now simulate reception of a INPUT message
         myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.INPUT)));
 
         // Tank received the right Input correctly
-        assertArrayEquals(getBytesInput(),
-                ((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getControllerInputBytes());
+        assertTrue(((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getInputFire().hasFire());
+        assertTrue(((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getInputMove().hasMove());
 
         logback.info("OUT");
     }
@@ -325,8 +329,8 @@ public class ProxyRobotsTest {
         // Since we wait for a timeout as long as outgoingMessagePeriod
         // during which the proxy runs and tries to send messages,
         // we should filter some messages
-        logback.debug("getNbOutgoingMessageFiltered: " + myProxyRobots.getNbOutgoingMessageFiltered());
-        assertTrue("There should be at least one filtered message", 0 < myProxyRobots.getNbOutgoingMessageFiltered());
+        logback.debug("getNbOutgoingMessageFiltered: " + myProxyRobots.outgoingMessageFiltered);
+        assertTrue("There should be at least one filtered message", 0 < myProxyRobots.outgoingMessageFiltered);
 
         logback.info("OUT");
     }
