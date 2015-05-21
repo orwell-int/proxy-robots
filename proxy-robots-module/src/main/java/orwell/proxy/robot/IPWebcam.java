@@ -9,6 +9,7 @@ import java.net.URL;
 
 public class IPWebcam implements ICamera {
     private final static Logger logback = LoggerFactory.getLogger(IPWebcam.class);
+    private final static String DUMMY_URL = "http://goo.gl/y1QTB7";
     private URL url;
 
     public IPWebcam(final URL url) {
@@ -43,5 +44,15 @@ public class IPWebcam implements ICamera {
     @Override
     public void accept(final IRobotElementVisitor visitor) {
         visitor.visit(this);
+    }
+
+    public static IPWebcam getDummy() {
+        try {
+            final URL dummyUrl = new URL(DUMMY_URL);
+            return new IPWebcam(dummyUrl);
+        } catch (final MalformedURLException e) {
+            logback.error(e.getMessage());
+            return null;
+        }
     }
 }
