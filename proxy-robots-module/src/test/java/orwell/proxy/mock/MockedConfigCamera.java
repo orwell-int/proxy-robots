@@ -33,8 +33,4 @@ public class MockedConfigCamera implements IConfigCamera {
     public void setPort(final int port) {
         this.port = port;
     }
-
-    public void setIp(final String ip) {
-        this.ip = ip;
-    }
 }
