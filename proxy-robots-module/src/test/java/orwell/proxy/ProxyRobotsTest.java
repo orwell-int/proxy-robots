@@ -48,7 +48,6 @@ public class ProxyRobotsTest {
     @TestSubject
     private ProxyRobots myProxyRobots;
     @Mock
-    //	private Tank myTank;
     private MockedTank mockedTank;
 
     @Before

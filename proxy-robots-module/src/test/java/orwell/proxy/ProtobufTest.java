@@ -18,8 +18,8 @@ import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
 public class ProtobufTest {
-    private final static double LEFT_MOVE = 50;
-    private final static double RIGHT_MOVE = 0.75;
+    public final static double LEFT_MOVE = 50;
+    public final static double RIGHT_MOVE = 0.75;
     private final static Logger logback = LoggerFactory.getLogger(ProtobufTest.class);
 
     public static Controller.Input buildTestInput() {

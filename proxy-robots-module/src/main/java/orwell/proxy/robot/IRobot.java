@@ -2,12 +2,14 @@ package orwell.proxy.robot;
 
 import lejos.mf.common.UnitMessage;
 
+import java.util.UUID;
+
 /**
  * Created by Michaël Ludmann on 5/18/15.
  */
 public abstract class IRobot implements IRobotElement, IRobotInput {
 
-    private String routingId = "";
+    private String routingId = UUID.randomUUID().toString();
     private String cameraUrl;
     private String image;
     private String teamName = "";
