@@ -50,15 +50,15 @@ public class ColourSensor implements IRobotElement {
      * If OFF: this value is no longer read by the robot
      * <p/>
      * Previous value == null   |
-     * |> Status x ON
+     *                          |> Status x ON
      * Current value == x       |
      * <p/>
      * Previous value == x      |
-     * |> Status x OFF, Status y ON
+     *                          |> Status x OFF, Status y ON
      * Current value == y       |
      * <p/>
      * Previous value == x      |
-     * |> Status x ON, do nothing
+     *                          |> Status x ON, do nothing
      * Current value == x       |
      */
     public void setValue(final String currentValue) {
