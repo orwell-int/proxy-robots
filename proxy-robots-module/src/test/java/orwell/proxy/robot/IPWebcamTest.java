@@ -5,7 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import orwell.proxy.config.ConfigCamera;
 import orwell.proxy.mock.MockedConfigCamera;
+
+import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -35,7 +38,7 @@ public class IPWebcamTest {
 
     @Test
     public void testGetUrl_FromNullConfig() {
-        ipWebcam = new IPWebcam(null);
+        ipWebcam = new IPWebcam((ConfigCamera) null);
         assertNull(ipWebcam.getUrl());
     }
 
@@ -51,5 +54,19 @@ public class IPWebcamTest {
         configCamera.setResourcePath(null);
         ipWebcam = new IPWebcam(configCamera);
         assertEquals("http://mockedIp:777", ipWebcam.getUrl());
+    }
+
+    @Test
+    public void testGetUrl_ignoreBadPort() throws Exception {
+        configCamera.setPort(-1);
+        ipWebcam = new IPWebcam(configCamera);
+        assertEquals("http://mockedIp/mockedResourcePath", ipWebcam.getUrl());
+    }
+
+    @Test
+    public void testGetUrl_URLConstructor() throws Exception{
+        final URL url = new URL("http://fake.url");
+        ipWebcam = new IPWebcam(url);
+        assertEquals("http://fake.url", ipWebcam.getUrl());
     }
 }

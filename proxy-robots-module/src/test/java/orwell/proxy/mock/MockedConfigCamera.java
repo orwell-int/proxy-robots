@@ -8,16 +8,17 @@ import orwell.proxy.config.IConfigCamera;
 public class MockedConfigCamera implements IConfigCamera {
 
     private String resourcePath = "/mockedResourcePath";
-    private final static int PORT = 777;
+    private int port = 777;
+    private String ip = "mockedIp";
 
     @Override
     public String getIp() {
-        return "mockedIp";
+        return ip;
     }
 
     @Override
     public int getPort() {
-        return PORT;
+        return port;
     }
 
     @Override
@@ -27,5 +28,13 @@ public class MockedConfigCamera implements IConfigCamera {
 
     public void setResourcePath(final String resourcePath) {
         this.resourcePath = resourcePath;
+    }
+
+    public void setPort(final int port) {
+        this.port = port;
+    }
+
+    public void setIp(final String ip) {
+        this.ip = ip;
     }
 }

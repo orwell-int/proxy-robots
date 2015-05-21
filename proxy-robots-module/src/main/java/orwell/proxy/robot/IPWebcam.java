@@ -11,7 +11,7 @@ public class IPWebcam implements ICamera {
     private final static Logger logback = LoggerFactory.getLogger(IPWebcam.class);
     private URL url;
 
-    private IPWebcam(final URL url) {
+    public IPWebcam(final URL url) {
         this.url = url;
     }
 
