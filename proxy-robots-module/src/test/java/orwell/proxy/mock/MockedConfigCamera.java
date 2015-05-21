@@ -9,7 +9,7 @@ public class MockedConfigCamera implements IConfigCamera {
 
     private String resourcePath = "/mockedResourcePath";
     private int port = 777;
-    private String ip = "mockedIp";
+    private final String ip = "mockedIp";
 
     @Override
     public String getIp() {
