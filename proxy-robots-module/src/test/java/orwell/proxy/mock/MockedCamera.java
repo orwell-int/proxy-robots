@@ -1,7 +1,6 @@
 package orwell.proxy.mock;
 
 import orwell.proxy.robot.ICamera;
-import orwell.proxy.robot.IRobotElement;
 import orwell.proxy.robot.IRobotElementVisitor;
 
 /**

@@ -10,11 +10,11 @@ import java.io.File;
 import java.io.InputStream;
 
 public class Configuration implements IConfiguration {
-    final static Logger logback = LoggerFactory.getLogger(Configuration.class);
+    private final static Logger logback = LoggerFactory.getLogger(Configuration.class);
     private final String filePath;
     private final EnumConfigFileType enumConfigFileType;
     public boolean isPopulated = false;
-    ConfigModel configuration;
+    private ConfigModel configuration;
 
     public Configuration(final ConfigFactoryParameters configFactoryParameters) {
         this.filePath = configFactoryParameters.getFilePath();
@@ -27,7 +27,7 @@ public class Configuration implements IConfiguration {
         return this.configuration;
     }
 
-    private boolean populate() {
+    private void populate() {
         final JAXBContext jc;
         try {
             jc = JAXBContext.newInstance(ConfigModel.class);
@@ -54,7 +54,6 @@ public class Configuration implements IConfiguration {
             logback.error("Configuration:populate(): Error in configuration population: "
                     + e);
         }
-        return isPopulated;
     }
 
 }

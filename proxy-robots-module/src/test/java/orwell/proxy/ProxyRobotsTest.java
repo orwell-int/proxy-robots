@@ -16,8 +16,9 @@ import orwell.proxy.config.ConfigFactory;
 import orwell.proxy.config.ConfigFactoryParameters;
 import orwell.proxy.config.EnumConfigFileType;
 import orwell.proxy.mock.MockedTank;
-import orwell.proxy.robot.*;
+import orwell.proxy.robot.EnumRegistrationState;
 import orwell.proxy.robot.IRobot;
+import orwell.proxy.robot.RobotsMap;
 import orwell.proxy.zmq.IZmqMessageListener;
 import orwell.proxy.zmq.ZmqMessageBOM;
 import orwell.proxy.zmq.ZmqMessageBroker;
@@ -225,7 +226,7 @@ public class ProxyRobotsTest {
     }
 
     @Test
-    public void testSendServerRobotState() throws Exception{
+    public void testSendServerRobotState() throws Exception {
         logback.info("IN");
 
         // Build Mock of ZmqMessageBroker

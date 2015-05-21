@@ -31,11 +31,6 @@ public class InputMove implements IRobotInput {
     }
 
     public void sendUnitMessageTo(final IRobot robot) {
-        final StringBuilder stringBuilder = new StringBuilder(MOVE_PAYLOAD_HEADER);
-        stringBuilder.append(move.getLeft());
-        stringBuilder.append(" ");
-        stringBuilder.append(move.getRight());
-
-        robot.sendUnitMessage(new UnitMessage(UnitMessageType.Command, stringBuilder.toString()));
+        robot.sendUnitMessage(new UnitMessage(UnitMessageType.Command, MOVE_PAYLOAD_HEADER + move.getLeft() + " " + move.getRight()));
     }
 }

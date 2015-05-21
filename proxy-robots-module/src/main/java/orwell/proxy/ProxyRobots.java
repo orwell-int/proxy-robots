@@ -63,15 +63,14 @@ public class ProxyRobots implements IZmqMessageListener {
      */
     protected void initializeTanksFromConfig() {
         for (final ConfigTank configTank : configRobots.getConfigRobotsToRegister()) {
-            final Camera camera = new Camera(configTank.getConfigCamera().getIp(),
-                    configTank.getConfigCamera().getPort());
-            //TODO Improve initialization of setImage to get something meaningful
-            //from the string (like an actual picture)
-            final LegoTank tank = new LegoTank(configTank.getBluetoothName(),
-                    configTank.getBluetoothID(), camera, configTank.getImage());
-            logback.info("Temporary routing ID: " + configTank.getTempRoutingID());
-            tank.setRoutingId(configTank.getTempRoutingID());
-            this.robotsMap.add(tank);
+            final LegoTank tank = RobotFactory.getLegoTank(configTank);
+            if (null == tank) {
+                logback.error("Lego tank not initialized. Skipping it for now.");
+            } else {
+                logback.info("Temporary routing ID: " + tank.getRoutingId());
+                tank.setRoutingId(configTank.getTempRoutingID());
+                this.robotsMap.add(tank);
+            }
         }
 
         logback.info("All " + this.robotsMap.getRobotsArray().size()
@@ -138,6 +137,8 @@ public class ProxyRobots implements IZmqMessageListener {
             final IRobot registeredRobot = robotsMap.get(routingId);
             final Registered registered = new Registered(zmqMessageBOM.getMessageBodyBytes());
             registered.setToRobot(registeredRobot);
+            final RobotElementPrintVisitor printVisitor = new RobotElementPrintVisitor();
+            registeredRobot.accept(printVisitor);
         } else {
             logback.info("RoutingID " + routingId
                     + " is not an ID of a tank to register");
@@ -159,7 +160,7 @@ public class ProxyRobots implements IZmqMessageListener {
     }
 
     private void onGameState(final ZmqMessageBOM zmqMessageBOM) {
-        logback.warn("Received GameState - not handled");
+        logback.warn("Received GameState - not handled (robot " + zmqMessageBOM.getRoutingId() + ")");
     }
 
     private void onDefault() {
@@ -222,6 +223,7 @@ public class ProxyRobots implements IZmqMessageListener {
                 }
                 try {
                     // This is performed to avoid high CPU consumption
+                    //noinspection BusyWait
                     Thread.sleep(THREAD_SLEEP_MS);
                 } catch (final InterruptedException e) {
                     logback.error("CommunicationService thread sleep exception: " + e.getMessage());

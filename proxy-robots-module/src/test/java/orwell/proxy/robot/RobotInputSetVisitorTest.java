@@ -14,7 +14,8 @@ import org.slf4j.LoggerFactory;
 import orwell.proxy.ProtobufTest;
 
 import static org.easymock.EasyMock.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -22,7 +23,7 @@ import static org.junit.Assert.*;
  */
 @RunWith(JUnit4.class)
 public class RobotInputSetVisitorTest {
-    final static Logger logback = LoggerFactory.getLogger(RobotInputSetVisitorTest.class);
+    private final static Logger logback = LoggerFactory.getLogger(RobotInputSetVisitorTest.class);
 
     @TestSubject
     private RobotInputSetVisitor inputSetVisitor;
@@ -101,9 +102,4 @@ public class RobotInputSetVisitorTest {
     }
 
 
-
-    @After
-    public void tearDown() {
-
-    }
 }

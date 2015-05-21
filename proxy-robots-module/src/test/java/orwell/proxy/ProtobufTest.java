@@ -11,7 +11,7 @@ import orwell.messages.Controller;
 import static org.junit.Assert.*;
 
 /**
- * Tests for {@link orwell.messages.Controller.Input}.
+ * Tests for {@link Controller.Input}.
  *
  * @author miludmann@gmail.com (Michael Ludmann)
  */

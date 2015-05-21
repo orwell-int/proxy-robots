@@ -28,11 +28,6 @@ public class InputFire implements IRobotInput {
     }
 
     public void sendUnitMessageTo(final IRobot robot) {
-        final StringBuilder stringBuilder = new StringBuilder(FIRE_PAYLOAD_HEADER);
-        stringBuilder.append(fire.getWeapon1());
-        stringBuilder.append(" ");
-        stringBuilder.append(fire.getWeapon2());
-
-        robot.sendUnitMessage(new UnitMessage(UnitMessageType.Command, stringBuilder.toString()));
+        robot.sendUnitMessage(new UnitMessage(UnitMessageType.Command, FIRE_PAYLOAD_HEADER + fire.getWeapon1() + " " + fire.getWeapon2()));
     }
 }

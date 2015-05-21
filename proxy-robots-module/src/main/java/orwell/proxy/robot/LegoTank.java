@@ -19,9 +19,9 @@ public class LegoTank extends IRobot implements MessageListenerInterface {
     private final UnitMessageBroker unitMessageBroker = new UnitMessageBroker(this);
 
 
-    public LegoTank(final String bluetoothName, final String bluetoothId,
-                    final MessageFramework messageFramework,
-                    final ICamera camera, final String image) {
+    private LegoTank(final String bluetoothName, final String bluetoothId,
+                     final MessageFramework messageFramework,
+                     final ICamera camera, final String image) {
         this.robotElements = new IRobotElement[]{camera, new RfidSensor(), new ColourSensor()};
         this.robotActions = new IRobotInput[]{new InputMove(), new InputFire()};
         this.nxtInfo = new NXTInfo(NXTCommFactory.BLUETOOTH, bluetoothName, bluetoothId);
@@ -99,7 +99,8 @@ public class LegoTank extends IRobot implements MessageListenerInterface {
 
     @Override
     public String toString() {
-        return "Tank {[BTName] " + nxtInfo.name + " [BT-ID] "
-                + nxtInfo.deviceAddress + " [RoutingID] " + getRoutingId() + "}";
+        return "Tank {[BTName] " + nxtInfo.name + " [BT-ID] " +
+                nxtInfo.deviceAddress + " [RoutingID] " + getRoutingId() +
+                " [TeamName] " + getTeamName() + "}";
     }
 }

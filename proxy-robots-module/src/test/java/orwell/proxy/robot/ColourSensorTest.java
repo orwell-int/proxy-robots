@@ -14,13 +14,13 @@ import static org.junit.Assert.*;
  * Created by Michaël Ludmann on 5/13/15.
  */
 public class ColourSensorTest {
-    final static Logger logback = LoggerFactory.getLogger(ColourSensorTest.class);
+    private final static Logger logback = LoggerFactory.getLogger(ColourSensorTest.class);
     private final static String FIRST_VALUE = "1";
     private final static String SECOND_VALUE = "2";
     private ColourSensor colourSensor;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         logback.info("IN");
         colourSensor = new ColourSensor();
     }
@@ -83,7 +83,7 @@ public class ColourSensorTest {
 
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         logback.info("OUT");
     }
 }

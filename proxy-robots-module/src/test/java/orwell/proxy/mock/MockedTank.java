@@ -9,7 +9,7 @@ import orwell.proxy.robot.*;
  * Created by Michaël Ludmann on 03/05/15.
  */
 public class MockedTank extends IRobot {
-    final static Logger logback = LoggerFactory.getLogger(MockedTank.class);
+    private final static Logger logback = LoggerFactory.getLogger(MockedTank.class);
 
     private final IRobotElement[] robotElements;
     private final IRobotInput[] robotActions;
@@ -48,7 +48,8 @@ public class MockedTank extends IRobot {
 
     @Override
     public void closeConnection() {
-
+        logback.info("Closing connection to physical device");
+        setConnectionState(EnumConnectionState.NOT_CONNECTED);
     }
 
     @Override

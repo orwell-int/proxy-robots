@@ -1,5 +1,6 @@
 package orwell.proxy.zmq;
 
+import com.sun.istack.internal.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.EnumMessageType;
@@ -127,7 +128,7 @@ public class ZmqMessageBOM implements Comparable<ZmqMessageBOM> {
     }
 
     @Override
-    public int compareTo(final ZmqMessageBOM zmqMessageBOM) {
+    public int compareTo(@NotNull final ZmqMessageBOM zmqMessageBOM) {
         if (null == zmqMessageBOM || messageType != zmqMessageBOM.getMessageType() ||
                 0 != routingId.compareTo(zmqMessageBOM.getRoutingId()) ||
                 !Arrays.equals(messageBodyBytes, zmqMessageBOM.getMessageBodyBytes()))

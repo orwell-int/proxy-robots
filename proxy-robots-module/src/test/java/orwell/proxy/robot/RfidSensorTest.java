@@ -14,14 +14,14 @@ import static org.junit.Assert.*;
  * Created by Michaël Ludmann on 5/13/15.
  */
 public class RfidSensorTest {
-    final static Logger logback = LoggerFactory.getLogger(RfidSensorTest.class);
+    private final static Logger logback = LoggerFactory.getLogger(RfidSensorTest.class);
     private final static String FIRST_VALUE = "11111111";
     private final static String SECOND_VALUE = "22222222";
     private final static String NO_RFID_VALUE = "0";
     private RfidSensor rfidSensor;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         logback.info("IN");
         rfidSensor = new RfidSensor();
     }
@@ -116,7 +116,7 @@ public class RfidSensorTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         logback.info("OUT");
     }
 }

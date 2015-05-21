@@ -26,13 +26,19 @@ public class ConfigurationTest {
     private final static Logger logback = LoggerFactory.getLogger(ConfigurationTest.class);
     private static final String CONFIGURATION_RESOURCE_TEST = "/configurationTest.xml";
     private static final String CONFIGURATION_URL_TEST = "https://github.com/orwell-int/proxy-robots/blob/master/proxy-robots-module/src/main/resources/configuration.xml";
+    private static final int PUSH_PORT = 9000;
+    private static final int SUB_PORT = 9001;
+    private static final int CAMERA_PORT = 9100;
+    private static final int LINGER_TIME_MS = 1000;
+    private static final int OUTGOING_MSG_FREQ_MS = 500;
+
+
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
-    private ConfigFactoryParameters configFactoryParameters;
 
     private Configuration getConfigTest(final String fileName, final EnumConfigFileType configFileType) {
-        configFactoryParameters = new ConfigFactoryParameters(fileName, configFileType);
+        final ConfigFactoryParameters configFactoryParameters = new ConfigFactoryParameters(fileName, configFileType);
         return new Configuration(configFactoryParameters);
     }
 
@@ -60,7 +66,7 @@ public class ConfigurationTest {
         assertEquals(3, configProxy.getConfigServerGames().size());
         try {
             assertNotNull(configProxy.getConfigServerGame());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             logback.error(e.getMessage());
         }
 
@@ -77,9 +83,9 @@ public class ConfigurationTest {
             configServerGame = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                     .getConfigProxy().getConfigServerGame();
             assertEquals("192.168.1.46", configServerGame.getIp());
-            assertEquals(9000, configServerGame.getPushPort());
-            assertEquals(9001, configServerGame.getSubPort());
-        } catch (Exception e) {
+            assertEquals(PUSH_PORT, configServerGame.getPushPort());
+            assertEquals(SUB_PORT, configServerGame.getSubPort());
+        } catch (final Exception e) {
             fail(e.toString());
         }
     }
@@ -91,9 +97,9 @@ public class ConfigurationTest {
         configProxy = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                 .getConfigProxy();
 
-        assertEquals(1000, configProxy.getSenderLinger());
-        assertEquals(1000, configProxy.getReceiverLinger());
-        assertEquals(500, configProxy.getOutgoingMsgPeriod());
+        assertEquals(LINGER_TIME_MS, configProxy.getSenderLinger());
+        assertEquals(LINGER_TIME_MS, configProxy.getReceiverLinger());
+        assertEquals(OUTGOING_MSG_FREQ_MS, configProxy.getOutgoingMsgPeriod());
     }
 
     @Test
@@ -107,7 +113,7 @@ public class ConfigurationTest {
         assertEquals(2, configRobots.getConfigTanks().size());
         try {
             assertNotNull(configRobots.getConfigTank("BananaOne"));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             fail(e.toString());
         }
     }
@@ -123,9 +129,10 @@ public class ConfigurationTest {
             assertEquals("Daneel", configTank.getBluetoothName());
             assertNotNull(configTank.getConfigCamera());
             assertEquals("192.168.1.50", configTank.getConfigCamera().getIp());
-            assertEquals(9100, configTank.getConfigCamera().getPort());
+            assertEquals(CAMERA_PORT, configTank.getConfigCamera().getPort());
+            assertEquals("/videofeed", configTank.getConfigCamera().getResourcePath());
             assertEquals("Yellow hull -- TO BE BETTER CONFIGURED", configTank.getImage());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             fail(e.toString());
         }
     }
@@ -148,7 +155,7 @@ public class ConfigurationTest {
         try {
             // Create empty file
             file = File.createTempFile("testConfigurationWithFile", ".tmp");
-        } catch (IOException e) {
+        } catch (final IOException e) {
             fail(e.toString());
         }
 

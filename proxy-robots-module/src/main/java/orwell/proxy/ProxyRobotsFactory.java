@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Created by Michaël Ludmann on 03/05/15.
  */
-public class ProxyRobotsFactory {
+class ProxyRobotsFactory {
     private final ConfigFactory configFactory;
     private final ZmqMessageBroker zmqMessageFramework;
 

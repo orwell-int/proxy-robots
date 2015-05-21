@@ -32,7 +32,7 @@ public class Registered {
         }
     }
 
-    public String serverGameRegisteredToString(final IRobot robot) {
+    private String serverGameRegisteredToString(final IRobot robot) {
         final String string;
         if (null != serverGameRegistered) {
             string = "ServerGame REGISTERED of Robot [" + robot.getRoutingId() + "]:"

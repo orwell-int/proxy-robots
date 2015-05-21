@@ -9,15 +9,15 @@ import orwell.proxy.config.EnumConfigFileType;
 import java.io.File;
 
 /**
- * Created by miludmann on 5/5/15.
+ * Created by Michaël Ludmann on 5/5/15.
  */
-public class Cli {
-    final static protected String CONFIG_FILEPATH_INSIDE_JAR = "/configuration.xml";
-    final static Logger logback = LoggerFactory.getLogger(Cli.class);
+class Cli {
+    private final static String CONFIG_FILEPATH_INSIDE_JAR = "/configuration.xml";
+    private final static Logger logback = LoggerFactory.getLogger(Cli.class);
     private final Options options = new Options();
     private String[] args = null;
 
-    public Cli(String[] args) {
+    public Cli(final String[] args) {
         this.args = args;
 
         final Option optionHelp = new Option("h", "help", false, "shows help.");
@@ -35,8 +35,8 @@ public class Cli {
     }
 
     public ConfigFactoryParameters parse() {
-        CommandLineParser parser = new BasicParser();
-        CommandLine cmd;
+        final CommandLineParser parser = new BasicParser();
+        final CommandLine cmd;
 
         try {
             cmd = parser.parse(options, args);
@@ -48,14 +48,14 @@ public class Cli {
                 return file(cmd.getOptionValue("f"));
             } else if (cmd.hasOption("u")) {
                 return url(cmd.getOptionValue("u"));
-            } else if (args.length > 0) {
+            } else if (0 < args.length) {
                 logback.warn("Unknown parameter: " + args[0]);
                 help();
             } else {
                 return resource();
             }
 
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             logback.error("Failed to parse command line properties", e);
             help();
         }
@@ -66,15 +66,15 @@ public class Cli {
         logback.warn("Exiting program");
 
         // This prints out some help
-        HelpFormatter formatter = new HelpFormatter();
+        final HelpFormatter formatter = new HelpFormatter();
 
         formatter.printHelp("-f filepath OR -u http://fake.url", options);
         System.exit(0);
     }
 
-    private ConfigFactoryParameters file(String filePath) {
-        File f = new File(filePath);
-        if (!f.exists() || f.isDirectory()) {
+    private ConfigFactoryParameters file(final String filePath) {
+        final File file = new File(filePath);
+        if (!file.exists() || file.isDirectory()) {
             logback.error("File " + filePath + " not found, exiting program");
             System.exit(0);
         }
@@ -82,7 +82,7 @@ public class Cli {
         return new ConfigFactoryParameters(filePath, EnumConfigFileType.FILE);
     }
 
-    private ConfigFactoryParameters url(String url) {
+    private ConfigFactoryParameters url(final String url) {
         logback.info("Using file retrieved from URL given as parameter: " + url);
         return new ConfigFactoryParameters(url, EnumConfigFileType.URL);
     }

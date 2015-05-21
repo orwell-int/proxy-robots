@@ -7,10 +7,10 @@ import lejos.mf.common.UnitMessage;
  */
 public abstract class IRobot implements IRobotElement, IRobotInput {
 
-    private String routingId;
+    private String routingId = "";
     private String cameraUrl;
     private String image;
-    private String teamName;
+    private String teamName = "";
     private EnumRegistrationState registrationState = EnumRegistrationState.NOT_REGISTERED;
     private EnumConnectionState connectionState = EnumConnectionState.NOT_CONNECTED;
 
@@ -37,7 +37,7 @@ public abstract class IRobot implements IRobotElement, IRobotInput {
         this.cameraUrl = cameraUrl;
     }
 
-    protected String getImage() {
+    String getImage() {
         return image;
     }
 
@@ -49,7 +49,7 @@ public abstract class IRobot implements IRobotElement, IRobotInput {
         return teamName;
     }
 
-    protected void setTeamName(final String teamName) {
+    void setTeamName(final String teamName) {
         this.teamName = teamName;
     }
 

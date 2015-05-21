@@ -1,7 +1,7 @@
 package orwell.proxy.zmq;
 
 /**
- * Created by miludmann on 5/6/15.
+ * Created by Michaël Ludmann on 5/6/15.
  */
 public interface IFilter {
 

@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by Michaël Ludmann on 5/19/15.
  */
-public class UnitMessageBroker {
+class UnitMessageBroker {
     private final static Logger logback = LoggerFactory.getLogger(UnitMessageBroker.class);
     private final LegoTank tank;
 

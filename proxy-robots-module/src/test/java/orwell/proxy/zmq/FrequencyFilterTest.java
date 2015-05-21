@@ -20,11 +20,11 @@ import static org.junit.Assert.*;
 @RunWith(JUnit4.class)
 public class FrequencyFilterTest {
     private final static Logger logback = LoggerFactory.getLogger(FrequencyFilterTest.class);
-    private final long OUTGOING_MSG_PERIOD_HIGH = 50000;
-    private final long OUTGOING_MSG_PERIOD_LOW = 0;
-    private final String TEST_ROUTING_ID_1 = "testRoutingId_1";
-    private final String TEST_ROUTING_ID_2 = "testRoutingId_2";
-    private final String TEST_MSG_BODY = "testMsgBody";
+    private final static long OUTGOING_MSG_PERIOD_HIGH = 50000;
+    private final static long OUTGOING_MSG_PERIOD_LOW = 0;
+    private final static String TEST_ROUTING_ID_1 = "testRoutingId_1";
+    private final static String TEST_ROUTING_ID_2 = "testRoutingId_2";
+    private final static String TEST_MSG_BODY = "testMsgBody";
     private FrequencyFilter frequencyFilter;
     private ZmqMessageBOM zmqRegisterBOM_1;
     private ZmqMessageBOM zmqRegisterBOM_2;
@@ -32,14 +32,14 @@ public class FrequencyFilterTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         zmqRegisterBOM_1 = getTestMessageBom(EnumMessageType.REGISTER, TEST_ROUTING_ID_1);
         zmqRegisterBOM_2 = getTestMessageBom(EnumMessageType.REGISTER, TEST_ROUTING_ID_2);
         zmqServerRobotStateBOM = getTestMessageBom(EnumMessageType.SERVER_ROBOT_STATE, TEST_ROUTING_ID_1);
     }
 
-    private ZmqMessageBOM getTestMessageBom(final EnumMessageType messageType, String routingId) {
-        final byte[] msgBody = new String(TEST_MSG_BODY).getBytes();
+    private ZmqMessageBOM getTestMessageBom(final EnumMessageType messageType, final String routingId) {
+        final byte[] msgBody = TEST_MSG_BODY.getBytes();
         return new ZmqMessageBOM(routingId, messageType, msgBody);
     }
 
@@ -115,9 +115,4 @@ public class FrequencyFilterTest {
         logback.debug("OUT");
     }
 
-    @After
-    public void tearDown() throws Exception {
-
-
-    }
 }

@@ -7,7 +7,7 @@ import orwell.messages.Robot.Register;
 /**
  * Created by Michaël Ludmann on 5/19/15.
  */
-public class RegisterBytes {
+public final class RegisterBytes {
     private final static Logger logback = LoggerFactory.getLogger(RegisterBytes.class);
 
     public static byte[] fromRobotFactory(final IRobot robot) {

@@ -20,7 +20,7 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(JUnit4.class)
 public class RobotElementStateVisitorTest {
-    final static Logger logback = LoggerFactory.getLogger(RobotElementStateVisitorTest.class);
+    private final static Logger logback = LoggerFactory.getLogger(RobotElementStateVisitorTest.class);
 
     @Mock
     private final LegoTank tank = new LegoTank("", "", new MockedCamera(), "");
@@ -60,8 +60,4 @@ public class RobotElementStateVisitorTest {
     }
 
 
-    @After
-    public void tearDown() {
-
-    }
 }
