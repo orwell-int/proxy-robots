@@ -18,7 +18,6 @@ import orwell.proxy.config.EnumConfigFileType;
 import orwell.proxy.mock.MockedTank;
 import orwell.proxy.robot.EnumRegistrationState;
 import orwell.proxy.robot.IRobot;
-import orwell.proxy.robot.RobotInputSetVisitor;
 import orwell.proxy.robot.RobotsMap;
 import orwell.proxy.zmq.IZmqMessageListener;
 import orwell.proxy.zmq.ZmqMessageBOM;
@@ -43,7 +42,7 @@ public class ProxyRobotsTest {
     private static final String REGISTERED_ID = "BananaOne";
     private static final String RFID_VALUE = "11111111";
     private final ConfigFactoryParameters configFactoryParameters = new ConfigFactoryParameters("/configurationTest.xml", EnumConfigFileType.RESOURCE);
-    private final ZmqMessageBroker mockedZmqMessageFramework = createNiceMock(ZmqMessageBroker.class);
+    private final ZmqMessageBroker mockedZmqMessageBroker = createNiceMock(ZmqMessageBroker.class);
     private ConfigFactory configFactory;
     private RobotsMap robotsMap;
     @TestSubject
@@ -134,15 +133,15 @@ public class ProxyRobotsTest {
 
     private void instantiateBasicProxyRobots() {
         // Build Mock of ZmqMessageBroker
-        mockedZmqMessageFramework.addZmqMessageListener(anyObject(IZmqMessageListener.class));
+        mockedZmqMessageBroker.addZmqMessageListener(anyObject(IZmqMessageListener.class));
         expectLastCall();
 
-        expect(mockedZmqMessageFramework.sendZmqMessage((ZmqMessageBOM) anyObject())).andReturn(true).anyTimes();
+        expect(mockedZmqMessageBroker.sendZmqMessage((ZmqMessageBOM) anyObject())).andReturn(true).anyTimes();
 
-        replay(mockedZmqMessageFramework);
+        replay(mockedZmqMessageBroker);
 
         // Instantiate main class with mock parameters
-        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework, configFactory,
+        myProxyRobots = new ProxyRobots(mockedZmqMessageBroker, configFactory,
                 robotsMap);
     }
 
@@ -233,11 +232,11 @@ public class ProxyRobotsTest {
 
         // Build Mock of ZmqMessageBroker
         final Capture<ZmqMessageBOM> captureMsg = new Capture<>();
-        expect(mockedZmqMessageFramework.sendZmqMessage(capture(captureMsg))).andReturn(true).atLeastOnce();
-        replay(mockedZmqMessageFramework);
+        expect(mockedZmqMessageBroker.sendZmqMessage(capture(captureMsg))).andReturn(true).atLeastOnce();
+        replay(mockedZmqMessageBroker);
 
         // Instantiate main class with mock parameters
-        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework, configFactory,
+        myProxyRobots = new ProxyRobots(mockedZmqMessageBroker, configFactory,
                 robotsMap);
 
         myProxyRobots.connectToRobots();
@@ -252,7 +251,7 @@ public class ProxyRobotsTest {
         myProxyRobots.sendServerRobotStates();
 
         // ProxyRobot is expected to send a ServerRobotState message
-        verify(mockedZmqMessageFramework);
+        verify(mockedZmqMessageBroker);
         assertEquals(EnumMessageType.SERVER_ROBOT_STATE, captureMsg.getValue().getMessageType());
         assertEquals("RoutingId is supposed to have changed to the one provided by registered",
                 REGISTERED_ID, captureMsg.getValue().getRoutingId());
@@ -265,9 +264,9 @@ public class ProxyRobotsTest {
         logback.info("IN");
 
         // Build Mock of ZmqMessageBroker
-        mockedZmqMessageFramework.close();
+        mockedZmqMessageBroker.close();
         expectLastCall().once();
-        replay(mockedZmqMessageFramework);
+        replay(mockedZmqMessageBroker);
 
         // We are testing the real class, so we do not want to lose time
         // trying to connect to robots by bluetooth
@@ -277,7 +276,7 @@ public class ProxyRobotsTest {
 
         // Instantiate main class with mock parameters
         // We build an empty robot map
-        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework, configFactory,
+        myProxyRobots = new ProxyRobots(mockedZmqMessageBroker, configFactory,
                 new RobotsMap());
 
         myProxyRobots.start();
@@ -287,7 +286,7 @@ public class ProxyRobotsTest {
         // this tank fails to connect because of wrong settings, so
         // the communication service should quickly stop and close
         // the message framework proxy
-        verify(mockedZmqMessageFramework);
+        verify(mockedZmqMessageBroker);
 
         logback.info("OUT");
     }
