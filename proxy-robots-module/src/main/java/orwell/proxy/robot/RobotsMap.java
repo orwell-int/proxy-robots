@@ -54,7 +54,7 @@ public class RobotsMap implements IRobotsMap {
     public ArrayList<IRobot> getNotConnectedRobots() {
         final ArrayList<IRobot> notConnectedRobotsList = new ArrayList<>();
         for (final IRobot robot : this.array) {
-            if (IRobot.EnumConnectionState.NOT_CONNECTED == robot.getConnectionState())
+            if (EnumConnectionState.NOT_CONNECTED == robot.getConnectionState())
                 notConnectedRobotsList.add(robot);
         }
 
@@ -65,7 +65,7 @@ public class RobotsMap implements IRobotsMap {
     public ArrayList<IRobot> getConnectedRobots() {
         final ArrayList<IRobot> connectedRobotsList = new ArrayList<>();
         for (final IRobot robot : this.array) {
-            if (IRobot.EnumConnectionState.CONNECTED == robot.getConnectionState())
+            if (EnumConnectionState.CONNECTED == robot.getConnectionState())
                 connectedRobotsList.add(robot);
         }
 
@@ -76,7 +76,7 @@ public class RobotsMap implements IRobotsMap {
     public ArrayList<IRobot> getRegisteredRobots() {
         final ArrayList<IRobot> registeredRobotsList = new ArrayList<>();
         for (final IRobot robot : this.array) {
-            if (IRobot.EnumRegistrationState.REGISTERED == robot.getRegistrationState())
+            if (EnumRegistrationState.REGISTERED == robot.getRegistrationState())
                 registeredRobotsList.add(robot);
         }
 
@@ -89,7 +89,7 @@ public class RobotsMap implements IRobotsMap {
         if (null == robot)
             return false;
         else
-            return (IRobot.EnumConnectionState.CONNECTED == robot.getConnectionState());
+            return (EnumConnectionState.CONNECTED == robot.getConnectionState());
     }
 
     @Override
@@ -98,6 +98,6 @@ public class RobotsMap implements IRobotsMap {
         if (null == robot)
             return false;
         else
-            return (IRobot.EnumRegistrationState.REGISTERED == robot.getRegistrationState());
+            return (EnumRegistrationState.REGISTERED == robot.getRegistrationState());
     }
 }

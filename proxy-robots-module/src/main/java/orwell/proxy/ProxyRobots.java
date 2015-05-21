@@ -3,10 +3,7 @@ package orwell.proxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.config.*;
-import orwell.proxy.robot.Camera;
-import orwell.proxy.robot.IRobot;
-import orwell.proxy.robot.IRobotsMap;
-import orwell.proxy.robot.Tank;
+import orwell.proxy.robot.*;
 import orwell.proxy.zmq.IZmqMessageBroker;
 import orwell.proxy.zmq.IZmqMessageListener;
 import orwell.proxy.zmq.ZmqMessageBOM;
@@ -21,7 +18,7 @@ public class ProxyRobots implements IZmqMessageListener {
     private final Thread communicationThread = new Thread(communicationService);
     private final long outgoingMessagePeriod;
     protected IRobotsMap robotsMap;
-    private int outgoingMessageFiltered;
+    protected int outgoingMessageFiltered;
 
     public ProxyRobots(final IZmqMessageBroker mfProxy,
                        final IConfigFactory configFactory,
@@ -66,15 +63,14 @@ public class ProxyRobots implements IZmqMessageListener {
      */
     protected void initializeTanksFromConfig() {
         for (final ConfigTank configTank : configRobots.getConfigRobotsToRegister()) {
-            final Camera camera = new Camera(configTank.getConfigCamera().getIp(),
-                    configTank.getConfigCamera().getPort());
-            //TODO Improve initialization of setImage to get something meaningful
-            //from the string (like an actual picture)
-            final Tank tank = new Tank(configTank.getBluetoothName(),
-                    configTank.getBluetoothID(), camera, configTank.getImage());
-            logback.info("Temporary routing ID: " + configTank.getTempRoutingID());
-            tank.setRoutingId(configTank.getTempRoutingID());
-            this.robotsMap.add(tank);
+            final LegoTank tank = RobotFactory.getLegoTank(configTank);
+            if (null == tank) {
+                logback.error("Lego tank not initialized. Skipping it for now.");
+            } else {
+                logback.info("Temporary routing ID: " + tank.getRoutingId());
+                tank.setRoutingId(configTank.getTempRoutingID());
+                this.robotsMap.add(tank);
+            }
         }
 
         logback.info("All " + this.robotsMap.getRobotsArray().size()
@@ -83,15 +79,14 @@ public class ProxyRobots implements IZmqMessageListener {
 
     protected void connectToRobots() {
         for (final IRobot robot : robotsMap.getNotConnectedRobots()) {
-            robot.connectToDevice();
+            robot.connect();
         }
     }
 
     protected void sendRegister() {
         for (final IRobot robot : robotsMap.getConnectedRobots()) {
-            robot.buildRegister();
             final ZmqMessageBOM zmqMessageBOM = new ZmqMessageBOM(robot.getRoutingId(), EnumMessageType.REGISTER,
-                    robot.getRegisterBytes());
+                    RegisterBytes.fromRobotFactory(robot));
             mfProxy.sendZmqMessage(zmqMessageBOM);
             logback.info("Robot [" + robot.getRoutingId()
                     + "] is trying to register itself to the server!");
@@ -103,12 +98,15 @@ public class ProxyRobots implements IZmqMessageListener {
      */
     protected void sendServerRobotStates() {
         for (final IRobot robot : robotsMap.getRegisteredRobots()) {
-            final byte[] zmqServerRobotState = robot.getServerRobotStateBytes_And_ClearDelta();
-            if (null != zmqServerRobotState) {
+            final RobotElementStateVisitor stateVisitor = new RobotElementStateVisitor();
+            robot.accept(stateVisitor);
+
+            final byte[] serverRobotStateBytes = stateVisitor.getServerRobotStateBytes();
+            if (null != serverRobotStateBytes) {
                 logback.debug("Sending a ServerRobotState message");
                 final ZmqMessageBOM zmqMessageBOM =
                         new ZmqMessageBOM(robot.getRoutingId(), EnumMessageType.SERVER_ROBOT_STATE,
-                                robot.getRegisterBytes());
+                                serverRobotStateBytes);
                 mfProxy.sendZmqMessage(zmqMessageBOM);
             }
         }
@@ -137,7 +135,10 @@ public class ProxyRobots implements IZmqMessageListener {
         final String routingId = zmqMessageBOM.getRoutingId();
         if (robotsMap.isRobotConnected(routingId)) {
             final IRobot registeredRobot = robotsMap.get(routingId);
-            registeredRobot.setRegistered(zmqMessageBOM.getMessageBodyBytes());
+            final Registered registered = new Registered(zmqMessageBOM.getMessageBodyBytes());
+            registered.setToRobot(registeredRobot);
+            final RobotElementPrintVisitor printVisitor = new RobotElementPrintVisitor();
+            registeredRobot.accept(printVisitor);
         } else {
             logback.info("RoutingID " + routingId
                     + " is not an ID of a tank to register");
@@ -149,8 +150,9 @@ public class ProxyRobots implements IZmqMessageListener {
         final String routingId = zmqMessageBOM.getRoutingId();
         if (robotsMap.isRobotRegistered(routingId)) {
             final IRobot targetedRobot = robotsMap.get(routingId);
-            targetedRobot.setControllerInput(zmqMessageBOM.getMessageBodyBytes());
-            logback.info("tankTargeted input : " + targetedRobot.controllerInputToString());
+            final RobotInputSetVisitor inputSetVisitor = new RobotInputSetVisitor(zmqMessageBOM.getMessageBodyBytes());
+            targetedRobot.accept(inputSetVisitor);
+            logback.info("tankTargeted input : " + inputSetVisitor.inputToString(targetedRobot));
         } else {
             logback.info("RoutingID " + routingId
                     + " is not an ID of a registered tank");
@@ -158,7 +160,7 @@ public class ProxyRobots implements IZmqMessageListener {
     }
 
     private void onGameState(final ZmqMessageBOM zmqMessageBOM) {
-        logback.warn("Received GameState - not handled");
+        logback.warn("Received GameState - not handled (robot " + zmqMessageBOM.getRoutingId() + ")");
     }
 
     private void onDefault() {
@@ -201,9 +203,6 @@ public class ProxyRobots implements IZmqMessageListener {
         }
     }
 
-    protected int getNbOutgoingMessageFiltered() {
-        return outgoingMessageFiltered;
-    }
 
     private class CommunicationService implements Runnable {
         public void run() {
@@ -224,6 +223,7 @@ public class ProxyRobots implements IZmqMessageListener {
                 }
                 try {
                     // This is performed to avoid high CPU consumption
+                    //noinspection BusyWait
                     Thread.sleep(THREAD_SLEEP_MS);
                 } catch (final InterruptedException e) {
                     logback.error("CommunicationService thread sleep exception: " + e.getMessage());

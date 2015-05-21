@@ -19,7 +19,7 @@ public class ConfigServerGame implements IConfigServerGame {
     }
 
     @XmlAttribute
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -31,7 +31,7 @@ public class ConfigServerGame implements IConfigServerGame {
     }
 
     @XmlAttribute
-    public void setPriority(int priority) {
+    public void setPriority(final int priority) {
         this.priority = priority;
     }
 
@@ -41,7 +41,7 @@ public class ConfigServerGame implements IConfigServerGame {
     }
 
     @XmlElement
-    public void setIp(String ip) {
+    public void setIp(final String ip) {
         this.ip = ip;
     }
 
@@ -51,7 +51,7 @@ public class ConfigServerGame implements IConfigServerGame {
     }
 
     @XmlElement
-    public void setPushPort(int pushPort) {
+    public void setPushPort(final int pushPort) {
         this.pushPort = pushPort;
     }
 
@@ -61,7 +61,7 @@ public class ConfigServerGame implements IConfigServerGame {
     }
 
     @XmlElement
-    public void setSubPort(int subPort) {
+    public void setSubPort(final int subPort) {
         this.subPort = subPort;
     }
 

@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
  * Created by Michaël Ludmann on 03/05/15.
  */
 public class ConfigFactory implements IConfigFactory {
-    final static Logger logback = LoggerFactory.getLogger(ConfigFactory.class);
+    private final static Logger logback = LoggerFactory.getLogger(ConfigFactory.class);
 
     private final IConfigProxy configProxy;
     private final IConfigRobots configRobots;
@@ -17,7 +17,7 @@ public class ConfigFactory implements IConfigFactory {
         logback.debug("IN");
         final Configuration configuration = new Configuration(configFactoryParameters);
 
-        if (false == configuration.isPopulated) {
+        if (!configuration.isPopulated) {
             logback.error("Configuration loading error");
             configProxy = null;
             configRobots = null;

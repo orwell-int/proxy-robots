@@ -19,7 +19,7 @@ public class ConfigTank {
     }
 
     @XmlAttribute
-    public void setTempRoutingID(String tempRoutingID) {
+    public void setTempRoutingID(final String tempRoutingID) {
         this.tempRoutingID = tempRoutingID;
     }
 
@@ -28,7 +28,7 @@ public class ConfigTank {
     }
 
     @XmlAttribute
-    public void setShouldRegister(boolean shouldRegister) {
+    public void setShouldRegister(final boolean shouldRegister) {
         this.shouldRegister = shouldRegister;
     }
 
@@ -37,7 +37,7 @@ public class ConfigTank {
     }
 
     @XmlElement
-    public void setBluetoothName(String bluetoothName) {
+    public void setBluetoothName(final String bluetoothName) {
         this.bluetoothName = bluetoothName;
     }
 
@@ -46,7 +46,7 @@ public class ConfigTank {
     }
 
     @XmlElement
-    public void setBluetoothID(String bluetoothID) {
+    public void setBluetoothID(final String bluetoothID) {
         this.bluetoothID = bluetoothID;
     }
 
@@ -55,7 +55,7 @@ public class ConfigTank {
     }
 
     @XmlElement
-    public void setCamera(ConfigCamera camera) {
+    public void setCamera(final ConfigCamera camera) {
         this.camera = camera;
     }
 
@@ -64,7 +64,7 @@ public class ConfigTank {
     }
 
     @XmlElement
-    public void setImage(String image) {
+    public void setImage(final String image) {
         this.image = image;
     }
 }

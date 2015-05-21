@@ -12,13 +12,13 @@ public class ConfigRobots implements IConfigRobots {
         return configTanks;
     }
 
-    public void setConfigTanks(List<ConfigTank> configTanks) {
+    public void setConfigTanks(final List<ConfigTank> configTanks) {
         this.configTanks = configTanks;
     }
 
     @Override
-    public ConfigTank getConfigTank(String tempRoutingID) throws Exception {
-        for (ConfigTank config : this.configTanks) {
+    public ConfigTank getConfigTank(final String tempRoutingID) throws Exception {
+        for (final ConfigTank config : this.configTanks) {
             if (config.getTempRoutingID().contentEquals(tempRoutingID))
                 return config;
         }
@@ -29,8 +29,8 @@ public class ConfigRobots implements IConfigRobots {
 
     @Override
     public ArrayList<ConfigTank> getConfigRobotsToRegister() {
-        ArrayList<ConfigTank> configRobotsToRegister = new ArrayList<ConfigTank>();
-        for (ConfigTank configTank : this.configTanks) {
+        final ArrayList<ConfigTank> configRobotsToRegister = new ArrayList<>();
+        for (final ConfigTank configTank : this.configTanks) {
             if (configTank.shouldRegister()) {
                 configRobotsToRegister.add(configTank);
             }

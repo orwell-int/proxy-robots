@@ -1,61 +1,74 @@
 package orwell.proxy.robot;
 
-import orwell.messages.Controller.Input;
+import lejos.mf.common.UnitMessage;
 
-public interface IRobot {
+import java.util.UUID;
 
-    String getTeamName();
+/**
+ * Created by Michaël Ludmann on 5/18/15.
+ */
+public abstract class IRobot implements IRobotElement, IRobotInput {
 
-    EnumRegistrationState getRegistrationState();
+    private String routingId = UUID.randomUUID().toString();
+    private String cameraUrl;
+    private String image;
+    private String teamName = "";
+    private EnumRegistrationState registrationState = EnumRegistrationState.NOT_REGISTERED;
+    private EnumConnectionState connectionState = EnumConnectionState.NOT_CONNECTED;
 
-    EnumConnectionState getConnectionState();
+    public abstract void sendUnitMessage(UnitMessage unitMessage);
 
-    String getRoutingId();
+    public abstract EnumConnectionState connect();
 
-    void setRoutingId(String routingId);
+    public abstract void closeConnection();
 
-    String getImage();
 
-    /**
-     * Image is a picture of the robot itself to be sent to the
-     * server before the start of the game
-     */
-    void setImage(String image);
-
-    /**
-     * This will clear the current ServerRobotState
-     */
-    byte[] getServerRobotStateBytes_And_ClearDelta();
-
-    void setRegistered(byte[] registeredMessage);
-
-    byte[] getRegisterBytes();
-
-    Input getControllerInput();
-
-    void setControllerInput(byte[] inputMessage);
-
-    EnumConnectionState connectToDevice();
-
-    void closeConnection();
-
-    String robotStateToString();
-
-    String controllerInputToString();
-
-    String serverGameRegisteredToString();
-
-    void buildRegister();
-
-    enum EnumRegistrationState {
-        NOT_REGISTERED,
-        REGISTERED,
-        REGISTRATION_FAILED
+    public String getRoutingId() {
+        return routingId;
     }
 
-    enum EnumConnectionState {
-        NOT_CONNECTED,
-        CONNECTED,
-        CONNECTION_FAILED
+    public void setRoutingId(final String routingId) {
+        this.routingId = routingId;
     }
+
+    public String getCameraUrl() {
+        return cameraUrl;
+    }
+
+    protected void setCameraUrl(final String cameraUrl) {
+        this.cameraUrl = cameraUrl;
+    }
+
+    String getImage() {
+        return image;
+    }
+
+    protected void setImage(final String image) {
+        this.image = image;
+    }
+
+    public String getTeamName() {
+        return teamName;
+    }
+
+    void setTeamName(final String teamName) {
+        this.teamName = teamName;
+    }
+
+    public EnumRegistrationState getRegistrationState() {
+        return registrationState;
+    }
+
+    protected void setRegistrationState(final EnumRegistrationState registrationState) {
+        this.registrationState = registrationState;
+    }
+
+    public EnumConnectionState getConnectionState() {
+        return connectionState;
+    }
+
+    protected void setConnectionState(final EnumConnectionState connectionState) {
+        this.connectionState = connectionState;
+    }
+
 }

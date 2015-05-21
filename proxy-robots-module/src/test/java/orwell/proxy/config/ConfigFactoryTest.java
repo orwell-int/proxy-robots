@@ -20,12 +20,12 @@ import static org.junit.Assert.assertTrue;
 @RunWith(JUnit4.class)
 public class ConfigFactoryTest {
 
-    final static Logger logback = LoggerFactory.getLogger(ConfigFactoryTest.class);
+    private final static Logger logback = LoggerFactory.getLogger(ConfigFactoryTest.class);
     private static final String CONFIGURATION_RESOURCE_TEST = "/configurationTest.xml";
     private ConfigFactory configFactory;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         final ConfigFactoryParameters configFactoryParametersResource = new ConfigFactoryParameters(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE);
         configFactory = new ConfigFactory(configFactoryParametersResource);
     }
@@ -57,9 +57,4 @@ public class ConfigFactoryTest {
         logback.debug("OUT");
     }
 
-    @After
-    public void tearDown() throws Exception {
-
-
-    }
 }

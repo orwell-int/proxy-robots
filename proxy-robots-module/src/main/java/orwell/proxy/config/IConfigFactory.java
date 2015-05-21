@@ -1,7 +1,7 @@
 package orwell.proxy.config;
 
 /**
- * Created by miludmann on 5/11/15.
+ * Created by Michaël Ludmann on 5/11/15.
  */
 public interface IConfigFactory {
     public IConfigProxy getConfigProxy();

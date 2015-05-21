@@ -157,7 +157,7 @@ public class ZmqMessageBOMTest {
     public void testParseFrom_Exception() throws Exception {
         logback.info("IN");
         exception.expect(ParseException.class);
-        zmqMessageBom = ZmqMessageBOM.parseFrom(new String(ROUTING_ID + " Registered" + "").getBytes());
+        zmqMessageBom = ZmqMessageBOM.parseFrom((ROUTING_ID + " Registered" + "").getBytes());
         logback.info("OUT");
     }
 
