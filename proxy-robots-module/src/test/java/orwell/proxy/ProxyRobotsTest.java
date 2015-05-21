@@ -18,6 +18,7 @@ import orwell.proxy.config.EnumConfigFileType;
 import orwell.proxy.mock.MockedTank;
 import orwell.proxy.robot.EnumRegistrationState;
 import orwell.proxy.robot.IRobot;
+import orwell.proxy.robot.RobotInputSetVisitor;
 import orwell.proxy.robot.RobotsMap;
 import orwell.proxy.zmq.IZmqMessageListener;
 import orwell.proxy.zmq.ZmqMessageBOM;
@@ -40,6 +41,7 @@ public class ProxyRobotsTest {
 
     private final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class);
     private static final String REGISTERED_ID = "BananaOne";
+    private static final String RFID_VALUE = "11111111";
     private final ConfigFactoryParameters configFactoryParameters = new ConfigFactoryParameters("/configurationTest.xml", EnumConfigFileType.RESOURCE);
     private final ZmqMessageBroker mockedZmqMessageFramework = createNiceMock(ZmqMessageBroker.class);
     private ConfigFactory configFactory;
@@ -245,6 +247,8 @@ public class ProxyRobotsTest {
         // Simulate reception of a REGISTERED message
         myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
 
+        // We put a new RFID value into the tank to change its state
+        mockedTank.setRfidValue(RFID_VALUE);
         myProxyRobots.sendServerRobotStates();
 
         // ProxyRobot is expected to send a ServerRobotState message
