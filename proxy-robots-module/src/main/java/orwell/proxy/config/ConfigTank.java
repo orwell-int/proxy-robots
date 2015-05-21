@@ -10,7 +10,7 @@ public class ConfigTank {
     private String tempRoutingID;
     private String bluetoothName;
     private String bluetoothID;
-    private IConfigCamera camera;
+    private ConfigCamera camera;
     private boolean shouldRegister;
     private String image;
 
@@ -50,12 +50,12 @@ public class ConfigTank {
         this.bluetoothID = bluetoothID;
     }
 
-    public IConfigCamera getConfigCamera() {
+    public ConfigCamera getConfigCamera() {
         return camera;
     }
 
     @XmlElement
-    public void setCamera(final IConfigCamera camera) {
+    public void setCamera(final ConfigCamera camera) {
         this.camera = camera;
     }
 

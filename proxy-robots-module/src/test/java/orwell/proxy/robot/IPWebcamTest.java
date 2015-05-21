@@ -1,6 +1,7 @@
 package orwell.proxy.robot;
 
 import org.easymock.TestSubject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -68,5 +69,10 @@ public class IPWebcamTest {
         final URL url = new URL("http://fake.url");
         ipWebcam = new IPWebcam(url);
         assertEquals("http://fake.url", ipWebcam.getUrl());
+    }
+
+    @After
+    public void tearDown() throws Exception {
+
     }
 }

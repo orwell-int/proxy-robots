@@ -4,6 +4,7 @@ import org.easymock.TestSubject;
 import org.junit.Test;
 import orwell.proxy.config.ConfigCamera;
 import orwell.proxy.config.ConfigTank;
+import orwell.proxy.config.IConfigCamera;
 import orwell.proxy.mock.MockedConfigCamera;
 
 import static org.junit.Assert.assertEquals;
@@ -17,6 +18,8 @@ public class RobotFactoryTest {
     private static final String BT_ID_TEST = "BtIdTest";
     private static final String IMAGE_TEST = "ImageTest";
     private static final String TEMP_ROUTING_ID_TEST = "TempRoutingIdTest";
+    private static final String IP_TEST = "IpTest";
+    private static final int PORT_TEST = 777;
 
     @Test
     public void testGetLegoTank_NullConfigCamera() throws Exception {
@@ -32,18 +35,23 @@ public class RobotFactoryTest {
 
     @Test
     public void testGetLegoTank_normalConfig() throws Exception {
-        // Manually setup the configuration
+        // Manually setup the configuration of tank
         final ConfigTank configTank = new ConfigTank();
         configTank.setBluetoothID(BT_ID_TEST);
         configTank.setBluetoothName(BT_NAME_TEST);
         configTank.setImage(IMAGE_TEST);
         configTank.setShouldRegister(true);
         configTank.setTempRoutingID(TEMP_ROUTING_ID_TEST);
-        configTank.setCamera(new MockedConfigCamera());
+
+        // idem for camera of tank
+        final ConfigCamera configCamera = new ConfigCamera();
+        configCamera.setIp(IP_TEST);
+        configCamera.setPort(PORT_TEST);
+        configTank.setCamera(configCamera);
 
         // Build a tank from the config
         final LegoTank legoTank = RobotFactory.getLegoTank(configTank);
         assertEquals(IMAGE_TEST, legoTank.getImage());
-        assertEquals(MockedConfigCamera.getDefaultUrl(), legoTank.getCameraUrl());
+        assertEquals("http://" + IP_TEST + ":" + PORT_TEST, legoTank.getCameraUrl());
     }
 }
