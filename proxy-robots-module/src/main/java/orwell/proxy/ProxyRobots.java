@@ -43,6 +43,10 @@ public class ProxyRobots implements IZmqMessageListener {
 
     public static void main(final String[] args) throws Exception {
         final ConfigFactoryParameters configPathType = new Cli(args).parse();
+        if (null == configPathType) {
+            logback.warn("Command Line Interface did not manage to extract parameters. Exiting now.");
+            System.exit(0);
+        }
 
         final ProxyRobots proxyRobots = new ProxyRobotsFactory(configPathType).getProxyRobots();
         if (null == proxyRobots) {

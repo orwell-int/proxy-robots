@@ -34,6 +34,10 @@ class Cli {
         options.addOptionGroup(optionGroup);
     }
 
+    /**
+     * Extract the config parameters used later by the ConfigFactory
+     * @return null if help is called or error happens during parsing
+     */
     public ConfigFactoryParameters parse() {
         final CommandLineParser parser = new BasicParser();
         final CommandLine cmd;
@@ -42,7 +46,7 @@ class Cli {
             cmd = parser.parse(options, args);
 
             if (cmd.hasOption("h"))
-                help();
+                return help();
 
             if (cmd.hasOption("f")) {
                 return file(cmd.getOptionValue("f"));
@@ -50,33 +54,32 @@ class Cli {
                 return url(cmd.getOptionValue("u"));
             } else if (0 < args.length) {
                 logback.warn("Unknown parameter: " + args[0]);
-                help();
+                return help();
             } else {
                 return resource();
             }
 
         } catch (final ParseException e) {
             logback.error("Failed to parse command line properties", e);
-            help();
+            return help();
         }
-        return null;
     }
 
-    private void help() {
+    private ConfigFactoryParameters help() {
         logback.warn("Exiting program");
 
         // This prints out some help
         final HelpFormatter formatter = new HelpFormatter();
 
         formatter.printHelp("-f filepath OR -u http://fake.url", options);
-        System.exit(0);
+        return null;
     }
 
     private ConfigFactoryParameters file(final String filePath) {
         final File file = new File(filePath);
         if (!file.exists() || file.isDirectory()) {
-            logback.error("File " + filePath + " not found, exiting program");
-            System.exit(0);
+            logback.error("File " + filePath + " not found.");
+            return null;
         }
         logback.info("Using configuration file given as parameter: " + filePath);
         return new ConfigFactoryParameters(filePath, EnumConfigFileType.FILE);
