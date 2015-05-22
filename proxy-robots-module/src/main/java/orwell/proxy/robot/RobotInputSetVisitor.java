@@ -58,10 +58,19 @@ public class RobotInputSetVisitor implements IRobotInputVisitor {
 
         logback.debug("Set fire");
         this.inputFire = inputFire;
-        if (input.hasFire() &&
-                (input.getFire().getWeapon1() || input.getFire().getWeapon2())) {
+        if (!isEmpty(input)) {
             this.inputFire.setFire(input.getFire());
         }
+    }
+
+    /**
+     * @param input
+     * @return true is there is no relevant data inside input
+     * (meaning it is not worth sending it to the robot)
+     */
+    private boolean isEmpty(final Controller.Input input) {
+        return !(input.hasFire() &&
+                (input.getFire().getWeapon1() || input.getFire().getWeapon2()));
     }
 
 
