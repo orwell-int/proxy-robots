@@ -140,13 +140,13 @@ public class LegoTankTest {
 
         assertNotNull(stateVisitor.getServerRobotStateBytes());
 
-        stateVisitor.reset();
+        stateVisitor.clearServerRobotState();
         tank.accept(stateVisitor);
         assertNull(stateVisitor.getServerRobotStateBytes());
 
         tank.receivedNewMessage(unitMessageColour);
 
-        stateVisitor.reset();
+        stateVisitor.clearServerRobotState();
         tank.accept(stateVisitor);
         assertNotNull(stateVisitor.getServerRobotStateBytes());
 

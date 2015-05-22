@@ -31,7 +31,7 @@ public class RobotElementStateVisitor implements IRobotElementVisitor {
             return serverRobotState.toByteArray();
     }
 
-    public void reset(){
+    public void clearServerRobotState(){
         serverRobotStateBuilder.clear();
     }
 
