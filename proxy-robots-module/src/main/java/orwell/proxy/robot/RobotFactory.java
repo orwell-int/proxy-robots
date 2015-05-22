@@ -6,6 +6,7 @@ import orwell.proxy.config.ConfigCamera;
 import orwell.proxy.config.ConfigTank;
 import orwell.proxy.config.IConfigCamera;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -24,7 +25,15 @@ public final class RobotFactory {
             return new LegoTank(configTank.getBluetoothName(),
                     configTank.getBluetoothID(), IPWebcam.getDummy(), configTank.getImage());
         } else {
-            final IPWebcam ipWebcam = new IPWebcam(configCamera);
+            final IPWebcam ipWebcam;
+            try {
+                ipWebcam = new IPWebcam(configCamera);
+            } catch (final MalformedURLException e) {
+                logback.error("Url of robot " + configTank.getBluetoothName() +
+                        " is malformed. Robot will not be instantiated. " +
+                        e.getMessage());
+                return null;
+            }
             //TODO Improve initialization of setImage to get something meaningful from the string (actual image)
             return new LegoTank(configTank.getBluetoothName(),
                     configTank.getBluetoothID(), ipWebcam, configTank.getImage());

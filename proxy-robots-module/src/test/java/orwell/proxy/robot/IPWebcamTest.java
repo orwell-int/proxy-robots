@@ -1,22 +1,24 @@
 package orwell.proxy.robot;
 
 import org.easymock.TestSubject;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.config.ConfigCamera;
 import orwell.proxy.mock.MockedConfigCamera;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 /**
  * Created by Michaël Ludmann on 5/21/15.
  */
+@RunWith(JUnit4.class)
 public class IPWebcamTest {
     private final static Logger logback = LoggerFactory.getLogger(IPWebcamTest.class);
     private MockedConfigCamera configCamera;
@@ -37,10 +39,9 @@ public class IPWebcamTest {
         assertEquals("http://mockedIp:777/mockedResourcePath", ipWebcam.getUrl());
     }
 
-    @Test
-    public void testGetUrl_FromNullConfig() {
+    @Test(expected = AssertionError.class)
+    public void testDefaultConstructor_NullConfig() throws Exception {
         ipWebcam = new IPWebcam((ConfigCamera) null);
-        assertNull(ipWebcam.getUrl());
     }
 
     @Test
@@ -65,14 +66,16 @@ public class IPWebcamTest {
     }
 
     @Test
-    public void testGetUrl_URLConstructor() throws Exception{
+    public void testGetUrl_URLConstructor() throws Exception {
         final URL url = new URL("http://fake.url");
         ipWebcam = new IPWebcam(url);
         assertEquals("http://fake.url", ipWebcam.getUrl());
     }
 
-    @After
-    public void tearDown() throws Exception {
 
+    @Test(expected = MalformedURLException.class)
+    public void testDefaultConstructor_Malformed() throws Exception {
+        final URL url = new URL("");
+        ipWebcam = new IPWebcam(url);
     }
 }

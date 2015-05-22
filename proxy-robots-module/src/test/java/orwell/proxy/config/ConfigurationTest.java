@@ -32,11 +32,6 @@ public class ConfigurationTest {
     private static final int LINGER_TIME_MS = 1000;
     private static final int OUTGOING_MSG_FREQ_MS = 500;
 
-
-
-    @Rule
-    public ExpectedException exception = ExpectedException.none();
-
     private Configuration getConfigTest(final String fileName, final EnumConfigFileType configFileType) {
         final ConfigFactoryParameters configFactoryParameters = new ConfigFactoryParameters(fileName, configFileType);
         return new Configuration(configFactoryParameters);

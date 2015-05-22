@@ -1,11 +1,8 @@
 package orwell.proxy.robot;
 
-import org.easymock.TestSubject;
 import org.junit.Test;
 import orwell.proxy.config.ConfigCamera;
 import orwell.proxy.config.ConfigTank;
-import orwell.proxy.config.IConfigCamera;
-import orwell.proxy.mock.MockedConfigCamera;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
