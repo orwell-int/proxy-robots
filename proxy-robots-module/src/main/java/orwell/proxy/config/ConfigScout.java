@@ -4,12 +4,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlType(propOrder = {"bluetoothName", "bluetoothID", "camera", "image"})
-public class ConfigTank implements IConfigRobot {
+@XmlType(propOrder = {"camera", "image"})
+public class ConfigScout implements IConfigRobot {
 
     private String tempRoutingID;
-    private String bluetoothName;
-    private String bluetoothID;
     private ConfigCamera camera;
     private boolean shouldRegister;
     private String image;
@@ -34,24 +32,6 @@ public class ConfigTank implements IConfigRobot {
     @XmlAttribute
     public void setShouldRegister(final boolean shouldRegister) {
         this.shouldRegister = shouldRegister;
-    }
-
-    public String getBluetoothName() {
-        return bluetoothName;
-    }
-
-    @XmlElement
-    public void setBluetoothName(final String bluetoothName) {
-        this.bluetoothName = bluetoothName;
-    }
-
-    public String getBluetoothID() {
-        return bluetoothID;
-    }
-
-    @XmlElement
-    public void setBluetoothID(final String bluetoothID) {
-        this.bluetoothID = bluetoothID;
     }
 
     public ConfigCamera getConfigCamera() {

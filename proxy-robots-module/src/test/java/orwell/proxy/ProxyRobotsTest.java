@@ -214,7 +214,7 @@ public class ProxyRobotsTest {
         logback.info("IN");
         instantiateBasicProxyRobots();
 
-        myProxyRobots.initializeTanksFromConfig();
+        myProxyRobots.initializeRobotsFromConfig();
 
         // We have two tanks: a mock and one initialized from the config file
         assertEquals(2, myProxyRobots.robotsMap.getNotConnectedRobots().size());

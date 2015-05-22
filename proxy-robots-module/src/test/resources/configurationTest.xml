@@ -42,5 +42,13 @@
             </camera>
             <image>Blue hull -- TO BE BETTER CONFIGURED</image>
         </tank>
+        <scout tempRoutingID='ScoutOne' shouldRegister='1'>
+            <camera>
+                <ip>192.168.1.52</ip>
+                <port>9102</port>
+                <resourcePath>/videofeed</resourcePath>
+            </camera>
+            <image>Red hull -- TO BE BETTER CONFIGURED</image>
+        </scout>
     </robots>
 </setup>

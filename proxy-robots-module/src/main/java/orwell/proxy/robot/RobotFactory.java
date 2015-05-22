@@ -2,9 +2,7 @@ package orwell.proxy.robot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.config.ConfigCamera;
-import orwell.proxy.config.ConfigTank;
-import orwell.proxy.config.IConfigCamera;
+import orwell.proxy.config.*;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,9 +13,23 @@ import java.net.URL;
 public final class RobotFactory {
     private final static Logger logback = LoggerFactory.getLogger(RobotFactory.class);
 
-    public static LegoTank getLegoTank(final ConfigTank configTank) {
-        if (null == configTank)
+
+    public IRobot getRobot(final IConfigRobot configRobot) {
+        if(null == configRobot) {
             return null;
+        }
+
+        if(configRobot instanceof ConfigTank) {
+            return getRobot((ConfigTank) configRobot);
+        }
+        if(configRobot instanceof ConfigScout) {
+            return getRobot((ConfigScout) configRobot);
+        }
+
+        return null;
+    }
+
+    private IRobot getRobot(final ConfigTank configTank) {
         final IConfigCamera configCamera = configTank.getConfigCamera();
         if (null == configCamera) {
             logback.warn("Config of camera is missing for LegoTank: " + configTank.getBluetoothName());
@@ -38,5 +50,10 @@ public final class RobotFactory {
             return new LegoTank(configTank.getBluetoothName(),
                     configTank.getBluetoothID(), ipWebcam, configTank.getImage());
         }
+    }
+
+    private IRobot getRobot(final ConfigScout configScout) {
+        logback.warn("Scout config is not handled yet");
+        return null;
     }
 }

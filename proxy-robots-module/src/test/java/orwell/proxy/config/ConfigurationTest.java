@@ -1,9 +1,7 @@
 package orwell.proxy.config;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
@@ -28,7 +26,8 @@ public class ConfigurationTest {
     private static final String CONFIGURATION_URL_TEST = "https://github.com/orwell-int/proxy-robots/blob/master/proxy-robots-module/src/main/resources/configuration.xml";
     private static final int PUSH_PORT = 9000;
     private static final int SUB_PORT = 9001;
-    private static final int CAMERA_PORT = 9100;
+    private static final int CAMERA_PORT_TANK = 9100;
+    private static final int CAMERA_PORT_SCOUT = 9102;
     private static final int LINGER_TIME_MS = 1000;
     private static final int OUTGOING_MSG_FREQ_MS = 500;
 
@@ -107,7 +106,7 @@ public class ConfigurationTest {
 
         assertEquals(2, configRobots.getConfigTanks().size());
         try {
-            assertNotNull(configRobots.getConfigTank("BananaOne"));
+            assertNotNull(configRobots.getConfigRobot("BananaOne"));
         } catch (final Exception e) {
             fail(e.toString());
         }
@@ -118,15 +117,32 @@ public class ConfigurationTest {
 
         final ConfigTank configTank;
         try {
-            configTank = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel().getConfigRobots()
-                    .getConfigTank("BananaOne");
+            configTank = (ConfigTank) getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel().getConfigRobots()
+                    .getConfigRobot("BananaOne");
             assertEquals("001653119482", configTank.getBluetoothID());
             assertEquals("Daneel", configTank.getBluetoothName());
             assertNotNull(configTank.getConfigCamera());
             assertEquals("192.168.1.50", configTank.getConfigCamera().getIp());
-            assertEquals(CAMERA_PORT, configTank.getConfigCamera().getPort());
+            assertEquals(CAMERA_PORT_TANK, configTank.getConfigCamera().getPort());
             assertEquals("/videofeed", configTank.getConfigCamera().getResourcePath());
             assertEquals("Yellow hull -- TO BE BETTER CONFIGURED", configTank.getImage());
+        } catch (final Exception e) {
+            fail(e.toString());
+        }
+    }
+
+    @Test
+    public void testScoutElement() {
+
+        final ConfigScout configScout;
+        try {
+            configScout = (ConfigScout) getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel().getConfigRobots()
+                    .getConfigRobot("ScoutOne");
+            assertNotNull(configScout.getConfigCamera());
+            assertEquals("192.168.1.52", configScout.getConfigCamera().getIp());
+            assertEquals(CAMERA_PORT_SCOUT, configScout.getConfigCamera().getPort());
+            assertEquals("/videofeed", configScout.getConfigCamera().getResourcePath());
+            assertEquals("Red hull -- TO BE BETTER CONFIGURED", configScout.getImage());
         } catch (final Exception e) {
             fail(e.toString());
         }
@@ -140,7 +156,7 @@ public class ConfigurationTest {
                 .getConfigRobots();
 
 
-        assertEquals(1, configRobots.getConfigRobotsToRegister().size());
+        assertEquals(2, configRobots.getConfigRobotsToRegister().size());
     }
 
     @Test
