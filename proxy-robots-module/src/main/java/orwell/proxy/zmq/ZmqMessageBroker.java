@@ -155,7 +155,6 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
                 }
                 try {
                     // This is performed to avoid high CPU consumption
-                    //noinspection BusyWait
                     Thread.sleep(THREAD_SLEEP_MS);
                 } catch (final InterruptedException e) {
                     logback.error("ZmqReader thread sleep exception: " + e.getMessage());

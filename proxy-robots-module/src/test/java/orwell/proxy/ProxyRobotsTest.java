@@ -121,7 +121,6 @@ public class ProxyRobotsTest {
         final long MAX_TIMEOUT = configFactory.getConfigProxy().getOutgoingMsgPeriod();
         while (myProxyRobots.isCommunicationServiceAlive() && MAX_TIMEOUT > timeout) {
             try {
-                //noinspection BusyWait
                 Thread.sleep(5);
                 timeout += 5;
             } catch (final InterruptedException e) {

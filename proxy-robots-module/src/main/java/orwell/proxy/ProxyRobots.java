@@ -223,7 +223,6 @@ public class ProxyRobots implements IZmqMessageListener {
                 }
                 try {
                     // This is performed to avoid high CPU consumption
-                    //noinspection BusyWait
                     Thread.sleep(THREAD_SLEEP_MS);
                 } catch (final InterruptedException e) {
                     logback.error("CommunicationService thread sleep exception: " + e.getMessage());
