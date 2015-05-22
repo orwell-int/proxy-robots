@@ -17,7 +17,7 @@ public class ConfigFactory implements IConfigFactory {
         logback.debug("IN");
         final Configuration configuration = new Configuration(configFactoryParameters);
 
-        if (!configuration.isPopulated) {
+        if (!configuration.isPopulated()) {
             logback.error("Configuration loading error");
             configProxy = null;
             configRobots = null;

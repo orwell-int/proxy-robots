@@ -13,7 +13,7 @@ public class Configuration implements IConfiguration {
     private final static Logger logback = LoggerFactory.getLogger(Configuration.class);
     private final String filePath;
     private final EnumConfigFileType enumConfigFileType;
-    public boolean isPopulated = false;
+    private boolean isPopulated = false;
     private ConfigModel configuration;
 
     public Configuration(final ConfigFactoryParameters configFactoryParameters) {
@@ -56,4 +56,8 @@ public class Configuration implements IConfiguration {
         }
     }
 
+
+    public boolean isPopulated() {
+        return isPopulated;
+    }
 }

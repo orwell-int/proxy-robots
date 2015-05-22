@@ -52,7 +52,7 @@ public class ConfigurationTest {
     @Test
     public void testPopulateConfigModel() {
 
-        assertTrue(getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).isPopulated);
+        assertTrue(getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).isPopulated());
     }
 
     @Test
@@ -160,7 +160,7 @@ public class ConfigurationTest {
         }
 
         // Population fails since file is empty
-        assertFalse(getConfigTest(file.getAbsolutePath(), EnumConfigFileType.FILE).isPopulated);
+        assertFalse(getConfigTest(file.getAbsolutePath(), EnumConfigFileType.FILE).isPopulated());
 
         logback.debug("OUT");
     }
@@ -170,7 +170,7 @@ public class ConfigurationTest {
     public void testConfigurationFailsWithURL() {
         logback.debug("IN");
 
-        assertFalse(getConfigTest(CONFIGURATION_URL_TEST, EnumConfigFileType.URL).isPopulated);
+        assertFalse(getConfigTest(CONFIGURATION_URL_TEST, EnumConfigFileType.URL).isPopulated());
         assertNull(getConfigTest(CONFIGURATION_URL_TEST, EnumConfigFileType.URL).getConfigModel());
 
         logback.debug("OUT");
