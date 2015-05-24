@@ -14,7 +14,7 @@ public class ConfigModel {
         return configProxy;
     }
 
-    public void setConfigProxy(ConfigProxy configProxy) {
+    public void setConfigProxy(final ConfigProxy configProxy) {
         this.configProxy = configProxy;
     }
 
@@ -23,7 +23,7 @@ public class ConfigModel {
         return configRobots;
     }
 
-    public void setConfigRobots(ConfigRobots configRobots) {
+    public void setConfigRobots(final ConfigRobots configRobots) {
         this.configRobots = configRobots;
     }
 }

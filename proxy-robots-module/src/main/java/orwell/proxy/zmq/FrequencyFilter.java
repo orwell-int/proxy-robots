@@ -7,10 +7,10 @@ import orwell.proxy.EnumMessageType;
 import java.util.HashMap;
 
 /**
- * Created by miludmann on 5/6/15.
+ * Created by Michaël Ludmann on 5/6/15.
  */
 public class FrequencyFilter implements IFilter {
-    final static Logger logback = LoggerFactory.getLogger(FrequencyFilter.class);
+    private final static Logger logback = LoggerFactory.getLogger(FrequencyFilter.class);
     private final long outGoingMsgFrequency;
     private final HashMap<String, HashMap<EnumMessageType, Long>> timeRegistry =
             new HashMap<>();

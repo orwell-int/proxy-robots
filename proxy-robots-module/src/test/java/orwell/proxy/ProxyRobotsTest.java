@@ -16,6 +16,7 @@ import orwell.proxy.config.ConfigFactory;
 import orwell.proxy.config.ConfigFactoryParameters;
 import orwell.proxy.config.EnumConfigFileType;
 import orwell.proxy.mock.MockedTank;
+import orwell.proxy.robot.EnumRegistrationState;
 import orwell.proxy.robot.IRobot;
 import orwell.proxy.robot.RobotsMap;
 import orwell.proxy.zmq.IZmqMessageListener;
@@ -39,14 +40,14 @@ public class ProxyRobotsTest {
 
     private final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class);
     private static final String REGISTERED_ID = "BananaOne";
+    private static final String RFID_VALUE = "11111111";
     private final ConfigFactoryParameters configFactoryParameters = new ConfigFactoryParameters("/configurationTest.xml", EnumConfigFileType.RESOURCE);
-    private final ZmqMessageBroker mockedZmqMessageFramework = createNiceMock(ZmqMessageBroker.class);
+    private final ZmqMessageBroker mockedZmqMessageBroker = createNiceMock(ZmqMessageBroker.class);
     private ConfigFactory configFactory;
     private RobotsMap robotsMap;
     @TestSubject
     private ProxyRobots myProxyRobots;
     @Mock
-    //	private Tank myTank;
     private MockedTank mockedTank;
 
     @Before
@@ -102,9 +103,9 @@ public class ProxyRobotsTest {
         final Controller.Input.Builder inputBuilder = Controller.Input.newBuilder();
         final Controller.Input.Fire.Builder fireBuilder = Controller.Input.Fire.newBuilder();
         final Controller.Input.Move.Builder moveBuilder = Controller.Input.Move.newBuilder();
-        fireBuilder.setWeapon1(false);
+        fireBuilder.setWeapon1(true);
         fireBuilder.setWeapon2(false);
-        moveBuilder.setLeft(0);
+        moveBuilder.setLeft(100);
         moveBuilder.setRight(0);
         inputBuilder.setFire(fireBuilder.build());
         inputBuilder.setMove(moveBuilder.build());
@@ -120,7 +121,6 @@ public class ProxyRobotsTest {
         final long MAX_TIMEOUT = configFactory.getConfigProxy().getOutgoingMsgPeriod();
         while (myProxyRobots.isCommunicationServiceAlive() && MAX_TIMEOUT > timeout) {
             try {
-                //noinspection BusyWait
                 Thread.sleep(5);
                 timeout += 5;
             } catch (final InterruptedException e) {
@@ -131,15 +131,15 @@ public class ProxyRobotsTest {
 
     private void instantiateBasicProxyRobots() {
         // Build Mock of ZmqMessageBroker
-        mockedZmqMessageFramework.addZmqMessageListener(anyObject(IZmqMessageListener.class));
+        mockedZmqMessageBroker.addZmqMessageListener(anyObject(IZmqMessageListener.class));
         expectLastCall();
 
-        expect(mockedZmqMessageFramework.sendZmqMessage((ZmqMessageBOM) anyObject())).andReturn(true).anyTimes();
+        expect(mockedZmqMessageBroker.sendZmqMessage((ZmqMessageBOM) anyObject())).andReturn(true).anyTimes();
 
-        replay(mockedZmqMessageFramework);
+        replay(mockedZmqMessageBroker);
 
         // Instantiate main class with mock parameters
-        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework, configFactory,
+        myProxyRobots = new ProxyRobots(mockedZmqMessageBroker, configFactory,
                 robotsMap);
     }
 
@@ -171,7 +171,7 @@ public class ProxyRobotsTest {
         instantiateBasicProxyRobots();
 
         myProxyRobots.connectToRobots();
-        assertEquals(IRobot.EnumRegistrationState.NOT_REGISTERED, mockedTank.getRegistrationState());
+        assertEquals(EnumRegistrationState.NOT_REGISTERED, mockedTank.getRegistrationState());
         assertEquals("tempRoutingId", mockedTank.getRoutingId());
 
         myProxyRobots.startCommunicationService();
@@ -180,7 +180,7 @@ public class ProxyRobotsTest {
         // Simulate reception of a REGISTERED message
         myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
 
-        assertEquals(IRobot.EnumRegistrationState.REGISTERED, mockedTank.getRegistrationState());
+        assertEquals(EnumRegistrationState.REGISTERED, mockedTank.getRegistrationState());
         assertEquals("BananaOne", mockedTank.getRoutingId());
 
         logback.info("OUT");
@@ -204,7 +204,7 @@ public class ProxyRobotsTest {
         waitForCloseOrTimeout();
 
         // So the map of isConnected tanks is empty
-        assert (myProxyRobots.robotsMap.getConnectedRobots().isEmpty());
+        assertTrue(myProxyRobots.robotsMap.getConnectedRobots().isEmpty());
 
         logback.debug("OUT");
     }
@@ -214,7 +214,7 @@ public class ProxyRobotsTest {
         logback.info("IN");
         instantiateBasicProxyRobots();
 
-        myProxyRobots.initializeTanksFromConfig();
+        myProxyRobots.initializeRobotsFromConfig();
 
         // We have two tanks: a mock and one initialized from the config file
         assertEquals(2, myProxyRobots.robotsMap.getNotConnectedRobots().size());
@@ -225,16 +225,16 @@ public class ProxyRobotsTest {
     }
 
     @Test
-    public void testSendServerRobotState() throws Exception{
+    public void testSendServerRobotState() throws Exception {
         logback.info("IN");
 
         // Build Mock of ZmqMessageBroker
         final Capture<ZmqMessageBOM> captureMsg = new Capture<>();
-        expect(mockedZmqMessageFramework.sendZmqMessage(capture(captureMsg))).andReturn(true).atLeastOnce();
-        replay(mockedZmqMessageFramework);
+        expect(mockedZmqMessageBroker.sendZmqMessage(capture(captureMsg))).andReturn(true).atLeastOnce();
+        replay(mockedZmqMessageBroker);
 
         // Instantiate main class with mock parameters
-        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework, configFactory,
+        myProxyRobots = new ProxyRobots(mockedZmqMessageBroker, configFactory,
                 robotsMap);
 
         myProxyRobots.connectToRobots();
@@ -244,10 +244,12 @@ public class ProxyRobotsTest {
         // Simulate reception of a REGISTERED message
         myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
 
+        // We put a new RFID value into the tank to change its state
+        mockedTank.setRfidValue(RFID_VALUE);
         myProxyRobots.sendServerRobotStates();
 
         // ProxyRobot is expected to send a ServerRobotState message
-        verify(mockedZmqMessageFramework);
+        verify(mockedZmqMessageBroker);
         assertEquals(EnumMessageType.SERVER_ROBOT_STATE, captureMsg.getValue().getMessageType());
         assertEquals("RoutingId is supposed to have changed to the one provided by registered",
                 REGISTERED_ID, captureMsg.getValue().getRoutingId());
@@ -260,9 +262,9 @@ public class ProxyRobotsTest {
         logback.info("IN");
 
         // Build Mock of ZmqMessageBroker
-        mockedZmqMessageFramework.close();
+        mockedZmqMessageBroker.close();
         expectLastCall().once();
-        replay(mockedZmqMessageFramework);
+        replay(mockedZmqMessageBroker);
 
         // We are testing the real class, so we do not want to lose time
         // trying to connect to robots by bluetooth
@@ -272,7 +274,7 @@ public class ProxyRobotsTest {
 
         // Instantiate main class with mock parameters
         // We build an empty robot map
-        myProxyRobots = new ProxyRobots(mockedZmqMessageFramework, configFactory,
+        myProxyRobots = new ProxyRobots(mockedZmqMessageBroker, configFactory,
                 new RobotsMap());
 
         myProxyRobots.start();
@@ -282,7 +284,7 @@ public class ProxyRobotsTest {
         // this tank fails to connect because of wrong settings, so
         // the communication service should quickly stop and close
         // the message framework proxy
-        verify(mockedZmqMessageFramework);
+        verify(mockedZmqMessageBroker);
 
         logback.info("OUT");
     }
@@ -302,12 +304,16 @@ public class ProxyRobotsTest {
         // Simulate reception of a REGISTERED message
         myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
 
+        // Tank has for now no Input registered
+        assertFalse(((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getInputFire().hasFire());
+        assertFalse(((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getInputMove().hasMove());
+
         // Now simulate reception of a INPUT message
         myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.INPUT)));
 
         // Tank received the right Input correctly
-        assertArrayEquals(getBytesInput(),
-                ((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getControllerInputBytes());
+        assertTrue(((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getInputFire().hasFire());
+        assertTrue(((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getInputMove().hasMove());
 
         logback.info("OUT");
     }
@@ -325,8 +331,8 @@ public class ProxyRobotsTest {
         // Since we wait for a timeout as long as outgoingMessagePeriod
         // during which the proxy runs and tries to send messages,
         // we should filter some messages
-        logback.debug("getNbOutgoingMessageFiltered: " + myProxyRobots.getNbOutgoingMessageFiltered());
-        assertTrue("There should be at least one filtered message", 0 < myProxyRobots.getNbOutgoingMessageFiltered());
+        logback.debug("getNbOutgoingMessageFiltered: " + myProxyRobots.outgoingMessageFiltered);
+        assertTrue("There should be at least one filtered message", 0 < myProxyRobots.outgoingMessageFiltered);
 
         logback.info("OUT");
     }

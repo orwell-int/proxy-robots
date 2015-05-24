@@ -18,6 +18,7 @@
             <camera>
                 <ip>192.168.1.50</ip>
                 <port>9100</port>
+                <resourcePath>/videofeed</resourcePath>
             </camera>
             <image>Yellow hull -- TO BE BETTER CONFIGURED</image>
         </tank>

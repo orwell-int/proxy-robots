@@ -136,7 +136,6 @@ public class ZmqMessageBrokerTest {
         long timeout = 0;
         while (1 > zmf.getNbMessagesSkipped() && MAX_TIMEOUT_MS > timeout) {
             try {
-                //noinspection BusyWait
                 Thread.sleep(5);
                 timeout += 5;
             } catch (final InterruptedException e) {

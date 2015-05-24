@@ -5,7 +5,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(propOrder = {"bluetoothName", "bluetoothID", "camera", "image"})
-public class ConfigTank {
+public class ConfigTank implements IConfigRobot {
 
     private String tempRoutingID;
     private String bluetoothName;
@@ -14,21 +14,25 @@ public class ConfigTank {
     private boolean shouldRegister;
     private String image;
 
+    @Override
     public String getTempRoutingID() {
         return tempRoutingID;
     }
 
+    @Override
     @XmlAttribute
-    public void setTempRoutingID(String tempRoutingID) {
+    public void setTempRoutingID(final String tempRoutingID) {
         this.tempRoutingID = tempRoutingID;
     }
 
+    @Override
     public boolean shouldRegister() {
         return shouldRegister;
     }
 
+    @Override
     @XmlAttribute
-    public void setShouldRegister(boolean shouldRegister) {
+    public void setShouldRegister(final boolean shouldRegister) {
         this.shouldRegister = shouldRegister;
     }
 
@@ -37,7 +41,7 @@ public class ConfigTank {
     }
 
     @XmlElement
-    public void setBluetoothName(String bluetoothName) {
+    public void setBluetoothName(final String bluetoothName) {
         this.bluetoothName = bluetoothName;
     }
 
@@ -46,7 +50,7 @@ public class ConfigTank {
     }
 
     @XmlElement
-    public void setBluetoothID(String bluetoothID) {
+    public void setBluetoothID(final String bluetoothID) {
         this.bluetoothID = bluetoothID;
     }
 
@@ -55,16 +59,18 @@ public class ConfigTank {
     }
 
     @XmlElement
-    public void setCamera(ConfigCamera camera) {
+    public void setCamera(final ConfigCamera camera) {
         this.camera = camera;
     }
 
+    @Override
     public String getImage() {
         return image;
     }
 
+    @Override
     @XmlElement
-    public void setImage(String image) {
+    public void setImage(final String image) {
         this.image = image;
     }
 }
