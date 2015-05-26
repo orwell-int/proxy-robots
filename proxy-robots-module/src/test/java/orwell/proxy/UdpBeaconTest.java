@@ -22,14 +22,15 @@ import static org.junit.Assert.*;
  */
 @SuppressWarnings("unused")
 @RunWith(JUnit4.class)
-public class UdpBeaconFinderTest {
-    private final static Logger logback = LoggerFactory.getLogger(UdpBeaconFinderTest.class);
+public class UdpBeaconTest {
+    private final static Logger logback = LoggerFactory.getLogger(UdpBeaconTest.class);
     private final static int BROADCAST_PORT = 9080;
     private final static int BROADCAST_TIMEOUT_MS = 5000;
     private final static int RECEIVER_BUFFER_SIZE = 512;
 
     @TestSubject
     private UdpBeaconFinder udpBeaconFinder;
+    private UdpBeaconDecoder udpBeaconDecoder;
 
     @Mock
     private DatagramSocket mockedDatagramSocket;
@@ -41,6 +42,8 @@ public class UdpBeaconFinderTest {
         mockedDatagramSocket.setBroadcast(true);
         mockedDatagramSocket.send((DatagramPacket) anyObject());
         mockedDatagramSocket.close();
+
+        udpBeaconDecoder = new UdpBeaconDecoder();
         logback.info("OUT");
     }
 
@@ -89,14 +92,14 @@ public class UdpBeaconFinderTest {
         );
         replay(mockedDatagramSocket);
 
-        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS);
+        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
         udpBeaconFinder.startBroadcasting();
         logback.info(udpBeaconFinder.toString());
 
-        assertTrue(udpBeaconFinder.hasReceivedCorrectData());
-        assertEquals("127.0.0.1", udpBeaconFinder.getServerGameIp());
-        assertEquals("tcp://127.0.0.1:9001", udpBeaconFinder.getPullerAddress());
-        assertEquals("tcp://127.0.0.1:9000", udpBeaconFinder.getPublisherAddress());
+        assertTrue(udpBeaconDecoder.hasReceivedCorrectData());
+        assertEquals("127.0.0.1", udpBeaconDecoder.getServerGameIp());
+        assertEquals("tcp://127.0.0.1:9001", udpBeaconDecoder.getPullerAddress());
+        assertEquals("tcp://127.0.0.1:9000", udpBeaconDecoder.getPublisherAddress());
     }
 
     @Test
@@ -114,14 +117,14 @@ public class UdpBeaconFinderTest {
         );
         replay(mockedDatagramSocket);
 
-        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS);
+        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
         udpBeaconFinder.startBroadcasting();
         logback.info(udpBeaconFinder.toString());
 
-        assertFalse(udpBeaconFinder.hasReceivedCorrectData());
-        assertEquals("127.0.0.1", udpBeaconFinder.getServerGameIp());
-        assertNull(udpBeaconFinder.getPullerAddress());
-        assertNull(udpBeaconFinder.getPublisherAddress());
+        assertFalse(udpBeaconDecoder.hasReceivedCorrectData());
+        assertEquals("127.0.0.1", udpBeaconDecoder.getServerGameIp());
+        assertNull(udpBeaconDecoder.getPullerAddress());
+        assertNull(udpBeaconDecoder.getPublisherAddress());
     }
 
     @Test
@@ -139,14 +142,14 @@ public class UdpBeaconFinderTest {
         );
         replay(mockedDatagramSocket);
 
-        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS);
+        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
         udpBeaconFinder.startBroadcasting();
         logback.info(udpBeaconFinder.toString());
 
-        assertFalse(udpBeaconFinder.hasReceivedCorrectData());
-        assertEquals("127.0.0.1", udpBeaconFinder.getServerGameIp());
-        assertNull(udpBeaconFinder.getPullerAddress());
-        assertNull(udpBeaconFinder.getPublisherAddress());
+        assertFalse(udpBeaconDecoder.hasReceivedCorrectData());
+        assertEquals("127.0.0.1", udpBeaconDecoder.getServerGameIp());
+        assertNull(udpBeaconDecoder.getPullerAddress());
+        assertNull(udpBeaconDecoder.getPublisherAddress());
     }
 
     @Test
@@ -164,14 +167,64 @@ public class UdpBeaconFinderTest {
         );
         replay(mockedDatagramSocket);
 
-        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS);
+        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
         udpBeaconFinder.startBroadcasting();
         logback.info(udpBeaconFinder.toString());
 
-        assertFalse(udpBeaconFinder.hasReceivedCorrectData());
-        assertEquals("127.0.0.1", udpBeaconFinder.getServerGameIp());
-        assertNull(udpBeaconFinder.getPullerAddress());
-        assertNull(udpBeaconFinder.getPublisherAddress());
+        assertFalse(udpBeaconDecoder.hasReceivedCorrectData());
+        assertEquals("127.0.0.1", udpBeaconDecoder.getServerGameIp());
+        assertNull(udpBeaconDecoder.getPullerAddress());
+        assertNull(udpBeaconDecoder.getPublisherAddress());
+    }
+
+    @Test
+    public void testStartBroadcasting_badDataFormat_LengthError() throws Exception {
+        mockedDatagramSocket.receive((DatagramPacket) anyObject());
+        expectLastCall().andAnswer(new IAnswer<Object>() {
+                                       @Override
+                                       public Object answer() throws Throwable {
+                                           final DatagramPacket datagramPacket = (DatagramPacket) getCurrentArguments()[0];
+                                           datagramPacket.setAddress(InetAddress.getByName("127.0.0.1"));
+                                           datagramPacket.setData(getTestPacketDataBytes(0xA0, 11, "tcp://*:9001", 0xA1, 12, "tcp://*:9000", 0x00));
+                                           return null;
+                                       }
+                                   }
+        );
+        replay(mockedDatagramSocket);
+
+        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
+        udpBeaconFinder.startBroadcasting();
+        logback.info(udpBeaconFinder.toString());
+
+        assertFalse(udpBeaconDecoder.hasReceivedCorrectData());
+        assertEquals("127.0.0.1", udpBeaconDecoder.getServerGameIp());
+        assertNull(udpBeaconDecoder.getPullerAddress());
+        assertNull(udpBeaconDecoder.getPublisherAddress());
+    }
+
+    @Test
+    public void testStartBroadcasting_badDataFormat_StarMissing() throws Exception {
+        mockedDatagramSocket.receive((DatagramPacket) anyObject());
+        expectLastCall().andAnswer(new IAnswer<Object>() {
+                                       @Override
+                                       public Object answer() throws Throwable {
+                                           final DatagramPacket datagramPacket = (DatagramPacket) getCurrentArguments()[0];
+                                           datagramPacket.setAddress(InetAddress.getByName("127.0.0.1"));
+                                           datagramPacket.setData(getTestPacketDataBytes(0xA0, 12, "tcp://.:9001", 0xA1, 12, "tcp://*:9000", 0x00));
+                                           return null;
+                                       }
+                                   }
+        );
+        replay(mockedDatagramSocket);
+
+        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
+        udpBeaconFinder.startBroadcasting();
+        logback.info(udpBeaconFinder.toString());
+
+        assertFalse(udpBeaconDecoder.hasReceivedCorrectData());
+        assertEquals("127.0.0.1", udpBeaconDecoder.getServerGameIp());
+        assertNull(udpBeaconDecoder.getPullerAddress());
+        assertNull(udpBeaconDecoder.getPublisherAddress());
     }
 
     @Test
@@ -179,13 +232,13 @@ public class UdpBeaconFinderTest {
         mockedDatagramSocket.receive((DatagramPacket) anyObject());
         replay(mockedDatagramSocket);
 
-        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS);
+        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
         udpBeaconFinder.startBroadcasting();
         logback.info(udpBeaconFinder.toString());
 
-        assertEquals("Broadcast info received: \n" +
+        assertEquals("UdpBeaconDecoder values decoded: \n" +
                 "[ServerGameIp]     null\n" +
                 "[PartialPullerAddress]    null\n" +
-                "[PartialPublisherAddress] null", udpBeaconFinder.toString());
+                "[PartialPublisherAddress] null", udpBeaconDecoder.toString());
     }
 }
