@@ -16,7 +16,7 @@ public class UdpBeaconFinder {
     private final DatagramSocket datagramSocket;
     private final UdpBeaconDecoder udpBeaconDecoder;
     private int maxAttemptsNumber = 1;
-    private int attemptPerformed = 0;
+    private int attemptsPerformed = 0;
     private String pushAddress;
     private String subscribeAddress;
 
@@ -42,16 +42,16 @@ public class UdpBeaconFinder {
         }
     }
 
-    public int getAttemptPerformed() {
-        return attemptPerformed;
+    public int getNumberOfPerformedAttempts() {
+        return attemptsPerformed;
     }
 
     private boolean shouldTryToFindBeacon() {
         if (null == udpBeaconDecoder) {
-            return attemptPerformed < maxAttemptsNumber;
+            return attemptsPerformed < maxAttemptsNumber;
         }
         return (!udpBeaconDecoder.hasReceivedCorrectData() &&
-                attemptPerformed < maxAttemptsNumber);
+                attemptsPerformed < maxAttemptsNumber);
     }
 
     /**
@@ -61,7 +61,7 @@ public class UdpBeaconFinder {
         try {
             datagramSocket.setBroadcast(true);
             while (shouldTryToFindBeacon()) {
-                logback.info("Trying to find UDP beacon, attempt(s) performed: " + attemptPerformed);
+                logback.info("Trying to find UDP beacon, attempt(s) performed: " + attemptsPerformed);
                 // Broadcast the message over all the network interfaces
                 final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
                 while (interfaces.hasMoreElements()) {
@@ -106,7 +106,7 @@ public class UdpBeaconFinder {
                     // Socket received timeout, which is acceptable behavior
                     logback.info("Datagram socket received timeout");
                 }
-                attemptPerformed++;
+                attemptsPerformed++;
                 fillFoundAddressFields();
             }
             datagramSocket.close();
