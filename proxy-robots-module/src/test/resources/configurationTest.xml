@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding='utf-8'?>
 <setup>
     <proxy>
+        <udpBroadcast>
+            <port>9080</port>
+            <attempts>5</attempts>
+            <timeoutPerAttemptMs>1000</timeoutPerAttemptMs>
+        </udpBroadcast>
         <senderLinger>1000</senderLinger>
         <receiverLinger>1000</receiverLinger>
         <outgoingMsgPeriod>500</outgoingMsgPeriod>

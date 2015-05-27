@@ -30,6 +30,9 @@ public class ConfigurationTest {
     private static final int CAMERA_PORT_SCOUT = 9102;
     private static final int LINGER_TIME_MS = 1000;
     private static final int OUTGOING_MSG_FREQ_MS = 500;
+    private static final int UDP_BROADCAST_TIMEOUT = 1000;
+    private static final int UDP_BROADCAST_ATTEMPS = 5;
+    private static final int UDP_BROADCAST_PORT = 9080;
 
     private Configuration getConfigTest(final String fileName, final EnumConfigFileType configFileType) {
         final ConfigFactoryParameters configFactoryParameters = new ConfigFactoryParameters(fileName, configFileType);
@@ -185,5 +188,21 @@ public class ConfigurationTest {
         assertNull(getConfigTest(CONFIGURATION_URL_TEST, EnumConfigFileType.URL).getConfigModel());
 
         logback.debug("OUT");
+    }
+
+
+    @Test
+    public void testUdpBroadcastElement() {
+
+        final ConfigUdpBroadcast configUdpBroadcast;
+        try {
+            configUdpBroadcast = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
+                    .getConfigProxy().getConfigUdpBroadcast();
+            assertEquals(UDP_BROADCAST_PORT, configUdpBroadcast.getPort());
+            assertEquals(UDP_BROADCAST_ATTEMPS, configUdpBroadcast.getAttempts());
+            assertEquals(UDP_BROADCAST_TIMEOUT, configUdpBroadcast.getTimeoutPerAttemptMs());
+        } catch (final Exception e) {
+            fail(e.toString());
+        }
     }
 }

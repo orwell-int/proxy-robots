@@ -12,4 +12,6 @@ public interface IConfigProxy {
     int getSenderLinger();
 
     int getOutgoingMsgPeriod();
+
+    ConfigUdpBroadcast getConfigUdpBroadcast();
 }

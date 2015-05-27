@@ -9,6 +9,7 @@ public class ConfigProxy implements IConfigProxy {
     private int senderLinger;
     private int receiverLinger;
     private int outgoingMsgPeriod;
+    private ConfigUdpBroadcast configUdpBroadcast;
 
     @XmlElement(name = "server-game")
     public List<ConfigServerGame> getConfigServerGames() {
@@ -62,5 +63,13 @@ public class ConfigProxy implements IConfigProxy {
     @XmlElement(name = "outgoingMsgPeriod")
     public void setOutgoingMsgPeriod(final int outgoingMsgPeriod) {
         this.outgoingMsgPeriod = outgoingMsgPeriod;
+    }
+
+    @Override
+    public ConfigUdpBroadcast getConfigUdpBroadcast() { return configUdpBroadcast; }
+
+    @XmlElement(name = "udpBroadcast")
+    public void setConfigUdpBroadcast(final ConfigUdpBroadcast configUdpBroadcast) {
+        this.configUdpBroadcast = configUdpBroadcast;
     }
 }
