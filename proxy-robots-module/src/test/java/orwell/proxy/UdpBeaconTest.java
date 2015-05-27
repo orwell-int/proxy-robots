@@ -107,8 +107,8 @@ public class UdpBeaconTest {
         verify(mockedDatagramSocket);
         assertTrue(udpBeaconDecoder.hasReceivedCorrectData());
         assertEquals(IP_TEST, udpBeaconDecoder.getServerGameIp());
-        assertEquals("tcp://127.0.0.1:9001", udpBeaconDecoder.getPullerAddress());
-        assertEquals("tcp://127.0.0.1:9000", udpBeaconDecoder.getPublisherAddress());
+        assertEquals("tcp://127.0.0.1:9001", udpBeaconDecoder.getPushAddress());
+        assertEquals("tcp://127.0.0.1:9000", udpBeaconDecoder.getSubscribeAddress());
     }
 
     @Test
@@ -133,8 +133,8 @@ public class UdpBeaconTest {
         verify(mockedDatagramSocket);
         assertFalse(udpBeaconDecoder.hasReceivedCorrectData());
         assertEquals(IP_TEST, udpBeaconDecoder.getServerGameIp());
-        assertNull(udpBeaconDecoder.getPullerAddress());
-        assertNull(udpBeaconDecoder.getPublisherAddress());
+        assertNull(udpBeaconDecoder.getPushAddress());
+        assertNull(udpBeaconDecoder.getSubscribeAddress());
     }
 
     @Test
@@ -159,8 +159,8 @@ public class UdpBeaconTest {
         verify(mockedDatagramSocket);
         assertFalse(udpBeaconDecoder.hasReceivedCorrectData());
         assertEquals(IP_TEST, udpBeaconDecoder.getServerGameIp());
-        assertNull(udpBeaconDecoder.getPullerAddress());
-        assertNull(udpBeaconDecoder.getPublisherAddress());
+        assertNull(udpBeaconDecoder.getPushAddress());
+        assertNull(udpBeaconDecoder.getSubscribeAddress());
     }
 
     @Test
@@ -185,8 +185,8 @@ public class UdpBeaconTest {
         verify(mockedDatagramSocket);
         assertFalse(udpBeaconDecoder.hasReceivedCorrectData());
         assertEquals(IP_TEST, udpBeaconDecoder.getServerGameIp());
-        assertNull(udpBeaconDecoder.getPullerAddress());
-        assertNull(udpBeaconDecoder.getPublisherAddress());
+        assertNull(udpBeaconDecoder.getPushAddress());
+        assertNull(udpBeaconDecoder.getSubscribeAddress());
     }
 
     @Test
@@ -211,8 +211,8 @@ public class UdpBeaconTest {
         verify(mockedDatagramSocket);
         assertFalse(udpBeaconDecoder.hasReceivedCorrectData());
         assertEquals(IP_TEST, udpBeaconDecoder.getServerGameIp());
-        assertNull(udpBeaconDecoder.getPullerAddress());
-        assertNull(udpBeaconDecoder.getPublisherAddress());
+        assertNull(udpBeaconDecoder.getPushAddress());
+        assertNull(udpBeaconDecoder.getSubscribeAddress());
     }
 
     @Test
@@ -237,8 +237,8 @@ public class UdpBeaconTest {
         verify(mockedDatagramSocket);
         assertFalse(udpBeaconDecoder.hasReceivedCorrectData());
         assertEquals(IP_TEST, udpBeaconDecoder.getServerGameIp());
-        assertNull(udpBeaconDecoder.getPullerAddress());
-        assertNull(udpBeaconDecoder.getPublisherAddress());
+        assertNull(udpBeaconDecoder.getPushAddress());
+        assertNull(udpBeaconDecoder.getSubscribeAddress());
     }
 
     @Test
@@ -291,7 +291,7 @@ public class UdpBeaconTest {
         verify(mockedDatagramSocket); // Check that 2 tries where performed
         assertTrue(udpBeaconDecoder.hasReceivedCorrectData());
         assertEquals(IP_TEST, udpBeaconDecoder.getServerGameIp());
-        assertEquals("tcp://127.0.0.1:9001", udpBeaconDecoder.getPullerAddress());
-        assertEquals("tcp://127.0.0.1:9000", udpBeaconDecoder.getPublisherAddress());
+        assertEquals("tcp://127.0.0.1:9001", udpBeaconDecoder.getPushAddress());
+        assertEquals("tcp://127.0.0.1:9000", udpBeaconDecoder.getSubscribeAddress());
     }
 }

@@ -79,9 +79,8 @@ public class ConfigurationTest {
         try {
             configServerGame = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                     .getConfigProxy().getConfigServerGame();
-            assertEquals("192.168.1.46", configServerGame.getIp());
-            assertEquals(PUSH_PORT, configServerGame.getPushPort());
-            assertEquals(SUB_PORT, configServerGame.getSubPort());
+            assertEquals("tcp://192.168.1.46:" + PUSH_PORT, configServerGame.getPushAddress());
+            assertEquals("tcp://192.168.1.46:" + SUB_PORT, configServerGame.getSubscribeAddress());
         } catch (final Exception e) {
             fail(e.toString());
         }

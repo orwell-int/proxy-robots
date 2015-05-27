@@ -57,14 +57,11 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
     }
 
     @Override
-    public boolean connectToServer(final String serverIp,
-                                   final int pushPort,
-                                   final int subPort) {
-        sender.connect("tcp://" + serverIp + ":"
-                + pushPort);
+    public boolean connectToServer(final String pushAddress,
+                                   final String subscribeAddress) {
+        sender.connect(pushAddress);
         logback.info("ProxyRobots Sender created");
-        receiver.connect("tcp://" + serverIp + ":"
-                + subPort);
+        receiver.connect(subscribeAddress);
         logback.info("ProxyRobots Receiver created");
         receiver.subscribe("".getBytes());
         try {

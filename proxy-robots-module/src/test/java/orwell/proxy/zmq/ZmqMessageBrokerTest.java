@@ -38,8 +38,8 @@ public class ZmqMessageBrokerTest {
     static final long OUTGOING_MSG_PERIOD_HIGH = 50000;
     private final static Logger logback = LoggerFactory.getLogger(ZmqMessageBrokerTest.class);
     private final static long MAX_TIMEOUT_MS = 500;
-    private final static int PUSH_PORT = 9000;
-    private final static int SUB_PORT = 9001;
+    private final static String PUSH_ADDRESS = "tcp://127.0.0.1:9000";
+    private final static String SUB_ADDRESS = "tcp://127.0.0.1:9001";
     private final FrequencyFilter frequencyFilter = new FrequencyFilter(OUTGOING_MSG_PERIOD_HIGH);
 
     @TestSubject
@@ -90,7 +90,7 @@ public class ZmqMessageBrokerTest {
     public void testConnect() {
         logback.info("IN");
         initZmqMocks();
-        assertTrue(zmf.connectToServer("127.0.0.1", PUSH_PORT, SUB_PORT));
+        assertTrue(zmf.connectToServer(PUSH_ADDRESS, SUB_ADDRESS));
         logback.info("OUT");
     }
 
@@ -130,7 +130,7 @@ public class ZmqMessageBrokerTest {
         logback.info("IN");
         initZmqMocks();
 
-        zmf.connectToServer("127.0.0.1", PUSH_PORT, SUB_PORT);
+        zmf.connectToServer(PUSH_ADDRESS, SUB_ADDRESS);
         zmf.setSkipIncomingIdenticalMessages(true);
 
         long timeout = 0;
@@ -206,7 +206,7 @@ public class ZmqMessageBrokerTest {
             logback.error(e.getMessage());
         }
 
-        zmf.connectToServer("127.0.0.1", PUSH_PORT, SUB_PORT);
+        zmf.connectToServer(PUSH_ADDRESS, SUB_ADDRESS);
     }
 
     @After

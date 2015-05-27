@@ -6,9 +6,7 @@ package orwell.proxy.config;
 public interface IConfigServerGame {
     String getName();
 
-    String getIp();
+    String getPushAddress();
 
-    int getPushPort();
-
-    int getSubPort();
+    String getSubscribeAddress();
 }

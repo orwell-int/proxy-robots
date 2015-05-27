@@ -15,8 +15,8 @@ public class UdpBeaconDecoder {
     private String serverGameIp;
     private String partialPullerAddress;
     private String partialPublisherAddress;
-    private String fullPullerAddress;
-    private String fullPublisherAddress;
+    private String pushAddress;
+    private String subscribeAddress;
 
     public UdpBeaconDecoder() {
 
@@ -30,9 +30,12 @@ public class UdpBeaconDecoder {
 
         parsePacketData(datagramPacket.getData());
 
+        // Transform the address in complete ones that can be used by the proxy later on
+        // Invert their names, to go from a server point of view (puller, publisher) to
+        // a client point of view (pusher, subscriber)
         if (isPacketDataCorrect && !isDataReceivedComplete()) {
-            this.fullPullerAddress = this.partialPullerAddress.replace("*", this.serverGameIp);
-            this.fullPublisherAddress = this.partialPublisherAddress.replace("*", this.serverGameIp);
+            this.pushAddress = this.partialPullerAddress.replace("*", this.serverGameIp);
+            this.subscribeAddress = this.partialPublisherAddress.replace("*", this.serverGameIp);
         } else {
             isPacketDataCorrect = false;
         }
@@ -98,12 +101,12 @@ public class UdpBeaconDecoder {
         return serverGameIp;
     }
 
-    public String getPublisherAddress() {
-        return fullPublisherAddress;
+    public String getSubscribeAddress() {
+        return subscribeAddress;
     }
 
-    public String getPullerAddress() {
-        return fullPullerAddress;
+    public String getPushAddress() {
+        return pushAddress;
     }
 
     @Override

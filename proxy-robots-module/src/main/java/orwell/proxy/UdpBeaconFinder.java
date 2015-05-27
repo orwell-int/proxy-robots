@@ -16,6 +16,9 @@ public class UdpBeaconFinder {
     private final DatagramSocket datagramSocket;
     private final UdpBeaconDecoder udpBeaconDecoder;
     private int maxAttemptsNumber = 1;
+    private int attemptPerformed = 0;
+    private String pushAddress;
+    private String subscribeAddress;
 
     public UdpBeaconFinder(final DatagramSocket datagramSocket, final int broadcastPort, final UdpBeaconDecoder udpBeaconDecoder) {
         this.datagramSocket = datagramSocket;
@@ -39,12 +42,16 @@ public class UdpBeaconFinder {
         }
     }
 
-    private boolean shouldTryToFindBeacon(final int currentAttempt) {
+    public int getAttemptPerformed() {
+        return attemptPerformed;
+    }
+
+    private boolean shouldTryToFindBeacon() {
         if (null == udpBeaconDecoder) {
-            return currentAttempt <= maxAttemptsNumber;
+            return attemptPerformed < maxAttemptsNumber;
         }
         return (!udpBeaconDecoder.hasReceivedCorrectData() &&
-                currentAttempt <= maxAttemptsNumber);
+                attemptPerformed < maxAttemptsNumber);
     }
 
     /**
@@ -53,9 +60,8 @@ public class UdpBeaconFinder {
     public void startBroadcasting() {
         try {
             datagramSocket.setBroadcast(true);
-            int currentAttempt = 1;
-            while (shouldTryToFindBeacon(currentAttempt)) {
-                logback.info("Trying to find UDP beacon, attempt [" + currentAttempt + "]");
+            while (shouldTryToFindBeacon()) {
+                logback.info("Trying to find UDP beacon, attempt(s) performed: " + attemptPerformed);
                 // Broadcast the message over all the network interfaces
                 final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
                 while (interfaces.hasMoreElements()) {
@@ -91,16 +97,42 @@ public class UdpBeaconFinder {
                 // Wait for a response
                 final byte[] recvBuf = new byte[receiverBufferSize];
                 final DatagramPacket receivePacket = new DatagramPacket(recvBuf, recvBuf.length);
-                datagramSocket.receive(receivePacket);
 
-                // Response received
-                udpBeaconDecoder.parseFrom(receivePacket);
-                currentAttempt++;
+                try {
+                    datagramSocket.receive(receivePacket);
+                    // Response received
+                    udpBeaconDecoder.parseFrom(receivePacket);
+                } catch (final SocketTimeoutException e) {
+                    // Socket received timeout, which is acceptable behavior
+                    logback.info("Datagram socket received timeout");
+                }
+                attemptPerformed++;
+                fillFoundAddressFields();
             }
             datagramSocket.close();
+
 
         } catch (final Exception e) {
             logback.error(e.getMessage());
         }
+    }
+
+    private void fillFoundAddressFields() {
+        if (hasFoundServer()) {
+            this.pushAddress = udpBeaconDecoder.getPushAddress();
+            this.subscribeAddress = udpBeaconDecoder.getSubscribeAddress();
+        }
+    }
+
+    public String getPushAddress() {
+        return pushAddress;
+    }
+
+    public String getSubscribeAddress() {
+        return subscribeAddress;
+    }
+
+    public boolean hasFoundServer() {
+        return (null != udpBeaconDecoder) && udpBeaconDecoder.hasReceivedCorrectData();
     }
 }

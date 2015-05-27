@@ -57,10 +57,9 @@ public class ProxyRobots implements IZmqMessageListener {
     }
 
     private void connectToServer() {
-        mfProxy.connectToServer(
-                configServerGame.getIp(),
-                configServerGame.getPushPort(),
-                configServerGame.getSubPort());
+        mfProxy.connectToServer(configServerGame.getPushAddress(),
+                configServerGame.getSubscribeAddress()
+        );
     }
 
     /**

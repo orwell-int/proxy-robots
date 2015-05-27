@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(propOrder = {"ip", "pushPort", "subPort"})
 public class ConfigServerGame implements IConfigServerGame {
 
+    private final static String PROTOCOL_STRING = "tcp://";
     private String name;
     private String ip;
     private int pushPort;
@@ -35,19 +36,9 @@ public class ConfigServerGame implements IConfigServerGame {
         this.priority = priority;
     }
 
-    @Override
-    public String getIp() {
-        return ip;
-    }
-
     @XmlElement
     public void setIp(final String ip) {
         this.ip = ip;
-    }
-
-    @Override
-    public int getPushPort() {
-        return pushPort;
     }
 
     @XmlElement
@@ -55,14 +46,19 @@ public class ConfigServerGame implements IConfigServerGame {
         this.pushPort = pushPort;
     }
 
-    @Override
-    public int getSubPort() {
-        return subPort;
-    }
-
     @XmlElement
     public void setSubPort(final int subPort) {
         this.subPort = subPort;
+    }
+
+    @Override
+    public String getPushAddress() {
+        return PROTOCOL_STRING + ip + ":" + pushPort;
+    }
+
+    @Override
+    public String getSubscribeAddress() {
+        return PROTOCOL_STRING + ip + ":" + subPort;
     }
 
 }
