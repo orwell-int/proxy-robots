@@ -15,7 +15,7 @@ public class UdpBeaconFinder {
     private final int receiverBufferSize = 512;
     private final DatagramSocket datagramSocket;
     private final UdpBeaconDecoder udpBeaconDecoder;
-    private boolean isDataReceivedCorrect;
+    private int maxAttemptsNumber = 1;
 
     public UdpBeaconFinder(final DatagramSocket datagramSocket, final int broadcastPort, final UdpBeaconDecoder udpBeaconDecoder) {
         this.datagramSocket = datagramSocket;
@@ -31,53 +31,72 @@ public class UdpBeaconFinder {
         logback.info(udpBeaconFinder.toString());
     }
 
+    public void setMaxAttemptsNumber(final int maxAttemptsNumber) {
+        if (1 > maxAttemptsNumber) {
+            logback.warn("Udp broadcasting attempts number cannot be less than 1");
+        } else {
+            this.maxAttemptsNumber = maxAttemptsNumber;
+        }
+    }
+
+    private boolean shouldTryToFindBeacon(final int currentAttempt) {
+        if (null == udpBeaconDecoder) {
+            return currentAttempt <= maxAttemptsNumber;
+        }
+        return (!udpBeaconDecoder.hasReceivedCorrectData() &&
+                currentAttempt <= maxAttemptsNumber);
+    }
+
     /**
      * Find the server using UDP broadcast
      */
     public void startBroadcasting() {
         try {
             datagramSocket.setBroadcast(true);
+            int currentAttempt = 1;
+            while (shouldTryToFindBeacon(currentAttempt)) {
+                logback.info("Trying to find UDP beacon, attempt [" + currentAttempt + "]");
+                // Broadcast the message over all the network interfaces
+                final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+                while (interfaces.hasMoreElements()) {
+                    final NetworkInterface networkInterface = interfaces.nextElement();
 
-            // Broadcast the message over all the network interfaces
-            final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
-            while (interfaces.hasMoreElements()) {
-                final NetworkInterface networkInterface = interfaces.nextElement();
-
-                if (networkInterface.isLoopback() || !networkInterface.isUp()) {
-                    continue; // Do not broadcast to the loopback interface
-                }
-
-                for (final InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
-                    final InetAddress broadcast = interfaceAddress.getBroadcast();
-                    if (null == broadcast) {
-                        continue;
+                    if (networkInterface.isLoopback() || !networkInterface.isUp()) {
+                        continue; // Do not broadcast to the loopback interface
                     }
 
-                    // Send the broadcast package
-                    try {
-                        final String ipPing = broadcast.getHostAddress();
+                    for (final InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
+                        final InetAddress broadcast = interfaceAddress.getBroadcast();
+                        if (null == broadcast) {
+                            continue;
+                        }
 
-                        final byte[] ipPingBytes = ipPing.getBytes();
-                        final DatagramPacket datagramPacket = new DatagramPacket(ipPingBytes, ipPingBytes.length, broadcast, broadcastPort);
-                        datagramSocket.send(datagramPacket);
-                    } catch (final Exception e) {
-                        logback.error(e.getMessage());
+                        // Send the broadcast package
+                        try {
+                            final String ipPing = broadcast.getHostAddress();
+
+                            final byte[] ipPingBytes = ipPing.getBytes();
+                            final DatagramPacket datagramPacket = new DatagramPacket(ipPingBytes, ipPingBytes.length, broadcast, broadcastPort);
+                            datagramSocket.send(datagramPacket);
+                        } catch (final Exception e) {
+                            logback.error(e.getMessage());
+                        }
+
+                        logback.info("Request packet sent to: " + broadcast.getHostAddress() + "; Interface: " + networkInterface.getDisplayName());
                     }
-
-                    logback.info("Request packet sent to: " + broadcast.getHostAddress() + "; Interface: " + networkInterface.getDisplayName());
                 }
+
+                logback.info("Done looping over all network interfaces. Now waiting for a reply!");
+
+                // Wait for a response
+                final byte[] recvBuf = new byte[receiverBufferSize];
+                final DatagramPacket receivePacket = new DatagramPacket(recvBuf, recvBuf.length);
+                datagramSocket.receive(receivePacket);
+
+                // Response received
+                udpBeaconDecoder.parseFrom(receivePacket);
+                currentAttempt++;
             }
-
-            logback.info("Done looping over all network interfaces. Now waiting for a reply!");
-
-            // Wait for a response
-            final byte[] recvBuf = new byte[receiverBufferSize];
-            final DatagramPacket receivePacket = new DatagramPacket(recvBuf, recvBuf.length);
-            datagramSocket.receive(receivePacket);
-
-            // Response received
-            udpBeaconDecoder.parseFrom(receivePacket);
-
             datagramSocket.close();
 
         } catch (final Exception e) {
