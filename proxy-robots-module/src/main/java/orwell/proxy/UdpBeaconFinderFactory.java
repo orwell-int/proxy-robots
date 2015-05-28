@@ -2,7 +2,7 @@ package orwell.proxy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.config.ConfigUdpBroadcast;
+import orwell.proxy.config.IConfigUdpBroadcast;
 
 import java.net.DatagramSocket;
 import java.net.SocketException;
@@ -28,7 +28,7 @@ public final class UdpBeaconFinderFactory {
         }
     }
 
-    public static UdpBeaconFinder fromConfig(final ConfigUdpBroadcast configUdpBroadcast) {
+    public static UdpBeaconFinder fromConfig(final IConfigUdpBroadcast configUdpBroadcast) {
         if (null == configUdpBroadcast) {
             return null;
         } else {

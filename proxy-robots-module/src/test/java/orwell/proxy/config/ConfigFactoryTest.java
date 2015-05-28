@@ -1,6 +1,5 @@
 package orwell.proxy.config;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +26,7 @@ public class ConfigFactoryTest {
     @Before
     public void setUp() {
         final ConfigFactoryParameters configFactoryParametersResource = new ConfigFactoryParameters(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE);
-        configFactory = new ConfigFactory(configFactoryParametersResource);
+        configFactory = ConfigFactory.createConfigFactory(configFactoryParametersResource);
     }
 
     @Test
@@ -53,8 +52,7 @@ public class ConfigFactoryTest {
         logback.debug("IN");
         // Simple test to check the class is well populated
         assertEquals("configuration.xml should have 'platypus' as priority server game",
-                "platypus", configFactory.getConfigServerGame().getName());
+                "platypus", configFactory.getMaxPriorityConfigServerGame().getName());
         logback.debug("OUT");
     }
-
 }

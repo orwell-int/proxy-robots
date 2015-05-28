@@ -41,6 +41,8 @@ public class ProxyRobotsTest {
     private final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class);
     private static final String REGISTERED_ID = "BananaOne";
     private static final String RFID_VALUE = "11111111";
+    private static final String PUSH_ADDRESS = "tcp://localhost:9000";
+    private static final String SUB_ADDRESS = "tcp://localhost:9001";
     private final ConfigFactoryParameters configFactoryParameters = new ConfigFactoryParameters("/configurationTest.xml", EnumConfigFileType.RESOURCE);
     private final ZmqMessageBroker mockedZmqMessageBroker = createNiceMock(ZmqMessageBroker.class);
     private ConfigFactory configFactory;
@@ -57,7 +59,7 @@ public class ProxyRobotsTest {
         // Build Mock of Tank
         mockedTank = new MockedTank();
 
-        configFactory = new ConfigFactory(configFactoryParameters);
+        configFactory = ConfigFactory.createConfigFactory(configFactoryParameters);
 
         // Create the map with one mock tank
         robotsMap = new RobotsMap();
@@ -258,10 +260,13 @@ public class ProxyRobotsTest {
     }
 
     @Test
-    public void testStart() {
+    public void testStart_noUdpDiscovery() {
         logback.info("IN");
 
         // Build Mock of ZmqMessageBroker
+        final Capture<String> capturePushAddress = new Capture<>();
+        final Capture<String> captureSubscribeAddress = new Capture<>();
+        expect(mockedZmqMessageBroker.connectToServer(capture(capturePushAddress), capture(captureSubscribeAddress))).andReturn(true);
         mockedZmqMessageBroker.close();
         expectLastCall().once();
         replay(mockedZmqMessageBroker);
@@ -270,7 +275,7 @@ public class ProxyRobotsTest {
         // trying to connect to robots by bluetooth
         // Hence we provide an empty config file
         final ConfigFactoryParameters localConfigFactoryParameters = new ConfigFactoryParameters("/configurationTest_NoRobots.xml", EnumConfigFileType.RESOURCE);
-        configFactory = new ConfigFactory(localConfigFactoryParameters);
+        configFactory = ConfigFactory.createConfigFactory(localConfigFactoryParameters);
 
         // Instantiate main class with mock parameters
         // We build an empty robot map
@@ -286,9 +291,64 @@ public class ProxyRobotsTest {
         // the message framework proxy
         verify(mockedZmqMessageBroker);
 
+        // messageBroker.connectToServer() was called with parameters
+        // coming from the configuration file
+        assertEquals(configFactory.getMaxPriorityConfigServerGame().getPushAddress(),
+                capturePushAddress.getValue());
+        assertEquals(configFactory.getMaxPriorityConfigServerGame().getSubscribeAddress(),
+                captureSubscribeAddress.getValue());
+
         logback.info("OUT");
     }
 
+    @Test
+    public void testStart_udpDiscovery() {
+        logback.info("IN");
+
+        // Build Mock of ZmqMessageBroker
+        final Capture<String> capturePushAddress = new Capture<>();
+        final Capture<String> captureSubscribeAddress = new Capture<>();
+        expect(mockedZmqMessageBroker.connectToServer(capture(capturePushAddress), capture(captureSubscribeAddress))).andReturn(true);
+        mockedZmqMessageBroker.close();
+        expectLastCall().once();
+        replay(mockedZmqMessageBroker);
+
+        // We are testing the real class, so we do not want to lose time
+        // trying to connect to robots by bluetooth
+        // Hence we provide an empty config file
+        final ConfigFactoryParameters localConfigFactoryParameters = new ConfigFactoryParameters("/configurationTest_NoRobots.xml", EnumConfigFileType.RESOURCE);
+        configFactory = ConfigFactory.createConfigFactory(localConfigFactoryParameters);
+
+        final UdpBeaconFinder udpBeaconFinder = createNiceMock(UdpBeaconFinder.class);
+        expect(udpBeaconFinder.hasFoundServer()).andReturn(true).once();
+        expect(udpBeaconFinder.getPushAddress()).andReturn(PUSH_ADDRESS).once();
+        expect(udpBeaconFinder.getSubscribeAddress()).andReturn(SUB_ADDRESS).once();
+        replay(udpBeaconFinder);
+
+        // Instantiate main class with mock parameters
+        // We build an empty robot map
+        myProxyRobots = new ProxyRobots(udpBeaconFinder, mockedZmqMessageBroker, configFactory,
+                new RobotsMap());
+
+        myProxyRobots.start();
+
+        waitForCloseOrTimeout();
+        // Map contains only one tank from the config file,
+        // this tank fails to connect because of wrong settings, so
+        // the communication service should quickly stop and close
+        // the message framework proxy
+        verify(mockedZmqMessageBroker);
+
+        // Check that udpBeacon has been correctly used (startBroadcasting() and
+        // hasFoundServer() were called)
+        verify(udpBeaconFinder);
+
+        // messageBroker.connectToServer() was called with parameters
+        // provided by udpBeaconFinder
+        assertEquals(PUSH_ADDRESS, capturePushAddress.getValue());
+        assertEquals(SUB_ADDRESS, captureSubscribeAddress.getValue());
+        logback.info("OUT");
+    }
 
     @Test
     public void testOnInput() throws Exception {

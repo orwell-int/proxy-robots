@@ -4,11 +4,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 @XmlType(propOrder = {"port", "attempts", "timeoutPerAttemptMs"})
-public class ConfigUdpBroadcast {
+public class ConfigUdpBroadcast implements IConfigUdpBroadcast {
     private int port;
     private int attempts;
     private int timeoutPerAttemptMs;
 
+    @Override
     public int getAttempts() {
         return attempts;
     }
@@ -18,6 +19,7 @@ public class ConfigUdpBroadcast {
         this.attempts = attempts;
     }
 
+    @Override
     public int getPort() {
         return port;
     }
@@ -27,6 +29,7 @@ public class ConfigUdpBroadcast {
         this.port = port;
     }
 
+    @Override
     public int getTimeoutPerAttemptMs() {
         return timeoutPerAttemptMs;
     }

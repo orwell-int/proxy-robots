@@ -9,26 +9,29 @@ import org.slf4j.LoggerFactory;
 public class ConfigFactory implements IConfigFactory {
     private final static Logger logback = LoggerFactory.getLogger(ConfigFactory.class);
 
-    private final IConfigProxy configProxy;
-    private final IConfigRobots configRobots;
-    private final IConfigServerGame configServerGame;
+    private IConfigProxy configProxy;
+    private IConfigRobots configRobots;
+    private IConfigServerGame configServerGame;
+    private IConfigUdpBroadcast configUdpBroadcast;
 
-    public ConfigFactory(final ConfigFactoryParameters configFactoryParameters) {
+    private ConfigFactory(final ConfigFactoryParameters configFactoryParameters) {
         logback.debug("IN");
         final Configuration configuration = new Configuration(configFactoryParameters);
 
         if (!configuration.isPopulated()) {
             logback.error("Configuration loading error");
-            configProxy = null;
-            configRobots = null;
-            configServerGame = null;
         } else {
             final ConfigModel configModel = configuration.getConfigModel();
             configProxy = configModel.getConfigProxy();
             configRobots = configuration.getConfigModel().getConfigRobots();
-            configServerGame = configProxy.getConfigServerGame();
+            configServerGame = configProxy.getMaxPriorityConfigServerGame();
+            configUdpBroadcast = configProxy.getConfigUdpBroadcast();
         }
         logback.debug("OUT");
+    }
+
+    public static ConfigFactory createConfigFactory(final ConfigFactoryParameters configFactoryParameters) {
+        return new ConfigFactory(configFactoryParameters);
     }
 
     @Override
@@ -42,7 +45,7 @@ public class ConfigFactory implements IConfigFactory {
     }
 
     @Override
-    public IConfigServerGame getConfigServerGame() {
+    public IConfigServerGame getMaxPriorityConfigServerGame() {
         return configServerGame;
     }
 }

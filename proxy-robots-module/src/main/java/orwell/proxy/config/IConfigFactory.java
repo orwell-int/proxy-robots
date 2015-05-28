@@ -8,5 +8,5 @@ public interface IConfigFactory {
 
     public IConfigRobots getConfigRobots();
 
-    public IConfigServerGame getConfigServerGame();
+    public IConfigServerGame getMaxPriorityConfigServerGame();
 }

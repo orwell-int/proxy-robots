@@ -25,7 +25,7 @@ public class ConfigProxy implements IConfigProxy {
      * If no priority defined, it is the first one found by default.
      */
     @Override
-    public ConfigServerGame getConfigServerGame() {
+    public ConfigServerGame getMaxPriorityConfigServerGame() {
         ConfigServerGame maxPriorityConfig = null;
         for (final ConfigServerGame config : this.configServerGames) {
             if (null == maxPriorityConfig || config.getPriority() > maxPriorityConfig.getPriority()) {

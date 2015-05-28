@@ -14,25 +14,29 @@ import java.util.ArrayList;
  */
 class ProxyRobotsFactory {
     private final ConfigFactory configFactory;
-    private final ZmqMessageBroker zmqMessageFramework;
+    private final ZmqMessageBroker zmqMessageBroker;
+    private final UdpBeaconFinder udpBeaconFinder;
 
     public ProxyRobotsFactory(final ConfigFactoryParameters configPathType) {
-        configFactory = new ConfigFactory(configPathType);
+        configFactory = ConfigFactory.createConfigFactory(configPathType);
 
         if (null == configFactory.getConfigProxy()) {
-            zmqMessageFramework = null;
+            // We do not have the data to initialize the broker and udp discovery
+            zmqMessageBroker = null;
+            udpBeaconFinder = null;
         } else {
-            zmqMessageFramework = new ZmqMessageBroker(configFactory.getConfigProxy().getSenderLinger(),
+            zmqMessageBroker = new ZmqMessageBroker(configFactory.getConfigProxy().getSenderLinger(),
                     configFactory.getConfigProxy().getReceiverLinger(),
                     null);
+            udpBeaconFinder = UdpBeaconFinderFactory.fromConfig(configFactory.getConfigProxy().getConfigUdpBroadcast());
         }
     }
 
     public ProxyRobots getProxyRobots() {
-        if (null == zmqMessageFramework) {
+        if (null == zmqMessageBroker) {
             return null;
         }
-        return new ProxyRobots(zmqMessageFramework, configFactory, new RobotsMap());
+        return new ProxyRobots(udpBeaconFinder, zmqMessageBroker, configFactory, new RobotsMap());
 
     }
 

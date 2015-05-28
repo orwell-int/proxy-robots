@@ -62,7 +62,7 @@ public class ConfigurationTest {
 
         assertEquals(3, configProxy.getConfigServerGames().size());
         try {
-            assertNotNull(configProxy.getConfigServerGame());
+            assertNotNull(configProxy.getMaxPriorityConfigServerGame());
         } catch (final Exception e) {
             logback.error(e.getMessage());
         }
@@ -78,7 +78,7 @@ public class ConfigurationTest {
         final ConfigServerGame configServerGame;
         try {
             configServerGame = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
-                    .getConfigProxy().getConfigServerGame();
+                    .getConfigProxy().getMaxPriorityConfigServerGame();
             assertEquals("tcp://192.168.1.46:" + PUSH_PORT, configServerGame.getPushAddress());
             assertEquals("tcp://192.168.1.46:" + SUB_PORT, configServerGame.getSubscribeAddress());
         } catch (final Exception e) {
