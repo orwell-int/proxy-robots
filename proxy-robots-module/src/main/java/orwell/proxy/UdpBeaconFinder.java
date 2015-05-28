@@ -26,14 +26,6 @@ public class UdpBeaconFinder {
         this.udpBeaconDecoder = udpBeaconDecoder;
     }
 
-    public static void main(final String[] args) throws Exception {
-        final DatagramSocket datagramSocket = new DatagramSocket();
-        datagramSocket.setSoTimeout(1000);
-        final UdpBeaconFinder udpBeaconFinder = new UdpBeaconFinder(datagramSocket, 9080, new UdpBeaconDecoder());
-        udpBeaconFinder.startBroadcasting();
-        logback.info(udpBeaconFinder.toString());
-    }
-
     public void setMaxAttemptsNumber(final int maxAttemptsNumber) {
         if (1 > maxAttemptsNumber) {
             logback.warn("Udp broadcasting attempts number cannot be less than 1");
