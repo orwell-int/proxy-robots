@@ -2,7 +2,6 @@ package orwell.proxy.robot;
 
 import org.easymock.Mock;
 import org.easymock.TestSubject;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

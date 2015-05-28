@@ -4,7 +4,6 @@ import junit.framework.AssertionFailedError;
 import lejos.mf.common.UnitMessage;
 import org.easymock.Mock;
 import org.easymock.TestSubject;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

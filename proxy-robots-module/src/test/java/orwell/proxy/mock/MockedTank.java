@@ -3,7 +3,6 @@ package orwell.proxy.mock;
 import lejos.mf.common.UnitMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.messages.Controller;
 import orwell.proxy.robot.*;
 
 /**

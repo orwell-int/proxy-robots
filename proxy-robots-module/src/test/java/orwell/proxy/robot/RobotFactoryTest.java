@@ -9,6 +9,7 @@ import orwell.proxy.config.ConfigTank;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+
 /**
  * Created by Michaël Ludmann on 5/21/15.
  */
