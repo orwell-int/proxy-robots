@@ -50,17 +50,14 @@ public class RfidSensor implements IRobotElement {
      * If ON: this is the current value read by the robot
      * If OFF: this value is no longer read by the robot
      * <p/>
-     * Previous value == null   |
-     *                          |> Status x ON
+     * Previous value == null   |> Status x ON
      * Current value == x       |
      * <p/>
-     * Previous value == x      |
-     *                          |> Status x OFF, Status y ON
-     * Current value == y       |
+     * Previous value == x      |> Status x OFF,
+     * Current value == y       |> Status y ON
      * <p/>
-     * Previous value == x      |
-     *                          |> Status x ON, do nothing
-     * Current value == x       |
+     * Previous value == x      |> Status x ON,
+     * Current value == x       |> do nothing
      * <p/>
      * If currentValue is equal to NO_RFID_VALUE, it means the robot is
      * no longer reading Rfid values, so the previous value should

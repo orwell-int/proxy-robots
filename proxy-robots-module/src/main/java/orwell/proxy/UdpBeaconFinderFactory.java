@@ -14,7 +14,7 @@ public final class UdpBeaconFinderFactory {
     private final static Logger logback = LoggerFactory.getLogger(UdpBeaconFinderFactory.class);
 
     public static UdpBeaconFinder fromParameters(final int port, final int attempts,
-                                             final int timeoutPerAttemptMs) {
+                                                 final int timeoutPerAttemptMs) {
         try {
             final DatagramSocket datagramSocket = new DatagramSocket();
             datagramSocket.setSoTimeout(timeoutPerAttemptMs);

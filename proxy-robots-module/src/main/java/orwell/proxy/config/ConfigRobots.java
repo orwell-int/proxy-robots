@@ -28,13 +28,13 @@ public class ConfigRobots implements IConfigRobots {
 
     @Override
     public IConfigRobot getConfigRobot(final String tempRoutingID) throws Exception {
-        if(null != configTanks) {
+        if (null != configTanks) {
             for (final ConfigTank config : this.configTanks) {
                 if (config.getTempRoutingID().contentEquals(tempRoutingID))
                     return config;
             }
         }
-        if(null != configScouts) {
+        if (null != configScouts) {
             for (final ConfigScout config : this.configScouts) {
                 if (config.getTempRoutingID().contentEquals(tempRoutingID))
                     return config;
@@ -48,14 +48,14 @@ public class ConfigRobots implements IConfigRobots {
     public ArrayList<IConfigRobot> getConfigRobotsToRegister() {
         final ArrayList<IConfigRobot> configRobotsToRegister = new ArrayList<>();
 
-        if(null != configTanks) {
+        if (null != configTanks) {
             for (final ConfigTank configTank : configTanks) {
                 if (configTank.shouldRegister()) {
                     configRobotsToRegister.add(configTank);
                 }
             }
         }
-        if(null != configScouts) {
+        if (null != configScouts) {
             for (final ConfigScout configScout : configScouts) {
                 if (configScout.shouldRegister()) {
                     configRobotsToRegister.add(configScout);

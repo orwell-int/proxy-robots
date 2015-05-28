@@ -36,6 +36,7 @@ class Cli {
 
     /**
      * Extract the config parameters used later by the ConfigFactory
+     *
      * @return null if help is called or error happens during parsing
      */
     public ConfigFactoryParameters parse() {

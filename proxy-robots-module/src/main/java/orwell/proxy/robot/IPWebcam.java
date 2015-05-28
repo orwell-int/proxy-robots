@@ -13,12 +13,12 @@ public class IPWebcam implements ICamera {
     private final URL url;
 
     public IPWebcam(final URL url) {
-        assert(null != url);
+        assert (null != url);
         this.url = url;
     }
 
     public IPWebcam(final IConfigCamera configCamera) throws MalformedURLException {
-        assert(null != configCamera);
+        assert (null != configCamera);
         try {
             if (null == configCamera.getResourcePath()) {
                 url = new URL("http", configCamera.getIp(), configCamera.getPort(), "");
@@ -31,16 +31,6 @@ public class IPWebcam implements ICamera {
         }
     }
 
-    @Override
-    public String getUrl() {
-        return url.toString();
-    }
-
-    @Override
-    public void accept(final IRobotElementVisitor visitor) {
-        visitor.visit(this);
-    }
-
     public static IPWebcam getDummy() {
         try {
             final URL dummyUrl = new URL(DUMMY_URL);
@@ -49,5 +39,15 @@ public class IPWebcam implements ICamera {
             logback.error(e.getMessage());
             return null;
         }
+    }
+
+    @Override
+    public String getUrl() {
+        return url.toString();
+    }
+
+    @Override
+    public void accept(final IRobotElementVisitor visitor) {
+        visitor.visit(this);
     }
 }

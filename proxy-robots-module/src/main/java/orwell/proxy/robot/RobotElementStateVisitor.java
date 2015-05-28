@@ -17,21 +17,20 @@ public class RobotElementStateVisitor implements IRobotElementVisitor {
     }
 
     /**
-     *
      * @return the byte array of ServerRobotState or
-     *         null if both rfid and colour list are empty
+     * null if both rfid and colour list are empty
      */
     public byte[] getServerRobotStateBytes() {
         final Robot.ServerRobotState serverRobotState = getServerRobotState();
         if (null == serverRobotState ||
                 (serverRobotState.getRfidList().isEmpty() &&
-                serverRobotState.getColourList().isEmpty()))
+                        serverRobotState.getColourList().isEmpty()))
             return null;
         else
             return serverRobotState.toByteArray();
     }
 
-    public void clearServerRobotState(){
+    public void clearServerRobotState() {
         serverRobotStateBuilder.clear();
     }
 

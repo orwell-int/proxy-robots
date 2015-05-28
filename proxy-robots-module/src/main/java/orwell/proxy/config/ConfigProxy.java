@@ -66,7 +66,9 @@ public class ConfigProxy implements IConfigProxy {
     }
 
     @Override
-    public ConfigUdpBroadcast getConfigUdpBroadcast() { return configUdpBroadcast; }
+    public ConfigUdpBroadcast getConfigUdpBroadcast() {
+        return configUdpBroadcast;
+    }
 
     @XmlElement(name = "udpBroadcast")
     public void setConfigUdpBroadcast(final ConfigUdpBroadcast configUdpBroadcast) {

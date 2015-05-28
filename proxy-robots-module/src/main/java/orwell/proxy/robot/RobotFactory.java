@@ -2,10 +2,12 @@ package orwell.proxy.robot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.config.*;
+import orwell.proxy.config.ConfigScout;
+import orwell.proxy.config.ConfigTank;
+import orwell.proxy.config.IConfigCamera;
+import orwell.proxy.config.IConfigRobot;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * Created by Michaël Ludmann on 5/21/15.
@@ -15,14 +17,14 @@ public final class RobotFactory {
 
 
     public IRobot getRobot(final IConfigRobot configRobot) {
-        if(null == configRobot) {
+        if (null == configRobot) {
             return null;
         }
 
-        if(configRobot instanceof ConfigTank) {
+        if (configRobot instanceof ConfigTank) {
             return getRobot((ConfigTank) configRobot);
         }
-        if(configRobot instanceof ConfigScout) {
+        if (configRobot instanceof ConfigScout) {
             return getRobot((ConfigScout) configRobot);
         }
 
