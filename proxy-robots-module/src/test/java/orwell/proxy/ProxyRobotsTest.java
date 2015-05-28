@@ -23,6 +23,8 @@ import orwell.proxy.zmq.IZmqMessageListener;
 import orwell.proxy.zmq.ZmqMessageBOM;
 import orwell.proxy.zmq.ZmqMessageBroker;
 
+import java.net.DatagramSocket;
+
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
@@ -396,6 +398,29 @@ public class ProxyRobotsTest {
 
         logback.info("OUT");
     }
+
+    @Test
+    public void testRegisterFlow_RealServer() throws Exception {
+        logback.info("IN");
+        myProxyRobots = new ProxyRobots(UdpBeaconFinderFactory.fromConfig(configFactory.getConfigProxy().getConfigUdpBroadcast()), new ZmqMessageBroker(1000, 1000, null), configFactory,
+                robotsMap);
+
+        myProxyRobots.connectToRobots();
+        assertEquals(EnumRegistrationState.NOT_REGISTERED, mockedTank.getRegistrationState());
+        assertEquals("tempRoutingId", mockedTank.getRoutingId());
+
+        myProxyRobots.startCommunicationService();
+
+        myProxyRobots.sendRegister();
+        // Simulate reception of a REGISTERED message
+        myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
+
+        assertEquals(EnumRegistrationState.REGISTERED, mockedTank.getRegistrationState());
+        assertEquals("BananaOne", mockedTank.getRoutingId());
+
+        logback.info("OUT");
+    }
+
 
     @After
     public void tearDown() {

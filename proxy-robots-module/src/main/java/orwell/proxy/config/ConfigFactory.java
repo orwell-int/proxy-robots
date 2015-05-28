@@ -12,7 +12,6 @@ public class ConfigFactory implements IConfigFactory {
     private IConfigProxy configProxy;
     private IConfigRobots configRobots;
     private IConfigServerGame configServerGame;
-    private IConfigUdpBroadcast configUdpBroadcast;
 
     private ConfigFactory(final ConfigFactoryParameters configFactoryParameters) {
         logback.debug("IN");
@@ -25,7 +24,6 @@ public class ConfigFactory implements IConfigFactory {
             configProxy = configModel.getConfigProxy();
             configRobots = configuration.getConfigModel().getConfigRobots();
             configServerGame = configProxy.getMaxPriorityConfigServerGame();
-            configUdpBroadcast = configProxy.getConfigUdpBroadcast();
         }
         logback.debug("OUT");
     }
