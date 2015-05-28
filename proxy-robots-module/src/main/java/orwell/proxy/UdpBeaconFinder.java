@@ -57,7 +57,7 @@ public class UdpBeaconFinder {
         try {
             datagramSocket.setBroadcast(true);
             while (shouldTryToFindBeacon()) {
-                logback.info("Trying to find UDP beacon, attempt(s) performed: " + attemptsPerformed);
+                logback.info("Trying to find UDP beacon, attempt [" + new Integer(attemptsPerformed+1) + "]");
                 // Broadcast the message over all the network interfaces
                 final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
                 while (interfaces.hasMoreElements()) {
