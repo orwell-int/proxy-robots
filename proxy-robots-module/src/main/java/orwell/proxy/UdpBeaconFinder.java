@@ -46,6 +46,11 @@ public class UdpBeaconFinder {
         return attemptsPerformed;
     }
 
+    /**
+     *
+     * @return true if we did not get any meaningful response from server
+     *         and have not reached max allowed attempts number
+     */
     private boolean shouldTryToFindBeacon() {
         if (null == udpBeaconDecoder) {
             return attemptsPerformed < maxAttemptsNumber;
@@ -55,7 +60,7 @@ public class UdpBeaconFinder {
     }
 
     /**
-     * Find the server using UDP broadcast
+     * Find the server using UDP broadcast and fill data fields
      */
     public void startBroadcasting() {
         try {
@@ -124,14 +129,28 @@ public class UdpBeaconFinder {
         }
     }
 
+    /**
+     *
+     * @return null if broadcast was not called first
+     *         otherwise return puller address of the server (push on proxy side)
+     */
     public String getPushAddress() {
         return pushAddress;
     }
 
+    /**
+     *
+     * @return null if broadcast was not called first
+     *         otherwise return publisher address of the server (subscribe on proxy side)
+     */
     public String getSubscribeAddress() {
         return subscribeAddress;
     }
 
+    /**
+     *
+     * @return true if UdpBeaconFinder has found the server and it returned correct data
+     */
     public boolean hasFoundServer() {
         return (null != udpBeaconDecoder) && udpBeaconDecoder.hasReceivedCorrectData();
     }

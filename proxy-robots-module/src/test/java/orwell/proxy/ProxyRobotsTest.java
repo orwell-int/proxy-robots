@@ -327,8 +327,8 @@ public class ProxyRobotsTest {
 
         // Instantiate main class with mock parameters
         // We build an empty robot map
-        myProxyRobots = new ProxyRobots(udpBeaconFinder, mockedZmqMessageBroker, configFactory,
-                new RobotsMap());
+        myProxyRobots = new ProxyRobots(udpBeaconFinder, mockedZmqMessageBroker,
+                configFactory, new RobotsMap());
 
         myProxyRobots.start();
 
