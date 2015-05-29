@@ -6,6 +6,7 @@
             <attempts>5</attempts>
             <timeoutPerAttemptMs>1000</timeoutPerAttemptMs>
         </udpBroadcast>
+        <receiveTimeout>300000</receiveTimeout>
         <senderLinger>1000</senderLinger>
         <receiverLinger>1000</receiverLinger>
         <outgoingMsgPeriod>500</outgoingMsgPeriod>
@@ -21,8 +22,8 @@
         </server-game>
         <server-game name='localhost' priority="1">
             <ip>localhost</ip>
-            <pushPort>9000</pushPort>
-            <subPort>9001</subPort>
+            <pushPort>9001</pushPort>
+            <subPort>9000</subPort>
         </server-game>
     </proxy>
 

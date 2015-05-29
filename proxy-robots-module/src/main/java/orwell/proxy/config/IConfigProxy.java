@@ -7,6 +7,8 @@ public interface IConfigProxy {
 
     ConfigServerGame getMaxPriorityConfigServerGame();
 
+    int getReceiveTimeout();
+
     int getReceiverLinger();
 
     int getSenderLinger();

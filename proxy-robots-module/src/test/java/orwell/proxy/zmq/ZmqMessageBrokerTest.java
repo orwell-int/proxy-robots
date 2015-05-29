@@ -50,7 +50,7 @@ public class ZmqMessageBrokerTest {
         logback.info("IN");
         final ArrayList<IFilter> filters = new ArrayList<>();
         filters.add(frequencyFilter);
-        zmf = new ZmqMessageBroker(1000, 1000, filters);
+        zmf = new ZmqMessageBroker(100000, 1000, 1000, filters);
         logback.info("OUT");
     }
 

@@ -6,6 +6,7 @@ import java.util.List;
 public class ConfigProxy implements IConfigProxy {
 
     private List<ConfigServerGame> configServerGames;
+    private int receiveTimeout;
     private int senderLinger;
     private int receiverLinger;
     private int outgoingMsgPeriod;
@@ -34,6 +35,17 @@ public class ConfigProxy implements IConfigProxy {
         }
         return maxPriorityConfig;
     }
+
+    @Override
+    public int getReceiveTimeout() {
+        return receiveTimeout;
+    }
+
+    @XmlElement(name = "receiveTimeout")
+    public void setReceiveTimeout(final int senderLinger) {
+        this.receiveTimeout = receiveTimeout;
+    }
+
 
     @Override
     public int getSenderLinger() {

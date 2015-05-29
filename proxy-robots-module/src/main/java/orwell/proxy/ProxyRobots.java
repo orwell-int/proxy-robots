@@ -236,7 +236,8 @@ public class ProxyRobots implements IZmqMessageListener {
             // We stop the service once there are no more robots
             // connected to the proxy
             while (!Thread.currentThread().isInterrupted() &&
-                    !robotsMap.getConnectedRobots().isEmpty()) {
+                    !robotsMap.getConnectedRobots().isEmpty() &&
+                    messageBroker.isConnectedToServer()) {
 
                 // We avoid flooding the server
                 if (outgoingMessagePeriod < System.currentTimeMillis() - lastSendTime) {

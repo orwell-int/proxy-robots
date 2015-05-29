@@ -33,6 +33,7 @@ public class ConfigurationTest {
     private static final int UDP_BROADCAST_TIMEOUT = 1000;
     private static final int UDP_BROADCAST_ATTEMPS = 5;
     private static final int UDP_BROADCAST_PORT = 9080;
+    private static final int RECEIVE_TIMEOUT_MS = 300000;
 
     private Configuration getConfigTest(final String fileName, final EnumConfigFileType configFileType) {
         final ConfigFactoryParameters configFactoryParameters = new ConfigFactoryParameters(fileName, configFileType);
@@ -93,6 +94,7 @@ public class ConfigurationTest {
         configProxy = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                 .getConfigProxy();
 
+        assertEquals(RECEIVE_TIMEOUT_MS, configProxy.getReceiveTimeout());
         assertEquals(LINGER_TIME_MS, configProxy.getSenderLinger());
         assertEquals(LINGER_TIME_MS, configProxy.getReceiverLinger());
         assertEquals(OUTGOING_MSG_FREQ_MS, configProxy.getOutgoingMsgPeriod());

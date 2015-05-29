@@ -24,11 +24,15 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
     private int nbMessagesSkipped = 0;
     private ZmqReader reader;
     private boolean isSkipIdenticalMessages = false;
+    private final long socketTimeoutMs;
+    private long baseTimeMs;
 
-    public ZmqMessageBroker(final int senderLinger,
+    public ZmqMessageBroker(final int receiveTimeoutMs,
+                            final int senderLinger,
                             final int receiverLinger,
                             final ArrayList<IFilter> filterList) {
         logback.info("Constructor -- IN");
+        socketTimeoutMs = receiveTimeoutMs;
         zmqMessageListeners = new ArrayList<>();
         rXguard = new Object();
 
@@ -121,6 +125,10 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
         return nbMessagesSkipped;
     }
 
+    private boolean hasSocketRecvTimeout() {
+        return System.currentTimeMillis() - baseTimeMs > socketTimeoutMs;
+    }
+
     private class ZmqReader extends Thread {
         ZmqMessageBOM previousZmqMessage;
         ZmqMessageBOM newZmqMessage;
@@ -128,10 +136,14 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
         @Override
         public void run() {
             logback.info("ZmqReader has been started");
-            while (isConnected) {
+            baseTimeMs = System.currentTimeMillis();
+            while (isConnected && ! hasSocketRecvTimeout()) {
                 final byte[] raw_zmq_message = receiver.recv(ZMQ.NOBLOCK);
                 if (null != raw_zmq_message) {
                     synchronized (rXguard) {
+                        baseTimeMs = System.currentTimeMillis();
+                        logback.debug(">>>>>>>>>>>>>>>>>>>>>> receive time "+ baseTimeMs);
+
                         try {
                             newZmqMessage = ZmqMessageBOM.parseFrom(raw_zmq_message);
 
@@ -157,6 +169,10 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
                     logback.error("ZmqReader thread sleep exception: " + e.getMessage());
                 }
             }
+            if (hasSocketRecvTimeout()) {
+                logback.info("Communication stopped because of socket receive timeout");
+            }
+            isConnected = false;
             sender.close();
             receiver.close();
             context.term();
