@@ -69,7 +69,7 @@ public class ProxyRobots implements IZmqMessageListener {
     private void connectToServer() {
         if (null != udpBeaconFinder) {
             // We first try to find the server using Udp discovery
-            udpBeaconFinder.startBroadcasting();
+            udpBeaconFinder.broadcastAndGetServerAddress();
             if (udpBeaconFinder.hasFoundServer()) {
                 messageBroker.connectToServer(udpBeaconFinder.getPushAddress(),
                         udpBeaconFinder.getSubscribeAddress());

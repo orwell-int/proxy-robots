@@ -341,7 +341,7 @@ public class ProxyRobotsTest {
         // the message framework proxy
         verify(mockedZmqMessageBroker);
 
-        // Check that udpBeacon has been correctly used (startBroadcasting() and
+        // Check that udpBeacon has been correctly used (broadcastAndGetServerAddress() and
         // hasFoundServer() were called)
         verify(udpBeaconFinder);
 
