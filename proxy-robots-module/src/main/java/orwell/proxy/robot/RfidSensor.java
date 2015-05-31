@@ -81,7 +81,6 @@ public class RfidSensor implements IRobotElement {
 
 
     public void clear() {
-        logback.debug("Clearing all stored rfid values");
         this.rfidSensorReads.clear();
     }
 
