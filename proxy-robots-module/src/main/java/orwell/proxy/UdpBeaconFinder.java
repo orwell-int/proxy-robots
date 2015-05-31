@@ -21,7 +21,9 @@ public class UdpBeaconFinder {
     private String pushAddress;
     private String subscribeAddress;
 
-    public UdpBeaconFinder(final DatagramSocket datagramSocket, final int broadcastPort, final UdpBeaconDecoder udpBeaconDecoder) {
+    public UdpBeaconFinder(final DatagramSocket datagramSocket,
+                           final int broadcastPort,
+                           final UdpBeaconDecoder udpBeaconDecoder) {
         this.datagramSocket = datagramSocket;
         this.broadcastPort = broadcastPort;
         this.udpBeaconDecoder = udpBeaconDecoder;
@@ -91,23 +93,7 @@ public class UdpBeaconFinder {
         }
     }
 
-    private void waitForServerResponse(DatagramSocket datagramSocket) throws IOException {
-        // Wait for a response
-        final byte[] recvBuf = new byte[receiverBufferSize];
-        final DatagramPacket receivePacket = new DatagramPacket(recvBuf, recvBuf.length);
-
-        try {
-            datagramSocket.receive(receivePacket);
-            // Response received
-            udpBeaconDecoder.parseFrom(receivePacket);
-        } catch (final SocketTimeoutException e) {
-            // Socket received timeout, which is acceptable behavior
-            logback.info("Datagram socket received timeout");
-        }
-    }
-
     private void sendBroadcastPackageOn(InetAddress broadcastAddress) {
-        // Send the broadcast package
         try {
             final String ipPing = broadcastAddress.getHostAddress();
 
@@ -119,6 +105,18 @@ public class UdpBeaconFinder {
         }
 
         logback.info("Request packet sent to: " + broadcastAddress.getHostAddress());
+    }
+
+    private void waitForServerResponse(DatagramSocket datagramSocket) throws IOException {
+        final byte[] recvBuf = new byte[receiverBufferSize];
+        final DatagramPacket receivePacket = new DatagramPacket(recvBuf, recvBuf.length);
+
+        try {
+            datagramSocket.receive(receivePacket);
+            udpBeaconDecoder.parseFrom(receivePacket);
+        } catch (final SocketTimeoutException e) {
+            logback.info("Datagram socket received timeout, continue...");
+        }
     }
 
     private void fillFoundAddressFields() {
