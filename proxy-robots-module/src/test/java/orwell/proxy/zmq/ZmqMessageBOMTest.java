@@ -29,6 +29,13 @@ public class ZmqMessageBOMTest {
     private final static Logger logback = LoggerFactory.getLogger(ZmqMessageBOMTest.class);
     private static final String ROUTING_ID = "NicCage";
     private static final long TIMESTAMP = 1234567890;
+    private static final double MOVE_LEFT = 50.5;
+    private static final double MOVE_RIGHT = 10.0;
+    private static final boolean FIRE_WEAPON_1 = false;
+    private static final boolean FIRE_WEAPON_2 = false;
+    private static final String RFID_VALUE = "11111111";
+    private static final String ROBOT_ID = "BananaOne";
+    private static final String TEAM_NAME = "BLUE";
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -38,7 +45,6 @@ public class ZmqMessageBOMTest {
 
     @Before
     public void setUp() throws Exception {
-        zmqMessageBom = ZmqMessageBOM.parseFrom(getRawZmqMessage(EnumMessageType.REGISTERED));
     }
 
     private byte[] getRawZmqMessage(final EnumMessageType messageType) {
@@ -84,8 +90,8 @@ public class ZmqMessageBOMTest {
 
     private byte[] getBytesRegistered() {
         final ServerGame.Registered.Builder registeredBuilder = ServerGame.Registered.newBuilder();
-        registeredBuilder.setRobotId("BananaOne");
-        registeredBuilder.setTeam("BLUE");
+        registeredBuilder.setRobotId(ROBOT_ID);
+        registeredBuilder.setTeam(TEAM_NAME);
 
         return registeredBuilder.build().toByteArray();
     }
@@ -94,10 +100,10 @@ public class ZmqMessageBOMTest {
         final Controller.Input.Builder inputBuilder = Controller.Input.newBuilder();
         final Controller.Input.Fire.Builder fireBuilder = Controller.Input.Fire.newBuilder();
         final Controller.Input.Move.Builder moveBuilder = Controller.Input.Move.newBuilder();
-        fireBuilder.setWeapon1(false);
-        fireBuilder.setWeapon2(false);
-        moveBuilder.setLeft(0);
-        moveBuilder.setRight(0);
+        fireBuilder.setWeapon1(FIRE_WEAPON_1);
+        fireBuilder.setWeapon2(FIRE_WEAPON_2);
+        moveBuilder.setLeft(MOVE_LEFT);
+        moveBuilder.setRight(MOVE_RIGHT);
         inputBuilder.setFire(fireBuilder.build());
         inputBuilder.setMove(moveBuilder.build());
 
@@ -107,7 +113,7 @@ public class ZmqMessageBOMTest {
     private byte[] getBytesServerRobotState() {
         final Robot.ServerRobotState.Builder serverRobotStateBuilder = Robot.ServerRobotState.newBuilder();
         final Robot.Rfid.Builder rfidBuilder = Robot.Rfid.newBuilder();
-        rfidBuilder.setRfid("1234");
+        rfidBuilder.setRfid(RFID_VALUE);
         rfidBuilder.setStatus(Robot.Status.ON);
         rfidBuilder.setTimestamp(TIMESTAMP);
         serverRobotStateBuilder.addRfid(rfidBuilder.build());
@@ -123,7 +129,8 @@ public class ZmqMessageBOMTest {
     }
 
     @Test
-    public void testGetRoutingId() {
+    public void testGetRoutingId() throws ParseException {
+        zmqMessageBom = ZmqMessageBOM.parseFrom(getRawZmqMessage(EnumMessageType.REGISTERED));
         assertEquals(ROUTING_ID, zmqMessageBom.getRoutingId());
     }
 
@@ -149,7 +156,8 @@ public class ZmqMessageBOMTest {
     }
 
     @Test
-    public void testGetMessageBytes() {
+    public void testGetMessageBytes() throws ParseException {
+        zmqMessageBom = ZmqMessageBOM.parseFrom(getRawZmqMessage(EnumMessageType.REGISTERED));
         assertNotNull(zmqMessageBom.getMessageBodyBytes());
     }
 
@@ -161,5 +169,22 @@ public class ZmqMessageBOMTest {
         logback.info("OUT");
     }
 
-    //TODO add test to test split function (in case there are spaces in the message body
+    /**
+     * Test required to check integrity of decoded protobuf
+     * @throws Exception
+     */
+    @Test
+    public void testParseFrom_ParseProtobuf_Input() throws Exception {
+        logback.info("IN");
+        zmqMessageBom = ZmqMessageBOM.parseFrom(getRawZmqMessage(EnumMessageType.INPUT));
+        assertEquals(EnumMessageType.INPUT, zmqMessageBom.getMessageType());
+
+        // Parse protobuf message
+        final Controller.Input input = Controller.Input.parseFrom(zmqMessageBom.getMessageBodyBytes());
+        assertEquals(MOVE_LEFT, input.getMove().getLeft(), 0);
+        assertEquals(MOVE_RIGHT, input.getMove().getRight(), 0);
+        assertEquals(FIRE_WEAPON_1, input.getFire().getWeapon1());
+        assertEquals(FIRE_WEAPON_2, input.getFire().getWeapon2());
+        logback.info("OUT");
+    }
 }

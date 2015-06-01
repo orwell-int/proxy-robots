@@ -36,7 +36,7 @@ public class ZmqMessageBOM implements Comparable<ZmqMessageBOM> {
         final String[] zmqMessageStringArray = zmqMessageString.split(" ", 3);
 
         if (3 != zmqMessageStringArray.length) {
-            logback.warn("ZmqMessage failed to split incoming message: " +
+            logback.warn("ZmqMessage failed to split incoming message, missing items: " +
                     zmqMessageString);
             throw new ParseException("Message does not contain all three mandatory items", 3);
         }
@@ -76,7 +76,7 @@ public class ZmqMessageBOM implements Comparable<ZmqMessageBOM> {
     }
 
     /**
-     * @return the body of the message
+     * @return the body of the message, i.e. a Google protocol buffer
      */
     public byte[] getMessageBodyBytes() {
         return messageBodyBytes;

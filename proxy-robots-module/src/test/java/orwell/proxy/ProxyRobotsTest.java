@@ -399,6 +399,15 @@ public class ProxyRobotsTest {
         logback.info("OUT");
     }
 
+    @Test
+    public void testProxyRobots_StartWithMockTank() throws Exception {
+        instantiateBasicProxyRobots();
+        myProxyRobots.start();
+
+        // We run the proxy for maxTimeoutMs
+        waitForCloseOrTimeout();
+    }
+
     @After
     public void tearDown() {
         myProxyRobots.stop();
