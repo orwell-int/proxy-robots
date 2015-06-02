@@ -26,8 +26,7 @@ class ProxyRobotsFactory {
             udpBeaconFinder = null;
         } else {
             zmqMessageBroker = new ZmqMessageBroker(configFactory.getConfigProxy().getSenderLinger(),
-                    configFactory.getConfigProxy().getReceiverLinger(),
-                    null);
+                    configFactory.getConfigProxy().getReceiverLinger());
             udpBeaconFinder = UdpBeaconFinderFactory.fromConfig(configFactory.getConfigProxy().getConfigUdpBroadcast());
         }
     }

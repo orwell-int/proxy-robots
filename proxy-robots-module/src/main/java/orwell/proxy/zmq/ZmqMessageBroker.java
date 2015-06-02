@@ -46,6 +46,10 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
         logback.info("Constructor -- OUT");
     }
 
+    public ZmqMessageBroker(final int senderLinger, final int receiverLinger) {
+        this(senderLinger, receiverLinger, null);
+    }
+
     private void setupNewReader() {
         reader = new ZmqReader();
         reader.setDaemon(true);

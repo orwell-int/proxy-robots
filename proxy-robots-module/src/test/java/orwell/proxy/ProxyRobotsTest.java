@@ -23,8 +23,6 @@ import orwell.proxy.zmq.IZmqMessageListener;
 import orwell.proxy.zmq.ZmqMessageBOM;
 import orwell.proxy.zmq.ZmqMessageBroker;
 
-import java.net.DatagramSocket;
-
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
@@ -45,6 +43,7 @@ public class ProxyRobotsTest {
     private static final String RFID_VALUE = "11111111";
     private static final String PUSH_ADDRESS = "tcp://localhost:9000";
     private static final String SUB_ADDRESS = "tcp://localhost:9001";
+    private static final long TIMEOUT_MS = 500;
     private final ConfigFactoryParameters configFactoryParameters = new ConfigFactoryParameters("/configurationTest.xml", EnumConfigFileType.RESOURCE);
     private final ZmqMessageBroker mockedZmqMessageBroker = createNiceMock(ZmqMessageBroker.class);
     private ConfigFactory configFactory;
@@ -118,12 +117,10 @@ public class ProxyRobotsTest {
     }
 
     // Wait for a max timeout or for communicationService to stop
-    private void waitForCloseOrTimeout() {
+    private void waitForCloseOrTimeout(final long timeoutMs) {
         long timeout = 0;
 
-        // We use the value of the config for OutgoingMsgPeriod
-        final long MAX_TIMEOUT = configFactory.getConfigProxy().getOutgoingMsgPeriod();
-        while (myProxyRobots.isCommunicationServiceAlive() && MAX_TIMEOUT > timeout) {
+        while (myProxyRobots.isCommunicationServiceAlive() && timeoutMs > timeout) {
             try {
                 Thread.sleep(5);
                 timeout += 5;
@@ -205,7 +202,7 @@ public class ProxyRobotsTest {
         // Tank is disconnected
         mockedTank.closeConnection();
 
-        waitForCloseOrTimeout();
+        waitForCloseOrTimeout(TIMEOUT_MS);
 
         // So the map of isConnected tanks is empty
         assertTrue(myProxyRobots.robotsMap.getConnectedRobots().isEmpty());
@@ -286,7 +283,7 @@ public class ProxyRobotsTest {
 
         myProxyRobots.start();
 
-        waitForCloseOrTimeout();
+        waitForCloseOrTimeout(TIMEOUT_MS);
         // Map contains only one tank from the config file,
         // this tank fails to connect because of wrong settings, so
         // the communication service should quickly stop and close
@@ -334,7 +331,7 @@ public class ProxyRobotsTest {
 
         myProxyRobots.start();
 
-        waitForCloseOrTimeout();
+        waitForCloseOrTimeout(TIMEOUT_MS);
         // Map contains only one tank from the config file,
         // this tank fails to connect because of wrong settings, so
         // the communication service should quickly stop and close
@@ -388,7 +385,7 @@ public class ProxyRobotsTest {
         myProxyRobots.start();
 
         // We run the proxy for maxTimeoutMs
-        waitForCloseOrTimeout();
+        waitForCloseOrTimeout(TIMEOUT_MS);
 
         // Since we wait for a timeout as long as outgoingMessagePeriod
         // during which the proxy runs and tries to send messages,
@@ -401,11 +398,13 @@ public class ProxyRobotsTest {
 
     @Test
     public void testProxyRobots_StartWithMockTank() throws Exception {
-        instantiateBasicProxyRobots();
+        // Instantiate main class with mock tank, but real zmq conf
+        myProxyRobots = new ProxyRobots(new ZmqMessageBroker(1000, 1000), configFactory,
+                robotsMap);
         myProxyRobots.start();
 
         // We run the proxy for maxTimeoutMs
-        waitForCloseOrTimeout();
+        waitForCloseOrTimeout(TIMEOUT_MS);
     }
 
     @After

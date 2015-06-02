@@ -3,18 +3,20 @@ package orwell.proxy.zmq;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.EnumMessageType;
+import orwell.proxy.Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Michaël Ludmann on 5/6/15.
  */
 public class ZmqMessageBOM implements Comparable<ZmqMessageBOM> {
     private final static Logger logback = LoggerFactory.getLogger(ZmqMessageBOM.class);
-
+    private final static byte ZMQ_SEPARATOR = " ".getBytes()[0];
     private final EnumMessageType messageType;
     private final String routingId;
     private byte[] messageBodyBytes;
@@ -29,42 +31,48 @@ public class ZmqMessageBOM implements Comparable<ZmqMessageBOM> {
     /**
      * @param raw_zmq_message Message receive through zmq protocol, with
      *                        the following format (split by spaces):
-     *                        routingID typeString message
+     *                        routingId typeString message
+     *                        Careful: message is arbitrary binary data
      */
     public static ZmqMessageBOM parseFrom(final byte[] raw_zmq_message) throws ParseException {
-        final String zmqMessageString = new String(raw_zmq_message);
-        final String[] zmqMessageStringArray = zmqMessageString.split(" ", 3);
+        logback.debug("SEPARATOR " + ZMQ_SEPARATOR);
+        // We do not want to create a String from arbitrary binary data, so we
+        // first isolate the 3 parts of the raw zmq message
+        final List<byte[]> zmqMessageBytesList = Utils.split(ZMQ_SEPARATOR, raw_zmq_message, 3);
 
-        if (3 != zmqMessageStringArray.length) {
+        if (3 != zmqMessageBytesList.size()) {
             logback.warn("ZmqMessage failed to split incoming message, missing items: " +
-                    zmqMessageString);
+                    raw_zmq_message);
             throw new ParseException("Message does not contain all three mandatory items", 3);
         }
 
-        final String routingId = zmqMessageStringArray[0];
-        final String typeString = zmqMessageStringArray[1];
-        final byte[] messageBodyBytes = zmqMessageStringArray[2].getBytes();
-        final EnumMessageType type;
-        switch (typeString) {
-            case "Registered":
-                type = EnumMessageType.REGISTERED;
-                break;
-            case "Input":
-                type = EnumMessageType.INPUT;
-                break;
-            case "GameState":
-                type = EnumMessageType.GAME_STATE;
-                break;
-            case "ServerRobotState":
-                type = EnumMessageType.SERVER_ROBOT_STATE;
-                break;
-            default:
-                type = EnumMessageType.UNKNOWN;
-                logback.warn("Message typeString unknown: " + typeString);
-        }
+        // routingId was a string encoded in bytes, there is no issue to build a String from it
+        final String routingId = new String(zmqMessageBytesList.get(0));
+        // typeString was a string encoded in bytes, there is no issue to build a String from it
+        final String typeString = new String(zmqMessageBytesList.get(1));
+        // message is binary data, so we keep it as a byte array
+        final byte[] messageBodyBytes = zmqMessageBytesList.get(2);
+
+        final EnumMessageType type = getEnumTypeFromTypeString(typeString);
 
         logback.info("Message parsed: [RoutingID] " + routingId + " [TYPE]: " + type);
         return new ZmqMessageBOM(routingId, type, messageBodyBytes);
+    }
+
+    private static EnumMessageType getEnumTypeFromTypeString(final String typeString) {
+        switch (typeString) {
+            case "Registered":
+                return EnumMessageType.REGISTERED;
+            case "Input":
+                return EnumMessageType.INPUT;
+            case "GameState":
+                return EnumMessageType.GAME_STATE;
+            case "ServerRobotState":
+                return EnumMessageType.SERVER_ROBOT_STATE;
+            default:
+                logback.warn("Message typeString unknown: " + typeString);
+                return EnumMessageType.UNKNOWN;
+        }
     }
 
     public String getRoutingId() {
