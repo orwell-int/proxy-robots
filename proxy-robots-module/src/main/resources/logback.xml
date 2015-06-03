@@ -18,7 +18,6 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss} [%thread] |-%-5p (%class{0}.%method:%L\) - %m%n</pattern>
-            <!--<pattern>%date{HH:mm:ss} |-%level [%file:%line][%file:%line]  %msg%n</pattern>-->
         </encoder>
     </appender>
 
