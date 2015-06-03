@@ -404,7 +404,7 @@ public class ProxyRobotsTest {
         myProxyRobots.start();
 
         // We run the proxy for maxTimeoutMs
-        waitForCloseOrTimeout(TIMEOUT_MS);
+        waitForCloseOrTimeout(TIMEOUT_MS * 5000);
 
     }
 

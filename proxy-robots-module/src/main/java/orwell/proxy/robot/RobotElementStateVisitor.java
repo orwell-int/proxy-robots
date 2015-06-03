@@ -50,19 +50,9 @@ public class RobotElementStateVisitor implements IRobotElementVisitor {
 
     @Override
     public void visit(final ICamera camera) {
-<<<<<<< HEAD
-        ;
-=======
-
->>>>>>> master
     }
 
     @Override
     public void visit(final IRobot robot) {
-<<<<<<< HEAD
-        ;
-=======
-
->>>>>>> master
     }
 }
