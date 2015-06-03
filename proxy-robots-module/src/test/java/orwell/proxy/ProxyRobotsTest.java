@@ -338,7 +338,7 @@ public class ProxyRobotsTest {
         // the message framework proxy
         verify(mockedZmqMessageBroker);
 
-        // Check that udpBeacon has been correctly used (startBroadcasting() and
+        // Check that udpBeacon has been correctly used (broadcastAndGetServerAddress() and
         // hasFoundServer() were called)
         verify(udpBeaconFinder);
 
@@ -397,31 +397,16 @@ public class ProxyRobotsTest {
     }
 
     @Test
-    public void testRegisterFlow_RealServer() throws Exception {
-        logback.info("IN");
-//        myProxyRobots = new ProxyRobots(UdpBeaconFinderFactory.fromConfig(configFactory.getConfigProxy().getConfigUdpBroadcast()), new ZmqMessageBroker(1000, 1000, null), configFactory,
-//                robotsMap);
-        myProxyRobots = new ProxyRobots(new ZmqMessageBroker(5000, 1000, 1000, null), configFactory,
+    public void testProxyRobots_StartWithMockTank() throws Exception {
+        // Instantiate main class with mock tank, but real zmq conf
+        myProxyRobots = new ProxyRobots(new ZmqMessageBroker(5000, 1000, 1000), configFactory,
                 robotsMap);
         myProxyRobots.start();
-        waitForCloseOrTimeout(333300);
 
+        // We run the proxy for maxTimeoutMs
+        waitForCloseOrTimeout(TIMEOUT_MS);
 
-//        assertEquals(EnumRegistrationState.NOT_REGISTERED, mockedTank.getRegistrationState());
-//        assertEquals("tempRoutingId", mockedTank.getRoutingId());
-//
-//        myProxyRobots.startCommunicationService();
-//
-//        myProxyRobots.sendRegister();
-//        // Simulate reception of a REGISTERED message
-//        myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
-//
-//        assertEquals(EnumRegistrationState.REGISTERED, mockedTank.getRegistrationState());
-//        assertEquals("BananaOne", mockedTank.getRoutingId());
-
-        logback.info("OUT");
     }
-
 
     @After
     public void tearDown() {

@@ -11,6 +11,7 @@ import orwell.messages.Controller;
 import orwell.messages.Robot;
 import orwell.messages.ServerGame;
 import orwell.proxy.EnumMessageType;
+import orwell.proxy.ProtobufTest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.text.ParseException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for {@link ZmqMessageBOM}.
@@ -28,7 +30,6 @@ public class ZmqMessageBOMTest {
 
     private final static Logger logback = LoggerFactory.getLogger(ZmqMessageBOMTest.class);
     private static final String ROUTING_ID = "NicCage";
-    private static final long TIMESTAMP = 1234567890;
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -38,7 +39,6 @@ public class ZmqMessageBOMTest {
 
     @Before
     public void setUp() throws Exception {
-        zmqMessageBom = ZmqMessageBOM.parseFrom(getRawZmqMessage(EnumMessageType.REGISTERED));
     }
 
     private byte[] getRawZmqMessage(final EnumMessageType messageType) {
@@ -51,15 +51,15 @@ public class ZmqMessageBOMTest {
                 zmqMessageHeader = ROUTING_ID + " " + "Registered" + " ";
                 break;
             case SERVER_ROBOT_STATE:
-                specificMessage = getBytesServerRobotState();
+                specificMessage = getServerRobotStateBytes();
                 zmqMessageHeader = ROUTING_ID + " " + "ServerRobotState" + " ";
                 break;
             case INPUT:
-                specificMessage = getBytesInput();
+                specificMessage = getInputBytes();
                 zmqMessageHeader = ROUTING_ID + " " + "Input" + " ";
                 break;
             case GAME_STATE:
-                specificMessage = getBytesGameState();
+                specificMessage = getGameStateBytes();
                 zmqMessageHeader = ROUTING_ID + " " + "GameState" + " ";
                 break;
             case UNKNOWN:
@@ -83,47 +83,24 @@ public class ZmqMessageBOMTest {
     }
 
     private byte[] getBytesRegistered() {
-        final ServerGame.Registered.Builder registeredBuilder = ServerGame.Registered.newBuilder();
-        registeredBuilder.setRobotId("BananaOne");
-        registeredBuilder.setTeam("BLUE");
-
-        return registeredBuilder.build().toByteArray();
+        return ProtobufTest.getTestRegistered().toByteArray();
     }
 
-    private byte[] getBytesInput() {
-        final Controller.Input.Builder inputBuilder = Controller.Input.newBuilder();
-        final Controller.Input.Fire.Builder fireBuilder = Controller.Input.Fire.newBuilder();
-        final Controller.Input.Move.Builder moveBuilder = Controller.Input.Move.newBuilder();
-        fireBuilder.setWeapon1(false);
-        fireBuilder.setWeapon2(false);
-        moveBuilder.setLeft(0);
-        moveBuilder.setRight(0);
-        inputBuilder.setFire(fireBuilder.build());
-        inputBuilder.setMove(moveBuilder.build());
-
-        return inputBuilder.build().toByteArray();
+    private byte[] getInputBytes() {
+        return ProtobufTest.getTestInput().toByteArray();
     }
 
-    private byte[] getBytesServerRobotState() {
-        final Robot.ServerRobotState.Builder serverRobotStateBuilder = Robot.ServerRobotState.newBuilder();
-        final Robot.Rfid.Builder rfidBuilder = Robot.Rfid.newBuilder();
-        rfidBuilder.setRfid("1234");
-        rfidBuilder.setStatus(Robot.Status.ON);
-        rfidBuilder.setTimestamp(TIMESTAMP);
-        serverRobotStateBuilder.addRfid(rfidBuilder.build());
-
-        return serverRobotStateBuilder.build().toByteArray();
+    private byte[] getServerRobotStateBytes() {
+        return ProtobufTest.getTestServerRobotState().toByteArray();
     }
 
-    private byte[] getBytesGameState() {
-        final ServerGame.GameState.Builder gameStateBuilder = ServerGame.GameState.newBuilder();
-        gameStateBuilder.setPlaying(true);
-
-        return gameStateBuilder.build().toByteArray();
+    private byte[] getGameStateBytes() {
+        return ProtobufTest.getTestGameState().toByteArray();
     }
 
     @Test
-    public void testGetRoutingId() {
+    public void testGetRoutingId() throws ParseException {
+        zmqMessageBom = ZmqMessageBOM.parseFrom(getRawZmqMessage(EnumMessageType.REGISTERED));
         assertEquals(ROUTING_ID, zmqMessageBom.getRoutingId());
     }
 
@@ -149,7 +126,8 @@ public class ZmqMessageBOMTest {
     }
 
     @Test
-    public void testGetMessageBytes() {
+    public void testGetMessageBytes() throws ParseException {
+        zmqMessageBom = ZmqMessageBOM.parseFrom(getRawZmqMessage(EnumMessageType.REGISTERED));
         assertNotNull(zmqMessageBom.getMessageBodyBytes());
     }
 
@@ -161,5 +139,47 @@ public class ZmqMessageBOMTest {
         logback.info("OUT");
     }
 
-    //TODO add test to test split function (in case there are spaces in the message body
+    /**
+     * Test required to check integrity of decoded protobuf
+     * @throws Exception
+     */
+    @Test
+    public void testParseFrom_ParseProtobuf_Input() throws Exception {
+        logback.info("IN");
+        zmqMessageBom = ZmqMessageBOM.parseFrom(getRawZmqMessage(EnumMessageType.INPUT));
+        assertEquals(EnumMessageType.INPUT, zmqMessageBom.getMessageType());
+
+        // Parse protobuf message
+        final Controller.Input input =
+                Controller.Input.parseFrom(zmqMessageBom.getMessageBodyBytes());
+        assertTrue(ProtobufTest.checkTestInputValid(input));
+        logback.info("OUT");
+    }
+
+    @Test
+    public void testParseFrom_ParseProtobuf_Registered() throws Exception {
+        logback.info("IN");
+        zmqMessageBom = ZmqMessageBOM.parseFrom(getRawZmqMessage(EnumMessageType.REGISTERED));
+        assertEquals(EnumMessageType.REGISTERED, zmqMessageBom.getMessageType());
+
+        // Parse protobuf message
+        final ServerGame.Registered registered = ServerGame.Registered.parseFrom(zmqMessageBom.getMessageBodyBytes());
+        assertTrue(ProtobufTest.checkTestRegistered(registered));
+
+        logback.info("OUT");
+    }
+
+    @Test
+    public void testParseFrom_ParseProtobuf_ServerRobotState() throws Exception {
+        logback.info("IN");
+        zmqMessageBom = ZmqMessageBOM.parseFrom(getRawZmqMessage(EnumMessageType.SERVER_ROBOT_STATE));
+        assertEquals(EnumMessageType.SERVER_ROBOT_STATE, zmqMessageBom.getMessageType());
+
+        // Parse protobuf message
+        final Robot.ServerRobotState serverRobotState =
+                Robot.ServerRobotState.parseFrom(zmqMessageBom.getMessageBodyBytes());
+        assertTrue(ProtobufTest.checkTestServerRobotState(serverRobotState));
+        logback.info("OUT");
+    }
+
 }

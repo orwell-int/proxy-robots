@@ -3,6 +3,7 @@ package orwell.proxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.*;
 import java.util.Enumeration;
 
@@ -20,7 +21,9 @@ public class UdpBeaconFinder {
     private String pushAddress;
     private String subscribeAddress;
 
-    public UdpBeaconFinder(final DatagramSocket datagramSocket, final int broadcastPort, final UdpBeaconDecoder udpBeaconDecoder) {
+    public UdpBeaconFinder(final DatagramSocket datagramSocket,
+                           final int broadcastPort,
+                           final UdpBeaconDecoder udpBeaconDecoder) {
         this.datagramSocket = datagramSocket;
         this.broadcastPort = broadcastPort;
         this.udpBeaconDecoder = udpBeaconDecoder;
@@ -53,7 +56,7 @@ public class UdpBeaconFinder {
     /**
      * Find the server using UDP broadcast and fill data fields
      */
-    public void startBroadcasting() {
+    public void broadcastAndGetServerAddress() {
         try {
             datagramSocket.setBroadcast(true);
             while (shouldTryToFindBeacon()) {
@@ -68,48 +71,51 @@ public class UdpBeaconFinder {
                     }
 
                     for (final InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
-                        final InetAddress broadcast = interfaceAddress.getBroadcast();
-                        if (null == broadcast) {
-                            continue;
+                        final InetAddress broadcastAddress = interfaceAddress.getBroadcast();
+                        if (null != broadcastAddress) {
+                            logback.info("Trying to send broadcast package on interface: " + networkInterface.getDisplayName());
+                            sendBroadcastPackageOn(broadcastAddress);
                         }
-
-                        // Send the broadcast package
-                        try {
-                            final String ipPing = broadcast.getHostAddress();
-
-                            final byte[] ipPingBytes = ipPing.getBytes();
-                            final DatagramPacket datagramPacket = new DatagramPacket(ipPingBytes, ipPingBytes.length, broadcast, broadcastPort);
-                            datagramSocket.send(datagramPacket);
-                        } catch (final Exception e) {
-                            logback.error(e.getMessage());
-                        }
-
-                        logback.info("Request packet sent to: " + broadcast.getHostAddress() + "; Interface: " + networkInterface.getDisplayName());
                     }
                 }
 
                 logback.info("Done looping over all network interfaces. Now waiting for a reply!");
+                waitForServerResponse(datagramSocket);
 
-                // Wait for a response
-                final byte[] recvBuf = new byte[receiverBufferSize];
-                final DatagramPacket receivePacket = new DatagramPacket(recvBuf, recvBuf.length);
-
-                try {
-                    datagramSocket.receive(receivePacket);
-                    // Response received
-                    udpBeaconDecoder.parseFrom(receivePacket);
-                } catch (final SocketTimeoutException e) {
-                    // Socket received timeout, which is acceptable behavior
-                    logback.info("Datagram socket received timeout");
-                }
                 attemptsPerformed++;
-                fillFoundAddressFields();
             }
+            fillFoundAddressFields();
             datagramSocket.close();
 
 
         } catch (final Exception e) {
             logback.error(e.getMessage());
+        }
+    }
+
+    private void sendBroadcastPackageOn(InetAddress broadcastAddress) {
+        try {
+            final String ipPing = broadcastAddress.getHostAddress();
+
+            final byte[] ipPingBytes = ipPing.getBytes();
+            final DatagramPacket datagramPacket = new DatagramPacket(ipPingBytes, ipPingBytes.length, broadcastAddress, broadcastPort);
+            datagramSocket.send(datagramPacket);
+        } catch (final Exception e) {
+            logback.error(e.getMessage());
+        }
+
+        logback.info("Request packet sent to: " + broadcastAddress.getHostAddress());
+    }
+
+    private void waitForServerResponse(DatagramSocket datagramSocket) throws IOException {
+        final byte[] recvBuf = new byte[receiverBufferSize];
+        final DatagramPacket receivePacket = new DatagramPacket(recvBuf, recvBuf.length);
+
+        try {
+            datagramSocket.receive(receivePacket);
+            udpBeaconDecoder.parseFrom(receivePacket);
+        } catch (final SocketTimeoutException e) {
+            logback.info("Datagram socket received timeout, continue...");
         }
     }
 

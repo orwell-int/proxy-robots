@@ -27,7 +27,7 @@ public class LegoTankTest {
     private final static Logger logback = LoggerFactory.getLogger(LegoTankTest.class);
     private final static String RFID_VALUE = "11111111";
     private final static String COLOUR_VALUE = "2";
-    private final static String INPUT_MOVE = "input move 50.0 0.75";
+    private final static String INPUT_MOVE = "input move 50.5 10.0";
     private final Capture<UnitMessage> messageCapture = new Capture<>();
     private final UnitMessage unitMessageRfid = new UnitMessage(UnitMessageType.Rfid, RFID_VALUE);
     private final UnitMessage unitMessageColour = new UnitMessage(UnitMessageType.Colour, COLOUR_VALUE);
@@ -187,7 +187,7 @@ public class LegoTankTest {
 
         // Check with a concrete visitor
         // this is more of an integration test than a unit test
-        final RobotInputSetVisitor inputSetVisitor = new RobotInputSetVisitor(ProtobufTest.buildTestInput().toByteArray());
+        final RobotInputSetVisitor inputSetVisitor = new RobotInputSetVisitor(ProtobufTest.getTestInput().toByteArray());
         tank.accept(inputSetVisitor);
         verify(messageFramework);
         assertEquals(UnitMessageType.Command, messageCapture.getValue().getMsgType());

@@ -35,7 +35,7 @@ public class RobotInputSetVisitorTest {
     public void setUp() {
 
         logback.info("IN");
-        inputSetVisitor = new RobotInputSetVisitor(ProtobufTest.buildTestInput().toByteArray());
+        inputSetVisitor = new RobotInputSetVisitor(ProtobufTest.getTestInput().toByteArray());
         logback.info("OUT");
     }
 

@@ -46,9 +46,12 @@ public class RobotInputSetVisitor implements IRobotInputVisitor {
     @Override
     public void visit(final InputMove inputMove) {
 
-        logback.debug("Set move");
+        if (null == inputMove) {
+            logback.warn("Empty inputMove");
+            return;
+        }
         this.inputMove = inputMove;
-        if (input.hasMove()) {
+        if (null != input && input.hasMove()) {
             this.inputMove.setMove(input.getMove());
         }
     }
@@ -56,7 +59,10 @@ public class RobotInputSetVisitor implements IRobotInputVisitor {
     @Override
     public void visit(final InputFire inputFire) {
 
-        logback.debug("Set fire");
+        if (null == inputFire) {
+            logback.warn("Empty inputFire");
+            return;
+        }
         this.inputFire = inputFire;
         if (!isEmpty(input)) {
             this.inputFire.setFire(input.getFire());
@@ -69,15 +75,14 @@ public class RobotInputSetVisitor implements IRobotInputVisitor {
      * (meaning it is not worth sending it to the robot)
      */
     private boolean isEmpty(final Controller.Input input) {
-        return !(input.hasFire() &&
+        return (null == input) ||
+                !(input.hasFire() &&
                 (input.getFire().getWeapon1() || input.getFire().getWeapon2()));
     }
-
 
     @Override
     public void visit(final IRobot robot) {
 
-        logback.debug("Set robot");
         if (null != this.inputMove && this.inputMove.hasMove()) {
             inputMove.sendUnitMessageTo(robot);
         }

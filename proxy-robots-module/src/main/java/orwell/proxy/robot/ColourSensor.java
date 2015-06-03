@@ -74,7 +74,6 @@ public class ColourSensor implements IRobotElement {
 
 
     public void clear() {
-        logback.debug("Clearing all stored colour values");
         this.colourSensorReads.clear();
     }
 

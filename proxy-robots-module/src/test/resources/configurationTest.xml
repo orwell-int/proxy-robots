@@ -20,8 +20,8 @@
             <pushPort>9000</pushPort>
             <subPort>9001</subPort>
         </server-game>
-        <server-game name='localhost' priority="1">
-            <ip>localhost</ip>
+        <server-game name='localhost' priority="10">
+            <ip>127.0.0.1</ip>
             <pushPort>9001</pushPort>
             <subPort>9000</subPort>
         </server-game>

@@ -35,7 +35,7 @@ public class UdpBeaconFinderFactoryTest {
     public void testFromParameters() throws Exception {
         udpBeaconFinder = UdpBeaconFinderFactory.fromParameters(BROADCAST_PORT,
                 BROADCAST_ATTEMPT_NB, BROADCAST_TIMEOUT_MS);
-        udpBeaconFinder.startBroadcasting();
+        udpBeaconFinder.broadcastAndGetServerAddress();
 
         // There is no server running (or mock simulating it)
         // so the beacon should fail by reaching its max attempts of broadcast

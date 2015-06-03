@@ -24,8 +24,8 @@ public class ConfigurationTest {
     private final static Logger logback = LoggerFactory.getLogger(ConfigurationTest.class);
     private static final String CONFIGURATION_RESOURCE_TEST = "/configurationTest.xml";
     private static final String CONFIGURATION_URL_TEST = "https://github.com/orwell-int/proxy-robots/blob/master/proxy-robots-module/src/main/resources/configuration.xml";
-    private static final int PUSH_PORT = 9000;
-    private static final int SUB_PORT = 9001;
+    private static final int PUSH_PORT = 9001;
+    private static final int SUB_PORT = 9000;
     private static final int CAMERA_PORT_TANK = 9100;
     private static final int CAMERA_PORT_SCOUT = 9102;
     private static final int LINGER_TIME_MS = 1000;
@@ -34,6 +34,7 @@ public class ConfigurationTest {
     private static final int UDP_BROADCAST_ATTEMPS = 5;
     private static final int UDP_BROADCAST_PORT = 9080;
     private static final int RECEIVE_TIMEOUT_MS = 300000;
+    private static final String SERVER_ADDRESS = "tcp://127.0.0.1:";
 
     private Configuration getConfigTest(final String fileName, final EnumConfigFileType configFileType) {
         final ConfigFactoryParameters configFactoryParameters = new ConfigFactoryParameters(fileName, configFileType);
@@ -80,8 +81,8 @@ public class ConfigurationTest {
         try {
             configServerGame = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                     .getConfigProxy().getMaxPriorityConfigServerGame();
-            assertEquals("tcp://192.168.1.46:" + PUSH_PORT, configServerGame.getPushAddress());
-            assertEquals("tcp://192.168.1.46:" + SUB_PORT, configServerGame.getSubscribeAddress());
+            assertEquals(SERVER_ADDRESS + PUSH_PORT, configServerGame.getPushAddress());
+            assertEquals(SERVER_ADDRESS + SUB_PORT, configServerGame.getSubscribeAddress());
         } catch (final Exception e) {
             fail(e.toString());
         }

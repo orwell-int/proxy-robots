@@ -51,8 +51,8 @@ public class ConfigFactoryTest {
     public void testGetConfigServerGame() throws Exception {
         logback.debug("IN");
         // Simple test to check the class is well populated
-        assertEquals("configuration.xml should have 'platypus' as priority server game",
-                "platypus", configFactory.getMaxPriorityConfigServerGame().getName());
+        assertEquals("configuration.xml should have 'localhost' as priority server game",
+                "localhost", configFactory.getMaxPriorityConfigServerGame().getName());
         logback.debug("OUT");
     }
 }

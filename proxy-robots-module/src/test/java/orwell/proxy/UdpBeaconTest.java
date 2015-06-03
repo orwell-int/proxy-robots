@@ -101,7 +101,7 @@ public class UdpBeaconTest {
         replay(mockedDatagramSocket);
 
         udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
-        udpBeaconFinder.startBroadcasting();
+        udpBeaconFinder.broadcastAndGetServerAddress();
         logback.info(udpBeaconFinder.toString());
 
         verify(mockedDatagramSocket);
@@ -127,7 +127,7 @@ public class UdpBeaconTest {
         replay(mockedDatagramSocket);
 
         udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
-        udpBeaconFinder.startBroadcasting();
+        udpBeaconFinder.broadcastAndGetServerAddress();
         logback.info(udpBeaconFinder.toString());
 
         verify(mockedDatagramSocket);
@@ -153,7 +153,7 @@ public class UdpBeaconTest {
         replay(mockedDatagramSocket);
 
         udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
-        udpBeaconFinder.startBroadcasting();
+        udpBeaconFinder.broadcastAndGetServerAddress();
         logback.info(udpBeaconFinder.toString());
 
         verify(mockedDatagramSocket);
@@ -179,7 +179,7 @@ public class UdpBeaconTest {
         replay(mockedDatagramSocket);
 
         udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
-        udpBeaconFinder.startBroadcasting();
+        udpBeaconFinder.broadcastAndGetServerAddress();
         logback.info(udpBeaconFinder.toString());
 
         verify(mockedDatagramSocket);
@@ -205,7 +205,7 @@ public class UdpBeaconTest {
         replay(mockedDatagramSocket);
 
         udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
-        udpBeaconFinder.startBroadcasting();
+        udpBeaconFinder.broadcastAndGetServerAddress();
         logback.info(udpBeaconFinder.toString());
 
         verify(mockedDatagramSocket);
@@ -231,7 +231,7 @@ public class UdpBeaconTest {
         replay(mockedDatagramSocket);
 
         udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
-        udpBeaconFinder.startBroadcasting();
+        udpBeaconFinder.broadcastAndGetServerAddress();
         logback.info(udpBeaconFinder.toString());
 
         verify(mockedDatagramSocket);
@@ -247,7 +247,7 @@ public class UdpBeaconTest {
         replay(mockedDatagramSocket);
 
         udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
-        udpBeaconFinder.startBroadcasting();
+        udpBeaconFinder.broadcastAndGetServerAddress();
         logback.info(udpBeaconFinder.toString());
 
         assertEquals("UdpBeaconDecoder values decoded: \n" +
@@ -285,7 +285,7 @@ public class UdpBeaconTest {
 
         udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
         udpBeaconFinder.setMaxAttemptsNumber(2);
-        udpBeaconFinder.startBroadcasting();
+        udpBeaconFinder.broadcastAndGetServerAddress();
         logback.info(udpBeaconFinder.toString());
 
         verify(mockedDatagramSocket); // Check that 2 tries where performed
