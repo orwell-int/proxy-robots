@@ -1,5 +1,7 @@
 package orwell.proxy;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import orwell.proxy.config.ConfigFactory;
 import orwell.proxy.config.ConfigFactoryParameters;
 import orwell.proxy.robot.RobotsMap;
@@ -13,11 +15,13 @@ import java.util.ArrayList;
  * Created by Michaël Ludmann on 03/05/15.
  */
 class ProxyRobotsFactory {
+    private final static Logger logback = LoggerFactory.getLogger(ProxyRobotsFactory.class);
     private final ConfigFactory configFactory;
     private final ZmqMessageBroker zmqMessageBroker;
     private final UdpBeaconFinder udpBeaconFinder;
 
     public ProxyRobotsFactory(final ConfigFactoryParameters configPathType) {
+        logback.debug("Constructor -- IN");
         configFactory = ConfigFactory.createConfigFactory(configPathType);
 
         if (null == configFactory.getConfigProxy()) {
@@ -33,6 +37,7 @@ class ProxyRobotsFactory {
 
             udpBeaconFinder = UdpBeaconFinderFactory.fromConfig(configFactory.getConfigProxy().getConfigUdpBroadcast());
         }
+        logback.debug("Constructor -- OUT");
     }
 
     public ProxyRobots getProxyRobots() {

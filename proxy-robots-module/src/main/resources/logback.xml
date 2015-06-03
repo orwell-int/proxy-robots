@@ -24,6 +24,8 @@
 
     <root level="trace">
         <appender-ref ref="FILE"/>
+    </root>
+    <root level="debug">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>

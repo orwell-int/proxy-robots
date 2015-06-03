@@ -1,5 +1,7 @@
 package orwell.proxy;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -40,6 +42,11 @@ public class ProtobufTest {
     private static final Robot.Status SERVER_ROBOT_STATE_RFID_STATUS = Robot.Status.ON;
     private static final Robot.Status SERVER_ROBOT_STATE_COLOUR_STATUS = Robot.Status.OFF;
     private static final String REGISTERED_ROBOT_ID = "robotIdTest";
+
+    @Before
+    public void setUp() throws Exception {
+        logback.debug(">>>>>>>>> IN");
+    }
 
     public static Controller.Input getTestInput() {
         final Controller.Input.Builder inputBuilder = Controller.Input.newBuilder();
@@ -203,5 +210,10 @@ public class ProtobufTest {
 
         assertTrue("ServerGame.Registered should contains all valid data",
                 checkTestRegistered(registered));
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        logback.debug("<<<< OUT");
     }
 }

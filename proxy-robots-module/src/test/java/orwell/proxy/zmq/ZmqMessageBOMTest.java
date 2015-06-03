@@ -1,6 +1,7 @@
 package orwell.proxy.zmq;
 
 import org.easymock.TestSubject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -39,6 +40,7 @@ public class ZmqMessageBOMTest {
 
     @Before
     public void setUp() throws Exception {
+        logback.debug(">>>>>>>>> IN");
     }
 
     private byte[] getRawZmqMessage(final EnumMessageType messageType) {
@@ -133,10 +135,8 @@ public class ZmqMessageBOMTest {
 
     @Test
     public void testParseFrom_Exception() throws Exception {
-        logback.info("IN");
         exception.expect(ParseException.class);
         zmqMessageBom = ZmqMessageBOM.parseFrom((ROUTING_ID + " Registered" + "").getBytes());
-        logback.info("OUT");
     }
 
     /**
@@ -145,7 +145,6 @@ public class ZmqMessageBOMTest {
      */
     @Test
     public void testParseFrom_ParseProtobuf_Input() throws Exception {
-        logback.info("IN");
         zmqMessageBom = ZmqMessageBOM.parseFrom(getRawZmqMessage(EnumMessageType.INPUT));
         assertEquals(EnumMessageType.INPUT, zmqMessageBom.getMessageType());
 
@@ -153,25 +152,20 @@ public class ZmqMessageBOMTest {
         final Controller.Input input =
                 Controller.Input.parseFrom(zmqMessageBom.getMessageBodyBytes());
         assertTrue(ProtobufTest.checkTestInputValid(input));
-        logback.info("OUT");
     }
 
     @Test
     public void testParseFrom_ParseProtobuf_Registered() throws Exception {
-        logback.info("IN");
         zmqMessageBom = ZmqMessageBOM.parseFrom(getRawZmqMessage(EnumMessageType.REGISTERED));
         assertEquals(EnumMessageType.REGISTERED, zmqMessageBom.getMessageType());
 
         // Parse protobuf message
         final ServerGame.Registered registered = ServerGame.Registered.parseFrom(zmqMessageBom.getMessageBodyBytes());
         assertTrue(ProtobufTest.checkTestRegistered(registered));
-
-        logback.info("OUT");
     }
 
     @Test
     public void testParseFrom_ParseProtobuf_ServerRobotState() throws Exception {
-        logback.info("IN");
         zmqMessageBom = ZmqMessageBOM.parseFrom(getRawZmqMessage(EnumMessageType.SERVER_ROBOT_STATE));
         assertEquals(EnumMessageType.SERVER_ROBOT_STATE, zmqMessageBom.getMessageType());
 
@@ -179,7 +173,10 @@ public class ZmqMessageBOMTest {
         final Robot.ServerRobotState serverRobotState =
                 Robot.ServerRobotState.parseFrom(zmqMessageBom.getMessageBodyBytes());
         assertTrue(ProtobufTest.checkTestServerRobotState(serverRobotState));
-        logback.info("OUT");
     }
 
+    @After
+    public void tearDown() throws Exception {
+        logback.debug("<<<< OUT");
+    }
 }

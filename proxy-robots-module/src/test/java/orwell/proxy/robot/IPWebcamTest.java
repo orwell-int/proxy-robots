@@ -1,6 +1,7 @@
 package orwell.proxy.robot;
 
 import org.easymock.TestSubject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,9 +29,8 @@ public class IPWebcamTest {
 
     @Before
     public void setUp() {
-        logback.info("IN");
+        logback.debug(">>>>>>>>> IN");
         configCamera = new MockedConfigCamera();
-        logback.info("OUT");
     }
 
     @Test
@@ -77,5 +77,17 @@ public class IPWebcamTest {
     public void testDefaultConstructor_Malformed() throws Exception {
         final URL url = new URL("");
         ipWebcam = new IPWebcam(url);
+    }
+
+    @Test
+    public void testToString() throws MalformedURLException {
+        ipWebcam = new IPWebcam(configCamera);
+        final String ipWebcamString = "IPWebcam { [URL] http://mockedIp:777/mockedResourcePath }";
+        assertEquals(ipWebcamString, ipWebcam.toString());
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        logback.debug("<<<< OUT");
     }
 }

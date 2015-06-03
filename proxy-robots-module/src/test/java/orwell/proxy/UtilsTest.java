@@ -1,8 +1,12 @@
 package orwell.proxy;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -15,6 +19,12 @@ import static org.junit.Assert.assertEquals;
 @RunWith(JUnit4.class)
 public class UtilsTest {
     private final static byte SEPARATOR = 0x77;
+    private final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class);
+
+    @Before
+    public void setUp() throws Exception {
+        logback.debug(">>>>>>>>> IN");
+    }
 
     @Test
     public void testSplit_bSEPb_limit3() throws Exception {
@@ -134,5 +144,10 @@ public class UtilsTest {
         assertArrayEquals(new byte[]{0x01, 0x02}, list.get(0));
         assertArrayEquals(new byte[]{0x03, 0x04, 0x05}, list.get(1));
         assertArrayEquals(new byte[]{0x06, 0x07}, list.get(2));
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        logback.debug("<<<< OUT");
     }
 }

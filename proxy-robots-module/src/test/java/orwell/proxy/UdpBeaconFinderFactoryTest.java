@@ -1,6 +1,7 @@
 package orwell.proxy;
 
 import org.easymock.TestSubject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,9 +27,7 @@ public class UdpBeaconFinderFactoryTest {
 
     @Before
     public void setUp() throws Exception {
-        logback.info("IN");
-
-        logback.info("OUT");
+        logback.debug(">>>>>>>>> IN");
     }
 
     @Test
@@ -42,5 +41,8 @@ public class UdpBeaconFinderFactoryTest {
         assertEquals(BROADCAST_ATTEMPT_NB, udpBeaconFinder.getNumberOfPerformedAttempts());
     }
 
-
+    @After
+    public void tearDown() throws Exception {
+        logback.debug("<<<< OUT");
+    }
 }

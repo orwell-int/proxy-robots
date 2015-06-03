@@ -1,5 +1,6 @@
 package orwell.proxy.zmq;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +33,7 @@ public class FrequencyFilterTest {
 
     @Before
     public void setUp() {
+        logback.debug(">>>>>>>>> IN");
         zmqRegisterBOM_1 = getTestMessageBom(EnumMessageType.REGISTER, TEST_ROUTING_ID_1);
         zmqRegisterBOM_2 = getTestMessageBom(EnumMessageType.REGISTER, TEST_ROUTING_ID_2);
         zmqServerRobotStateBOM = getTestMessageBom(EnumMessageType.SERVER_ROBOT_STATE, TEST_ROUTING_ID_1);
@@ -44,7 +46,6 @@ public class FrequencyFilterTest {
 
     @Test
     public void testGetFilteredMessage_FirstGet() throws Exception {
-        logback.debug("IN");
         frequencyFilter = new FrequencyFilter(OUTGOING_MSG_PERIOD_HIGH);
 
         final ZmqMessageBOM filteredZmqMessage = frequencyFilter.getFilteredMessage(zmqRegisterBOM_1);
@@ -53,12 +54,10 @@ public class FrequencyFilterTest {
         assertArrayEquals("Filtered message body should not be altered",
                 zmqRegisterBOM_1.getMessageBodyBytes(),
                 filteredZmqMessage.getMessageBodyBytes());
-        logback.debug("OUT");
     }
 
     @Test
     public void testGetFilteredMessage_SecondSameGetIsEmpty() throws Exception {
-        logback.debug("IN");
         frequencyFilter = new FrequencyFilter(OUTGOING_MSG_PERIOD_HIGH);
 
         assertNotNull(frequencyFilter.getFilteredMessage(zmqRegisterBOM_1));
@@ -66,12 +65,10 @@ public class FrequencyFilterTest {
         // The period of the filter is of a low tolerance,
         // so the second message should be empty as filtered
         assertTrue(frequencyFilter.getFilteredMessage(zmqRegisterBOM_1).isEmpty());
-        logback.debug("OUT");
     }
 
     @Test
     public void testGetFilteredMessage_SecondSameGetIsNotEmpty() throws Exception {
-        logback.debug("IN");
         frequencyFilter = new FrequencyFilter(OUTGOING_MSG_PERIOD_LOW);
 
         assertNotNull(frequencyFilter.getFilteredMessage(zmqRegisterBOM_1));
@@ -79,12 +76,10 @@ public class FrequencyFilterTest {
         // The period of the filter is of a high tolerance,
         // so the second message should not be filtered
         assertFalse(frequencyFilter.getFilteredMessage(zmqRegisterBOM_1).isEmpty());
-        logback.debug("OUT");
     }
 
     @Test
     public void testGetFilteredMessage_SecondDifferentGetIsNotEmpty() throws Exception {
-        logback.debug("IN");
         frequencyFilter = new FrequencyFilter(OUTGOING_MSG_PERIOD_HIGH);
 
         assertNotNull(frequencyFilter.getFilteredMessage(zmqRegisterBOM_1));
@@ -93,12 +88,10 @@ public class FrequencyFilterTest {
         // but the message type is different
         // so the second message should not be filtered
         assertFalse(frequencyFilter.getFilteredMessage(zmqServerRobotStateBOM).isEmpty());
-        logback.debug("OUT");
     }
 
     @Test
     public void testGetFilteredMessage_DifferentRoutingIds() throws Exception {
-        logback.debug("IN");
         frequencyFilter = new FrequencyFilter(OUTGOING_MSG_PERIOD_HIGH);
 
         assertNotNull(frequencyFilter.getFilteredMessage(zmqRegisterBOM_1));
@@ -110,8 +103,10 @@ public class FrequencyFilterTest {
         Thread.sleep(1);
         // A third message with different routingId should NOT be filtered
         assertFalse(frequencyFilter.getFilteredMessage(zmqRegisterBOM_2).isEmpty());
-
-        logback.debug("OUT");
     }
 
+    @After
+    public void tearDown() throws Exception {
+        logback.debug("<<<< OUT");
+    }
 }

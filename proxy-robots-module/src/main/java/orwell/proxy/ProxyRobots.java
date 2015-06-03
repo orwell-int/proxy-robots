@@ -26,7 +26,7 @@ public class ProxyRobots implements IZmqMessageListener {
     public ProxyRobots(final IZmqMessageBroker messageBroker,
                        final IConfigFactory configFactory,
                        final IRobotsMap robotsMap) {
-        logback.info("Constructor -- IN");
+        logback.debug("Constructor -- IN");
         assert (null != messageBroker);
         assert (null != configFactory);
         assert (null != configFactory.getConfigProxy());
@@ -40,7 +40,7 @@ public class ProxyRobots implements IZmqMessageListener {
 
         robotFactory = new RobotFactory();
         messageBroker.addZmqMessageListener(this);
-        logback.info("Constructor -- OUT");
+        logback.debug("Constructor -- OUT");
     }
 
     public ProxyRobots(final UdpBeaconFinder udpBeaconFinder,

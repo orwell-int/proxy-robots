@@ -3,6 +3,7 @@ package orwell.proxy;
 import org.easymock.IAnswer;
 import org.easymock.Mock;
 import org.easymock.TestSubject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,14 +46,13 @@ public class UdpBeaconTest {
 
     @Before
     public void setUp() throws Exception {
-        logback.info("IN");
+        logback.debug(">>>>>>>>> IN");
         mockedDatagramSocket = createNiceMock(DatagramSocket.class);
         mockedDatagramSocket.setBroadcast(true);
         mockedDatagramSocket.send((DatagramPacket) anyObject());
         mockedDatagramSocket.close();
 
         udpBeaconDecoder = new UdpBeaconDecoder();
-        logback.info("OUT");
     }
 
     /**
@@ -293,5 +293,10 @@ public class UdpBeaconTest {
         assertEquals(IP_TEST, udpBeaconDecoder.getServerGameIp());
         assertEquals("tcp://127.0.0.1:9001", udpBeaconDecoder.getPushAddress());
         assertEquals("tcp://127.0.0.1:9000", udpBeaconDecoder.getSubscribeAddress());
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        logback.debug("<<<< OUT");
     }
 }

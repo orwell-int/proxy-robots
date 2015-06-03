@@ -69,4 +69,10 @@ public class MockedTank extends IRobot {
         }
         visitor.visit(this);
     }
+
+    @Override
+    public String toString() {
+        return "MockedTank { [RoutingID] " + getRoutingId() +
+                " [TeamName] " + getTeamName() + " }";
+    }
 }

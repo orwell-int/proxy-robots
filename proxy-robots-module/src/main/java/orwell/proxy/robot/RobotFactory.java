@@ -15,7 +15,6 @@ import java.net.MalformedURLException;
 public final class RobotFactory {
     private final static Logger logback = LoggerFactory.getLogger(RobotFactory.class);
 
-
     public IRobot getRobot(final IConfigRobot configRobot) {
         if (null == configRobot) {
             return null;

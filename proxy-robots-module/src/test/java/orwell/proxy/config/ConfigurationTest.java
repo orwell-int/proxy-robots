@@ -1,5 +1,6 @@
 package orwell.proxy.config;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,7 +32,7 @@ public class ConfigurationTest {
     private static final int LINGER_TIME_MS = 1000;
     private static final int OUTGOING_MSG_FREQ_MS = 500;
     private static final int UDP_BROADCAST_TIMEOUT = 1000;
-    private static final int UDP_BROADCAST_ATTEMPS = 5;
+    private static final int UDP_BROADCAST_ATTEMPTS = 5;
     private static final int UDP_BROADCAST_PORT = 9080;
     private static final int RECEIVE_TIMEOUT_MS = 300000;
     private static final String SERVER_ADDRESS = "tcp://127.0.0.1:";
@@ -43,24 +44,21 @@ public class ConfigurationTest {
 
     @Before
     public void setUp() {
-
+        logback.debug(">>>>>>>>> IN");
         assertNotNull("Test file missing", getClass().getResource(CONFIGURATION_RESOURCE_TEST));
     }
 
 
     @Test
     public void testPopulateConfigModel() {
-
         assertTrue(getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).isPopulated());
     }
 
     @Test
     public void testProxyList() {
-
         final ConfigProxy configProxy;
         configProxy = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                 .getConfigProxy();
-
 
         assertEquals(3, configProxy.getConfigServerGames().size());
         try {
@@ -69,14 +67,12 @@ public class ConfigurationTest {
             logback.error(e.getMessage());
         }
 
-
         assertEquals("localhost", configProxy.getConfigServerGames().get(2)
                 .getName());
     }
 
     @Test
     public void testServerGameElement() {
-
         final ConfigServerGame configServerGame;
         try {
             configServerGame = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
@@ -90,7 +86,6 @@ public class ConfigurationTest {
 
     @Test
     public void testConfigProxy() {
-
         final ConfigProxy configProxy;
         configProxy = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                 .getConfigProxy();
@@ -103,11 +98,9 @@ public class ConfigurationTest {
 
     @Test
     public void testRobotsList() {
-
         final ConfigRobots configRobots;
         configRobots = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                 .getConfigRobots();
-
 
         assertEquals(2, configRobots.getConfigTanks().size());
         try {
@@ -119,7 +112,6 @@ public class ConfigurationTest {
 
     @Test
     public void testTankElement() {
-
         final ConfigTank configTank;
         try {
             configTank = (ConfigTank) getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel().getConfigRobots()
@@ -138,7 +130,6 @@ public class ConfigurationTest {
 
     @Test
     public void testScoutElement() {
-
         final ConfigScout configScout;
         try {
             configScout = (ConfigScout) getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel().getConfigRobots()
@@ -155,18 +146,15 @@ public class ConfigurationTest {
 
     @Test
     public void testRobotsToRegister() {
-
         final ConfigRobots configRobots;
         configRobots = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                 .getConfigRobots();
-
 
         assertEquals(2, configRobots.getConfigRobotsToRegister().size());
     }
 
     @Test
     public void testConfigurationFailsWithEmptyFile() {
-        logback.debug("IN");
         File file = null;
         try {
             // Create empty file
@@ -177,34 +165,32 @@ public class ConfigurationTest {
 
         // Population fails since file is empty
         assertFalse(getConfigTest(file.getAbsolutePath(), EnumConfigFileType.FILE).isPopulated());
-
-        logback.debug("OUT");
     }
 
 
     @Test
     public void testConfigurationFailsWithURL() {
-        logback.debug("IN");
-
         assertFalse(getConfigTest(CONFIGURATION_URL_TEST, EnumConfigFileType.URL).isPopulated());
         assertNull(getConfigTest(CONFIGURATION_URL_TEST, EnumConfigFileType.URL).getConfigModel());
-
-        logback.debug("OUT");
     }
 
 
     @Test
     public void testUdpBroadcastElement() {
-
         final ConfigUdpBroadcast configUdpBroadcast;
         try {
             configUdpBroadcast = getConfigTest(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE).getConfigModel()
                     .getConfigProxy().getConfigUdpBroadcast();
             assertEquals(UDP_BROADCAST_PORT, configUdpBroadcast.getPort());
-            assertEquals(UDP_BROADCAST_ATTEMPS, configUdpBroadcast.getAttempts());
+            assertEquals(UDP_BROADCAST_ATTEMPTS, configUdpBroadcast.getAttempts());
             assertEquals(UDP_BROADCAST_TIMEOUT, configUdpBroadcast.getTimeoutPerAttemptMs());
         } catch (final Exception e) {
             fail(e.toString());
         }
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        logback.debug("<<<< OUT");
     }
 }

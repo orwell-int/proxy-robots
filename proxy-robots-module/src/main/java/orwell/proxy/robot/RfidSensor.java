@@ -89,4 +89,18 @@ public class RfidSensor implements IRobotElement {
     public void accept(final IRobotElementVisitor visitor) {
         visitor.visit(this);
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder stringBuilder = new StringBuilder("RfidSensor { ");
+        for (final Robot.Rfid rfid : this.rfidSensorReads) {
+            stringBuilder.append("[");
+            stringBuilder.append(rfid.getRfid());
+            stringBuilder.append("] ");
+            stringBuilder.append(rfid.getStatus());
+            stringBuilder.append("; ");
+        }
+        stringBuilder.append("}");
+        return stringBuilder.toString();
+    }
 }

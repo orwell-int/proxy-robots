@@ -7,6 +7,7 @@ import lejos.pc.comm.NXTInfo;
 import org.easymock.Capture;
 import org.easymock.Mock;
 import org.easymock.TestSubject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,10 +42,9 @@ public class LegoTankTest {
 
     @Before
     public void setUp() {
-        logback.info("IN");
+        logback.debug(">>>>>>>>> IN");
         // Instantiate default tank
         tank = new LegoTank("", "", new MockedCamera(), "");
-        logback.info("OUT");
     }
 
     private LegoTank legoTankFromMF(final MessageFramework messageFramework) {
@@ -53,7 +53,7 @@ public class LegoTankTest {
 
     @Test
     public void testToString() {
-        final String tankString = "Tank {[BTName]  [BT-ID]  [RoutingID] " + tank.getRoutingId() + " [TeamName] }";
+        final String tankString = "LegoTank { [BTName]  [BT-ID]  [RoutingID] " + tank.getRoutingId() + " [TeamName]  }";
         assertEquals(tankString, tank.toString());
     }
 
@@ -131,8 +131,6 @@ public class LegoTankTest {
      * 3. Tank reads a Color value: third read of ServerRobotState is not null
      */
     public void testReceivedNewMessage() {
-        logback.info("IN");
-
         tank.receivedNewMessage(unitMessageRfid);
 
         final RobotElementStateVisitor stateVisitor = new RobotElementStateVisitor();
@@ -149,8 +147,6 @@ public class LegoTankTest {
         stateVisitor.clearServerRobotState();
         tank.accept(stateVisitor);
         assertNotNull(stateVisitor.getServerRobotStateBytes());
-
-        logback.info("OUT");
     }
 
     @Test
@@ -216,5 +212,10 @@ public class LegoTankTest {
 
         // Check
         verify(stateVisitor);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        logback.debug("<<<< OUT");
     }
 }

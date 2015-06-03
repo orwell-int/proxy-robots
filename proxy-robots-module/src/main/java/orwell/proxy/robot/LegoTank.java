@@ -97,8 +97,8 @@ public class LegoTank extends IRobot implements MessageListenerInterface {
 
     @Override
     public String toString() {
-        return "Tank {[BTName] " + nxtInfo.name + " [BT-ID] " +
+        return "LegoTank { [BTName] " + nxtInfo.name + " [BT-ID] " +
                 nxtInfo.deviceAddress + " [RoutingID] " + getRoutingId() +
-                " [TeamName] " + getTeamName() + "}";
+                " [TeamName] " + getTeamName() + " }";
     }
 }

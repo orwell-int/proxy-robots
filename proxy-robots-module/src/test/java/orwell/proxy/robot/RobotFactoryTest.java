@@ -1,9 +1,12 @@
 package orwell.proxy.robot;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import orwell.proxy.config.ConfigCamera;
 import orwell.proxy.config.ConfigTank;
 
@@ -16,6 +19,7 @@ import static org.junit.Assert.assertNull;
 @RunWith(JUnit4.class)
 public class RobotFactoryTest {
 
+    private final static Logger logback = LoggerFactory.getLogger(RobotFactoryTest.class);
     private static final String BT_NAME_TEST = "BtNameTest";
     private static final String BT_ID_TEST = "BtIdTest";
     private static final String IMAGE_TEST = "ImageTest";
@@ -26,6 +30,7 @@ public class RobotFactoryTest {
 
     @Before
     public void setUp() {
+        logback.debug(">>>>>>>>> IN");
         robotFactory = new RobotFactory();
     }
 
@@ -61,5 +66,10 @@ public class RobotFactoryTest {
         final LegoTank legoTank = (LegoTank) robotFactory.getRobot(configTank);
         assertEquals(IMAGE_TEST, legoTank.getImage());
         assertEquals("http://" + IP_TEST + ":" + PORT_TEST, legoTank.getCameraUrl());
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        logback.debug("<<<< OUT");
     }
 }

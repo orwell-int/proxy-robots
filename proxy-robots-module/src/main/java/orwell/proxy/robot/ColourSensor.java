@@ -81,4 +81,18 @@ public class ColourSensor implements IRobotElement {
     public void accept(final IRobotElementVisitor visitor) {
         visitor.visit(this);
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder stringBuilder = new StringBuilder("ColourSensor { ");
+        for (final Robot.Colour colour : this.colourSensorReads) {
+            stringBuilder.append("[");
+            stringBuilder.append(colour.getColour());
+            stringBuilder.append("] ");
+            stringBuilder.append(colour.getStatus());
+            stringBuilder.append("; ");
+        }
+        stringBuilder.append("}");
+        return stringBuilder.toString();
+    }
 }

@@ -55,7 +55,7 @@ public class ProxyRobotsTest {
 
     @Before
     public void setUp() {
-        logback.info("IN");
+        logback.debug(">>>>>>>>> IN");
 
         // Build Mock of Tank
         mockedTank = new MockedTank();
@@ -65,8 +65,6 @@ public class ProxyRobotsTest {
         // Create the map with one mock tank
         robotsMap = new RobotsMap();
         robotsMap.add(mockedTank);
-
-        logback.info("OUT");
     }
 
     private byte[] getMockRawZmqMessage(final IRobot iRobot, final EnumMessageType messageType) {
@@ -147,29 +145,24 @@ public class ProxyRobotsTest {
 
     @Test
     public void testInitialiseTanks() {
-        logback.info("IN");
         instantiateBasicProxyRobots();
 
         assertEquals(1, myProxyRobots.robotsMap.getRobotsArray().size());
         assertEquals(mockedTank,
                 myProxyRobots.robotsMap.get("tempRoutingId"));
-        logback.info("OUT");
     }
 
     @Test
     public void testConnectToRobots() {
-        logback.info("IN");
         instantiateBasicProxyRobots();
 
         myProxyRobots.connectToRobots();
 
         assertEquals(1, myProxyRobots.robotsMap.getConnectedRobots().size());
-        logback.info("OUT");
     }
 
     @Test
     public void testRegisterFlow() throws Exception {
-        logback.info("IN");
         instantiateBasicProxyRobots();
 
         myProxyRobots.connectToRobots();
@@ -184,14 +177,11 @@ public class ProxyRobotsTest {
 
         assertEquals(EnumRegistrationState.REGISTERED, mockedTank.getRegistrationState());
         assertEquals("BananaOne", mockedTank.getRoutingId());
-
-        logback.info("OUT");
     }
 
 
     @Test
     public void testUpdateConnectedTanks() {
-        logback.info("IN");
         instantiateBasicProxyRobots();
 
         myProxyRobots.connectToRobots();
@@ -207,13 +197,10 @@ public class ProxyRobotsTest {
 
         // So the map of isConnected tanks is empty
         assertTrue(myProxyRobots.robotsMap.getConnectedRobots().isEmpty());
-
-        logback.debug("OUT");
     }
 
     @Test
     public void testInitializeTanksFromConfig() {
-        logback.info("IN");
         instantiateBasicProxyRobots();
 
         myProxyRobots.initializeRobotsFromConfig();
@@ -222,13 +209,11 @@ public class ProxyRobotsTest {
         assertEquals(2, myProxyRobots.robotsMap.getNotConnectedRobots().size());
         // One tank in the map is indeed the one coming from the config file
         assertNotNull(myProxyRobots.robotsMap.get(configFactory.getConfigRobots().getConfigRobotsToRegister().get(0).getTempRoutingID()));
-
-        logback.info("OUT");
     }
 
     @Test
     public void testSendServerRobotState() throws Exception {
-        logback.info("IN");
+        logback.debug(">>>>>>>>> IN");
 
         // Build Mock of ZmqMessageBroker
         final Capture<ZmqMessageBOM> captureMsg = new Capture<>();
@@ -255,13 +240,11 @@ public class ProxyRobotsTest {
         assertEquals(EnumMessageType.SERVER_ROBOT_STATE, captureMsg.getValue().getMessageType());
         assertEquals("RoutingId is supposed to have changed to the one provided by registered",
                 REGISTERED_ID, captureMsg.getValue().getRoutingId());
-
-        logback.info("OUT");
     }
 
     @Test
     public void testStart_noUdpDiscovery() {
-        logback.info("IN");
+        logback.debug(">>>>>>>>> IN");
 
         // Build Mock of ZmqMessageBroker
         final Capture<String> capturePushAddress = new Capture<>();
@@ -297,14 +280,10 @@ public class ProxyRobotsTest {
                 capturePushAddress.getValue());
         assertEquals(configFactory.getMaxPriorityConfigServerGame().getSubscribeAddress(),
                 captureSubscribeAddress.getValue());
-
-        logback.info("OUT");
     }
 
     @Test
     public void testStart_udpDiscovery() {
-        logback.info("IN");
-
         // Build Mock of ZmqMessageBroker
         final Capture<String> capturePushAddress = new Capture<>();
         final Capture<String> captureSubscribeAddress = new Capture<>();
@@ -347,12 +326,10 @@ public class ProxyRobotsTest {
         // provided by udpBeaconFinder
         assertEquals(PUSH_ADDRESS, capturePushAddress.getValue());
         assertEquals(SUB_ADDRESS, captureSubscribeAddress.getValue());
-        logback.info("OUT");
     }
 
     @Test
     public void testOnInput() throws Exception {
-        logback.info("IN");
         instantiateBasicProxyRobots();
 
         myProxyRobots.connectToRobots();
@@ -374,14 +351,10 @@ public class ProxyRobotsTest {
         // Tank received the right Input correctly
         assertTrue(((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getInputFire().hasFire());
         assertTrue(((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getInputMove().hasMove());
-
-        logback.info("OUT");
     }
 
     @Test
     public void testGetNbOutgoingMessageFiltered() {
-        logback.info("IN");
-
         instantiateBasicProxyRobots();
         myProxyRobots.start();
 
@@ -392,8 +365,6 @@ public class ProxyRobotsTest {
         // during which the proxy runs and tries to send messages,
         // we should filter some messages
         assertTrue("There should be at least one filtered message", 0 < myProxyRobots.getOutgoingMessageFiltered());
-
-        logback.info("OUT");
     }
 
     @Test
@@ -413,5 +384,6 @@ public class ProxyRobotsTest {
     @After
     public void tearDown() {
         myProxyRobots.stop();
+        logback.debug("<<<< OUT");
     }
 }

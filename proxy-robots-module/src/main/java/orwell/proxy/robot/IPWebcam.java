@@ -50,4 +50,9 @@ public class IPWebcam implements ICamera {
     public void accept(final IRobotElementVisitor visitor) {
         visitor.visit(this);
     }
+
+    @Override
+    public String toString() {
+        return "IPWebcam { [URL] " + getUrl() + " }";
+    }
 }

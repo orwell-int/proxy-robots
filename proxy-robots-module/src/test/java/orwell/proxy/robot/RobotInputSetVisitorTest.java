@@ -4,6 +4,7 @@ import junit.framework.AssertionFailedError;
 import lejos.mf.common.UnitMessage;
 import org.easymock.Mock;
 import org.easymock.TestSubject;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,16 +34,13 @@ public class RobotInputSetVisitorTest {
 
     @Before
     public void setUp() {
-
-        logback.info("IN");
+        logback.debug(">>>>>>>>> IN");
         inputSetVisitor = new RobotInputSetVisitor(ProtobufTest.getTestInput().toByteArray());
-        logback.info("OUT");
     }
 
 
     @Test
     public void testVisit_RobotMove() {
-
         final InputMove inputMove = new InputMove();
         assertFalse(inputMove.hasMove());
 
@@ -53,7 +51,6 @@ public class RobotInputSetVisitorTest {
 
     @Test
     public void testVisit_RobotFire() {
-
         final InputFire inputFire = new InputFire();
         assertFalse(inputFire.hasFire());
 
@@ -64,7 +61,6 @@ public class RobotInputSetVisitorTest {
 
     @Test
     public void testVisit_Robot_Empty() {
-
         // Mock the tank
         tank = createMock(LegoTank.class);
         tank.sendUnitMessage(anyObject(UnitMessage.class));
@@ -81,7 +77,6 @@ public class RobotInputSetVisitorTest {
 
     @Test
     public void testVisit_Robot_Full() {
-
         // Setup the class
         final InputMove inputMove = new InputMove();
         inputSetVisitor.visit(inputMove);
@@ -100,5 +95,8 @@ public class RobotInputSetVisitorTest {
         verify(tank);
     }
 
-
+    @After
+    public void tearDown() throws Exception {
+        logback.debug("<<<< OUT");
+    }
 }
