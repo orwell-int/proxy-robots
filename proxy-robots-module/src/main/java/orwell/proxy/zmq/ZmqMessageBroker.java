@@ -21,11 +21,13 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
     final private ArrayList<IFilter> filterList;
     private final ArrayList<IZmqMessageListener> zmqMessageListeners;
     private final long socketTimeoutMs;
+    private final boolean isSocketTimeoutSet;
     private boolean isConnected = false;
-    private int nbMessagesSkipped = 0;
+    private int nbSuccessiveSameMessages = 0;
     private ZmqReader reader;
     private boolean isSkipIdenticalMessages = false;
     private long baseTimeMs;
+    private int nbBadMessages;
 
     public ZmqMessageBroker(final long receiveTimeoutMs,
                             final int senderLinger,
@@ -33,6 +35,7 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
                             final ArrayList<IFilter> filterList) {
         logback.info("Constructor -- IN");
         socketTimeoutMs = receiveTimeoutMs;
+        isSocketTimeoutSet = 0 < receiveTimeoutMs;
         zmqMessageListeners = new ArrayList<>();
         rXguard = new Object();
 
@@ -108,14 +111,6 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
         zmqMessageListeners.add(zmqMsgListener);
     }
 
-
-    private void receivedNewZmqMessage(final ZmqMessageBOM zmqMessageBOM) {
-        logback.debug("Received New ZMQ Message : " + zmqMessageBOM.getMessageType());
-        for (final IZmqMessageListener zmqMessageListener : zmqMessageListeners) {
-            zmqMessageListener.receivedNewZmq(zmqMessageBOM);
-        }
-    }
-
     @Override
     public void close() {
         logback.info("Closing ZMQ message broker");
@@ -127,12 +122,17 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
         return isConnected;
     }
 
-    public int getNbMessagesSkipped() {
-        return nbMessagesSkipped;
+    public int getNbSuccessiveMessagesSkipped() {
+        return nbSuccessiveSameMessages;
+    }
+
+    public int getNbBadMessages() {
+        return nbBadMessages;
     }
 
     private boolean hasSocketRecvTimeout() {
-        return System.currentTimeMillis() - baseTimeMs > socketTimeoutMs;
+        return isSocketTimeoutSet &&
+                (System.currentTimeMillis() - baseTimeMs > socketTimeoutMs);
     }
 
     private class ZmqReader extends Thread {
@@ -148,23 +148,18 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
                 if (null != raw_zmq_message) {
                     synchronized (rXguard) {
                         baseTimeMs = System.currentTimeMillis();
-                        logback.debug(">>>>>>>>>>>>>>>>>>>>>> receive time " + baseTimeMs);
-
                         try {
                             newZmqMessage = ZmqMessageBOM.parseFrom(raw_zmq_message);
 
                             // We do not want to uselessly flood the robot
                             if (isSkipIdenticalMessages && 0 == newZmqMessage.compareTo(previousZmqMessage)) {
-                                nbMessagesSkipped++;
-                                logback.debug("Current zmq message identical to previous zmq message (already done " +
-                                        nbMessagesSkipped + " time(s) for this message)");
+                                onReceivedIdenticalMessage();
                             } else {
-                                nbMessagesSkipped = 0;
-                                receivedNewZmqMessage(newZmqMessage);
+                                onReceivedNewZmqMessage(newZmqMessage);
                             }
                             previousZmqMessage = newZmqMessage;
                         } catch (final ParseException e) {
-                            logback.warn("Message received ignored: " + e.getMessage());
+                            onReceivedBadMessage(e);
                         }
                     }
                 }
@@ -184,6 +179,26 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
             context.term();
             Thread.yield();
             logback.info("All sockets are now closed");
+        }
+
+        private void onReceivedIdenticalMessage() {
+            nbSuccessiveSameMessages++;
+            logback.debug("Current zmq message identical to previous zmq message (already done " +
+                    nbSuccessiveSameMessages + " time(s) for this message)");
+        }
+
+        private void onReceivedNewZmqMessage(final ZmqMessageBOM zmqMessageBOM) {
+            nbSuccessiveSameMessages = 0;
+            logback.debug("Received New ZMQ Message : " + zmqMessageBOM.getMessageType());
+            for (final IZmqMessageListener zmqMessageListener : zmqMessageListeners) {
+                zmqMessageListener.receivedNewZmq(zmqMessageBOM);
+            }
+        }
+
+        private void onReceivedBadMessage(final ParseException e) {
+            nbSuccessiveSameMessages = 0;
+            nbBadMessages++;
+            logback.warn("Message received ignored: " + e.getMessage());
         }
     }
 }
