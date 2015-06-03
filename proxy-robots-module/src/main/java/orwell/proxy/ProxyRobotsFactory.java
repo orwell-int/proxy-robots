@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import orwell.proxy.config.ConfigFactory;
 import orwell.proxy.config.ConfigFactoryParameters;
 import orwell.proxy.robot.RobotsMap;
+import orwell.proxy.udp.UdpBeaconFinder;
+import orwell.proxy.udp.UdpBeaconFinderFactory;
 import orwell.proxy.zmq.FrequencyFilter;
 import orwell.proxy.zmq.IFilter;
 import orwell.proxy.zmq.ZmqMessageBroker;

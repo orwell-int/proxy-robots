@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.udp;
 
 import org.easymock.TestSubject;
 import org.junit.After;

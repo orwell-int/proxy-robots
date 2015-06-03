@@ -19,6 +19,7 @@ import orwell.proxy.mock.MockedTank;
 import orwell.proxy.robot.EnumRegistrationState;
 import orwell.proxy.robot.IRobot;
 import orwell.proxy.robot.RobotsMap;
+import orwell.proxy.udp.UdpBeaconFinder;
 import orwell.proxy.zmq.IZmqMessageListener;
 import orwell.proxy.zmq.ZmqMessageBOM;
 import orwell.proxy.zmq.ZmqMessageBroker;

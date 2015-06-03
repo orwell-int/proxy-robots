@@ -1,4 +1,4 @@
-package orwell.proxy;
+package orwell.proxy.udp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
