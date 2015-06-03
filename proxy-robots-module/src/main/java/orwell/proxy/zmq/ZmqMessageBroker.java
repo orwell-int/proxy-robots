@@ -20,14 +20,14 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
     private final ZMQ.Socket receiver;
     final private ArrayList<IFilter> filterList;
     private final ArrayList<IZmqMessageListener> zmqMessageListeners;
+    private final long socketTimeoutMs;
     private boolean isConnected = false;
     private int nbMessagesSkipped = 0;
     private ZmqReader reader;
     private boolean isSkipIdenticalMessages = false;
-    private final long socketTimeoutMs;
     private long baseTimeMs;
 
-    public ZmqMessageBroker(final int receiveTimeoutMs,
+    public ZmqMessageBroker(final long receiveTimeoutMs,
                             final int senderLinger,
                             final int receiverLinger,
                             final ArrayList<IFilter> filterList) {
@@ -50,7 +50,7 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
         logback.info("Constructor -- OUT");
     }
 
-    public ZmqMessageBroker(final int receiveTimeoutMs,
+    public ZmqMessageBroker(final long receiveTimeoutMs,
                             final int senderLinger,
                             final int receiverLinger) {
         this(receiveTimeoutMs, senderLinger, receiverLinger, null);
@@ -118,7 +118,7 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
 
     @Override
     public void close() {
-        logback.info("Stopping communication");
+        logback.info("Closing ZMQ message broker");
         isConnected = false;
     }
 
@@ -143,12 +143,12 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
         public void run() {
             logback.info("ZmqReader has been started");
             baseTimeMs = System.currentTimeMillis();
-            while (isConnected && ! hasSocketRecvTimeout()) {
+            while (isConnected && !hasSocketRecvTimeout()) {
                 final byte[] raw_zmq_message = receiver.recv(ZMQ.NOBLOCK);
                 if (null != raw_zmq_message) {
                     synchronized (rXguard) {
                         baseTimeMs = System.currentTimeMillis();
-                        logback.debug(">>>>>>>>>>>>>>>>>>>>>> receive time "+ baseTimeMs);
+                        logback.debug(">>>>>>>>>>>>>>>>>>>>>> receive time " + baseTimeMs);
 
                         try {
                             newZmqMessage = ZmqMessageBOM.parseFrom(raw_zmq_message);
@@ -176,14 +176,14 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
                 }
             }
             if (hasSocketRecvTimeout()) {
-                logback.info("Communication stopped because of socket receive timeout");
+                logback.info("Communication stopped: socket received timeout after " + socketTimeoutMs + "ms");
             }
             isConnected = false;
             sender.close();
             receiver.close();
             context.term();
             Thread.yield();
-            logback.info("Communication stopped");
+            logback.info("All sockets are now closed");
         }
     }
 }

@@ -20,7 +20,7 @@ public class ProxyRobots implements IZmqMessageListener {
     private final long outgoingMessagePeriod;
     private final RobotFactory robotFactory;
     protected IRobotsMap robotsMap;
-    protected int outgoingMessageFiltered;
+    private int outgoingMessageFiltered;
     private UdpBeaconFinder udpBeaconFinder;
 
     public ProxyRobots(final IZmqMessageBroker messageBroker,
@@ -118,7 +118,7 @@ public class ProxyRobots implements IZmqMessageListener {
     }
 
     /**
-     * Sends a delta of each robot state since last call
+     * Sends a delta of each robot state since last call to this method
      */
     protected void sendServerRobotStates() {
         for (final IRobot robot : robotsMap.getRegisteredRobots()) {
@@ -257,5 +257,9 @@ public class ProxyRobots implements IZmqMessageListener {
             messageBroker.close();
             Thread.yield();
         }
+    }
+
+    protected int getOutgoingMessageFiltered() {
+        return outgoingMessageFiltered;
     }
 }

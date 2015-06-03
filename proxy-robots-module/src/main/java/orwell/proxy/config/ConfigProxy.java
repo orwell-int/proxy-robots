@@ -42,7 +42,7 @@ public class ConfigProxy implements IConfigProxy {
     }
 
     @XmlElement(name = "receiveTimeout")
-    public void setReceiveTimeout(final int senderLinger) {
+    public void setReceiveTimeout(final int receiveTimeout) {
         this.receiveTimeout = receiveTimeout;
     }
 

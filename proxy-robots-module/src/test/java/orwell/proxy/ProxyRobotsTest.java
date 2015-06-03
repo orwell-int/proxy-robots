@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.omg.CORBA.TIMEOUT;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.messages.Controller;
@@ -40,10 +39,11 @@ public class ProxyRobotsTest {
 
     private final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class);
     private static final String REGISTERED_ID = "BananaOne";
-    private static final String RFID_VALUE = "11111111";
+    private static final String RFID_VALUE_1 = "11111111";
     private static final String PUSH_ADDRESS = "tcp://localhost:9000";
     private static final String SUB_ADDRESS = "tcp://localhost:9001";
-    private static final long TIMEOUT_MS = 500;
+    private static final long WAIT_TIMEOUT_MS = 500; // has to be greater than ProxyRobots.THREAD_SLEEP_MS
+    private static final long RECEIVE_TIMEOUT = 500;
     private final ConfigFactoryParameters configFactoryParameters = new ConfigFactoryParameters("/configurationTest.xml", EnumConfigFileType.RESOURCE);
     private final ZmqMessageBroker mockedZmqMessageBroker = createNiceMock(ZmqMessageBroker.class);
     private ConfigFactory configFactory;
@@ -136,6 +136,7 @@ public class ProxyRobotsTest {
         expectLastCall();
 
         expect(mockedZmqMessageBroker.sendZmqMessage((ZmqMessageBOM) anyObject())).andReturn(true).anyTimes();
+        expect(mockedZmqMessageBroker.isConnectedToServer()).andReturn(true).anyTimes();
 
         replay(mockedZmqMessageBroker);
 
@@ -202,7 +203,7 @@ public class ProxyRobotsTest {
         // Tank is disconnected
         mockedTank.closeConnection();
 
-        waitForCloseOrTimeout(TIMEOUT_MS);
+        waitForCloseOrTimeout(WAIT_TIMEOUT_MS);
 
         // So the map of isConnected tanks is empty
         assertTrue(myProxyRobots.robotsMap.getConnectedRobots().isEmpty());
@@ -246,7 +247,7 @@ public class ProxyRobotsTest {
         myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
 
         // We put a new RFID value into the tank to change its state
-        mockedTank.setRfidValue(RFID_VALUE);
+        mockedTank.setRfidValue(RFID_VALUE_1);
         myProxyRobots.sendServerRobotStates();
 
         // ProxyRobot is expected to send a ServerRobotState message
@@ -283,7 +284,7 @@ public class ProxyRobotsTest {
 
         myProxyRobots.start();
 
-        waitForCloseOrTimeout(TIMEOUT_MS);
+        waitForCloseOrTimeout(WAIT_TIMEOUT_MS);
         // Map contains only one tank from the config file,
         // this tank fails to connect because of wrong settings, so
         // the communication service should quickly stop and close
@@ -331,7 +332,7 @@ public class ProxyRobotsTest {
 
         myProxyRobots.start();
 
-        waitForCloseOrTimeout(TIMEOUT_MS);
+        waitForCloseOrTimeout(WAIT_TIMEOUT_MS);
         // Map contains only one tank from the config file,
         // this tank fails to connect because of wrong settings, so
         // the communication service should quickly stop and close
@@ -384,28 +385,29 @@ public class ProxyRobotsTest {
         instantiateBasicProxyRobots();
         myProxyRobots.start();
 
-        // We run the proxy for maxTimeoutMs
-        waitForCloseOrTimeout(TIMEOUT_MS);
+        // We run the proxy for WAIT_TIMEOUT_MS
+        waitForCloseOrTimeout(WAIT_TIMEOUT_MS);
 
         // Since we wait for a timeout as long as outgoingMessagePeriod
         // during which the proxy runs and tries to send messages,
         // we should filter some messages
-        logback.debug("getNbOutgoingMessageFiltered: " + myProxyRobots.outgoingMessageFiltered);
-        assertTrue("There should be at least one filtered message", 0 < myProxyRobots.outgoingMessageFiltered);
+        assertTrue("There should be at least one filtered message", 0 < myProxyRobots.getOutgoingMessageFiltered());
 
         logback.info("OUT");
     }
 
     @Test
+    /**
+     * Just run the proxy, with a mock Tank, to check it starts and ends well
+     */
     public void testProxyRobots_StartWithMockTank() throws Exception {
         // Instantiate main class with mock tank, but real zmq conf
-        myProxyRobots = new ProxyRobots(new ZmqMessageBroker(5000, 1000, 1000), configFactory,
+        myProxyRobots = new ProxyRobots(new ZmqMessageBroker(RECEIVE_TIMEOUT, 1000, 1000), configFactory,
                 robotsMap);
         myProxyRobots.start();
 
-        // We run the proxy for maxTimeoutMs
-        waitForCloseOrTimeout(TIMEOUT_MS * 5000);
-
+        // We run the proxy for WAIT_TIMEOUT_MS
+        waitForCloseOrTimeout(WAIT_TIMEOUT_MS);
     }
 
     @After
