@@ -35,7 +35,6 @@ public class ZmqMessageBOM implements Comparable<ZmqMessageBOM> {
      *                        Careful: message is arbitrary binary data
      */
     public static ZmqMessageBOM parseFrom(final byte[] raw_zmq_message) throws ParseException {
-        logback.debug("SEPARATOR " + ZMQ_SEPARATOR);
         // We do not want to create a String from arbitrary binary data, so we
         // first isolate the 3 parts of the raw zmq message
         final List<byte[]> zmqMessageBytesList = Utils.split(ZMQ_SEPARATOR, raw_zmq_message, 3);
