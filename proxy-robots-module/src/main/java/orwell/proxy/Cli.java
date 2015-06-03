@@ -11,8 +11,8 @@ import java.io.File;
 /**
  * Created by Michaël Ludmann on 5/5/15.
  */
-class Cli {
-    private final static String CONFIG_FILEPATH_INSIDE_JAR = "/configuration.xml";
+public class Cli {
+    public final static String CUSTOM_CONFIG_FILEPATH_INSIDE_JAR = "/config.xml";
     private final static Logger logback = LoggerFactory.getLogger(Cli.class);
     private final Options options = new Options();
     private String[] args = null;
@@ -27,7 +27,7 @@ class Cli {
         final Option optionFile = new Option("f", "file", true, "optional filepath for external configuration file");
         final Option optionUrl = new Option("u", "url", true, "optional url for external configuration file, NOT HANDLED YET");
         final OptionGroup optionGroup = new OptionGroup();
-        optionGroup.setRequired(true);
+        optionGroup.setRequired(false);
         optionGroup.addOption(optionFile);
         optionGroup.addOption(optionUrl);
 
@@ -92,8 +92,8 @@ class Cli {
     }
 
     private ConfigFactoryParameters resource() {
-        logback.info("No argument given to jar, taking default resource configuration file " +
-                CONFIG_FILEPATH_INSIDE_JAR);
-        return new ConfigFactoryParameters(CONFIG_FILEPATH_INSIDE_JAR, EnumConfigFileType.RESOURCE);
+        logback.info("No argument given to jar, trying to find custom resource configuration file: " +
+                CUSTOM_CONFIG_FILEPATH_INSIDE_JAR);
+        return new ConfigFactoryParameters(CUSTOM_CONFIG_FILEPATH_INSIDE_JAR, EnumConfigFileType.RESOURCE);
     }
 }

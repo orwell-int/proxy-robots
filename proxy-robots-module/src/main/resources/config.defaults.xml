@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding='utf-8'?>
+<setup>
+    <proxy>
+        <udpBroadcast>
+            <port>9080</port>
+            <attempts>5</attempts>
+            <timeoutPerAttemptMs>1000</timeoutPerAttemptMs>
+        </udpBroadcast>
+        <senderLinger>1000</senderLinger>
+        <receiverLinger>1000</receiverLinger>
+        <outgoingMsgPeriod>50</outgoingMsgPeriod>
+        <server-game name='default' priority="1">
+            <ip>localhost</ip>
+            <pushPort>9000</pushPort>
+            <subPort>9001</subPort>
+        </server-game>
+    </proxy>
+    <robots>
+        <tank tempRoutingID='defaultId' shouldRegister='1'>
+            <bluetoothName>DefaultName</bluetoothName>
+            <bluetoothID>000000000000</bluetoothID>
+            <camera>
+                <ip>192.168.1.1</ip>
+                <port>80</port>
+                <resourcePath>/defaultPath</resourcePath>
+            </camera>
+            <image>DefaultImage</image>
+        </tank>
+    </robots>
+</setup>

@@ -24,7 +24,7 @@ public class ConfigurationTest {
 
     private final static Logger logback = LoggerFactory.getLogger(ConfigurationTest.class);
     private static final String CONFIGURATION_RESOURCE_TEST = "/configurationTest.xml";
-    private static final String CONFIGURATION_URL_TEST = "https://github.com/orwell-int/proxy-robots/blob/master/proxy-robots-module/src/main/resources/configuration.xml";
+    private static final String CONFIGURATION_URL_TEST = "https://github.com/orwell-int/proxy-robots/blob/master/proxy-robots-module/src/main/resources/config.xml";
     private static final int PUSH_PORT = 9001;
     private static final int SUB_PORT = 9000;
     private static final int CAMERA_PORT_TANK = 9100;
@@ -187,6 +187,11 @@ public class ConfigurationTest {
         } catch (final Exception e) {
             fail(e.toString());
         }
+    }
+
+    @Test
+    public void testConfiguration_loadsDefaultResource() {
+        assertTrue(getConfigTest("configThatDoesNotExist.xml", EnumConfigFileType.RESOURCE).isPopulated());
     }
 
     @After

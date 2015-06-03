@@ -34,21 +34,21 @@ public class ConfigFactoryTest {
     @Test
     public void testGetConfigProxy() throws Exception {
         // Simple test to check the class is well populated
-        assertEquals("Receiver linger from configuration.xml should be 1000",
+        assertEquals("Receiver linger from config.xml should be 1000",
                 1000, configFactory.getConfigProxy().getReceiverLinger());
     }
 
     @Test
     public void testGetConfigRobots() throws Exception {
         // Simple test to check the class is well populated
-        assertTrue("configuration.xml should contain at least one robot to register",
+        assertTrue("config.xml should contain at least one robot to register",
                 !configFactory.getConfigRobots().getConfigRobotsToRegister().isEmpty());
     }
 
     @Test
     public void testGetConfigServerGame() throws Exception {
         // Simple test to check the class is well populated
-        assertEquals("configuration.xml should have 'localhost' as priority server game",
+        assertEquals("config.xml should have 'localhost' as priority server game",
                 "localhost", configFactory.getMaxPriorityConfigServerGame().getName());
     }
 

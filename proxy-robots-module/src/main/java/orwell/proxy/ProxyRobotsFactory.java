@@ -22,9 +22,9 @@ class ProxyRobotsFactory {
     private final ZmqMessageBroker zmqMessageBroker;
     private final UdpBeaconFinder udpBeaconFinder;
 
-    public ProxyRobotsFactory(final ConfigFactoryParameters configPathType) {
+    public ProxyRobotsFactory(final ConfigFactoryParameters configFactoryParameters) {
         logback.debug("Constructor -- IN");
-        configFactory = ConfigFactory.createConfigFactory(configPathType);
+        configFactory = ConfigFactory.createConfigFactory(configFactoryParameters);
 
         if (null == configFactory.getConfigProxy()) {
             // We do not have the data to initialize the broker and udp discovery
