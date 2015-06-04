@@ -61,7 +61,8 @@ public class ProxyRobots implements IZmqMessageListener {
 
         final ProxyRobots proxyRobots = new ProxyRobotsFactory(configPathType).getProxyRobots();
         if (null == proxyRobots) {
-            logback.error("Error when creating ProxyRobots");
+            logback.error("Error when creating ProxyRobots. Exiting now.");
+            System.exit(0);
         } else {
             proxyRobots.start();
         }

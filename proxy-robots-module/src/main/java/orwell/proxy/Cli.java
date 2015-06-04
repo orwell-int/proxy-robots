@@ -20,7 +20,7 @@ public class Cli {
     public Cli(final String[] args) {
         this.args = args;
 
-        final Option optionHelp = new Option("h", "help", false, "shows help.");
+        final Option optionHelp = new Option("h", "help", false, "shows help and exits program.");
         options.addOption(optionHelp);
 
         // Add a new optionGroup to make --file and --url mutually exclusive
@@ -67,8 +67,6 @@ public class Cli {
     }
 
     private ConfigFactoryParameters help() {
-        logback.warn("Exiting program");
-
         // This prints out some help
         final HelpFormatter formatter = new HelpFormatter();
 

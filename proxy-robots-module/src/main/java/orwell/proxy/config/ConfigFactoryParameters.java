@@ -19,4 +19,15 @@ public class ConfigFactoryParameters {
     public EnumConfigFileType getEnumConfigFileType() {
         return enumConfigFileType;
     }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof ConfigFactoryParameters))
+            return false;
+        if (obj == this)
+            return true;
+        final ConfigFactoryParameters parameters = (ConfigFactoryParameters) obj;
+        return this.enumConfigFileType == parameters.getEnumConfigFileType() &&
+                this.filePath.equals(parameters.getFilePath());
+    }
 }
