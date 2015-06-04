@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by Michaël Ludmann on 5/6/15.
  */
-public class ZmqMessageBOM implements Comparable<ZmqMessageBOM> {
+public class ZmqMessageBOM {
     private final static Logger logback = LoggerFactory.getLogger(ZmqMessageBOM.class);
     private final static byte ZMQ_SEPARATOR = " ".getBytes()[0];
     private final EnumMessageType messageType;
@@ -134,11 +134,14 @@ public class ZmqMessageBOM implements Comparable<ZmqMessageBOM> {
     }
 
     @Override
-    public int compareTo(final ZmqMessageBOM zmqMessageBOM) {
-        if (null == zmqMessageBOM || messageType != zmqMessageBOM.getMessageType() ||
-                0 != routingId.compareTo(zmqMessageBOM.getRoutingId()) ||
-                !Arrays.equals(messageBodyBytes, zmqMessageBOM.getMessageBodyBytes()))
-            return 1;
-        else return 0;
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof ZmqMessageBOM))
+            return false;
+        if (obj == this)
+            return true;
+        final ZmqMessageBOM zmqMessageBOM = (ZmqMessageBOM) obj;
+        return (messageType == zmqMessageBOM.getMessageType() &&
+                routingId.equals(zmqMessageBOM.getRoutingId()) &&
+                Arrays.equals(messageBodyBytes, zmqMessageBOM.getMessageBodyBytes()));
     }
 }

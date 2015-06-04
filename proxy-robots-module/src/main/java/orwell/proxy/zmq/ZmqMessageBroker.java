@@ -152,7 +152,7 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
                             newZmqMessage = ZmqMessageBOM.parseFrom(raw_zmq_message);
 
                             // We do not want to uselessly flood the robot
-                            if (isSkipIdenticalMessages && 0 == newZmqMessage.compareTo(previousZmqMessage)) {
+                            if (isSkipIdenticalMessages && newZmqMessage.equals(previousZmqMessage)) {
                                 onReceivedIdenticalMessage();
                             } else {
                                 onReceivedNewZmqMessage(newZmqMessage);
