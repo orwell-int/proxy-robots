@@ -74,12 +74,12 @@ public class ProxyRobots implements IZmqMessageListener {
             if (udpBeaconFinder.hasFoundServer()) {
                 messageBroker.connectToServer(udpBeaconFinder.getPushAddress(),
                         udpBeaconFinder.getSubscribeAddress());
+                return;
             }
-        } else {
-            // If we fail, we use the configuration data
-            messageBroker.connectToServer(configServerGame.getPushAddress(),
-                    configServerGame.getSubscribeAddress());
         }
+        // If there is no beaconFinder or if it fails, we use the configuration data
+        messageBroker.connectToServer(configServerGame.getPushAddress(),
+                configServerGame.getSubscribeAddress());
     }
 
     /**

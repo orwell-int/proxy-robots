@@ -16,7 +16,7 @@ public class UdpBeaconFinder {
     private final int receiverBufferSize = 512;
     private final DatagramSocket datagramSocket;
     private final UdpBeaconDecoder udpBeaconDecoder;
-    private int maxAttemptsNumber = 1;
+    private int maxAttemptsNumber;
     private int attemptsPerformed = 0;
     private String pushAddress;
     private String subscribeAddress;
@@ -27,11 +27,17 @@ public class UdpBeaconFinder {
         this.datagramSocket = datagramSocket;
         this.broadcastPort = broadcastPort;
         this.udpBeaconDecoder = udpBeaconDecoder;
+        maxAttemptsNumber = 1;
     }
 
+    /**
+     * Change number of attempts to find the UDP beacon server
+     * Default value is set to 1
+     * @param maxAttemptsNumber
+     */
     public void setMaxAttemptsNumber(final int maxAttemptsNumber) {
-        if (1 > maxAttemptsNumber) {
-            logback.warn("Udp broadcasting attempts number cannot be less than 1");
+        if (0 > maxAttemptsNumber) {
+            logback.warn("Udp broadcasting attempts number cannot be less than 0");
         } else {
             this.maxAttemptsNumber = maxAttemptsNumber;
         }
@@ -93,7 +99,7 @@ public class UdpBeaconFinder {
         }
     }
 
-    private void sendBroadcastPackageOn(InetAddress broadcastAddress) {
+    private void sendBroadcastPackageOn(final InetAddress broadcastAddress) {
         try {
             final String ipPing = broadcastAddress.getHostAddress();
 
@@ -107,7 +113,7 @@ public class UdpBeaconFinder {
         logback.info("Request packet sent to: " + broadcastAddress.getHostAddress());
     }
 
-    private void waitForServerResponse(DatagramSocket datagramSocket) throws IOException {
+    private void waitForServerResponse(final DatagramSocket datagramSocket) throws IOException {
         final byte[] recvBuf = new byte[receiverBufferSize];
         final DatagramPacket receivePacket = new DatagramPacket(recvBuf, recvBuf.length);
 

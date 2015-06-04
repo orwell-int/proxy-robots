@@ -1,5 +1,6 @@
 package orwell.proxy.udp;
 
+import junit.framework.AssertionFailedError;
 import org.easymock.IAnswer;
 import org.easymock.Mock;
 import org.easymock.TestSubject;
@@ -257,7 +258,7 @@ public class UdpBeaconTest {
     }
 
     @Test
-    public void testSetMaxAttemptsNumber() throws Exception {
+    public void testSetMaxAttemptsNumber_twoAttempts() throws Exception {
         mockedDatagramSocket.receive((DatagramPacket) anyObject());
 
         // First return a badly formatted packet
@@ -293,6 +294,38 @@ public class UdpBeaconTest {
         assertEquals(IP_TEST, udpBeaconDecoder.getServerGameIp());
         assertEquals("tcp://127.0.0.1:9001", udpBeaconDecoder.getPushAddress());
         assertEquals("tcp://127.0.0.1:9000", udpBeaconDecoder.getSubscribeAddress());
+    }
+
+    @Test
+    public void testSetMaxAttemptsNumber_zeroAttempt() throws Exception {
+        // We reset the mock, since one call registered during setup
+        // won't be made in this scenario
+        mockedDatagramSocket = createNiceMock(DatagramSocket.class);
+        mockedDatagramSocket.setBroadcast(true);
+
+        // We will never call this method
+        mockedDatagramSocket.send((DatagramPacket) anyObject());
+        expectLastCall().andThrow(new AssertionFailedError("UDP beacon finder should not try to find the beacon")).anyTimes();
+
+        mockedDatagramSocket.close();
+
+        // We will never call this method
+        mockedDatagramSocket.receive((DatagramPacket) anyObject());
+        expectLastCall().andThrow(new AssertionFailedError("UDP beacon finder should not receive data from beacon")).anyTimes();
+
+        // Save the scenario
+        replay(mockedDatagramSocket);
+
+        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
+        udpBeaconFinder.setMaxAttemptsNumber(0);
+        udpBeaconFinder.broadcastAndGetServerAddress();
+        logback.info(udpBeaconFinder.toString());
+
+        verify(mockedDatagramSocket); // Check that 2 tries where performed
+        assertFalse(udpBeaconDecoder.hasReceivedCorrectData());
+        assertNull(udpBeaconDecoder.getServerGameIp());
+        assertNull(udpBeaconDecoder.getPushAddress());
+        assertNull(udpBeaconDecoder.getSubscribeAddress());
     }
 
     @After

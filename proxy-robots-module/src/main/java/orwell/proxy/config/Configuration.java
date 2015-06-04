@@ -64,7 +64,6 @@ public class Configuration implements IConfiguration {
     }
 
     private void onResource(final Unmarshaller unmarshaller) throws JAXBException {
-        logback.debug("NINININ");
         InputStream xml = getClass().getResourceAsStream(filePath);
         if (null == xml) {
             logback.info("Configuration " + filePath + " not found in Jar." +
