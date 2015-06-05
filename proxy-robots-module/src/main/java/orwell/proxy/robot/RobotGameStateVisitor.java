@@ -23,6 +23,10 @@ public class RobotGameStateVisitor {
         this.winningTeam = winningTeam;
     }
 
+    public RobotGameStateVisitor(final EnumGameState gameState) {
+        this(gameState, null);
+    }
+
     public void visit(final RobotsMap robotsMap) {
         for (final IRobot robot : robotsMap.getRegisteredRobots()) {
             setGameState(robot);
@@ -46,11 +50,18 @@ public class RobotGameStateVisitor {
                     setDefeat(robot);
                 }
                 break;
+            case UNDEFINED:
+                setUndefined(robot);
+                break;
         }
     }
 
+    private void setUndefined(final IRobot robot) {
+        logback.warn("Undefined victory state for robot " + robot.getRoutingId() + ". Ignored.");
+    }
+
     private void setDraw(final IRobot robot) {
-        robot.setVictoryState(EnumRobotVictoryState.WINNER);
+        robot.setVictoryState(EnumRobotVictoryState.DRAW);
         robot.sendUnitMessage(new UnitMessage(UnitMessageType.Command, DRAW_PAYLOAD_HEADER));
         logback.info("Draw info sent to robot " + robot.getRoutingId());
     }

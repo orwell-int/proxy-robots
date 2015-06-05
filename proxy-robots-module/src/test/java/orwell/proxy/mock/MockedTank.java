@@ -20,6 +20,7 @@ public class MockedTank extends IRobot {
         this.setImage("noImage");
         this.setRegistrationState(EnumRegistrationState.NOT_REGISTERED);
         this.setConnectionState(EnumConnectionState.NOT_CONNECTED);
+        this.setTeamName("BLUE");
         this.robotElements = new IRobotElement[]{new RfidSensor(), new ColourSensor()};
         this.robotActions = new IRobotInput[]{new InputMove(), new InputFire()};
     }

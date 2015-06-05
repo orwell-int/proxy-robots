@@ -52,7 +52,7 @@ public abstract class IRobot implements IRobotElement, IRobotInput {
         return teamName;
     }
 
-    void setTeamName(final String teamName) {
+    protected void setTeamName(final String teamName) {
         this.teamName = teamName;
     }
 
