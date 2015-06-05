@@ -27,6 +27,7 @@ import static org.junit.Assert.assertTrue;
 public class ProtobufTest {
     public final static Logger logback = LoggerFactory.getLogger(ProtobufTest.class);
     public static final String REGISTERED_ROUTING_ID = "routingIdTest";
+    public static final String GAME_STATE_WINNER_STRING = "BLUE";
     private static final double INPUT_MOVE_LEFT = 50.5;
     private static final double INPUT_MOVE_RIGHT = 10.0;
     private static final boolean INPUT_FIRE_WEAPON_1 = false;
@@ -39,7 +40,6 @@ public class ProtobufTest {
     private static final String REGISTER_VIDEO_URL = "http://video.url";
     private static final boolean GAME_STATE_PLAYING_WINNER = false;
     private static final long GAME_STATE_SECONDS = 600;
-    private static final String GAME_STATE_WINNER_STRING = "BLUE";
     private static final String TEAM_NAME_BLUE = "BLUE";
     private static final int TEAM_SCORE_BLUE = 10;
     private static final int TEAM_NUM_PLAYERS_BLUE = 1;

@@ -12,7 +12,6 @@ import orwell.proxy.robot.RobotGameStateVisitor;
 public class GameState {
     private final static Logger logback = LoggerFactory.getLogger(GameState.class);
     private ServerGame.GameState serverGameGameState;
-    private EnumGameState enumGameState;
 
     public GameState(final byte[] gameStateMessage) {
         try {
