@@ -179,7 +179,7 @@ public class ProtobufTest {
         assertTrue("GameState should be initialized", gameState.isInitialized());
 
         assertEquals(GAME_STATE_PLAYING_WINNER, gameState.getPlaying());
-        assertEquals(GAME_STATE_SECONDS, gameState.getSeconds());
+        assertEquals(0, gameState.getSeconds());
         assertEquals(GAME_STATE_WINNER_STRING, gameState.getWinner());
 
         return true;
