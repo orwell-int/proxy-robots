@@ -7,4 +7,5 @@ public enum EnumGameState {
     WAITING_TO_START,
     PLAYING,
     FINISHED,
+    UNDEFINED,
 }

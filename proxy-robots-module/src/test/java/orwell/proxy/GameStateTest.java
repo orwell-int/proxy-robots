@@ -7,7 +7,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.messages.ServerGame;
 
 import static org.junit.Assert.*;
 
@@ -22,7 +21,6 @@ public class GameStateTest {
     @Before
     public void setUp() throws Exception {
         logback.debug(">>>>>>>>> IN");
-
     }
 
     @Test
@@ -66,6 +64,48 @@ public class GameStateTest {
         // Create GameState from a message stating the game is on
         gameState = new GameState(ProtobufTest.getTestGameState_Playing().toByteArray());
         assertNull(gameState.getWinningTeam());
+    }
+
+    @Test
+    public void testGetRobotGameStateVisitor_NotNull() throws Exception {
+        // Create GameState from a message stating the game is on
+        gameState = new GameState(ProtobufTest.getTestGameState_Playing().toByteArray());
+        assertNotNull(gameState.getRobotGameStateVisitor());
+    }
+
+    @Test
+    public void testGetRobotGameStateVisitor_Null() throws Exception {
+        // Create GameState from bad byte[]
+        gameState = new GameState(new byte[]{});
+        assertNull(gameState.getRobotGameStateVisitor());
+    }
+
+    @Test
+    public void testGetEnumGameState_WaitingToStart() throws Exception {
+        // Create GameState from a message stating the game has not started yet
+        gameState = new GameState(ProtobufTest.getTestGameState_WaitingForStart().toByteArray());
+        assertEquals(EnumGameState.WAITING_TO_START, gameState.getEnumGameState());
+    }
+
+    @Test
+    public void testGetEnumGameState_Playing() throws Exception {
+        // Create GameState from a message stating the game is on
+        gameState = new GameState(ProtobufTest.getTestGameState_Playing().toByteArray());
+        assertEquals(EnumGameState.PLAYING, gameState.getEnumGameState());
+    }
+
+    @Test
+    public void testGetEnumGameState_Finished() throws Exception {
+        // Create GameState from a message stating the game has a winner (so it is over)
+        gameState = new GameState(ProtobufTest.getTestGameState_Winner().toByteArray());
+        assertEquals(EnumGameState.FINISHED, gameState.getEnumGameState());
+    }
+
+    @Test
+    public void testGetEnumGameState_Undefined() throws Exception {
+        // Create GameState from bad byte[]
+        gameState = new GameState(new byte[]{});
+        assertEquals(EnumGameState.UNDEFINED, gameState.getEnumGameState());
     }
 
     @After

@@ -38,7 +38,7 @@ public class ProtobufTest {
     private static final String REGISTER_IMAGE = "imageTest";
     private static final String REGISTER_TEMPORARY_ROBOT_ID = "temporaryRobotId";
     private static final String REGISTER_VIDEO_URL = "http://video.url";
-    private static final boolean GAME_STATE_PLAYING_WINNER = false;
+    private static final boolean GAME_STATE_PLAYING = false;
     private static final long GAME_STATE_SECONDS = 600;
     private static final String TEAM_NAME_BLUE = "BLUE";
     private static final int TEAM_SCORE_BLUE = 10;
@@ -150,11 +150,18 @@ public class ProtobufTest {
         return teamBuilder.build();
     }
 
+    public static ServerGame.GameState getTestGameState_WaitingForStart() {
+        final ServerGame.GameState.Builder gameStateBuilder = ServerGame.GameState.newBuilder();
+        gameStateBuilder.setPlaying(GAME_STATE_PLAYING);
+        gameStateBuilder.setSeconds(GAME_STATE_SECONDS);
+        return gameStateBuilder.build();
+    }
+
     public static ServerGame.GameState getTestGameState_Playing() {
         final ServerGame.GameState.Builder gameStateBuilder = ServerGame.GameState.newBuilder();
         gameStateBuilder.setPlaying(true);
         gameStateBuilder.setSeconds(GAME_STATE_SECONDS);
-        ArrayList<ServerGame.Team> teams = new ArrayList<>();
+        final ArrayList<ServerGame.Team> teams = new ArrayList<>();
         teams.add(getTeam(TEAM_NAME_BLUE, TEAM_SCORE_BLUE, TEAM_NUM_PLAYERS_BLUE,
                 new String[]{TEAM_PLAYER1_BLUE, TEAM_PLAYER2_BLUE}));
         teams.add(getTeam(TEAM_NAME_RED, TEAM_SCORE_RED, TEAM_NUM_PLAYERS_RED,
@@ -164,7 +171,7 @@ public class ProtobufTest {
 
     public static ServerGame.GameState getTestGameState_Winner() {
         final ServerGame.GameState.Builder gameStateBuilder = ServerGame.GameState.newBuilder();
-        gameStateBuilder.setPlaying(GAME_STATE_PLAYING_WINNER);
+        gameStateBuilder.setPlaying(GAME_STATE_PLAYING);
         gameStateBuilder.setSeconds(0);
         gameStateBuilder.setWinner(GAME_STATE_WINNER_STRING);
         ArrayList<ServerGame.Team> teams = new ArrayList<>();
@@ -178,7 +185,7 @@ public class ProtobufTest {
     public static boolean checkTestGameState(final ServerGame.GameState gameState) {
         assertTrue("GameState should be initialized", gameState.isInitialized());
 
-        assertEquals(GAME_STATE_PLAYING_WINNER, gameState.getPlaying());
+        assertEquals(GAME_STATE_PLAYING, gameState.getPlaying());
         assertEquals(0, gameState.getSeconds());
         assertEquals(GAME_STATE_WINNER_STRING, gameState.getWinner());
 

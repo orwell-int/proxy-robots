@@ -22,6 +22,8 @@ public class GameState {
     }
 
     public EnumGameState getEnumGameState() {
+        if (hasParseError())
+            return EnumGameState.UNDEFINED;
         if (isGameOnGoing())
             return EnumGameState.PLAYING;
         if (isGameFinished())
@@ -29,19 +31,23 @@ public class GameState {
         return EnumGameState.WAITING_TO_START;
     }
 
-    public boolean isGameOnGoing() {
+    private boolean hasParseError() {
+        return null == serverGameGameState;
+    }
+
+    protected boolean isGameOnGoing() {
         return (null != serverGameGameState &&
                 serverGameGameState.getPlaying() &&
                 0 < serverGameGameState.getSeconds());
     }
 
-    public boolean isGameFinished() {
+    protected boolean isGameFinished() {
         return (null != serverGameGameState &&
-                0 == serverGameGameState.getSeconds() && ! isGameOnGoing());
+                0 == serverGameGameState.getSeconds() && !isGameOnGoing());
     }
 
-    public String getWinningTeam() {
-        if (! isGameFinished()) {
+    protected String getWinningTeam() {
+        if (!isGameFinished()) {
             return null;
         }
         return serverGameGameState.getWinner();
