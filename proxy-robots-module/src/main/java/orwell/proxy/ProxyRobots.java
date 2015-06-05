@@ -186,7 +186,9 @@ public class ProxyRobots implements IZmqMessageListener {
     }
 
     private void onGameState(final ZmqMessageBOM zmqMessageBOM) {
-        logback.warn("Received GameState - not handled (robot " + zmqMessageBOM.getRoutingId() + ")");
+        logback.info("Setting new GameState");
+        final GameState gameState = new GameState(zmqMessageBOM.getMessageBodyBytes());
+        robotsMap.accept(gameState.getRobotGameStateVisitor());
     }
 
     private void onDefault() {

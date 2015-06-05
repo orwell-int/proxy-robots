@@ -97,7 +97,7 @@ public class ZmqMessageBOMTest {
     }
 
     private byte[] getGameStateBytes() {
-        return ProtobufTest.getTestGameState().toByteArray();
+        return ProtobufTest.getTestGameState_Winner().toByteArray();
     }
 
     @Test

@@ -10,14 +10,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.messages.Controller;
-import orwell.messages.ServerGame;
 import orwell.proxy.config.ConfigFactory;
 import orwell.proxy.config.ConfigFactoryParameters;
 import orwell.proxy.config.EnumConfigFileType;
 import orwell.proxy.mock.MockedTank;
 import orwell.proxy.robot.EnumRegistrationState;
-import orwell.proxy.robot.IRobot;
+import orwell.proxy.robot.EnumRobotVictoryState;
 import orwell.proxy.robot.RobotsMap;
 import orwell.proxy.udp.UdpBeaconFinder;
 import orwell.proxy.zmq.IZmqMessageListener;
@@ -39,7 +37,6 @@ import static org.junit.Assert.*;
 public class ProxyRobotsTest {
 
     private final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class);
-    private static final String REGISTERED_ID = "BananaOne";
     private static final String RFID_VALUE_1 = "11111111";
     private static final String PUSH_ADDRESS_UDP = "tcp://localhost:9000";
     private static final String SUB_ADDRESS_UDP = "tcp://localhost:9001";
@@ -47,6 +44,7 @@ public class ProxyRobotsTest {
     private static final String SUB_ADDRESS_CONFIG = "tcp://127.0.0.1:9000";
     private static final long WAIT_TIMEOUT_MS = 500; // has to be greater than ProxyRobots.THREAD_SLEEP_MS
     private static final long RECEIVE_TIMEOUT = 500;
+    private static final String ROUTING_ID_ALL = "all_robots";
     private ConfigFactoryParameters configFactoryParameters;
     private ZmqMessageBroker mockedZmqMessageBroker;
     private ConfigFactory configFactory;
@@ -72,51 +70,20 @@ public class ProxyRobotsTest {
         robotsMap.add(mockedTank);
     }
 
-    private byte[] getMockRawZmqMessage(final IRobot iRobot, final EnumMessageType messageType) {
-        final byte[] raw_zmq_message;
-        byte[] specificMessage = new byte[0];
-        String zmqMessageHeader = null;
+    private byte[] getBytesGameState_Playing() {
+        return ProtobufTest.getTestGameState_Playing().toByteArray();
+    }
 
-        switch (messageType) {
-            case REGISTERED:
-                specificMessage = getBytesRegistered();
-                zmqMessageHeader = iRobot.getRoutingId() + " " + "Registered" + " ";
-                break;
-            case INPUT:
-                specificMessage = getBytesInput();
-                zmqMessageHeader = iRobot.getRoutingId() + " " + "Input" + " ";
-                break;
-            default:
-                logback.error("Case : Message type " + messageType + " not handled");
-        }
-
-        assert null != zmqMessageHeader;
-        raw_zmq_message = Utils.Concatenate(zmqMessageHeader.getBytes(),
-                specificMessage);
-
-        return raw_zmq_message;
+    private byte[] getBytesGameState_Winner() {
+        return ProtobufTest.getTestGameState_Winner().toByteArray();
     }
 
     private byte[] getBytesRegistered() {
-        final ServerGame.Registered.Builder registeredBuilder = ServerGame.Registered.newBuilder();
-        registeredBuilder.setRobotId(REGISTERED_ID);
-        registeredBuilder.setTeam("BLUE");
-
-        return registeredBuilder.build().toByteArray();
+        return ProtobufTest.getTestRegistered().toByteArray();
     }
 
     private byte[] getBytesInput() {
-        final Controller.Input.Builder inputBuilder = Controller.Input.newBuilder();
-        final Controller.Input.Fire.Builder fireBuilder = Controller.Input.Fire.newBuilder();
-        final Controller.Input.Move.Builder moveBuilder = Controller.Input.Move.newBuilder();
-        fireBuilder.setWeapon1(true);
-        fireBuilder.setWeapon2(false);
-        moveBuilder.setLeft(100);
-        moveBuilder.setRight(0);
-        inputBuilder.setFire(fireBuilder.build());
-        inputBuilder.setMove(moveBuilder.build());
-
-        return inputBuilder.build().toByteArray();
+        return ProtobufTest.getTestInput().toByteArray();
     }
 
     // Wait for a max timeout or for communicationService to stop
@@ -178,10 +145,14 @@ public class ProxyRobotsTest {
 
         myProxyRobots.sendRegister();
         // Simulate reception of a REGISTERED message
-        myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
+        myProxyRobots.receivedNewZmq(
+                new ZmqMessageBOM(mockedTank.getRoutingId(),
+                        EnumMessageType.REGISTERED,
+                        getBytesRegistered())
+        );
 
         assertEquals(EnumRegistrationState.REGISTERED, mockedTank.getRegistrationState());
-        assertEquals("BananaOne", mockedTank.getRoutingId());
+        assertEquals(ProtobufTest.REGISTERED_ROUTING_ID, mockedTank.getRoutingId());
     }
 
 
@@ -234,8 +205,11 @@ public class ProxyRobotsTest {
         // Robot needs to be registered in order to send a ServerRobotState
         myProxyRobots.sendRegister();
         // Simulate reception of a REGISTERED message
-        myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
-
+        myProxyRobots.receivedNewZmq(
+                new ZmqMessageBOM(mockedTank.getRoutingId(),
+                        EnumMessageType.REGISTERED,
+                        getBytesRegistered())
+        );
         // We put a new RFID value into the tank to change its state
         mockedTank.setRfidValue(RFID_VALUE_1);
         myProxyRobots.sendServerRobotStates();
@@ -244,7 +218,7 @@ public class ProxyRobotsTest {
         verify(mockedZmqMessageBroker);
         assertEquals(EnumMessageType.SERVER_ROBOT_STATE, captureMsg.getValue().getMessageType());
         assertEquals("RoutingId is supposed to have changed to the one provided by registered",
-                REGISTERED_ID, captureMsg.getValue().getRoutingId());
+                ProtobufTest.REGISTERED_ROUTING_ID, captureMsg.getValue().getRoutingId());
     }
 
     @Test
@@ -375,18 +349,32 @@ public class ProxyRobotsTest {
         // Robot needs to be registered in order to receive Input messages
         myProxyRobots.sendRegister();
         // Simulate reception of a REGISTERED message
-        myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
-
+        myProxyRobots.receivedNewZmq(
+                new ZmqMessageBOM(mockedTank.getRoutingId(),
+                        EnumMessageType.REGISTERED,
+                        getBytesRegistered())
+        );
         // Tank has for now no Input registered
-        assertFalse(((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getInputFire().hasFire());
-        assertFalse(((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getInputMove().hasMove());
+        assertFalse(((MockedTank) myProxyRobots.robotsMap.
+                get(ProtobufTest.REGISTERED_ROUTING_ID)).
+                getInputFire().hasFire());
+        assertFalse(((MockedTank) myProxyRobots.robotsMap.
+                get(ProtobufTest.REGISTERED_ROUTING_ID)).
+                getInputMove().hasMove());
 
         // Now simulate reception of a INPUT message
-        myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.INPUT)));
-
+        myProxyRobots.receivedNewZmq(
+                new ZmqMessageBOM(mockedTank.getRoutingId(),
+                        EnumMessageType.INPUT,
+                        getBytesInput())
+        );
         // Tank received the right Input correctly
-        assertTrue(((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getInputFire().hasFire());
-        assertTrue(((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getInputMove().hasMove());
+        assertTrue(((MockedTank) myProxyRobots.robotsMap.
+                get(ProtobufTest.REGISTERED_ROUTING_ID)).
+                getInputFire().hasFire());
+        assertTrue(((MockedTank) myProxyRobots.robotsMap.
+                get(ProtobufTest.REGISTERED_ROUTING_ID)).
+                getInputMove().hasMove());
     }
 
     @Test
@@ -415,6 +403,56 @@ public class ProxyRobotsTest {
 
         // We run the proxy for WAIT_TIMEOUT_MS
         waitForCloseOrTimeout(WAIT_TIMEOUT_MS);
+    }
+
+    @Test
+    public void testOnGameState() throws Exception {
+        instantiateBasicProxyRobots();
+
+        myProxyRobots.connectToRobots();
+
+        myProxyRobots.startCommunicationService();
+
+        // Robot needs to be registered in order to receive Input messages
+        myProxyRobots.sendRegister();
+        // Simulate reception of a REGISTERED message
+        myProxyRobots.receivedNewZmq(
+                new ZmqMessageBOM(mockedTank.getRoutingId(),
+                        EnumMessageType.REGISTERED,
+                        getBytesRegistered())
+        );
+
+        // Game is still playing, there is then no winner
+        assertEquals(EnumRobotVictoryState.WAITING_FOR_START, (myProxyRobots.robotsMap.
+                        get(ProtobufTest.REGISTERED_ROUTING_ID)).getVictoryState()
+        );
+
+        // Now simulate reception of a GAME_STATE message
+        // saying the game is now playing
+        myProxyRobots.receivedNewZmq(
+                new ZmqMessageBOM(ROUTING_ID_ALL,
+                        EnumMessageType.GAME_STATE,
+                        getBytesGameState_Playing()
+                )
+        );
+        // Tank victory state was changed accordingly to PLAYING
+        assertEquals(EnumRobotVictoryState.PLAYING, (myProxyRobots.robotsMap.
+                        get(ProtobufTest.REGISTERED_ROUTING_ID)).getVictoryState()
+        );
+
+        // Now simulate reception of a GAME_STATE message
+        // Where BLUE Team is the winner
+        myProxyRobots.receivedNewZmq(
+                new ZmqMessageBOM(ROUTING_ID_ALL,
+                        EnumMessageType.GAME_STATE,
+                        getBytesGameState_Winner()
+                )
+        );
+
+        // Tank victory state was changed accordingly
+        assertEquals(EnumRobotVictoryState.WINNER, (myProxyRobots.robotsMap.
+                        get(ProtobufTest.REGISTERED_ROUTING_ID)).getVictoryState()
+        );
     }
 
     @After

@@ -100,4 +100,10 @@ public class RobotsMap implements IRobotsMap {
         else
             return (EnumRegistrationState.REGISTERED == robot.getRegistrationState());
     }
+
+    @Override
+    public void accept(final RobotGameStateVisitor visitor) {
+        if (null != visitor)
+            visitor.visit(this);
+    }
 }

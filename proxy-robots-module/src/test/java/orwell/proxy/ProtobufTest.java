@@ -11,42 +11,48 @@ import orwell.messages.Controller;
 import orwell.messages.Robot;
 import orwell.messages.ServerGame;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
  * Tests for {@link Controller.Input, @link Robot.ServerRobotState,
- * @link Robot.Register, @link ServerGame.GameState, @link ServerGame.Registered}.
  *
  * @author miludmann@gmail.com (Michael Ludmann)
+ * @link Robot.Register, @link ServerGame.GameState, @link ServerGame.Registered}.
  */
 
 @RunWith(JUnit4.class)
 public class ProtobufTest {
     public final static Logger logback = LoggerFactory.getLogger(ProtobufTest.class);
+    public static final String REGISTERED_ROUTING_ID = "routingIdTest";
     private static final double INPUT_MOVE_LEFT = 50.5;
     private static final double INPUT_MOVE_RIGHT = 10.0;
     private static final boolean INPUT_FIRE_WEAPON_1 = false;
     private static final boolean INPUT_FIRE_WEAPON_2 = true;
-
     private static final long SERVER_ROBOT_STATE_TIMESTAMP = 1234567890;
     private static final String SERVER_ROBOT_STATE_RFID_VALUE = "11111111";
     private static final int SERVER_ROBOT_STATE_COLOUR_VALUE = 7;
     private static final String REGISTER_IMAGE = "imageTest";
     private static final String REGISTER_TEMPORARY_ROBOT_ID = "temporaryRobotId";
     private static final String REGISTER_VIDEO_URL = "http://video.url";
-    private static final boolean GAME_STATE_PLAYING_VALUE = false;
-    private static final long GAME_STATE_SECONDS = 180000;
-    private static final String GAME_STATE_WINNER_STRING = "NicCage";
+    private static final boolean GAME_STATE_PLAYING_WINNER = false;
+    private static final long GAME_STATE_SECONDS = 600;
+    private static final String GAME_STATE_WINNER_STRING = "BLUE";
+    private static final String TEAM_NAME_BLUE = "BLUE";
+    private static final int TEAM_SCORE_BLUE = 10;
+    private static final int TEAM_NUM_PLAYERS_BLUE = 1;
+    private static final String TEAM_PLAYER1_BLUE = "BluePlayer1";
+    private static final String TEAM_PLAYER2_BLUE = "BluePlayer2";
+    private static final String TEAM_NAME_RED = "RED";
+    private static final int TEAM_SCORE_RED = 10;
+    private static final int TEAM_NUM_PLAYERS_RED = 1;
+    private static final String TEAM_PLAYER1_RED = "RedPlayer1";
+    private static final String TEAM_PLAYER2_RED = "RedPlayer2";
     private static final String REGISTERED_TEAM_NAME = "BLUE";
     private static final Robot.Status SERVER_ROBOT_STATE_RFID_STATUS = Robot.Status.ON;
     private static final Robot.Status SERVER_ROBOT_STATE_COLOUR_STATUS = Robot.Status.OFF;
-    private static final String REGISTERED_ROBOT_ID = "robotIdTest";
-
-    @Before
-    public void setUp() throws Exception {
-        logback.debug(">>>>>>>>> IN");
-    }
 
     public static Controller.Input getTestInput() {
         final Controller.Input.Builder inputBuilder = Controller.Input.newBuilder();
@@ -130,19 +136,49 @@ public class ProtobufTest {
         return true;
     }
 
-    public static ServerGame.GameState getTestGameState() {
-        final ServerGame.GameState.Builder gameStateBuilder = ServerGame.GameState.newBuilder();
-        gameStateBuilder.setPlaying(GAME_STATE_PLAYING_VALUE);
-        gameStateBuilder.setSeconds(GAME_STATE_SECONDS);
-        gameStateBuilder.setWinner(GAME_STATE_WINNER_STRING);
+    private static ServerGame.Team getTeam(final String teamName,
+                                           final int score,
+                                           final int numPlayers,
+                                           final String[] players) {
+        final ServerGame.Team.Builder teamBuilder = ServerGame.Team.newBuilder();
+        teamBuilder.setName(teamName);
+        teamBuilder.setScore(score);
+        teamBuilder.setNumPlayers(numPlayers);
+        for (final String player : players) {
+            teamBuilder.addPlayers(player);
+        }
+        return teamBuilder.build();
+    }
 
+    public static ServerGame.GameState getTestGameState_Playing() {
+        final ServerGame.GameState.Builder gameStateBuilder = ServerGame.GameState.newBuilder();
+        gameStateBuilder.setPlaying(true);
+        gameStateBuilder.setSeconds(GAME_STATE_SECONDS);
+        ArrayList<ServerGame.Team> teams = new ArrayList<>();
+        teams.add(getTeam(TEAM_NAME_BLUE, TEAM_SCORE_BLUE, TEAM_NUM_PLAYERS_BLUE,
+                new String[]{TEAM_PLAYER1_BLUE, TEAM_PLAYER2_BLUE}));
+        teams.add(getTeam(TEAM_NAME_RED, TEAM_SCORE_RED, TEAM_NUM_PLAYERS_RED,
+                new String[]{TEAM_PLAYER1_RED, TEAM_PLAYER2_RED}));
+        return gameStateBuilder.build();
+    }
+
+    public static ServerGame.GameState getTestGameState_Winner() {
+        final ServerGame.GameState.Builder gameStateBuilder = ServerGame.GameState.newBuilder();
+        gameStateBuilder.setPlaying(GAME_STATE_PLAYING_WINNER);
+        gameStateBuilder.setSeconds(0);
+        gameStateBuilder.setWinner(GAME_STATE_WINNER_STRING);
+        ArrayList<ServerGame.Team> teams = new ArrayList<>();
+        teams.add(getTeam(TEAM_NAME_BLUE, TEAM_SCORE_BLUE, TEAM_NUM_PLAYERS_BLUE,
+                new String[]{TEAM_PLAYER1_BLUE, TEAM_PLAYER2_BLUE}));
+        teams.add(getTeam(TEAM_NAME_RED, TEAM_SCORE_RED, TEAM_NUM_PLAYERS_RED,
+                new String[]{TEAM_PLAYER1_RED, TEAM_PLAYER2_RED}));
         return gameStateBuilder.build();
     }
 
     public static boolean checkTestGameState(final ServerGame.GameState gameState) {
         assertTrue("GameState should be initialized", gameState.isInitialized());
 
-        assertEquals(GAME_STATE_PLAYING_VALUE, gameState.getPlaying());
+        assertEquals(GAME_STATE_PLAYING_WINNER, gameState.getPlaying());
         assertEquals(GAME_STATE_SECONDS, gameState.getSeconds());
         assertEquals(GAME_STATE_WINNER_STRING, gameState.getWinner());
 
@@ -151,7 +187,7 @@ public class ProtobufTest {
 
     public static ServerGame.Registered getTestRegistered() {
         final ServerGame.Registered.Builder registeredBuilder = ServerGame.Registered.newBuilder();
-        registeredBuilder.setRobotId(REGISTERED_ROBOT_ID);
+        registeredBuilder.setRobotId(REGISTERED_ROUTING_ID);
         registeredBuilder.setTeam(REGISTERED_TEAM_NAME);
 
         return registeredBuilder.build();
@@ -160,10 +196,15 @@ public class ProtobufTest {
     public static boolean checkTestRegistered(final ServerGame.Registered registered) {
         assertTrue("Registered should be initialized", registered.isInitialized());
 
-        assertEquals(REGISTERED_ROBOT_ID, registered.getRobotId());
+        assertEquals(REGISTERED_ROUTING_ID, registered.getRobotId());
         assertEquals(REGISTERED_TEAM_NAME, registered.getTeam());
 
         return true;
+    }
+
+    @Before
+    public void setUp() throws Exception {
+        logback.debug(">>>>>>>>> IN");
     }
 
     @Test
@@ -196,7 +237,7 @@ public class ProtobufTest {
     @Test
     public void testServerGameGameState() throws Exception {
         final ServerGame.GameState gameState =
-                ServerGame.GameState.parseFrom(getTestGameState().toByteArray());
+                ServerGame.GameState.parseFrom(getTestGameState_Winner().toByteArray());
 
         assertTrue("ServerGame.GameState should contains all valid data",
                 checkTestGameState(gameState));
