@@ -61,6 +61,6 @@ mvn clean cobertura:cobertura coveralls:report
 
 Run the jar created by the install to start the application
 ```
-java -jar proxy-robots-module/target/proxy-robots-module-0.1.0-jar-with-dependencies.jar -f proxy-robots-module/src/main/resources/configuration.xml
+java -jar proxy-robots-module/target/proxy-robots-module-0.1.0-jar-with-dependencies.jar -f proxy-robots-module/src/main/resources/config.xml
 ```
 
