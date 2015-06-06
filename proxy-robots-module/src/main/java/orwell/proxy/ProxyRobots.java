@@ -239,9 +239,7 @@ public class ProxyRobots implements IZmqMessageListener {
 
             // We stop the service once there are no more robots
             // connected to the proxy
-            while (!Thread.currentThread().isInterrupted() &&
-                    !robotsMap.getConnectedRobots().isEmpty() &&
-                    messageBroker.isConnectedToServer()) {
+            while (shouldRunCommunicationService()) {
 
                 // We avoid flooding the server
                 if (outgoingMessagePeriod < System.currentTimeMillis() - lastSendTime) {
@@ -257,9 +255,19 @@ public class ProxyRobots implements IZmqMessageListener {
                     logback.error("CommunicationService thread sleep exception: " + e.getMessage());
                 }
             }
+            terminateCommunicationService();
+        }
+
+        private void terminateCommunicationService() {
             logback.info("End of communication service");
             messageBroker.close();
             Thread.yield();
+        }
+
+        private boolean shouldRunCommunicationService() {
+            return !Thread.currentThread().isInterrupted() &&
+                    !robotsMap.getConnectedRobots().isEmpty() &&
+                    messageBroker.isConnectedToServer();
         }
     }
 

@@ -30,14 +30,14 @@ public final class Utils {
 
         int blockStart = 0;
         if (1 != limit) {
-            int position = 0;
+            int blockEnd = 0;
             final boolean limited = 0 < limit;
-            while (position < input.length && (!limited || limit > list.size())) {
-                if (separator == input[position]) {
-                    list.add(Arrays.copyOfRange(input, blockStart, position));
-                    blockStart = position + 1;
+            while (blockEnd < input.length && (!limited || limit > list.size())) {
+                if (separator == input[blockEnd]) {
+                    list.add(Arrays.copyOfRange(input, blockStart, blockEnd));
+                    blockStart = blockEnd + 1;
                 }
-                position++;
+                blockEnd++;
             }
         }
         list.add(Arrays.copyOfRange(input, blockStart, input.length));
