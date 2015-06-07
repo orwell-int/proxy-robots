@@ -16,34 +16,49 @@ public class GameState {
     public GameState(final byte[] gameStateMessage) {
         try {
             this.serverGameGameState = ServerGame.GameState.parseFrom(gameStateMessage);
+            if (null != serverGameGameState && serverGameGameState.hasWinner()) {
+                logback.debug(">>>>>>> We have a winner: " + serverGameGameState.getWinner());
+            }
         } catch (final InvalidProtocolBufferException e) {
             logback.error("setGameState protobuf exception: " + e.getMessage());
         }
     }
 
     public EnumGameState getEnumGameState() {
-        if (hasParseError())
-            return EnumGameState.UNDEFINED;
         if (isGameOnGoing())
             return EnumGameState.PLAYING;
         if (isGameFinished())
             return EnumGameState.FINISHED;
-        return EnumGameState.WAITING_TO_START;
+        if (isGameWaitingToStart())
+            return EnumGameState.WAITING_TO_START;
+        else // Parsing error for instance
+            return EnumGameState.UNDEFINED;
     }
 
-    private boolean hasParseError() {
-        return null == serverGameGameState;
-    }
-
+    /**
+     * @return playing == true
+     */
     protected boolean isGameOnGoing() {
         return (null != serverGameGameState &&
-                serverGameGameState.getPlaying() &&
-                0 < serverGameGameState.getSeconds());
+                serverGameGameState.getPlaying());
     }
 
+    /**
+     * @return playing == false && has winner
+     */
     protected boolean isGameFinished() {
         return (null != serverGameGameState &&
-                0 == serverGameGameState.getSeconds() && !isGameOnGoing());
+                !serverGameGameState.getPlaying() &&
+                serverGameGameState.hasWinner());
+    }
+
+    /**
+     * @return playing == false && has no winner
+     */
+    private boolean isGameWaitingToStart() {
+        return (null != serverGameGameState &&
+                !serverGameGameState.getPlaying() &&
+                !serverGameGameState.hasWinner());
     }
 
     protected String getWinningTeam() {
