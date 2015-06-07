@@ -11,9 +11,9 @@ import orwell.proxy.EnumGameState;
  */
 public class RobotGameStateVisitor {
     private final static Logger logback = LoggerFactory.getLogger(RobotGameStateVisitor.class);
-    private final static String VICTORY_PAYLOAD_HEADER = "input vict ";
-    private final static String DEFEAT_PAYLOAD_HEADER = "input fail ";
-    private final static String DRAW_PAYLOAD_HEADER = "input draw ";
+    private final static String VICTORY_PAYLOAD_HEADER = "game vict ";
+    private final static String DEFEAT_PAYLOAD_HEADER = "game fail ";
+    private final static String DRAW_PAYLOAD_HEADER = "game draw ";
     private final String winningTeam;
     private final EnumGameState gameState;
 
