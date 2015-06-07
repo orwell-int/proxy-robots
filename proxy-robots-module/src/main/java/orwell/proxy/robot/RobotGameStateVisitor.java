@@ -13,7 +13,7 @@ public class RobotGameStateVisitor {
     private final static Logger logback = LoggerFactory.getLogger(RobotGameStateVisitor.class);
     private final static String VICTORY_PAYLOAD_HEADER = "input vict ";
     private final static String DEFEAT_PAYLOAD_HEADER = "input fail ";
-    private final static String DRAW_PAYLOAD_HEADER = "input fail ";
+    private final static String DRAW_PAYLOAD_HEADER = "input draw ";
     private final String winningTeam;
     private final EnumGameState gameState;
 
