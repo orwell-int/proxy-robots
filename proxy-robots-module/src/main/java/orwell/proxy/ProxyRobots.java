@@ -28,10 +28,10 @@ public class ProxyRobots implements IZmqMessageListener {
                        final IConfigFactory configFactory,
                        final IRobotsMap robotsMap) {
         logback.debug("Constructor -- IN");
-        assert (null != messageBroker);
-        assert (null != configFactory);
-        assert (null != configFactory.getConfigProxy());
-        assert (null != robotsMap);
+        assert null != messageBroker;
+        assert null != configFactory;
+        assert null != configFactory.getConfigProxy();
+        assert null != robotsMap;
 
         this.messageBroker = messageBroker;
         this.configServerGame = configFactory.getMaxPriorityConfigServerGame();
