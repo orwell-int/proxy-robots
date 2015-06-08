@@ -42,17 +42,21 @@ public class RobotGameStateVisitor {
                 setPlaying(robot);
                 break;
             case FINISHED:
-                if (null == winningTeam || winningTeam.equals("")) {
-                    setDraw(robot);
-                } else if (winningTeam.equals(robot.getTeamName())) {
-                    setVictory(robot);
-                } else {
-                    setDefeat(robot);
-                }
+                setFinished(robot);
                 break;
             case UNDEFINED:
                 setUndefined(robot);
                 break;
+        }
+    }
+
+    private void setFinished(final IRobot robot) {
+        if (null == winningTeam || winningTeam.equals("")) {
+            setDraw(robot);
+        } else if (winningTeam.equals(robot.getTeamName())) {
+            setVictory(robot);
+        } else {
+            setDefeat(robot);
         }
     }
 
