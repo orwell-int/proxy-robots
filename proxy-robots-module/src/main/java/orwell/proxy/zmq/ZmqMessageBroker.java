@@ -147,20 +147,7 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
                 final byte[] raw_zmq_message = receiver.recv(ZMQ.NOBLOCK);
                 if (null != raw_zmq_message) {
                     synchronized (rXguard) {
-                        baseTimeMs = System.currentTimeMillis();
-                        try {
-                            newZmqMessage = ZmqMessageBOM.parseFrom(raw_zmq_message);
-
-                            // We do not want to uselessly flood the robot
-                            if (isSkipIdenticalMessages && newZmqMessage.equals(previousZmqMessage)) {
-                                onReceivedIdenticalMessage();
-                            } else {
-                                onReceivedNewZmqMessage(newZmqMessage);
-                            }
-                            previousZmqMessage = newZmqMessage;
-                        } catch (final ParseException e) {
-                            onReceivedBadMessage(e);
-                        }
+                        handleRawZmqMessage(raw_zmq_message);
                     }
                 }
                 try {
@@ -171,6 +158,23 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
                 }
             }
             terminateZmqReader();
+        }
+
+        private void handleRawZmqMessage(final byte[] raw_zmq_message) {
+            baseTimeMs = System.currentTimeMillis();
+            try {
+                newZmqMessage = ZmqMessageBOM.parseFrom(raw_zmq_message);
+
+                // We do not want to uselessly flood the robot
+                if (isSkipIdenticalMessages && newZmqMessage.equals(previousZmqMessage)) {
+                    onReceivedIdenticalMessage();
+                } else {
+                    onReceivedNewZmqMessage(newZmqMessage);
+                }
+                previousZmqMessage = newZmqMessage;
+            } catch (final ParseException e) {
+                onReceivedBadMessage(e);
+            }
         }
 
         private void terminateZmqReader() {
