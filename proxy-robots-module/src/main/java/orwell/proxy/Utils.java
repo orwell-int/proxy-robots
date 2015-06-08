@@ -21,6 +21,9 @@ public final class Utils {
      * @param limit     max number of elements allowed in the returned list
      *                  If limit is < 0, then proceed as if there were no limit
      * @return list of bytes arrays, its size being of maximum {limit} elements
+     *         if limit = 0: returns empty list
+     *         if limit = 1: returns the first element result of the split (i.e.
+     *         a list of one byte[] stopping at the first separator)
      */
     public static List<byte[]> split(final byte separator, final byte[] input, final int limit) {
         final List<byte[]> list = new LinkedList<>();
