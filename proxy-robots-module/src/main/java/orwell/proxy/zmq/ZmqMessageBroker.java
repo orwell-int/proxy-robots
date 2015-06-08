@@ -130,7 +130,7 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
         return nbBadMessages;
     }
 
-    private boolean hasSocketRecvTimeout() {
+    private boolean hasReceivedTimeoutExpired() {
         return isSocketTimeoutSet &&
                 (System.currentTimeMillis() - baseTimeMs > socketTimeoutMs);
     }
@@ -143,7 +143,7 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
         public void run() {
             logback.info("ZmqReader has been started");
             baseTimeMs = System.currentTimeMillis();
-            while (isConnected && !hasSocketRecvTimeout()) {
+            while (isConnected && !hasReceivedTimeoutExpired()) {
                 final byte[] raw_zmq_message = receiver.recv(ZMQ.NOBLOCK);
                 if (null != raw_zmq_message) {
                     synchronized (rXguard) {
@@ -178,7 +178,7 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
         }
 
         private void terminateZmqReader() {
-            if (hasSocketRecvTimeout()) {
+            if (hasReceivedTimeoutExpired()) {
                 logback.info("Communication stopped: socket received timeout after " + socketTimeoutMs + "ms");
             }
             isConnected = false;
