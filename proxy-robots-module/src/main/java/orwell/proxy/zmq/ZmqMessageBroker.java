@@ -170,6 +170,10 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
                     logback.error("ZmqReader thread sleep exception: " + e.getMessage());
                 }
             }
+            terminateZmqReader();
+        }
+
+        private void terminateZmqReader() {
             if (hasSocketRecvTimeout()) {
                 logback.info("Communication stopped: socket received timeout after " + socketTimeoutMs + "ms");
             }
