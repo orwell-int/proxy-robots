@@ -37,6 +37,8 @@ public class UdpBeaconTest {
     private final static String IP_TEST = "127.0.0.1";
     private static final String PARTIAL_PUSH_PORT = "tcp://*:9001";
     private static final String PARTIAL_PUB_PORT = "tcp://*:9000";
+    private static final String TCP_PUSH_ADDRESS = "tcp://127.0.0.1:9001";
+    private static final String TCP_SUBSCRIBE_ADDRESS = "tcp://127.0.0.1:9000";
 
     @TestSubject
     private UdpBeaconFinder udpBeaconFinder;
@@ -108,8 +110,8 @@ public class UdpBeaconTest {
         verify(mockedDatagramSocket);
         assertTrue(udpBeaconDecoder.hasReceivedCorrectData());
         assertEquals(IP_TEST, udpBeaconDecoder.getServerGameIp());
-        assertEquals("tcp://127.0.0.1:9001", udpBeaconDecoder.getPushAddress());
-        assertEquals("tcp://127.0.0.1:9000", udpBeaconDecoder.getSubscribeAddress());
+        assertEquals(TCP_PUSH_ADDRESS, udpBeaconDecoder.getPushAddress());
+        assertEquals(TCP_SUBSCRIBE_ADDRESS, udpBeaconDecoder.getSubscribeAddress());
     }
 
     @Test
