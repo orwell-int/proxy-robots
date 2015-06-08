@@ -17,6 +17,7 @@ import java.util.List;
 public class ZmqMessageBOM {
     private final static Logger logback = LoggerFactory.getLogger(ZmqMessageBOM.class);
     private final static byte ZMQ_SEPARATOR = " ".getBytes()[0];
+    private static final int ZMQ_MESSAGE_ITEMS_NUM = 3;
     private final EnumMessageType messageType;
     private final String routingId;
     private byte[] messageBodyBytes;
@@ -37,12 +38,13 @@ public class ZmqMessageBOM {
     public static ZmqMessageBOM parseFrom(final byte[] raw_zmq_message) throws ParseException {
         // We do not want to create a String from arbitrary binary data, so we
         // first isolate the 3 parts of the raw zmq message
-        final List<byte[]> zmqMessageBytesList = Utils.split(ZMQ_SEPARATOR, raw_zmq_message, 3);
+        final List<byte[]> zmqMessageBytesList = Utils.split(ZMQ_SEPARATOR,
+                raw_zmq_message, ZMQ_MESSAGE_ITEMS_NUM);
 
         if (3 != zmqMessageBytesList.size()) {
             logback.warn("ZmqMessage failed to split incoming message, missing items: " +
                     raw_zmq_message);
-            throw new ParseException("Message does not contain all three mandatory items", 3);
+            throw new ParseException("Message does not contain all three mandatory items", ZMQ_MESSAGE_ITEMS_NUM);
         }
 
         // routingId was a string encoded in bytes, there is no issue to build a String from it
