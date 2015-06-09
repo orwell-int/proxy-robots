@@ -26,7 +26,6 @@ import static org.junit.Assert.*;
 @RunWith(JUnit4.class)
 public class UdpBeaconTest {
     private final static Logger logback = LoggerFactory.getLogger(UdpBeaconTest.class);
-    private final static int BROADCAST_PORT = 9080;
     private final static int BROADCAST_TIMEOUT_MS = 5000;
     private final static int RECEIVER_BUFFER_SIZE = 512;
     private final static int ADDRESS_SIZE = 12;
@@ -91,16 +90,17 @@ public class UdpBeaconTest {
     @Test
     public void testStartBroadcasting() throws Exception {
         mockedDatagramSocket.receive((DatagramPacket) anyObject());
-        expectLastCall().andAnswer(new IAnswer<Object>() {
-                                       @Override
-                                       public Object answer() throws Throwable {
-                                           final DatagramPacket datagramPacket = (DatagramPacket) getCurrentArguments()[0];
-                                           datagramPacket.setAddress(InetAddress.getByName(IP_TEST));
-                                           datagramPacket.setData(getTestPacketDataBytes(CHECK_BYTE_STX, ADDRESS_SIZE, PARTIAL_PUSH_PORT, CHECK_BYTE_SEPARATOR, ADDRESS_SIZE, PARTIAL_PUB_PORT, CHECK_BYTE_ETX));
-                                           return null;
-                                       }
-                                   }
-        );
+        expectLastCall()
+                .andAnswer(new IAnswer<Object>() {
+                               @Override
+                               public Object answer() throws Throwable {
+                                   final DatagramPacket datagramPacket = (DatagramPacket) getCurrentArguments()[0];
+                                   datagramPacket.setAddress(InetAddress.getByName(IP_TEST));
+                                   datagramPacket.setData(getTestPacketDataBytes(CHECK_BYTE_STX, ADDRESS_SIZE, PARTIAL_PUSH_PORT, CHECK_BYTE_SEPARATOR, ADDRESS_SIZE, PARTIAL_PUB_PORT, CHECK_BYTE_ETX));
+                                   return null;
+                               }
+                           }
+                );
         replay(mockedDatagramSocket);
 
         udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
@@ -117,16 +117,17 @@ public class UdpBeaconTest {
     @Test
     public void testStartBroadcasting_badSTX() throws Exception {
         mockedDatagramSocket.receive((DatagramPacket) anyObject());
-        expectLastCall().andAnswer(new IAnswer<Object>() {
-                                       @Override
-                                       public Object answer() throws Throwable {
-                                           final DatagramPacket datagramPacket = (DatagramPacket) getCurrentArguments()[0];
-                                           datagramPacket.setAddress(InetAddress.getByName(IP_TEST));
-                                           datagramPacket.setData(getTestPacketDataBytes(BAD_BYTE, ADDRESS_SIZE, PARTIAL_PUSH_PORT, CHECK_BYTE_SEPARATOR, ADDRESS_SIZE, PARTIAL_PUB_PORT, CHECK_BYTE_ETX));
-                                           return null;
-                                       }
-                                   }
-        );
+        expectLastCall()
+                .andAnswer(new IAnswer<Object>() {
+                               @Override
+                               public Object answer() throws Throwable {
+                                   final DatagramPacket datagramPacket = (DatagramPacket) getCurrentArguments()[0];
+                                   datagramPacket.setAddress(InetAddress.getByName(IP_TEST));
+                                   datagramPacket.setData(getTestPacketDataBytes(BAD_BYTE, ADDRESS_SIZE, PARTIAL_PUSH_PORT, CHECK_BYTE_SEPARATOR, ADDRESS_SIZE, PARTIAL_PUB_PORT, CHECK_BYTE_ETX));
+                                   return null;
+                               }
+                           }
+                );
         replay(mockedDatagramSocket);
 
         udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
@@ -143,16 +144,17 @@ public class UdpBeaconTest {
     @Test
     public void testStartBroadcasting_badSeparator() throws Exception {
         mockedDatagramSocket.receive((DatagramPacket) anyObject());
-        expectLastCall().andAnswer(new IAnswer<Object>() {
-                                       @Override
-                                       public Object answer() throws Throwable {
-                                           final DatagramPacket datagramPacket = (DatagramPacket) getCurrentArguments()[0];
-                                           datagramPacket.setAddress(InetAddress.getByName(IP_TEST));
-                                           datagramPacket.setData(getTestPacketDataBytes(CHECK_BYTE_STX, ADDRESS_SIZE, PARTIAL_PUSH_PORT, BAD_BYTE, ADDRESS_SIZE, PARTIAL_PUB_PORT, CHECK_BYTE_ETX));
-                                           return null;
-                                       }
-                                   }
-        );
+        expectLastCall()
+                .andAnswer(new IAnswer<Object>() {
+                               @Override
+                               public Object answer() throws Throwable {
+                                   final DatagramPacket datagramPacket = (DatagramPacket) getCurrentArguments()[0];
+                                   datagramPacket.setAddress(InetAddress.getByName(IP_TEST));
+                                   datagramPacket.setData(getTestPacketDataBytes(CHECK_BYTE_STX, ADDRESS_SIZE, PARTIAL_PUSH_PORT, BAD_BYTE, ADDRESS_SIZE, PARTIAL_PUB_PORT, CHECK_BYTE_ETX));
+                                   return null;
+                               }
+                           }
+                );
         replay(mockedDatagramSocket);
 
         udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
@@ -169,16 +171,17 @@ public class UdpBeaconTest {
     @Test
     public void testStartBroadcasting_badETX() throws Exception {
         mockedDatagramSocket.receive((DatagramPacket) anyObject());
-        expectLastCall().andAnswer(new IAnswer<Object>() {
-                                       @Override
-                                       public Object answer() throws Throwable {
-                                           final DatagramPacket datagramPacket = (DatagramPacket) getCurrentArguments()[0];
-                                           datagramPacket.setAddress(InetAddress.getByName(IP_TEST));
-                                           datagramPacket.setData(getTestPacketDataBytes(CHECK_BYTE_STX, ADDRESS_SIZE, PARTIAL_PUSH_PORT, CHECK_BYTE_SEPARATOR, ADDRESS_SIZE, PARTIAL_PUB_PORT, BAD_BYTE));
-                                           return null;
-                                       }
-                                   }
-        );
+        expectLastCall()
+                .andAnswer(new IAnswer<Object>() {
+                               @Override
+                               public Object answer() throws Throwable {
+                                   final DatagramPacket datagramPacket = (DatagramPacket) getCurrentArguments()[0];
+                                   datagramPacket.setAddress(InetAddress.getByName(IP_TEST));
+                                   datagramPacket.setData(getTestPacketDataBytes(CHECK_BYTE_STX, ADDRESS_SIZE, PARTIAL_PUSH_PORT, CHECK_BYTE_SEPARATOR, ADDRESS_SIZE, PARTIAL_PUB_PORT, BAD_BYTE));
+                                   return null;
+                               }
+                           }
+                );
         replay(mockedDatagramSocket);
 
         udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
@@ -195,16 +198,17 @@ public class UdpBeaconTest {
     @Test
     public void testStartBroadcasting_badDataFormat_LengthError() throws Exception {
         mockedDatagramSocket.receive((DatagramPacket) anyObject());
-        expectLastCall().andAnswer(new IAnswer<Object>() {
-                                       @Override
-                                       public Object answer() throws Throwable {
-                                           final DatagramPacket datagramPacket = (DatagramPacket) getCurrentArguments()[0];
-                                           datagramPacket.setAddress(InetAddress.getByName(IP_TEST));
-                                           datagramPacket.setData(getTestPacketDataBytes(CHECK_BYTE_STX, 11, PARTIAL_PUSH_PORT, CHECK_BYTE_SEPARATOR, ADDRESS_SIZE, PARTIAL_PUB_PORT, CHECK_BYTE_ETX));
-                                           return null;
-                                       }
-                                   }
-        );
+        expectLastCall()
+                .andAnswer(new IAnswer<Object>() {
+                               @Override
+                               public Object answer() throws Throwable {
+                                   final DatagramPacket datagramPacket = (DatagramPacket) getCurrentArguments()[0];
+                                   datagramPacket.setAddress(InetAddress.getByName(IP_TEST));
+                                   datagramPacket.setData(getTestPacketDataBytes(CHECK_BYTE_STX, 11, PARTIAL_PUSH_PORT, CHECK_BYTE_SEPARATOR, ADDRESS_SIZE, PARTIAL_PUB_PORT, CHECK_BYTE_ETX));
+                                   return null;
+                               }
+                           }
+                );
         replay(mockedDatagramSocket);
 
         udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
@@ -221,16 +225,17 @@ public class UdpBeaconTest {
     @Test
     public void testStartBroadcasting_badDataFormat_StarMissing() throws Exception {
         mockedDatagramSocket.receive((DatagramPacket) anyObject());
-        expectLastCall().andAnswer(new IAnswer<Object>() {
-                                       @Override
-                                       public Object answer() throws Throwable {
-                                           final DatagramPacket datagramPacket = (DatagramPacket) getCurrentArguments()[0];
-                                           datagramPacket.setAddress(InetAddress.getByName(IP_TEST));
-                                           datagramPacket.setData(getTestPacketDataBytes(CHECK_BYTE_STX, ADDRESS_SIZE, "tcp://.:9001", CHECK_BYTE_SEPARATOR, ADDRESS_SIZE, PARTIAL_PUB_PORT, CHECK_BYTE_ETX));
-                                           return null;
-                                       }
-                                   }
-        );
+        expectLastCall()
+                .andAnswer(new IAnswer<Object>() {
+                               @Override
+                               public Object answer() throws Throwable {
+                                   final DatagramPacket datagramPacket = (DatagramPacket) getCurrentArguments()[0];
+                                   datagramPacket.setAddress(InetAddress.getByName(IP_TEST));
+                                   datagramPacket.setData(getTestPacketDataBytes(CHECK_BYTE_STX, ADDRESS_SIZE, "tcp://.:9001", CHECK_BYTE_SEPARATOR, ADDRESS_SIZE, PARTIAL_PUB_PORT, CHECK_BYTE_ETX));
+                                   return null;
+                               }
+                           }
+                );
         replay(mockedDatagramSocket);
 
         udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
@@ -264,26 +269,27 @@ public class UdpBeaconTest {
         mockedDatagramSocket.receive((DatagramPacket) anyObject());
 
         // First return a badly formatted packet
-        expectLastCall().andAnswer(new IAnswer<Object>() {
-                                       @Override
-                                       public Object answer() throws Throwable {
-                                           final DatagramPacket datagramPacket = (DatagramPacket) getCurrentArguments()[0];
-                                           datagramPacket.setAddress(InetAddress.getByName(IP_TEST));
-                                           datagramPacket.setData(getTestPacketDataBytes(BAD_BYTE, ADDRESS_SIZE, PARTIAL_PUSH_PORT, CHECK_BYTE_SEPARATOR, ADDRESS_SIZE, PARTIAL_PUB_PORT, CHECK_BYTE_ETX));
-                                           return null;
-                                       }
-                                   }
-                // Then return a good one at the second try
-        ).andAnswer(new IAnswer<Object>() {
-                        @Override
-                        public Object answer() throws Throwable {
-                            final DatagramPacket datagramPacket = (DatagramPacket) getCurrentArguments()[0];
-                            datagramPacket.setAddress(InetAddress.getByName(IP_TEST));
-                            datagramPacket.setData(getTestPacketDataBytes(CHECK_BYTE_STX, ADDRESS_SIZE, PARTIAL_PUSH_PORT, CHECK_BYTE_SEPARATOR, ADDRESS_SIZE, PARTIAL_PUB_PORT, CHECK_BYTE_ETX));
-                            return null;
-                        }
-                    }
-        );
+        expectLastCall()
+                .andAnswer(new IAnswer<Object>() {
+                               @Override
+                               public Object answer() throws Throwable {
+                                   final DatagramPacket datagramPacket = (DatagramPacket) getCurrentArguments()[0];
+                                   datagramPacket.setAddress(InetAddress.getByName(IP_TEST));
+                                   datagramPacket.setData(getTestPacketDataBytes(BAD_BYTE, ADDRESS_SIZE, PARTIAL_PUSH_PORT, CHECK_BYTE_SEPARATOR, ADDRESS_SIZE, PARTIAL_PUB_PORT, CHECK_BYTE_ETX));
+                                   return null;
+                               }
+                           }
+                ) // Then return a good one at the second try
+                .andAnswer(new IAnswer<Object>() {
+                               @Override
+                               public Object answer() throws Throwable {
+                                   final DatagramPacket datagramPacket = (DatagramPacket) getCurrentArguments()[0];
+                                   datagramPacket.setAddress(InetAddress.getByName(IP_TEST));
+                                   datagramPacket.setData(getTestPacketDataBytes(CHECK_BYTE_STX, ADDRESS_SIZE, PARTIAL_PUSH_PORT, CHECK_BYTE_SEPARATOR, ADDRESS_SIZE, PARTIAL_PUB_PORT, CHECK_BYTE_ETX));
+                                   return null;
+                               }
+                           }
+                );
         replay(mockedDatagramSocket);
 
         udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
