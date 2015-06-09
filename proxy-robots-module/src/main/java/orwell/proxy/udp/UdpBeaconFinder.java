@@ -74,7 +74,7 @@ public class UdpBeaconFinder {
                     final NetworkInterface networkInterface = interfaces.nextElement();
                     sendBroadcastToInterface(networkInterface);
                 }
-                
+
                 logback.info("Done looping over all network interfaces. Now waiting for a reply!");
                 waitForServerResponse(datagramSocket);
 

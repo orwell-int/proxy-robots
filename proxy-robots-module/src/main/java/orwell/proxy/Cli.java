@@ -3,10 +3,11 @@ package orwell.proxy;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.config.ConfigFactoryParameters;
-import orwell.proxy.config.EnumConfigFileType;
+import orwell.proxy.config.Configuration;
+import orwell.proxy.config.source.SourceFile;
+import orwell.proxy.config.source.SourceResource;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 
 /**
  * Created by Michaël Ludmann on 5/5/15.
@@ -39,7 +40,7 @@ public class Cli {
      *
      * @return null if help is called or error happens during parsing
      */
-    public ConfigFactoryParameters parse() {
+    public Configuration parse() {
         final CommandLineParser parser = new BasicParser();
         final CommandLine cmd;
 
@@ -50,14 +51,14 @@ public class Cli {
                 return help();
 
             if (cmd.hasOption("f")) {
-                return file(cmd.getOptionValue("f"));
+                return configurationFromFile(cmd.getOptionValue("f"));
             } else if (cmd.hasOption("u")) {
-                return url(cmd.getOptionValue("u"));
+                return configurationFromUrl(cmd.getOptionValue("u"));
             } else if (0 < args.length) {
                 logback.warn("Unknown parameter: " + args[0]);
                 return help();
             } else {
-                return resource();
+                return configurationFromResource();
             }
 
         } catch (final ParseException e) {
@@ -66,7 +67,7 @@ public class Cli {
         }
     }
 
-    private ConfigFactoryParameters help() {
+    private Configuration help() {
         // This prints out some help
         final HelpFormatter formatter = new HelpFormatter();
 
@@ -74,24 +75,24 @@ public class Cli {
         return null;
     }
 
-    private ConfigFactoryParameters file(final String filePath) {
-        final File file = new File(filePath);
-        if (!file.exists() || file.isDirectory()) {
-            logback.error("File " + filePath + " not found.");
+    private Configuration configurationFromFile(final String filePath) {
+        try {
+            return new SourceFile(filePath);
+        } catch (final FileNotFoundException e) {
+            logback.error(e.getMessage());
             return null;
         }
-        logback.info("Using configuration file given as parameter: " + filePath);
-        return new ConfigFactoryParameters(filePath, EnumConfigFileType.FILE);
     }
 
-    private ConfigFactoryParameters url(final String url) {
+    private Configuration configurationFromUrl(final String url) {
         logback.info("Using file retrieved from URL given as parameter: " + url);
-        return new ConfigFactoryParameters(url, EnumConfigFileType.URL);
+        logback.warn("URL USE CASE NOT HANDLED YET - sorry!");
+        return null;
     }
 
-    private ConfigFactoryParameters resource() {
+    private Configuration configurationFromResource() {
         logback.info("No argument given to jar, trying to find custom resource configuration file: " +
                 CUSTOM_CONFIG_FILEPATH_INSIDE_JAR);
-        return new ConfigFactoryParameters(CUSTOM_CONFIG_FILEPATH_INSIDE_JAR, EnumConfigFileType.RESOURCE);
+        return new SourceResource(CUSTOM_CONFIG_FILEPATH_INSIDE_JAR);
     }
 }
