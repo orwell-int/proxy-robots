@@ -10,11 +10,10 @@ import org.slf4j.LoggerFactory;
 import orwell.proxy.config.elements.*;
 import orwell.proxy.config.source.ConfigurationFile;
 import orwell.proxy.config.source.ConfigurationResource;
+import java.io.*;
+import java.nio.file.Files;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
+import static java.nio.file.StandardCopyOption.*;
 import static org.junit.Assert.*;
 
 /**
@@ -155,17 +154,34 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void testConfigurationFailsWithEmptyFile() throws FileNotFoundException {
+    public void testConfigurationFile_fail() throws FileNotFoundException {
         File file = null;
         try {
             // Create empty file
-            file = File.createTempFile("testConfigurationWithFile", ".tmp");
+            file = File.createTempFile("testConfigurationFile_fail", ".tmp");
         } catch (final IOException e) {
             fail(e.toString());
         }
 
         // Population fails since file is empty
         assertFalse((new ConfigurationFile(file.getAbsolutePath())).isPopulated());
+    }
+
+    @Test
+    public void testConfigurationFile_success() throws IOException {
+        File file = null;
+        try {
+            // Create empty temp file
+            file = File.createTempFile("testConfigurationFile_success", ".tmp");
+            // copy content of resource coming from jar to temp file
+            final InputStream in = getClass().getResourceAsStream(CONFIGURATION_RESOURCE_PATH);
+            Files.copy(in, file.toPath(), REPLACE_EXISTING);
+        } catch (final IOException e) {
+            fail(e.toString());
+        }
+
+        // Population succeed since file is filed with complete data
+        assertTrue((new ConfigurationFile(file.getAbsolutePath())).isPopulated());
     }
 
     @Test
