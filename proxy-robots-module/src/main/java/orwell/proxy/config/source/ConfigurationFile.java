@@ -12,11 +12,11 @@ import java.io.FileNotFoundException;
 /**
  * Created by Michaël Ludmann on 6/9/15.
  */
-public class SourceFile extends Configuration {
-    private final static Logger logback = LoggerFactory.getLogger(SourceFile.class);
+public class ConfigurationFile extends Configuration {
+    private final static Logger logback = LoggerFactory.getLogger(ConfigurationFile.class);
     private final String filePath;
 
-    public SourceFile(final String filePath) throws FileNotFoundException {
+    public ConfigurationFile(final String filePath) throws FileNotFoundException {
         this.filePath = filePath;
 
         final File file = new File(filePath);
@@ -24,6 +24,8 @@ public class SourceFile extends Configuration {
             throw new FileNotFoundException(filePath);
         }
         logback.info("Using configuration file given as parameter: " + filePath);
+
+        populate();
     }
 
     @Override

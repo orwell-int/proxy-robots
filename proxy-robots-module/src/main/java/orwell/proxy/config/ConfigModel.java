@@ -1,5 +1,8 @@
 package orwell.proxy.config;
 
+import orwell.proxy.config.elements.ConfigProxy;
+import orwell.proxy.config.elements.ConfigRobots;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 

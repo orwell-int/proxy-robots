@@ -12,13 +12,14 @@ import java.io.InputStream;
 /**
  * Created by Michaël Ludmann on 6/9/15.
  */
-public class SourceResource extends Configuration {
-    private final static Logger logback = LoggerFactory.getLogger(SourceResource.class);
+public class ConfigurationResource extends Configuration {
+    private final static Logger logback = LoggerFactory.getLogger(ConfigurationResource.class);
     private final static String DEFAULT_CONFIG_FILEPATH_INSIDE_JAR = "/config.defaults.xml";
     private final String filePath;
 
-    public SourceResource(final String filePath) {
+    public ConfigurationResource(final String filePath) {
         this.filePath = filePath;
+        populate();
     }
 
     @Override

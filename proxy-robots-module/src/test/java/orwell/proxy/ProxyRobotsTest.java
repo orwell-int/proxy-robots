@@ -11,8 +11,7 @@ import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.config.ConfigFactory;
-import orwell.proxy.config.ConfigFactoryParameters;
-import orwell.proxy.config.EnumConfigFileType;
+import orwell.proxy.config.source.ConfigurationResource;
 import orwell.proxy.mock.MockedTank;
 import orwell.proxy.robot.EnumRegistrationState;
 import orwell.proxy.robot.EnumRobotVictoryState;
@@ -42,13 +41,14 @@ public class ProxyRobotsTest {
     private static final String SUB_ADDRESS_UDP = "tcp://localhost:9001";
     private static final String PUSH_ADDRESS_CONFIG = "tcp://127.0.0.1:9001";
     private static final String SUB_ADDRESS_CONFIG = "tcp://127.0.0.1:9000";
+    private static final String CONFIGURATION_RESOURCE_PATH = "/configurationTest.xml";
     private static final long WAIT_TIMEOUT_MS = 500; // has to be greater than ProxyRobots.THREAD_SLEEP_MS
     private static final long RECEIVE_TIMEOUT = 500;
     private static final String ROUTING_ID_ALL = "all_robots";
-    private ConfigFactoryParameters configFactoryParameters;
     private ZmqMessageBroker mockedZmqMessageBroker;
     private ConfigFactory configFactory;
     private RobotsMap robotsMap;
+    private ConfigurationResource configuration;
     @TestSubject
     private ProxyRobots myProxyRobots;
     @Mock
@@ -57,13 +57,13 @@ public class ProxyRobotsTest {
     @Before
     public void setUp() {
         logback.debug(">>>>>>>>> IN");
-        configFactoryParameters = new ConfigFactoryParameters("/configurationTest.xml", EnumConfigFileType.RESOURCE);
+        configuration = new ConfigurationResource(CONFIGURATION_RESOURCE_PATH);
         mockedZmqMessageBroker = createNiceMock(ZmqMessageBroker.class);
 
         // Build Mock of Tank
         mockedTank = new MockedTank();
 
-        configFactory = ConfigFactory.createConfigFactory(configFactoryParameters);
+        configFactory = ConfigFactory.createConfigFactory(configuration);
 
         // Create the map with one mock tank
         robotsMap = new RobotsMap();

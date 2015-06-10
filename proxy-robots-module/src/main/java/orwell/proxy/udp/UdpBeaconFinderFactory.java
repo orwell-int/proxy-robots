@@ -2,7 +2,7 @@ package orwell.proxy.udp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.config.IConfigUdpBroadcast;
+import orwell.proxy.config.elements.IConfigUdpBroadcast;
 
 import java.net.DatagramSocket;
 import java.net.SocketException;

@@ -4,8 +4,8 @@ import org.apache.commons.cli.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.config.Configuration;
-import orwell.proxy.config.source.SourceFile;
-import orwell.proxy.config.source.SourceResource;
+import orwell.proxy.config.source.ConfigurationFile;
+import orwell.proxy.config.source.ConfigurationResource;
 
 import java.io.FileNotFoundException;
 
@@ -77,7 +77,7 @@ public class Cli {
 
     private Configuration configurationFromFile(final String filePath) {
         try {
-            return new SourceFile(filePath);
+            return new ConfigurationFile(filePath);
         } catch (final FileNotFoundException e) {
             logback.error(e.getMessage());
             return null;
@@ -93,6 +93,6 @@ public class Cli {
     private Configuration configurationFromResource() {
         logback.info("No argument given to jar, trying to find custom resource configuration file: " +
                 CUSTOM_CONFIG_FILEPATH_INSIDE_JAR);
-        return new SourceResource(CUSTOM_CONFIG_FILEPATH_INSIDE_JAR);
+        return new ConfigurationResource(CUSTOM_CONFIG_FILEPATH_INSIDE_JAR);
     }
 }

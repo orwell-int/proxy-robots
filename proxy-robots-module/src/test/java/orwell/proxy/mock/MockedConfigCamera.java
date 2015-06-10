@@ -1,6 +1,6 @@
 package orwell.proxy.mock;
 
-import orwell.proxy.config.IConfigCamera;
+import orwell.proxy.config.elements.IConfigCamera;
 
 /**
  * Created by Michaël Ludmann on 5/21/15.

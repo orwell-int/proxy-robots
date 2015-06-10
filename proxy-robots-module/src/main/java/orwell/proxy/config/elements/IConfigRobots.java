@@ -1,4 +1,4 @@
-package orwell.proxy.config;
+package orwell.proxy.config.elements;
 
 import java.util.ArrayList;
 

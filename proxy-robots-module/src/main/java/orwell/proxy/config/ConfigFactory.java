@@ -2,6 +2,9 @@ package orwell.proxy.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import orwell.proxy.config.elements.IConfigProxy;
+import orwell.proxy.config.elements.IConfigRobots;
+import orwell.proxy.config.elements.IConfigServerGame;
 
 /**
  * Created by Michaël Ludmann on 03/05/15.

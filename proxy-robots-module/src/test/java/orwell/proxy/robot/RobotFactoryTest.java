@@ -7,8 +7,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.config.ConfigCamera;
-import orwell.proxy.config.ConfigTank;
+import orwell.proxy.config.elements.ConfigCamera;
+import orwell.proxy.config.elements.ConfigTank;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;

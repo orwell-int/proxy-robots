@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import orwell.proxy.config.source.ConfigurationResource;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -21,14 +22,14 @@ import static org.junit.Assert.assertTrue;
 public class ConfigFactoryTest {
 
     private final static Logger logback = LoggerFactory.getLogger(ConfigFactoryTest.class);
-    private static final String CONFIGURATION_RESOURCE_TEST = "/configurationTest.xml";
+    private static final String RESOURCE_TEST_PATH = "/configurationTest.xml";
     private ConfigFactory configFactory;
 
     @Before
     public void setUp() {
         logback.debug(">>>>>>>>> IN");
-        final ConfigFactoryParameters configFactoryParametersResource = new ConfigFactoryParameters(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE);
-        configFactory = ConfigFactory.createConfigFactory(configFactoryParametersResource);
+        final ConfigurationResource resource = new ConfigurationResource(RESOURCE_TEST_PATH);
+        configFactory = ConfigFactory.createConfigFactory(resource);
     }
 
     @Test
