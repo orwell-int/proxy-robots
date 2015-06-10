@@ -2,7 +2,7 @@ package orwell.proxy.robot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.config.IConfigCamera;
+import orwell.proxy.config.elements.IConfigCamera;
 
 import java.net.MalformedURLException;
 import java.net.URL;

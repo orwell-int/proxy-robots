@@ -3,7 +3,7 @@ package orwell.proxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.config.ConfigFactory;
-import orwell.proxy.config.ConfigFactoryParameters;
+import orwell.proxy.config.Configuration;
 import orwell.proxy.robot.RobotsMap;
 import orwell.proxy.udp.UdpBeaconFinder;
 import orwell.proxy.udp.UdpBeaconFinderFactory;
@@ -22,9 +22,9 @@ class ProxyRobotsFactory {
     private final ZmqMessageBroker zmqMessageBroker;
     private final UdpBeaconFinder udpBeaconFinder;
 
-    public ProxyRobotsFactory(final ConfigFactoryParameters configFactoryParameters) {
+    public ProxyRobotsFactory(final Configuration configuration) {
         logback.debug("Constructor -- IN");
-        configFactory = ConfigFactory.createConfigFactory(configFactoryParameters);
+        configFactory = ConfigFactory.createConfigFactory(configuration);
 
         if (null == configFactory.getConfigProxy()) {
             // We do not have the data to initialize the broker and udp discovery
@@ -32,12 +32,15 @@ class ProxyRobotsFactory {
             udpBeaconFinder = null;
         } else {
 
-            zmqMessageBroker = new ZmqMessageBroker(configFactory.getConfigProxy().getReceiveTimeout(),
+            zmqMessageBroker = new ZmqMessageBroker(
+                    configFactory.getConfigProxy().getReceiveTimeout(),
                     configFactory.getConfigProxy().getSenderLinger(),
                     configFactory.getConfigProxy().getReceiverLinger()
             );
 
-            udpBeaconFinder = UdpBeaconFinderFactory.fromConfig(configFactory.getConfigProxy().getConfigUdpBroadcast());
+            udpBeaconFinder = UdpBeaconFinderFactory.fromConfig(
+                    configFactory.getConfigProxy().getConfigUdpBroadcast()
+            );
         }
         logback.debug("Constructor -- OUT");
     }
@@ -46,7 +49,10 @@ class ProxyRobotsFactory {
         if (null == zmqMessageBroker) {
             return null;
         }
-        return new ProxyRobots(udpBeaconFinder, zmqMessageBroker, configFactory, new RobotsMap());
+        return new ProxyRobots(
+                udpBeaconFinder, zmqMessageBroker,
+                configFactory, new RobotsMap()
+        );
 
     }
 

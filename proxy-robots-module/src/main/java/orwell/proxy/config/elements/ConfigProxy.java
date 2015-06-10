@@ -1,4 +1,4 @@
-package orwell.proxy.config;
+package orwell.proxy.config.elements;
 
 import javax.xml.bind.annotation.XmlElement;
 import java.util.List;

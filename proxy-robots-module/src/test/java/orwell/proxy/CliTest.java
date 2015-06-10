@@ -7,8 +7,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.config.ConfigFactoryParameters;
-import orwell.proxy.config.EnumConfigFileType;
+import orwell.proxy.config.Configuration;
+import orwell.proxy.config.source.ConfigurationFile;
+import orwell.proxy.config.source.ConfigurationResource;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +27,7 @@ public class CliTest {
     private final static String URL_STRING = "http://url.test";
     private Cli cli;
     private String[] cliInput;
-    private ConfigFactoryParameters configFactoryParameters;
+    private Configuration configuration;
 
     @Before
     public void setUp() throws Exception {
@@ -37,9 +38,9 @@ public class CliTest {
     public void testHelp() throws Exception {
         cliInput = new String[]{"-h"};
         cli = new Cli(cliInput);
-        configFactoryParameters = cli.parse();
+        configuration = cli.parse();
 
-        assertNull(configFactoryParameters);
+        assertNull(configuration);
     }
 
     @Test
@@ -54,73 +55,65 @@ public class CliTest {
 
         cliInput = new String[]{"-f", file.getPath()};
         cli = new Cli(cliInput);
-        configFactoryParameters = cli.parse();
+        configuration = cli.parse();
 
-        assertNotNull(configFactoryParameters);
-        assertTrue(configFactoryParameters.equals(
-                new ConfigFactoryParameters(file.getPath(), EnumConfigFileType.FILE)));
+        assertNotNull(configuration);
+        assertTrue(configuration instanceof ConfigurationFile);
     }
 
     @Test
     public void testFile_notFound() throws Exception {
         cliInput = new String[]{"-f", FILE_NAME + FILE_EXT};
         cli = new Cli(cliInput);
-        configFactoryParameters = cli.parse();
+        configuration = cli.parse();
 
-        assertNull(configFactoryParameters);
+        assertNull(configuration);
     }
 
     @Test
     public void testResource() throws Exception {
         cliInput = new String[]{};
         cli = new Cli(cliInput);
-        configFactoryParameters = cli.parse();
+        configuration = cli.parse();
 
-        assertNotNull(configFactoryParameters);
-        assertTrue(configFactoryParameters.equals(
-                new ConfigFactoryParameters(
-                        Cli.CUSTOM_CONFIG_FILEPATH_INSIDE_JAR,
-                        EnumConfigFileType.RESOURCE)));
+        assertNotNull(configuration);
+        assertTrue(configuration instanceof ConfigurationResource);
     }
 
     @Test
     public void testUrl() throws Exception {
         cliInput = new String[]{"-u", URL_STRING};
         cli = new Cli(cliInput);
-        configFactoryParameters = cli.parse();
+        configuration = cli.parse();
 
-        assertNotNull(configFactoryParameters);
-        assertTrue(configFactoryParameters.equals(
-                new ConfigFactoryParameters(
-                        URL_STRING,
-                        EnumConfigFileType.URL)));
+        assertNull(configuration);
     }
 
     @Test
     public void testParse_MutuallyExclusiveOptions() throws Exception {
         cliInput = new String[]{"-f", FILE_NAME + FILE_EXT, "-u", URL_STRING};
         cli = new Cli(cliInput);
-        configFactoryParameters = cli.parse();
+        configuration = cli.parse();
 
-        assertNull(configFactoryParameters);
+        assertNull(configuration);
     }
 
     @Test
     public void testParse_ParseException() throws Exception {
         cliInput = new String[]{"-n", "NicolasCage"};
         cli = new Cli(cliInput);
-        configFactoryParameters = cli.parse();
+        configuration = cli.parse();
 
-        assertNull(configFactoryParameters);
+        assertNull(configuration);
     }
 
     @Test
     public void testParse_UnknownParameter() throws Exception {
         cliInput = new String[]{"NicolasCage"};
         cli = new Cli(cliInput);
-        configFactoryParameters = cli.parse();
+        configuration = cli.parse();
 
-        assertNull(configFactoryParameters);
+        assertNull(configuration);
     }
 
     @After

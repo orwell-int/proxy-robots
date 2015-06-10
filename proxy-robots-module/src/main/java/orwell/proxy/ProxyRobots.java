@@ -3,6 +3,9 @@ package orwell.proxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.config.*;
+import orwell.proxy.config.elements.IConfigRobot;
+import orwell.proxy.config.elements.IConfigRobots;
+import orwell.proxy.config.elements.IConfigServerGame;
 import orwell.proxy.robot.*;
 import orwell.proxy.udp.UdpBeaconFinder;
 import orwell.proxy.zmq.IZmqMessageBroker;
@@ -53,13 +56,13 @@ public class ProxyRobots implements IZmqMessageListener {
     }
 
     public static void main(final String[] args) throws Exception {
-        final ConfigFactoryParameters configPathType = new Cli(args).parse();
-        if (null == configPathType) {
-            logback.warn("Command Line Interface did not manage to extract parameters. Exiting now.");
+        final Configuration configuration = new Cli(args).parse();
+        if (null == configuration) {
+            logback.warn("Command Line Interface did not manage to extract a configuration. Exiting now.");
             System.exit(0);
         }
 
-        final ProxyRobots proxyRobots = new ProxyRobotsFactory(configPathType).getProxyRobots();
+        final ProxyRobots proxyRobots = new ProxyRobotsFactory(configuration).getProxyRobots();
         if (null == proxyRobots) {
             logback.error("Error when creating ProxyRobots. Exiting now.");
             System.exit(0);

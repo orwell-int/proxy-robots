@@ -2,6 +2,9 @@ package orwell.proxy.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import orwell.proxy.config.elements.IConfigProxy;
+import orwell.proxy.config.elements.IConfigRobots;
+import orwell.proxy.config.elements.IConfigServerGame;
 
 /**
  * Created by Michaël Ludmann on 03/05/15.
@@ -13,9 +16,9 @@ public class ConfigFactory implements IConfigFactory {
     private IConfigRobots configRobots;
     private IConfigServerGame configServerGame;
 
-    private ConfigFactory(final ConfigFactoryParameters configFactoryParameters) {
+    private ConfigFactory(final Configuration configuration) {
         logback.debug("Constructor -- IN");
-        final Configuration configuration = new Configuration(configFactoryParameters);
+        configuration.populate();
 
         if (!configuration.isPopulated()) {
             logback.error("Configuration loading error");
@@ -28,8 +31,8 @@ public class ConfigFactory implements IConfigFactory {
         logback.debug("Constructor -- OUT");
     }
 
-    public static ConfigFactory createConfigFactory(final ConfigFactoryParameters configFactoryParameters) {
-        return new ConfigFactory(configFactoryParameters);
+    public static ConfigFactory createConfigFactory(final Configuration configuration) {
+        return new ConfigFactory(configuration);
     }
 
     @Override

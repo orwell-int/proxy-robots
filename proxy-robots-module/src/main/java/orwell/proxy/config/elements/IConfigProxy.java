@@ -1,4 +1,4 @@
-package orwell.proxy.config;
+package orwell.proxy.config.elements;
 
 /**
  * Created by Michaël Ludmann on 03/05/15.

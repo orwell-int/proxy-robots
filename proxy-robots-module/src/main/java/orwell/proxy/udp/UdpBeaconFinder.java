@@ -69,20 +69,10 @@ public class UdpBeaconFinder {
                 logback.info("Trying to find UDP beacon, attempt [" + new Integer(attemptsPerformed+1) + "]");
                 // Broadcast the message over all the network interfaces
                 final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+
                 while (interfaces.hasMoreElements()) {
                     final NetworkInterface networkInterface = interfaces.nextElement();
-
-                    if (networkInterface.isLoopback() || !networkInterface.isUp()) {
-                        continue; // Do not broadcast to the loopback interface
-                    }
-
-                    for (final InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
-                        final InetAddress broadcastAddress = interfaceAddress.getBroadcast();
-                        if (null != broadcastAddress) {
-                            logback.info("Trying to send broadcast package on interface: " + networkInterface.getDisplayName());
-                            sendBroadcastPackageOn(broadcastAddress);
-                        }
-                    }
+                    sendBroadcastToInterface(networkInterface);
                 }
 
                 logback.info("Done looping over all network interfaces. Now waiting for a reply!");
@@ -99,7 +89,21 @@ public class UdpBeaconFinder {
         }
     }
 
-    private void sendBroadcastPackageOn(final InetAddress broadcastAddress) {
+    private void sendBroadcastToInterface(final NetworkInterface networkInterface) throws SocketException {
+        if (networkInterface.isLoopback() || !networkInterface.isUp()) {
+            return; // Do not broadcast to the loopback interface
+        }
+
+        for (final InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
+            final InetAddress broadcastAddress = interfaceAddress.getBroadcast();
+            if (null != broadcastAddress) {
+                logback.info("Trying to send broadcast package on interface: " + networkInterface.getDisplayName());
+                sendBroadcastPackageToAddress(broadcastAddress);
+            }
+        }
+    }
+
+    private void sendBroadcastPackageToAddress(final InetAddress broadcastAddress) {
         try {
             final String ipPing = broadcastAddress.getHostAddress();
 
