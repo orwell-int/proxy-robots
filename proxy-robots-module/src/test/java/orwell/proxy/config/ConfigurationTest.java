@@ -10,10 +10,14 @@ import org.slf4j.LoggerFactory;
 import orwell.proxy.config.elements.*;
 import orwell.proxy.config.source.ConfigurationFile;
 import orwell.proxy.config.source.ConfigurationResource;
-import java.io.*;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 
-import static java.nio.file.StandardCopyOption.*;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.junit.Assert.*;
 
 /**
