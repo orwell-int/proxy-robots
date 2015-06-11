@@ -32,18 +32,17 @@ public final class Utils {
         }
 
         int blockStart = 0;
-        if (1 != limit) {
-            int blockEnd = 0;
-            final boolean limited = 0 < limit;
-            while (blockEnd < input.length && (!limited || limit > list.size())) {
-                if (separator == input[blockEnd]) {
-                    list.add(Arrays.copyOfRange(input, blockStart, blockEnd));
-                    blockStart = blockEnd + 1;
-                }
-                blockEnd++;
+        int blockEnd = 0;
+        final boolean limited = 0 < limit;
+        while (blockEnd < input.length && (!limited || limit > list.size())) {
+            if (separator == input[blockEnd]) {
+                list.add(Arrays.copyOfRange(input, blockStart, blockEnd));
+                blockStart = blockEnd + 1;
             }
+            blockEnd++;
         }
-        list.add(Arrays.copyOfRange(input, blockStart, input.length));
+        if (1 != limit)
+            list.add(Arrays.copyOfRange(input, blockStart, input.length));
         return list;
     }
 }

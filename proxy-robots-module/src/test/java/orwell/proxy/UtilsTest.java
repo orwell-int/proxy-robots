@@ -49,7 +49,7 @@ public class UtilsTest {
         final byte[] bytes = new byte[]{0x01, SEPARATOR, 0x02};
         final List<byte[]> list = Utils.split(SEPARATOR, bytes, 1);
         assertEquals(1, list.size());
-        assertArrayEquals(bytes, list.get(0));
+        assertArrayEquals(new byte[]{0x01}, list.get(0));
     }
 
     @Test
