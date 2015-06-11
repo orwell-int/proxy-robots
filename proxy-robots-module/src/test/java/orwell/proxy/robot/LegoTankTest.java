@@ -28,7 +28,7 @@ public class LegoTankTest {
     private final static Logger logback = LoggerFactory.getLogger(LegoTankTest.class);
     private final static String RFID_VALUE = "11111111";
     private final static String COLOUR_VALUE = "2";
-    private final static String INPUT_MOVE = "input move 50.5 10.0";
+    private final static String INPUT_MOVE = "move 50.5 10.0";
     private final Capture<UnitMessage> messageCapture = new Capture<>();
     private final UnitMessage unitMessageRfid = new UnitMessage(UnitMessageType.Rfid, RFID_VALUE);
     private final UnitMessage unitMessageColour = new UnitMessage(UnitMessageType.Colour, COLOUR_VALUE);

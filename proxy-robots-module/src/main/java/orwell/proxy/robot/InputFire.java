@@ -9,7 +9,7 @@ import orwell.messages.Controller;
  */
 public class InputFire implements IRobotInput {
 
-    private final static String FIRE_PAYLOAD_HEADER = "input fire ";
+    private final static String FIRE_PAYLOAD_HEADER = "fire ";
     private Controller.Input.Fire fire;
     private boolean hasFire = false;
 

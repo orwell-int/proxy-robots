@@ -9,7 +9,7 @@ import orwell.messages.Controller.Input;
  */
 public class InputMove implements IRobotInput {
 
-    private final static String MOVE_PAYLOAD_HEADER = "input move ";
+    private final static String MOVE_PAYLOAD_HEADER = "move ";
     private Input.Move move;
     private boolean hasMove = false;
 
