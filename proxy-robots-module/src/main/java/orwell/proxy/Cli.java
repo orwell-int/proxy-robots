@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import orwell.proxy.config.Configuration;
 import orwell.proxy.config.source.ConfigurationFile;
 import orwell.proxy.config.source.ConfigurationResource;
+import orwell.proxy.config.source.NotFileException;
 
 import java.io.FileNotFoundException;
 
@@ -80,6 +81,9 @@ public class Cli {
             return new ConfigurationFile(filePath);
         } catch (final FileNotFoundException e) {
             logback.error(e.getMessage());
+            return null;
+        } catch (final NotFileException e) {
+            logback.error("Found a directory instead of a file: " + e.getMessage());
             return null;
         }
     }

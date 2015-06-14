@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import orwell.proxy.config.elements.*;
 import orwell.proxy.config.source.ConfigurationFile;
 import orwell.proxy.config.source.ConfigurationResource;
+import orwell.proxy.config.source.NotFileException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -158,7 +159,7 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void testConfigurationFile_fail() throws FileNotFoundException {
+    public void testConfigurationFile_fail() throws FileNotFoundException, NotFileException {
         File file = null;
         try {
             // Create empty file
