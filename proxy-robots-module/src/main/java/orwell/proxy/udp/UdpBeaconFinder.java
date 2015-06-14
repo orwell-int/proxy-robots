@@ -24,6 +24,8 @@ public class UdpBeaconFinder {
     public UdpBeaconFinder(final DatagramSocket datagramSocket,
                            final int broadcastPort,
                            final UdpBeaconDecoder udpBeaconDecoder) {
+        assert null != datagramSocket;
+        assert null != udpBeaconDecoder;
         this.datagramSocket = datagramSocket;
         this.broadcastPort = broadcastPort;
         this.udpBeaconDecoder = udpBeaconDecoder;
@@ -52,9 +54,6 @@ public class UdpBeaconFinder {
      * and have not reached max allowed attempts number
      */
     private boolean shouldTryToFindBeacon() {
-        if (null == udpBeaconDecoder) {
-            return attemptsPerformed < maxAttemptsNumber;
-        }
         return (!udpBeaconDecoder.hasReceivedCorrectData() &&
                 attemptsPerformed < maxAttemptsNumber);
     }
@@ -156,6 +155,6 @@ public class UdpBeaconFinder {
      * @return true if UdpBeaconFinder has found the server and it returned correct data
      */
     public boolean hasFoundServer() {
-        return (null != udpBeaconDecoder) && udpBeaconDecoder.hasReceivedCorrectData();
+        return udpBeaconDecoder.hasReceivedCorrectData();
     }
 }
