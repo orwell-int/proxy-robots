@@ -22,11 +22,11 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
     private final ArrayList<IZmqMessageListener> zmqMessageListeners;
     private final long socketTimeoutMs;
     private final boolean isSocketTimeoutSet;
-    private boolean isConnected = false;
+    private volatile boolean isConnected = false;
     private int nbSuccessiveSameMessages = 0;
     private ZmqReader reader;
     private boolean isSkipIdenticalMessages = false;
-    private long baseTimeMs;
+    private volatile long baseTimeMs;
     private int nbBadMessages;
 
     public ZmqMessageBroker(final long receiveTimeoutMs,
