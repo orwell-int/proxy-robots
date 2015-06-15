@@ -69,9 +69,6 @@ public class GameState {
     }
 
     public RobotGameStateVisitor getRobotGameStateVisitor() {
-        if (null == serverGameGameState) {
-            return null;
-        }
         return new RobotGameStateVisitor(getEnumGameState(), getWinningTeam());
     }
 }

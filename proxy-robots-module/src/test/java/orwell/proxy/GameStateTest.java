@@ -74,10 +74,12 @@ public class GameStateTest {
     }
 
     @Test
-    public void testGetRobotGameStateVisitor_Null() throws Exception {
+    public void testGetRobotGameStateVisitor_EmptyParameter() throws Exception {
         // Create GameState from bad byte[]
         gameState = new GameState(new byte[]{});
-        assertNull(gameState.getRobotGameStateVisitor());
+        assertNotNull(gameState.getRobotGameStateVisitor());
+        assertEquals(EnumGameState.UNDEFINED, gameState.getEnumGameState());
+        assertNull(gameState.getWinningTeam());
     }
 
     @Test
