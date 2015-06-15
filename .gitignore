@@ -12,3 +12,4 @@ orwell/proxy/test/report/
 logs/
 build/
 target/
+proxy-robots-module/src/main/resources/config.xml

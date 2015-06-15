@@ -49,17 +49,14 @@ public class ColourSensor implements IRobotElement {
      * If ON: this is the current value read by the robot
      * If OFF: this value is no longer read by the robot
      * <p/>
-     * Previous value == null   |
-     *                          |> Status x ON
+     * Previous value == null   |> Status x ON
      * Current value == x       |
      * <p/>
-     * Previous value == x      |
-     *                          |> Status x OFF, Status y ON
-     * Current value == y       |
+     * Previous value == x      |> Status x OFF,
+     * Current value == y       |> Status y ON
      * <p/>
-     * Previous value == x      |
-     *                          |> Status x ON, do nothing
-     * Current value == x       |
+     * Previous value == x      |> Status x ON,
+     * Current value == x       |> do nothing
      */
     public void setValue(final String currentValue) {
         logback.debug("Setting Colour value: " + currentValue);
@@ -77,12 +74,25 @@ public class ColourSensor implements IRobotElement {
 
 
     public void clear() {
-        logback.debug("Clearing all stored colour values");
         this.colourSensorReads.clear();
     }
 
     @Override
     public void accept(final IRobotElementVisitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder stringBuilder = new StringBuilder("ColourSensor { ");
+        for (final Robot.Colour colour : this.colourSensorReads) {
+            stringBuilder.append("[");
+            stringBuilder.append(colour.getColour());
+            stringBuilder.append("] ");
+            stringBuilder.append(colour.getStatus());
+            stringBuilder.append("; ");
+        }
+        stringBuilder.append("}");
+        return stringBuilder.toString();
     }
 }

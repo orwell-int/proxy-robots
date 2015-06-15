@@ -21,7 +21,7 @@ public class ColourSensorTest {
 
     @Before
     public void setUp() {
-        logback.info("IN");
+        logback.debug(">>>>>>>>> IN");
         colourSensor = new ColourSensor();
     }
 
@@ -81,9 +81,14 @@ public class ColourSensorTest {
         assertEquals(Robot.Status.ON, colourSensor.getColourSensorReads().getFirst().getStatus());
     }
 
+    @Test
+    public void testToString() throws Exception {
+        final String colourSensorString = "ColourSensor { }";
+        assertEquals(colourSensorString, colourSensor.toString());
+    }
 
     @After
     public void tearDown() {
-        logback.info("OUT");
+        logback.debug("<<<< OUT");
     }
 }

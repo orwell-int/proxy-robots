@@ -4,7 +4,6 @@ import lejos.mf.common.MessageListenerInterface;
 import lejos.mf.common.UnitMessage;
 import lejos.mf.pc.MessageFramework;
 import lejos.pc.comm.NXTCommFactory;
-import lejos.pc.comm.NXTConnectionState;
 import lejos.pc.comm.NXTInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +19,8 @@ public class LegoTank extends IRobot implements MessageListenerInterface {
 
 
     public LegoTank(final String bluetoothName, final String bluetoothId,
-                     final MessageFramework messageFramework,
-                     final ICamera camera, final String image) {
+                    final MessageFramework messageFramework,
+                    final ICamera camera, final String image) {
         this.robotElements = new IRobotElement[]{camera, new RfidSensor(), new ColourSensor()};
         this.robotActions = new IRobotInput[]{new InputMove(), new InputFire()};
         this.nxtInfo = new NXTInfo(NXTCommFactory.BLUETOOTH, bluetoothName, bluetoothId);
@@ -98,8 +97,8 @@ public class LegoTank extends IRobot implements MessageListenerInterface {
 
     @Override
     public String toString() {
-        return "Tank {[BTName] " + nxtInfo.name + " [BT-ID] " +
+        return "LegoTank { [BTName] " + nxtInfo.name + " [BT-ID] " +
                 nxtInfo.deviceAddress + " [RoutingID] " + getRoutingId() +
-                " [TeamName] " + getTeamName() + "}";
+                " [TeamName] " + getTeamName() + " }";
     }
 }

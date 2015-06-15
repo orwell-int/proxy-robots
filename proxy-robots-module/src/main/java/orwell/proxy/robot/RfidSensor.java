@@ -50,17 +50,14 @@ public class RfidSensor implements IRobotElement {
      * If ON: this is the current value read by the robot
      * If OFF: this value is no longer read by the robot
      * <p/>
-     * Previous value == null   |
-     *                          |> Status x ON
+     * Previous value == null   |> Status x ON
      * Current value == x       |
      * <p/>
-     * Previous value == x      |
-     *                          |> Status x OFF, Status y ON
-     * Current value == y       |
+     * Previous value == x      |> Status x OFF,
+     * Current value == y       |> Status y ON
      * <p/>
-     * Previous value == x      |
-     *                          |> Status x ON, do nothing
-     * Current value == x       |
+     * Previous value == x      |> Status x ON,
+     * Current value == x       |> do nothing
      * <p/>
      * If currentValue is equal to NO_RFID_VALUE, it means the robot is
      * no longer reading Rfid values, so the previous value should
@@ -84,7 +81,6 @@ public class RfidSensor implements IRobotElement {
 
 
     public void clear() {
-        logback.debug("Clearing all stored rfid values");
         this.rfidSensorReads.clear();
     }
 
@@ -92,5 +88,19 @@ public class RfidSensor implements IRobotElement {
     @Override
     public void accept(final IRobotElementVisitor visitor) {
         visitor.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder stringBuilder = new StringBuilder("RfidSensor { ");
+        for (final Robot.Rfid rfid : this.rfidSensorReads) {
+            stringBuilder.append("[");
+            stringBuilder.append(rfid.getRfid());
+            stringBuilder.append("] ");
+            stringBuilder.append(rfid.getStatus());
+            stringBuilder.append("; ");
+        }
+        stringBuilder.append("}");
+        return stringBuilder.toString();
     }
 }

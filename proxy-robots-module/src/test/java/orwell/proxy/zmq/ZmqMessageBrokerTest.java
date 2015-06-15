@@ -38,8 +38,9 @@ public class ZmqMessageBrokerTest {
     static final long OUTGOING_MSG_PERIOD_HIGH = 50000;
     private final static Logger logback = LoggerFactory.getLogger(ZmqMessageBrokerTest.class);
     private final static long MAX_TIMEOUT_MS = 500;
-    private final static int PUSH_PORT = 9000;
-    private final static int SUB_PORT = 9001;
+    private final static String PUSH_ADDRESS = "tcp://127.0.0.1:9000";
+    private final static String SUB_ADDRESS = "tcp://127.0.0.1:9001";
+    private static final long WAIT_TIMEOUT_MS = 500;
     private final FrequencyFilter frequencyFilter = new FrequencyFilter(OUTGOING_MSG_PERIOD_HIGH);
 
     @TestSubject
@@ -47,17 +48,13 @@ public class ZmqMessageBrokerTest {
 
     @Before
     public void setUp() {
-        logback.info("IN");
+        logback.debug(">>>>>>>>> IN");
         final ArrayList<IFilter> filters = new ArrayList<>();
         filters.add(frequencyFilter);
-        zmf = new ZmqMessageBroker(1000, 1000, filters);
-        logback.info("OUT");
+        zmf = new ZmqMessageBroker(100000, 1000, 1000, filters);
     }
 
     public void initZmqMocks() {
-        logback.info("IN");
-
-
         // Mock ZMQ behaviour with mock sockets and context
         final ZMQ.Socket mockedZmqSocketSend = createNiceMock(ZMQ.Socket.class);
         final ZMQ.Socket mockedZmqSocketRecv = createNiceMock(ZMQ.Socket.class);
@@ -83,21 +80,31 @@ public class ZmqMessageBrokerTest {
         } catch (final IllegalAccessException e) {
             logback.error(e.getMessage());
         }
-        logback.info("OUT");
+    }
+
+    // Wait for a max timeout or for communicationService to stop
+    private void waitForCloseOrTimeout(final long timeoutMs) {
+        long timeout = 0;
+
+        while (zmf.isConnectedToServer() && timeoutMs > timeout) {
+            try {
+                Thread.sleep(5);
+                timeout += 5;
+            } catch (final InterruptedException e) {
+                logback.error(e.getMessage());
+            }
+        }
     }
 
     @Test
     public void testConnect() {
-        logback.info("IN");
         initZmqMocks();
-        assertTrue(zmf.connectToServer("127.0.0.1", PUSH_PORT, SUB_PORT));
-        logback.info("OUT");
+        assertTrue(zmf.connectToServer(PUSH_ADDRESS, SUB_ADDRESS));
     }
 
 
     @Test
     public void testSendZmqMessage() {
-        logback.info("IN");
         initZmqMocks();
 
         final byte[] msgBody = "msgBody".getBytes();
@@ -111,30 +118,25 @@ public class ZmqMessageBrokerTest {
         final ZmqMessageBOM registerEmptyBodyMsg = new ZmqMessageBOM(TEST_ROUTING_ID_1, EnumMessageType.REGISTER, new byte[0]);
         assertFalse("Zmq message should be empty and not sent",
                 zmf.sendZmqMessage(registerEmptyBodyMsg));
-
-        logback.info("OUT");
     }
 
     @Test
     public void testClose() {
-        logback.info("IN");
         initZmqMocks();
 
         zmf.close();
         assertFalse(zmf.isConnectedToServer());
-        logback.info("OUT");
     }
 
     @Test
     public void testSetSkipIncomingIdenticalMessages() {
-        logback.info("IN");
         initZmqMocks();
 
-        zmf.connectToServer("127.0.0.1", PUSH_PORT, SUB_PORT);
+        zmf.connectToServer(PUSH_ADDRESS, SUB_ADDRESS);
         zmf.setSkipIncomingIdenticalMessages(true);
 
         long timeout = 0;
-        while (1 > zmf.getNbMessagesSkipped() && MAX_TIMEOUT_MS > timeout) {
+        while (1 > zmf.getNbSuccessiveMessagesSkipped() && MAX_TIMEOUT_MS > timeout) {
             try {
                 Thread.sleep(5);
                 timeout += 5;
@@ -143,14 +145,11 @@ public class ZmqMessageBrokerTest {
             }
         }
 
-        assert (0 < zmf.getNbMessagesSkipped());
-
-        logback.info("OUT");
+        assert (0 < zmf.getNbSuccessiveMessagesSkipped());
     }
 
     @Test
     public void testSendZmqMessage_withFilter() throws Exception {
-        logback.info("IN");
         initZmqMocks();
 
         final byte[] msgBody = "msgBody".getBytes();
@@ -166,16 +165,15 @@ public class ZmqMessageBrokerTest {
 
         // Third message is of a different type, so it is not filtered
         Thread.sleep(1);
-        final ZmqMessageBOM serverRobotStateMsg =
+        final ZmqMessageBOM serverRobotStateMsg_r1 =
                 new ZmqMessageBOM(TEST_ROUTING_ID_1, EnumMessageType.SERVER_ROBOT_STATE, msgBody);
-        assertTrue(zmf.sendZmqMessage(serverRobotStateMsg));
+        assertTrue(zmf.sendZmqMessage(serverRobotStateMsg_r1));
 
         // Fourth message is of a different routingId, so it is not filtered
         Thread.sleep(1);
         final ZmqMessageBOM serverRobotStateMsg_r2 =
                 new ZmqMessageBOM(TEST_ROUTING_ID_2, EnumMessageType.SERVER_ROBOT_STATE, msgBody);
         assertTrue(zmf.sendZmqMessage(serverRobotStateMsg_r2));
-        logback.info("OUT");
     }
 
     @Test
@@ -206,11 +204,14 @@ public class ZmqMessageBrokerTest {
             logback.error(e.getMessage());
         }
 
-        zmf.connectToServer("127.0.0.1", PUSH_PORT, SUB_PORT);
+        zmf.connectToServer(PUSH_ADDRESS, SUB_ADDRESS);
+        waitForCloseOrTimeout(WAIT_TIMEOUT_MS);
+        assertTrue(0 < zmf.getNbBadMessages());
     }
 
     @After
     public void tearDown() {
         zmf.close();
+        logback.debug("<<<< OUT");
     }
 }

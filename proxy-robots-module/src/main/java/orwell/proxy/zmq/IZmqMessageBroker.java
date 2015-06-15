@@ -12,9 +12,7 @@ public interface IZmqMessageBroker {
      */
     void setSkipIncomingIdenticalMessages(boolean skipIdenticalMessages);
 
-    boolean connectToServer(final String serverIp,
-                            final int pushPort,
-                            final int subPort);
+    boolean connectToServer(final String pushAddress, final String subscribeAddress);
 
     boolean sendZmqMessage(final ZmqMessageBOM zmqMessageBOM);
 

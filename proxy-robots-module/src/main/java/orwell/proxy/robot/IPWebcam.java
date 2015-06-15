@@ -2,7 +2,7 @@ package orwell.proxy.robot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.config.IConfigCamera;
+import orwell.proxy.config.elements.IConfigCamera;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -13,12 +13,12 @@ public class IPWebcam implements ICamera {
     private final URL url;
 
     public IPWebcam(final URL url) {
-        assert(null != url);
+        assert null != url;
         this.url = url;
     }
 
     public IPWebcam(final IConfigCamera configCamera) throws MalformedURLException {
-        assert(null != configCamera);
+        assert null != configCamera;
         try {
             if (null == configCamera.getResourcePath()) {
                 url = new URL("http", configCamera.getIp(), configCamera.getPort(), "");
@@ -28,6 +28,16 @@ public class IPWebcam implements ICamera {
         } catch (final MalformedURLException e) {
             logback.error("Camera URL is not correct: " + e.getMessage());
             throw e;
+        }
+    }
+
+    public static IPWebcam getDummy() {
+        try {
+            final URL dummyUrl = new URL(DUMMY_URL);
+            return new IPWebcam(dummyUrl);
+        } catch (final MalformedURLException e) {
+            logback.error(e.getMessage());
+            return null;
         }
     }
 
@@ -41,13 +51,8 @@ public class IPWebcam implements ICamera {
         visitor.visit(this);
     }
 
-    public static IPWebcam getDummy() {
-        try {
-            final URL dummyUrl = new URL(DUMMY_URL);
-            return new IPWebcam(dummyUrl);
-        } catch (final MalformedURLException e) {
-            logback.error(e.getMessage());
-            return null;
-        }
+    @Override
+    public String toString() {
+        return "IPWebcam { [URL] " + getUrl() + " }";
     }
 }

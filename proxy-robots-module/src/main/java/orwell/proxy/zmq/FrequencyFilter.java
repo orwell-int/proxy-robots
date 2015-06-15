@@ -45,7 +45,7 @@ public class FrequencyFilter implements IFilter {
                     // Nothing to do, no filter
                 } else {
                     // We filter the message
-                    logback.debug("Message filtered: [" + routingId + "] + " + enumMessageType);
+                    logback.debug("Message filtered: [" + routingId + "] " + enumMessageType);
                     inputMessage.clearMsgBytes();
                 }
 

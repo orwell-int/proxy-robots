@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding='utf-8'?>
 <setup>
     <proxy>
+        <udpBroadcast>
+            <port>9080</port>
+            <attempts>5</attempts>
+            <timeoutPerAttemptMs>1000</timeoutPerAttemptMs>
+        </udpBroadcast>
+        <receiveTimeout>300000</receiveTimeout>
         <senderLinger>1000</senderLinger>
         <receiverLinger>1000</receiverLinger>
         <outgoingMsgPeriod>500</outgoingMsgPeriod>
@@ -14,10 +20,10 @@
             <pushPort>9000</pushPort>
             <subPort>9001</subPort>
         </server-game>
-        <server-game name='localhost' priority="1">
-            <ip>localhost</ip>
-            <pushPort>9000</pushPort>
-            <subPort>9001</subPort>
+        <server-game name='localhost' priority="10">
+            <ip>127.0.0.1</ip>
+            <pushPort>9001</pushPort>
+            <subPort>9000</subPort>
         </server-game>
     </proxy>
 

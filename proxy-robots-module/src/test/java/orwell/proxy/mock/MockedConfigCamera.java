@@ -1,15 +1,15 @@
 package orwell.proxy.mock;
 
-import orwell.proxy.config.IConfigCamera;
+import orwell.proxy.config.elements.IConfigCamera;
 
 /**
  * Created by Michaël Ludmann on 5/21/15.
  */
 public class MockedConfigCamera implements IConfigCamera {
 
+    private final String ip = "mockedIp";
     private String resourcePath = "/mockedResourcePath";
     private int port = 777;
-    private final String ip = "mockedIp";
 
     @Override
     public String getIp() {
@@ -21,6 +21,10 @@ public class MockedConfigCamera implements IConfigCamera {
         return port;
     }
 
+    public void setPort(final int port) {
+        this.port = port;
+    }
+
     @Override
     public String getResourcePath() {
         return resourcePath;
@@ -28,9 +32,5 @@ public class MockedConfigCamera implements IConfigCamera {
 
     public void setResourcePath(final String resourcePath) {
         this.resourcePath = resourcePath;
-    }
-
-    public void setPort(final int port) {
-        this.port = port;
     }
 }

@@ -10,22 +10,19 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.messages.Controller;
-import orwell.messages.ServerGame;
 import orwell.proxy.config.ConfigFactory;
-import orwell.proxy.config.ConfigFactoryParameters;
-import orwell.proxy.config.EnumConfigFileType;
+import orwell.proxy.config.source.ConfigurationResource;
 import orwell.proxy.mock.MockedTank;
 import orwell.proxy.robot.EnumRegistrationState;
-import orwell.proxy.robot.IRobot;
+import orwell.proxy.robot.EnumRobotVictoryState;
 import orwell.proxy.robot.RobotsMap;
+import orwell.proxy.udp.UdpBeaconFinder;
 import orwell.proxy.zmq.IZmqMessageListener;
 import orwell.proxy.zmq.ZmqMessageBOM;
 import orwell.proxy.zmq.ZmqMessageBroker;
 
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
-
 
 /**
  * Tests for {@link ProxyRobots}.
@@ -39,12 +36,19 @@ import static org.junit.Assert.*;
 public class ProxyRobotsTest {
 
     private final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class);
-    private static final String REGISTERED_ID = "BananaOne";
-    private static final String RFID_VALUE = "11111111";
-    private final ConfigFactoryParameters configFactoryParameters = new ConfigFactoryParameters("/configurationTest.xml", EnumConfigFileType.RESOURCE);
-    private final ZmqMessageBroker mockedZmqMessageBroker = createNiceMock(ZmqMessageBroker.class);
+    private static final String RFID_VALUE_1 = "11111111";
+    private static final String PUSH_ADDRESS_UDP = "tcp://localhost:9000";
+    private static final String SUB_ADDRESS_UDP = "tcp://localhost:9001";
+    private static final String PUSH_ADDRESS_CONFIG = "tcp://127.0.0.1:9001";
+    private static final String SUB_ADDRESS_CONFIG = "tcp://127.0.0.1:9000";
+    private static final String CONFIGURATION_RESOURCE_PATH = "/configurationTest.xml";
+    private static final long WAIT_TIMEOUT_MS = 500; // has to be greater than ProxyRobots.THREAD_SLEEP_MS
+    private static final long RECEIVE_TIMEOUT = 500;
+    private static final String ROUTING_ID_ALL = "all_robots";
+    private ZmqMessageBroker mockedZmqMessageBroker;
     private ConfigFactory configFactory;
     private RobotsMap robotsMap;
+    private ConfigurationResource configuration;
     @TestSubject
     private ProxyRobots myProxyRobots;
     @Mock
@@ -52,74 +56,41 @@ public class ProxyRobotsTest {
 
     @Before
     public void setUp() {
-        logback.info("IN");
+        logback.debug(">>>>>>>>> IN");
+        configuration = new ConfigurationResource(CONFIGURATION_RESOURCE_PATH);
+        mockedZmqMessageBroker = createNiceMock(ZmqMessageBroker.class);
 
         // Build Mock of Tank
         mockedTank = new MockedTank();
 
-        configFactory = new ConfigFactory(configFactoryParameters);
+        configFactory = ConfigFactory.createConfigFactory(configuration);
 
         // Create the map with one mock tank
         robotsMap = new RobotsMap();
         robotsMap.add(mockedTank);
-
-        logback.info("OUT");
     }
 
-    private byte[] getMockRawZmqMessage(final IRobot iRobot, final EnumMessageType messageType) {
-        final byte[] raw_zmq_message;
-        byte[] specificMessage = new byte[0];
-        String zmqMessageHeader = null;
+    private byte[] getBytesGameState_Playing() {
+        return ProtobufTest.getTestGameState_Playing().toByteArray();
+    }
 
-        switch (messageType) {
-            case REGISTERED:
-                specificMessage = getBytesRegistered();
-                zmqMessageHeader = iRobot.getRoutingId() + " " + "Registered" + " ";
-                break;
-            case INPUT:
-                specificMessage = getBytesInput();
-                zmqMessageHeader = iRobot.getRoutingId() + " " + "Input" + " ";
-                break;
-            default:
-                logback.error("Case : Message type " + messageType + " not handled");
-        }
-
-        assert null != zmqMessageHeader;
-        raw_zmq_message = Utils.Concatenate(zmqMessageHeader.getBytes(),
-                specificMessage);
-
-        return raw_zmq_message;
+    private byte[] getBytesGameState_Winner() {
+        return ProtobufTest.getTestGameState_Winner().toByteArray();
     }
 
     private byte[] getBytesRegistered() {
-        final ServerGame.Registered.Builder registeredBuilder = ServerGame.Registered.newBuilder();
-        registeredBuilder.setRobotId(REGISTERED_ID);
-        registeredBuilder.setTeam("BLUE");
-
-        return registeredBuilder.build().toByteArray();
+        return ProtobufTest.getTestRegistered().toByteArray();
     }
 
     private byte[] getBytesInput() {
-        final Controller.Input.Builder inputBuilder = Controller.Input.newBuilder();
-        final Controller.Input.Fire.Builder fireBuilder = Controller.Input.Fire.newBuilder();
-        final Controller.Input.Move.Builder moveBuilder = Controller.Input.Move.newBuilder();
-        fireBuilder.setWeapon1(true);
-        fireBuilder.setWeapon2(false);
-        moveBuilder.setLeft(100);
-        moveBuilder.setRight(0);
-        inputBuilder.setFire(fireBuilder.build());
-        inputBuilder.setMove(moveBuilder.build());
-
-        return inputBuilder.build().toByteArray();
+        return ProtobufTest.getTestInput().toByteArray();
     }
 
     // Wait for a max timeout or for communicationService to stop
-    private void waitForCloseOrTimeout() {
+    private void waitForCloseOrTimeout(final long timeoutMs) {
         long timeout = 0;
 
-        // We use the value of the config for OutgoingMsgPeriod
-        final long MAX_TIMEOUT = configFactory.getConfigProxy().getOutgoingMsgPeriod();
-        while (myProxyRobots.isCommunicationServiceAlive() && MAX_TIMEOUT > timeout) {
+        while (myProxyRobots.isCommunicationServiceAlive() && timeoutMs > timeout) {
             try {
                 Thread.sleep(5);
                 timeout += 5;
@@ -135,6 +106,7 @@ public class ProxyRobotsTest {
         expectLastCall();
 
         expect(mockedZmqMessageBroker.sendZmqMessage((ZmqMessageBOM) anyObject())).andReturn(true).anyTimes();
+        expect(mockedZmqMessageBroker.isConnectedToServer()).andReturn(true).anyTimes();
 
         replay(mockedZmqMessageBroker);
 
@@ -145,29 +117,24 @@ public class ProxyRobotsTest {
 
     @Test
     public void testInitialiseTanks() {
-        logback.info("IN");
         instantiateBasicProxyRobots();
 
         assertEquals(1, myProxyRobots.robotsMap.getRobotsArray().size());
         assertEquals(mockedTank,
                 myProxyRobots.robotsMap.get("tempRoutingId"));
-        logback.info("OUT");
     }
 
     @Test
     public void testConnectToRobots() {
-        logback.info("IN");
         instantiateBasicProxyRobots();
 
         myProxyRobots.connectToRobots();
 
         assertEquals(1, myProxyRobots.robotsMap.getConnectedRobots().size());
-        logback.info("OUT");
     }
 
     @Test
     public void testRegisterFlow() throws Exception {
-        logback.info("IN");
         instantiateBasicProxyRobots();
 
         myProxyRobots.connectToRobots();
@@ -178,18 +145,19 @@ public class ProxyRobotsTest {
 
         myProxyRobots.sendRegister();
         // Simulate reception of a REGISTERED message
-        myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
+        myProxyRobots.receivedNewZmq(
+                new ZmqMessageBOM(mockedTank.getRoutingId(),
+                        EnumMessageType.REGISTERED,
+                        getBytesRegistered())
+        );
 
         assertEquals(EnumRegistrationState.REGISTERED, mockedTank.getRegistrationState());
-        assertEquals("BananaOne", mockedTank.getRoutingId());
-
-        logback.info("OUT");
+        assertEquals(ProtobufTest.REGISTERED_ROUTING_ID, mockedTank.getRoutingId());
     }
 
 
     @Test
     public void testUpdateConnectedTanks() {
-        logback.info("IN");
         instantiateBasicProxyRobots();
 
         myProxyRobots.connectToRobots();
@@ -201,17 +169,14 @@ public class ProxyRobotsTest {
         // Tank is disconnected
         mockedTank.closeConnection();
 
-        waitForCloseOrTimeout();
+        waitForCloseOrTimeout(WAIT_TIMEOUT_MS);
 
         // So the map of isConnected tanks is empty
         assertTrue(myProxyRobots.robotsMap.getConnectedRobots().isEmpty());
-
-        logback.debug("OUT");
     }
 
     @Test
     public void testInitializeTanksFromConfig() {
-        logback.info("IN");
         instantiateBasicProxyRobots();
 
         myProxyRobots.initializeRobotsFromConfig();
@@ -220,13 +185,11 @@ public class ProxyRobotsTest {
         assertEquals(2, myProxyRobots.robotsMap.getNotConnectedRobots().size());
         // One tank in the map is indeed the one coming from the config file
         assertNotNull(myProxyRobots.robotsMap.get(configFactory.getConfigRobots().getConfigRobotsToRegister().get(0).getTempRoutingID()));
-
-        logback.info("OUT");
     }
 
     @Test
     public void testSendServerRobotState() throws Exception {
-        logback.info("IN");
+        logback.debug(">>>>>>>>> IN");
 
         // Build Mock of ZmqMessageBroker
         final Capture<ZmqMessageBOM> captureMsg = new Capture<>();
@@ -242,57 +205,141 @@ public class ProxyRobotsTest {
         // Robot needs to be registered in order to send a ServerRobotState
         myProxyRobots.sendRegister();
         // Simulate reception of a REGISTERED message
-        myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
-
+        myProxyRobots.receivedNewZmq(
+                new ZmqMessageBOM(mockedTank.getRoutingId(),
+                        EnumMessageType.REGISTERED,
+                        getBytesRegistered())
+        );
         // We put a new RFID value into the tank to change its state
-        mockedTank.setRfidValue(RFID_VALUE);
+        mockedTank.setRfidValue(RFID_VALUE_1);
         myProxyRobots.sendServerRobotStates();
 
         // ProxyRobot is expected to send a ServerRobotState message
         verify(mockedZmqMessageBroker);
         assertEquals(EnumMessageType.SERVER_ROBOT_STATE, captureMsg.getValue().getMessageType());
         assertEquals("RoutingId is supposed to have changed to the one provided by registered",
-                REGISTERED_ID, captureMsg.getValue().getRoutingId());
-
-        logback.info("OUT");
+                ProtobufTest.REGISTERED_ROUTING_ID, captureMsg.getValue().getRoutingId());
     }
 
     @Test
-    public void testStart() {
-        logback.info("IN");
+    public void testStart_noUdpDiscovery() {
+        logback.debug(">>>>>>>>> IN");
 
         // Build Mock of ZmqMessageBroker
+        final Capture<String> capturePushAddress = new Capture<>();
+        final Capture<String> captureSubscribeAddress = new Capture<>();
+        expect(mockedZmqMessageBroker.connectToServer(capture(capturePushAddress), capture(captureSubscribeAddress))).andReturn(true);
         mockedZmqMessageBroker.close();
         expectLastCall().once();
         replay(mockedZmqMessageBroker);
 
-        // We are testing the real class, so we do not want to lose time
-        // trying to connect to robots by bluetooth
-        // Hence we provide an empty config file
-        final ConfigFactoryParameters localConfigFactoryParameters = new ConfigFactoryParameters("/configurationTest_NoRobots.xml", EnumConfigFileType.RESOURCE);
-        configFactory = new ConfigFactory(localConfigFactoryParameters);
-
         // Instantiate main class with mock parameters
-        // We build an empty robot map
         myProxyRobots = new ProxyRobots(mockedZmqMessageBroker, configFactory,
-                new RobotsMap());
+                robotsMap);
 
         myProxyRobots.start();
 
-        waitForCloseOrTimeout();
+        waitForCloseOrTimeout(WAIT_TIMEOUT_MS);
         // Map contains only one tank from the config file,
         // this tank fails to connect because of wrong settings, so
         // the communication service should quickly stop and close
         // the message framework proxy
         verify(mockedZmqMessageBroker);
 
-        logback.info("OUT");
+        // messageBroker.connectToServer() was called with parameters
+        // coming from the configuration file
+        assertEquals(configFactory.getMaxPriorityConfigServerGame().getPushAddress(),
+                capturePushAddress.getValue());
+        assertEquals(configFactory.getMaxPriorityConfigServerGame().getSubscribeAddress(),
+                captureSubscribeAddress.getValue());
     }
 
+    @Test
+    public void testStart_udpDiscovery() {
+        // Build Mock of ZmqMessageBroker
+        final Capture<String> capturePushAddress = new Capture<>();
+        final Capture<String> captureSubscribeAddress = new Capture<>();
+        expect(mockedZmqMessageBroker.connectToServer(capture(capturePushAddress), capture(captureSubscribeAddress))).andReturn(true);
+        mockedZmqMessageBroker.close();
+        expectLastCall().once();
+        replay(mockedZmqMessageBroker);
+
+        // Simulate a working UDP beacon finder
+        final UdpBeaconFinder udpBeaconFinder = createNiceMock(UdpBeaconFinder.class);
+        expect(udpBeaconFinder.hasFoundServer()).andReturn(true).once();
+        expect(udpBeaconFinder.getPushAddress()).andReturn(PUSH_ADDRESS_UDP).once();
+        expect(udpBeaconFinder.getSubscribeAddress()).andReturn(SUB_ADDRESS_UDP).once();
+        replay(udpBeaconFinder);
+
+        // Instantiate main class with mock parameters
+        myProxyRobots = new ProxyRobots(udpBeaconFinder, mockedZmqMessageBroker,
+                configFactory, robotsMap);
+
+        myProxyRobots.start();
+
+        waitForCloseOrTimeout(WAIT_TIMEOUT_MS);
+        // Map contains only one tank from the config file,
+        // this tank fails to connect because of wrong settings, so
+        // the communication service should quickly stop and close
+        // the message framework proxy
+        verify(mockedZmqMessageBroker);
+
+        // Check that udpBeacon has been correctly used (broadcastAndGetServerAddress() and
+        // hasFoundServer() were called)
+        verify(udpBeaconFinder);
+
+        // messageBroker.connectToServer() was called with parameters
+        // provided by udpBeaconFinder
+        assertEquals(PUSH_ADDRESS_UDP, capturePushAddress.getValue());
+        assertEquals(SUB_ADDRESS_UDP, captureSubscribeAddress.getValue());
+    }
+
+    @Test
+    /**
+     * Checks that if UDP discovery fails or if we make 0 attempts to find the
+     * server with the beacon finder, then we fallback on configuration data
+     * found in the xml file
+     */
+    public void testStart_udpDiscoveryWithZeroAttempt() {
+        // Build Mock of ZmqMessageBroker
+        final Capture<String> capturePushAddress = new Capture<>();
+        final Capture<String> captureSubscribeAddress = new Capture<>();
+        expect(mockedZmqMessageBroker.connectToServer(capture(capturePushAddress), capture(captureSubscribeAddress))).andReturn(true);
+        mockedZmqMessageBroker.close();
+        expectLastCall().once();
+        replay(mockedZmqMessageBroker);
+
+        // Simulate a failure of the UDP beacon finder
+        // (or that we set 'attempts' to 0)
+        final UdpBeaconFinder udpBeaconFinder = createNiceMock(UdpBeaconFinder.class);
+        expect(udpBeaconFinder.hasFoundServer()).andReturn(false).once();
+        replay(udpBeaconFinder);
+
+        // Instantiate main class with mock parameters
+        myProxyRobots = new ProxyRobots(udpBeaconFinder, mockedZmqMessageBroker,
+                configFactory, robotsMap);
+
+        myProxyRobots.start();
+
+        waitForCloseOrTimeout(WAIT_TIMEOUT_MS * 100);
+        // Map contains only one tank from the config file,
+        // this tank fails to connect because of wrong settings, so
+        // the communication service should quickly stop and close
+        // the message framework proxy
+        verify(mockedZmqMessageBroker);
+
+        // Check that udpBeacon has been correctly used (broadcastAndGetServerAddress() and
+        // hasFoundServer() were called)
+        verify(udpBeaconFinder);
+
+        // messageBroker.connectToServer() was called with parameters
+        // provided by udpBeaconFinder
+        assertEquals(PUSH_ADDRESS_CONFIG, capturePushAddress.getValue());
+        assertEquals(SUB_ADDRESS_CONFIG, captureSubscribeAddress.getValue());
+    }
 
     @Test
     public void testOnInput() throws Exception {
-        logback.info("IN");
         instantiateBasicProxyRobots();
 
         myProxyRobots.connectToRobots();
@@ -302,43 +349,115 @@ public class ProxyRobotsTest {
         // Robot needs to be registered in order to receive Input messages
         myProxyRobots.sendRegister();
         // Simulate reception of a REGISTERED message
-        myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.REGISTERED)));
-
+        myProxyRobots.receivedNewZmq(
+                new ZmqMessageBOM(mockedTank.getRoutingId(),
+                        EnumMessageType.REGISTERED,
+                        getBytesRegistered())
+        );
         // Tank has for now no Input registered
-        assertFalse(((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getInputFire().hasFire());
-        assertFalse(((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getInputMove().hasMove());
+        assertFalse(((MockedTank) myProxyRobots.robotsMap.
+                get(ProtobufTest.REGISTERED_ROUTING_ID)).
+                getInputFire().hasFire());
+        assertFalse(((MockedTank) myProxyRobots.robotsMap.
+                get(ProtobufTest.REGISTERED_ROUTING_ID)).
+                getInputMove().hasMove());
 
         // Now simulate reception of a INPUT message
-        myProxyRobots.receivedNewZmq(ZmqMessageBOM.parseFrom(getMockRawZmqMessage(mockedTank, EnumMessageType.INPUT)));
-
+        myProxyRobots.receivedNewZmq(
+                new ZmqMessageBOM(mockedTank.getRoutingId(),
+                        EnumMessageType.INPUT,
+                        getBytesInput())
+        );
         // Tank received the right Input correctly
-        assertTrue(((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getInputFire().hasFire());
-        assertTrue(((MockedTank) myProxyRobots.robotsMap.get("BananaOne")).getInputMove().hasMove());
-
-        logback.info("OUT");
+        assertTrue(((MockedTank) myProxyRobots.robotsMap.
+                get(ProtobufTest.REGISTERED_ROUTING_ID)).
+                getInputFire().hasFire());
+        assertTrue(((MockedTank) myProxyRobots.robotsMap.
+                get(ProtobufTest.REGISTERED_ROUTING_ID)).
+                getInputMove().hasMove());
     }
 
     @Test
     public void testGetNbOutgoingMessageFiltered() {
-        logback.info("IN");
-
         instantiateBasicProxyRobots();
         myProxyRobots.start();
 
-        // We run the proxy for maxTimeoutMs
-        waitForCloseOrTimeout();
+        // We run the proxy for WAIT_TIMEOUT_MS
+        waitForCloseOrTimeout(WAIT_TIMEOUT_MS);
 
         // Since we wait for a timeout as long as outgoingMessagePeriod
         // during which the proxy runs and tries to send messages,
         // we should filter some messages
-        logback.debug("getNbOutgoingMessageFiltered: " + myProxyRobots.outgoingMessageFiltered);
-        assertTrue("There should be at least one filtered message", 0 < myProxyRobots.outgoingMessageFiltered);
+        assertTrue("There should be at least one filtered message", 0 < myProxyRobots.getOutgoingMessageFiltered());
+    }
 
-        logback.info("OUT");
+    @Test
+    /**
+     * Just run the proxy, with a mock Tank, to check it starts and ends well
+     */
+    public void testProxyRobots_StartWithMockTank() throws Exception {
+        // Instantiate main class with mock tank, but real zmq conf
+        myProxyRobots = new ProxyRobots(new ZmqMessageBroker(RECEIVE_TIMEOUT, 1000, 1000), configFactory,
+                robotsMap);
+        myProxyRobots.start();
+
+        // We run the proxy for WAIT_TIMEOUT_MS
+        waitForCloseOrTimeout(WAIT_TIMEOUT_MS);
+    }
+
+    @Test
+    public void testOnGameState() throws Exception {
+        instantiateBasicProxyRobots();
+
+        myProxyRobots.connectToRobots();
+
+        myProxyRobots.startCommunicationService();
+
+        // Robot needs to be registered in order to receive Input messages
+        myProxyRobots.sendRegister();
+        // Simulate reception of a REGISTERED message
+        myProxyRobots.receivedNewZmq(
+                new ZmqMessageBOM(mockedTank.getRoutingId(),
+                        EnumMessageType.REGISTERED,
+                        getBytesRegistered())
+        );
+
+        // Game is still playing, there is then no winner
+        assertEquals(EnumRobotVictoryState.WAITING_FOR_START, (myProxyRobots.robotsMap.
+                        get(ProtobufTest.REGISTERED_ROUTING_ID)).getVictoryState()
+        );
+
+        // Now simulate reception of a GAME_STATE message
+        // saying the game is now playing
+        myProxyRobots.receivedNewZmq(
+                new ZmqMessageBOM(ROUTING_ID_ALL,
+                        EnumMessageType.GAME_STATE,
+                        getBytesGameState_Playing()
+                )
+        );
+        // Tank victory state was changed accordingly to PLAYING
+        assertEquals(EnumRobotVictoryState.PLAYING, (myProxyRobots.robotsMap.
+                        get(ProtobufTest.REGISTERED_ROUTING_ID)).getVictoryState()
+        );
+
+        // Now simulate reception of a GAME_STATE message
+        // Where BLUE Team is the winner
+        myProxyRobots.receivedNewZmq(
+                new ZmqMessageBOM(ROUTING_ID_ALL,
+                        EnumMessageType.GAME_STATE,
+                        getBytesGameState_Winner()
+                )
+        );
+
+        // Tank victory state was changed accordingly
+        assertEquals(EnumRobotVictoryState.WINNER, (myProxyRobots.robotsMap.
+                        get(ProtobufTest.REGISTERED_ROUTING_ID)).getVictoryState()
+        );
     }
 
     @After
     public void tearDown() {
         myProxyRobots.stop();
+        logback.debug("<<<< OUT");
     }
 }

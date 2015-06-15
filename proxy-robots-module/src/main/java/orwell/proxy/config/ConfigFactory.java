@@ -2,6 +2,9 @@ package orwell.proxy.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import orwell.proxy.config.elements.IConfigProxy;
+import orwell.proxy.config.elements.IConfigRobots;
+import orwell.proxy.config.elements.IConfigServerGame;
 
 /**
  * Created by Michaël Ludmann on 03/05/15.
@@ -9,26 +12,27 @@ import org.slf4j.LoggerFactory;
 public class ConfigFactory implements IConfigFactory {
     private final static Logger logback = LoggerFactory.getLogger(ConfigFactory.class);
 
-    private final IConfigProxy configProxy;
-    private final IConfigRobots configRobots;
-    private final IConfigServerGame configServerGame;
+    private IConfigProxy configProxy;
+    private IConfigRobots configRobots;
+    private IConfigServerGame configServerGame;
 
-    public ConfigFactory(final ConfigFactoryParameters configFactoryParameters) {
-        logback.debug("IN");
-        final Configuration configuration = new Configuration(configFactoryParameters);
+    private ConfigFactory(final Configuration configuration) {
+        logback.debug("Constructor -- IN");
+        configuration.populate();
 
         if (!configuration.isPopulated()) {
             logback.error("Configuration loading error");
-            configProxy = null;
-            configRobots = null;
-            configServerGame = null;
         } else {
             final ConfigModel configModel = configuration.getConfigModel();
             configProxy = configModel.getConfigProxy();
             configRobots = configuration.getConfigModel().getConfigRobots();
-            configServerGame = configProxy.getConfigServerGame();
+            configServerGame = configProxy.getMaxPriorityConfigServerGame();
         }
-        logback.debug("OUT");
+        logback.debug("Constructor -- OUT");
+    }
+
+    public static ConfigFactory createConfigFactory(final Configuration configuration) {
+        return new ConfigFactory(configuration);
     }
 
     @Override
@@ -42,7 +46,7 @@ public class ConfigFactory implements IConfigFactory {
     }
 
     @Override
-    public IConfigServerGame getConfigServerGame() {
+    public IConfigServerGame getMaxPriorityConfigServerGame() {
         return configServerGame;
     }
 }

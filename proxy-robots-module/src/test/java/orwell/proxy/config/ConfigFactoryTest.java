@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import orwell.proxy.config.source.ConfigurationResource;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -21,40 +22,39 @@ import static org.junit.Assert.assertTrue;
 public class ConfigFactoryTest {
 
     private final static Logger logback = LoggerFactory.getLogger(ConfigFactoryTest.class);
-    private static final String CONFIGURATION_RESOURCE_TEST = "/configurationTest.xml";
+    private static final String RESOURCE_TEST_PATH = "/configurationTest.xml";
     private ConfigFactory configFactory;
 
     @Before
     public void setUp() {
-        final ConfigFactoryParameters configFactoryParametersResource = new ConfigFactoryParameters(CONFIGURATION_RESOURCE_TEST, EnumConfigFileType.RESOURCE);
-        configFactory = new ConfigFactory(configFactoryParametersResource);
+        logback.debug(">>>>>>>>> IN");
+        final ConfigurationResource resource = new ConfigurationResource(RESOURCE_TEST_PATH);
+        configFactory = ConfigFactory.createConfigFactory(resource);
     }
 
     @Test
     public void testGetConfigProxy() throws Exception {
-        logback.debug("IN");
         // Simple test to check the class is well populated
-        assertEquals("Receiver linger from configuration.xml should be 1000",
+        assertEquals("Receiver linger from config.xml should be 1000",
                 1000, configFactory.getConfigProxy().getReceiverLinger());
-        logback.debug("OUT");
     }
 
     @Test
     public void testGetConfigRobots() throws Exception {
-        logback.debug("IN");
         // Simple test to check the class is well populated
-        assertTrue("configuration.xml should contain at least one robot to register",
+        assertTrue("config.xml should contain at least one robot to register",
                 !configFactory.getConfigRobots().getConfigRobotsToRegister().isEmpty());
-        logback.debug("OUT");
     }
 
     @Test
     public void testGetConfigServerGame() throws Exception {
-        logback.debug("IN");
         // Simple test to check the class is well populated
-        assertEquals("configuration.xml should have 'platypus' as priority server game",
-                "platypus", configFactory.getConfigServerGame().getName());
-        logback.debug("OUT");
+        assertEquals("config.xml should have 'localhost' as priority server game",
+                "localhost", configFactory.getMaxPriorityConfigServerGame().getName());
     }
 
+    @After
+    public void tearDown() throws Exception {
+        logback.debug("<<<< OUT");
+    }
 }

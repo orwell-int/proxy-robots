@@ -1,4 +1,4 @@
-package orwell.proxy.config;
+package orwell.proxy.config.elements;
 
 /**
  * Created by Michaël Ludmann on 03/05/15.
@@ -6,9 +6,7 @@ package orwell.proxy.config;
 public interface IConfigServerGame {
     String getName();
 
-    String getIp();
+    String getPushAddress();
 
-    int getPushPort();
-
-    int getSubPort();
+    String getSubscribeAddress();
 }

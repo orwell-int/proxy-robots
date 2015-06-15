@@ -3,18 +3,21 @@ package orwell.proxy.zmq;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.EnumMessageType;
+import orwell.proxy.Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Michaël Ludmann on 5/6/15.
  */
-public class ZmqMessageBOM implements Comparable<ZmqMessageBOM> {
+public class ZmqMessageBOM {
     private final static Logger logback = LoggerFactory.getLogger(ZmqMessageBOM.class);
-
+    private final static byte ZMQ_SEPARATOR = " ".getBytes()[0];
+    private static final int ZMQ_MESSAGE_ITEMS_NUM = 3;
     private final EnumMessageType messageType;
     private final String routingId;
     private byte[] messageBodyBytes;
@@ -29,42 +32,48 @@ public class ZmqMessageBOM implements Comparable<ZmqMessageBOM> {
     /**
      * @param raw_zmq_message Message receive through zmq protocol, with
      *                        the following format (split by spaces):
-     *                        routingID typeString message
+     *                        routingId typeString message
+     *                        Careful: message is arbitrary binary data
      */
     public static ZmqMessageBOM parseFrom(final byte[] raw_zmq_message) throws ParseException {
-        final String zmqMessageString = new String(raw_zmq_message);
-        final String[] zmqMessageStringArray = zmqMessageString.split(" ", 3);
+        // We do not want to create a String from arbitrary binary data, so we
+        // first isolate the 3 parts of the raw zmq message
+        final List<byte[]> zmqMessageBytesList = Utils.split(ZMQ_SEPARATOR,
+                raw_zmq_message, ZMQ_MESSAGE_ITEMS_NUM);
 
-        if (3 != zmqMessageStringArray.length) {
-            logback.warn("ZmqMessage failed to split incoming message: " +
-                    zmqMessageString);
-            throw new ParseException("Message does not contain all three mandatory items", 3);
+        if (3 != zmqMessageBytesList.size()) {
+            logback.warn("ZmqMessage failed to split incoming message, missing items: " +
+                    raw_zmq_message);
+            throw new ParseException("Message does not contain all three mandatory items", ZMQ_MESSAGE_ITEMS_NUM);
         }
 
-        final String routingId = zmqMessageStringArray[0];
-        final String typeString = zmqMessageStringArray[1];
-        final byte[] messageBodyBytes = zmqMessageStringArray[2].getBytes();
-        final EnumMessageType type;
+        // routingId was a string encoded in bytes, there is no issue to build a String from it
+        final String routingId = new String(zmqMessageBytesList.get(0));
+        // typeString was a string encoded in bytes, there is no issue to build a String from it
+        final String typeString = new String(zmqMessageBytesList.get(1));
+        // message is binary data, so we keep it as a byte array
+        final byte[] messageBodyBytes = zmqMessageBytesList.get(2);
+
+        final EnumMessageType type = getEnumTypeFromTypeString(typeString);
+
+        logback.debug("Message parsed: [RoutingID] " + routingId + " [TYPE] " + type);
+        return new ZmqMessageBOM(routingId, type, messageBodyBytes);
+    }
+
+    private static EnumMessageType getEnumTypeFromTypeString(final String typeString) {
         switch (typeString) {
             case "Registered":
-                type = EnumMessageType.REGISTERED;
-                break;
+                return EnumMessageType.REGISTERED;
             case "Input":
-                type = EnumMessageType.INPUT;
-                break;
+                return EnumMessageType.INPUT;
             case "GameState":
-                type = EnumMessageType.GAME_STATE;
-                break;
+                return EnumMessageType.GAME_STATE;
             case "ServerRobotState":
-                type = EnumMessageType.SERVER_ROBOT_STATE;
-                break;
+                return EnumMessageType.SERVER_ROBOT_STATE;
             default:
-                type = EnumMessageType.UNKNOWN;
                 logback.warn("Message typeString unknown: " + typeString);
+                return EnumMessageType.UNKNOWN;
         }
-
-        logback.info("Message parsed: [RoutingID] " + routingId + " [TYPE]: " + type);
-        return new ZmqMessageBOM(routingId, type, messageBodyBytes);
     }
 
     public String getRoutingId() {
@@ -76,7 +85,7 @@ public class ZmqMessageBOM implements Comparable<ZmqMessageBOM> {
     }
 
     /**
-     * @return the body of the message
+     * @return the body of the message, i.e. a Google protocol buffer
      */
     public byte[] getMessageBodyBytes() {
         return messageBodyBytes;
@@ -127,11 +136,14 @@ public class ZmqMessageBOM implements Comparable<ZmqMessageBOM> {
     }
 
     @Override
-    public int compareTo(final ZmqMessageBOM zmqMessageBOM) {
-        if (null == zmqMessageBOM || messageType != zmqMessageBOM.getMessageType() ||
-                0 != routingId.compareTo(zmqMessageBOM.getRoutingId()) ||
-                !Arrays.equals(messageBodyBytes, zmqMessageBOM.getMessageBodyBytes()))
-            return 1;
-        else return 0;
+    public boolean equals(final Object obj) {
+        if (!(obj instanceof ZmqMessageBOM))
+            return false;
+        if (obj == this)
+            return true;
+        final ZmqMessageBOM zmqMessageBOM = (ZmqMessageBOM) obj;
+        return (messageType == zmqMessageBOM.getMessageType() &&
+                routingId.equals(zmqMessageBOM.getRoutingId()) &&
+                Arrays.equals(messageBodyBytes, zmqMessageBOM.getMessageBodyBytes()));
     }
 }

@@ -1,4 +1,4 @@
-package orwell.proxy.config;
+package orwell.proxy.config.elements;
 
 import javax.xml.bind.annotation.XmlElement;
 import java.util.List;
@@ -6,9 +6,11 @@ import java.util.List;
 public class ConfigProxy implements IConfigProxy {
 
     private List<ConfigServerGame> configServerGames;
+    private int receiveTimeout;
     private int senderLinger;
     private int receiverLinger;
     private int outgoingMsgPeriod;
+    private ConfigUdpBroadcast configUdpBroadcast;
 
     @XmlElement(name = "server-game")
     public List<ConfigServerGame> getConfigServerGames() {
@@ -24,7 +26,7 @@ public class ConfigProxy implements IConfigProxy {
      * If no priority defined, it is the first one found by default.
      */
     @Override
-    public ConfigServerGame getConfigServerGame() {
+    public ConfigServerGame getMaxPriorityConfigServerGame() {
         ConfigServerGame maxPriorityConfig = null;
         for (final ConfigServerGame config : this.configServerGames) {
             if (null == maxPriorityConfig || config.getPriority() > maxPriorityConfig.getPriority()) {
@@ -33,6 +35,17 @@ public class ConfigProxy implements IConfigProxy {
         }
         return maxPriorityConfig;
     }
+
+    @Override
+    public int getReceiveTimeout() {
+        return receiveTimeout;
+    }
+
+    @XmlElement(name = "receiveTimeout")
+    public void setReceiveTimeout(final int receiveTimeout) {
+        this.receiveTimeout = receiveTimeout;
+    }
+
 
     @Override
     public int getSenderLinger() {
@@ -62,5 +75,15 @@ public class ConfigProxy implements IConfigProxy {
     @XmlElement(name = "outgoingMsgPeriod")
     public void setOutgoingMsgPeriod(final int outgoingMsgPeriod) {
         this.outgoingMsgPeriod = outgoingMsgPeriod;
+    }
+
+    @Override
+    public ConfigUdpBroadcast getConfigUdpBroadcast() {
+        return configUdpBroadcast;
+    }
+
+    @XmlElement(name = "udpBroadcast")
+    public void setConfigUdpBroadcast(final ConfigUdpBroadcast configUdpBroadcast) {
+        this.configUdpBroadcast = configUdpBroadcast;
     }
 }

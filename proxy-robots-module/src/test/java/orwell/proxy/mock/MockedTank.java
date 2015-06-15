@@ -3,7 +3,6 @@ package orwell.proxy.mock;
 import lejos.mf.common.UnitMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.messages.Controller;
 import orwell.proxy.robot.*;
 
 /**
@@ -21,6 +20,7 @@ public class MockedTank extends IRobot {
         this.setImage("noImage");
         this.setRegistrationState(EnumRegistrationState.NOT_REGISTERED);
         this.setConnectionState(EnumConnectionState.NOT_CONNECTED);
+        this.setTeamName("BLUE");
         this.robotElements = new IRobotElement[]{new RfidSensor(), new ColourSensor()};
         this.robotActions = new IRobotInput[]{new InputMove(), new InputFire()};
     }
@@ -69,5 +69,11 @@ public class MockedTank extends IRobot {
             action.accept(visitor);
         }
         visitor.visit(this);
+    }
+
+    @Override
+    public String toString() {
+        return "MockedTank { [RoutingID] " + getRoutingId() +
+                " [TeamName] " + getTeamName() + " }";
     }
 }

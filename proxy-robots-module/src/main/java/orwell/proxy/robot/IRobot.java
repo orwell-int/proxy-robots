@@ -15,6 +15,7 @@ public abstract class IRobot implements IRobotElement, IRobotInput {
     private String teamName = "";
     private EnumRegistrationState registrationState = EnumRegistrationState.NOT_REGISTERED;
     private EnumConnectionState connectionState = EnumConnectionState.NOT_CONNECTED;
+    private EnumRobotVictoryState victoryState = EnumRobotVictoryState.WAITING_FOR_START;
 
     public abstract void sendUnitMessage(UnitMessage unitMessage);
 
@@ -51,7 +52,7 @@ public abstract class IRobot implements IRobotElement, IRobotInput {
         return teamName;
     }
 
-    void setTeamName(final String teamName) {
+    protected void setTeamName(final String teamName) {
         this.teamName = teamName;
     }
 
@@ -71,4 +72,11 @@ public abstract class IRobot implements IRobotElement, IRobotInput {
         this.connectionState = connectionState;
     }
 
+    public EnumRobotVictoryState getVictoryState() {
+        return victoryState;
+    }
+
+    protected void setVictoryState(final EnumRobotVictoryState victoryState) {
+        this.victoryState = victoryState;
+    }
 }

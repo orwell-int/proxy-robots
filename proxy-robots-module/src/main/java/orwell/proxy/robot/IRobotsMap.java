@@ -37,4 +37,5 @@ public interface IRobotsMap {
 
     boolean isRobotRegistered(String routingId);
 
+    void accept(RobotGameStateVisitor robotGameStateVisitor);
 }

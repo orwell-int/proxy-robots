@@ -22,7 +22,7 @@ public class RfidSensorTest {
 
     @Before
     public void setUp() {
-        logback.info("IN");
+        logback.debug(">>>>>>>>> IN");
         rfidSensor = new RfidSensor();
     }
 
@@ -43,14 +43,12 @@ public class RfidSensorTest {
         assertTrue(rfidSensor.getRfidSensorReads().isEmpty());
     }
 
-
     @Test
     public void testSetValue() throws Exception {
         rfidSensor.setValue(FIRST_VALUE);
         assertEquals(FIRST_VALUE, rfidSensor.getRfidSensorReads().getFirst().getRfid());
         assertEquals(Robot.Status.ON, rfidSensor.getRfidSensorReads().getFirst().getStatus());
     }
-
 
     @Test
     public void testSetValue_SecondValue() throws Exception {
@@ -71,7 +69,6 @@ public class RfidSensorTest {
         assertEquals(Robot.Status.OFF, rfidSensor.getRfidSensorReads().getFirst().getStatus());
     }
 
-
     @Test
     public void testSetValue_SameValue() throws Exception {
         rfidSensor.setValue(FIRST_VALUE);
@@ -82,13 +79,11 @@ public class RfidSensorTest {
         assertEquals(Robot.Status.ON, rfidSensor.getRfidSensorReads().getFirst().getStatus());
     }
 
-
     @Test
     public void testSetValue_NoRfid() throws Exception {
         rfidSensor.setValue(NO_RFID_VALUE);
         assertTrue(rfidSensor.getRfidSensorReads().isEmpty());
     }
-
 
     @Test
     public void testSetValue_TransitionToNoRfid() throws Exception {
@@ -103,7 +98,6 @@ public class RfidSensorTest {
         assertEquals(Robot.Status.ON, rfidSensor.getRfidSensorReads().getLast().getStatus());
     }
 
-
     @Test
     public void testSetValue_TransitionFromNoRfid() throws Exception {
         rfidSensor.setValue(NO_RFID_VALUE);
@@ -115,8 +109,14 @@ public class RfidSensorTest {
         assertEquals(Robot.Status.ON, rfidSensor.getRfidSensorReads().getFirst().getStatus());
     }
 
+    @Test
+    public void testToString() throws Exception {
+        final String rfidSensorString = "RfidSensor { }";
+        assertEquals(rfidSensorString, rfidSensor.toString());
+    }
+
     @After
     public void tearDown() {
-        logback.info("OUT");
+        logback.debug("<<<< OUT");
     }
 }

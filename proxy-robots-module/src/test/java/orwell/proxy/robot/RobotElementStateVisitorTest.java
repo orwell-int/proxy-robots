@@ -31,16 +31,13 @@ public class RobotElementStateVisitorTest {
 
     @Before
     public void setUp() {
-
-        logback.info("IN");
+        logback.debug(">>>>>>>>> IN");
         stateVisitor = new RobotElementStateVisitor();
-        logback.info("OUT");
     }
 
 
     @Test
     public void testVisit_rfid() {
-
         tank.setRfidValue("2");
         tank.accept(stateVisitor);
 
@@ -51,7 +48,6 @@ public class RobotElementStateVisitorTest {
 
     @Test
     public void testVisit_colour() {
-
         tank.setColourValue("7");
         tank.accept(stateVisitor);
 
@@ -59,5 +55,8 @@ public class RobotElementStateVisitorTest {
         assertEquals(Robot.Status.ON, stateVisitor.getServerRobotState().getColour(0).getStatus());
     }
 
-
+    @After
+    public void tearDown() throws Exception {
+        logback.debug("<<<< OUT");
+    }
 }
