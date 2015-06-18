@@ -15,7 +15,7 @@ import java.net.MalformedURLException;
 public final class RobotFactory {
     private final static Logger logback = LoggerFactory.getLogger(RobotFactory.class);
 
-    public IRobot getRobot(final IConfigRobot configRobot) {
+    public static IRobot getRobot(final IConfigRobot configRobot) {
         if (null == configRobot) {
             return null;
         }
@@ -30,7 +30,7 @@ public final class RobotFactory {
         return null;
     }
 
-    private IRobot getRobot(final ConfigTank configTank) {
+    private static IRobot getRobot(final ConfigTank configTank) {
         final IConfigCamera configCamera = configTank.getConfigCamera();
         if (null == configCamera) {
             logback.warn("Config of camera is missing for LegoTank: " + configTank.getBluetoothName());
@@ -53,7 +53,7 @@ public final class RobotFactory {
         }
     }
 
-    private IRobot getRobot(final ConfigScout configScout) {
+    private static IRobot getRobot(final ConfigScout configScout) {
         logback.warn("Scout config is not handled yet");
         return null;
     }

@@ -22,7 +22,6 @@ public class ProxyRobots implements IZmqMessageListener {
     private final CommunicationService communicationService = new CommunicationService();
     private final Thread communicationThread = new Thread(communicationService);
     private final long outgoingMessagePeriod;
-    private final RobotFactory robotFactory;
     protected IRobotsMap robotsMap;
     private int outgoingMessageFiltered;
     private UdpBeaconFinder udpBeaconFinder;
@@ -42,7 +41,6 @@ public class ProxyRobots implements IZmqMessageListener {
         this.robotsMap = robotsMap;
         this.outgoingMessagePeriod = configFactory.getConfigProxy().getOutgoingMsgPeriod();
 
-        robotFactory = new RobotFactory();
         messageBroker.addZmqMessageListener(this);
         logback.debug("Constructor -- OUT");
     }
@@ -92,7 +90,7 @@ public class ProxyRobots implements IZmqMessageListener {
      */
     protected void initializeRobotsFromConfig() {
         for (final IConfigRobot configRobot : configRobots.getConfigRobotsToRegister()) {
-            final IRobot robot = robotFactory.getRobot(configRobot);
+            final IRobot robot = RobotFactory.getRobot(configRobot);
             if (null == robot) {
                 logback.error("Robot not initialized. Skipping it for now.");
             } else {
