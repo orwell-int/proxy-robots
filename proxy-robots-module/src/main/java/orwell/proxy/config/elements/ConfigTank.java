@@ -15,6 +15,7 @@ public class ConfigTank implements IConfigRobot {
     private String image;
     private List<ConfigNetworkInterface> configNetworkInterfaces;
     private String model;
+    private String hostname;
 
     @Override
     public String getTempRoutingID() {
@@ -102,11 +103,22 @@ public class ConfigTank implements IConfigRobot {
     }
 
     @Override
-    public ConfigNetworkInterface getConfigNetworkInterface(String networkAddress) throws ConfigRobotException {
+    public ConfigNetworkInterface getConfigNetworkInterface(final String networkAddress) throws ConfigRobotException {
         for (final ConfigNetworkInterface config : this.configNetworkInterfaces) {
             if (config.getNetworkAddress().contentEquals(networkAddress))
                 return config;
         }
         throw new ConfigRobotException(this, networkAddress);
+    }
+
+    @Override
+    public String getHostname() {
+        return hostname;
+    }
+
+    @Override
+    @XmlElement
+    public void setHostname(final String hostname) {
+        this.hostname = hostname;
     }
 }

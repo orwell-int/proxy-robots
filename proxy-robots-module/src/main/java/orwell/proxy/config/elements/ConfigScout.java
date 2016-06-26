@@ -12,6 +12,7 @@ public class ConfigScout implements IConfigRobot {
     private boolean shouldRegister;
     private String image;
     private String model;
+    private String hostname;
 
     @Override
     public String getTempRoutingID() {
@@ -74,5 +75,16 @@ public class ConfigScout implements IConfigRobot {
     @Override
     public EnumModel getEnumModel() {
         return EnumModel.getModelFromString(model);
+    }
+
+    @Override
+    public String getHostname() {
+        return hostname;
+    }
+
+    @Override
+    @XmlElement
+    public void setHostname(final String hostname) {
+        this.hostname = hostname;
     }
 }

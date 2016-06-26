@@ -73,4 +73,16 @@ public class ConfigurationEv3Test {
             fail(e.getMessage());
         }
     }
+
+    @Test
+    public void testGetHostname() {
+        final ConfigTank configTank;
+        try {
+            configTank = (ConfigTank) new ConfigurationResource(CONF_WIFI_RESOURCE_PATH).getConfigModel().getConfigRobots()
+                    .getConfigRobot("BananaWifiOne");
+            assertEquals("R2D2", configTank.getHostname());
+        } catch (final Exception e) {
+            fail(e.getMessage());
+        }
+    }
 }

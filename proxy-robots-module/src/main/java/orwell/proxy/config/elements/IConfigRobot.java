@@ -2,6 +2,8 @@ package orwell.proxy.config.elements;
 
 import orwell.proxy.robot.EnumModel;
 
+import javax.xml.bind.annotation.XmlElement;
+
 /**
  * Created by Michaël Ludmann on 5/22/15.
  */
@@ -23,7 +25,12 @@ public interface IConfigRobot {
 
     public String getModel();
 
+    public void setModel(final String model);
+
     EnumModel getEnumModel();
 
-    public void setModel(final String model);
+    String getHostname();
+
+    @XmlElement
+    void setHostname(String hostname);
 }
