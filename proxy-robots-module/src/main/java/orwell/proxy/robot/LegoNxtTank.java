@@ -9,8 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class LegoTank extends IRobot implements MessageListenerInterface {
-    private final static Logger logback = LoggerFactory.getLogger(LegoTank.class);
+public class LegoNxtTank extends IRobot implements MessageListenerInterface {
+    private final static Logger logback = LoggerFactory.getLogger(LegoNxtTank.class);
     private final IRobotElement[] robotElements;
     private final IRobotInput[] robotActions;
     private final NXTInfo nxtInfo;
@@ -18,9 +18,9 @@ public class LegoTank extends IRobot implements MessageListenerInterface {
     private final UnitMessageBroker unitMessageBroker = new UnitMessageBroker(this);
 
 
-    public LegoTank(final String bluetoothName, final String bluetoothId,
-                    final MessageFramework messageFramework,
-                    final ICamera camera, final String image) {
+    public LegoNxtTank(final String bluetoothName, final String bluetoothId,
+                       final MessageFramework messageFramework,
+                       final ICamera camera, final String image) {
         this.robotElements = new IRobotElement[]{camera, new RfidSensor(), new ColourSensor()};
         this.robotActions = new IRobotInput[]{new InputMove(), new InputFire()};
         this.nxtInfo = new NXTInfo(NXTCommFactory.BLUETOOTH, bluetoothName, bluetoothId);
@@ -30,8 +30,8 @@ public class LegoTank extends IRobot implements MessageListenerInterface {
         setCameraUrl(camera.getUrl());
     }
 
-    public LegoTank(final String bluetoothName, final String bluetoothId,
-                    final ICamera camera, final String image) {
+    public LegoNxtTank(final String bluetoothName, final String bluetoothId,
+                       final ICamera camera, final String image) {
         this(bluetoothName, bluetoothId, new MessageFramework(), camera, image);
     }
 
@@ -97,7 +97,7 @@ public class LegoTank extends IRobot implements MessageListenerInterface {
 
     @Override
     public String toString() {
-        return "LegoTank { [BTName] " + nxtInfo.name + " [BT-ID] " +
+        return "LegoNxtTank { [BTName] " + nxtInfo.name + " [BT-ID] " +
                 nxtInfo.deviceAddress + " [RoutingID] " + getRoutingId() +
                 " [TeamName] " + getTeamName() + " }";
     }

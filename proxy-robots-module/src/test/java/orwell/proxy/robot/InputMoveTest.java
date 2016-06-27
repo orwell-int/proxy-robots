@@ -41,14 +41,14 @@ public class InputMoveTest {
     public void testSendUnitMessageTo() throws Exception {
         inputMove.setMove(ProtobufTest.getTestInput().getMove());
 
-        final LegoTank legoTank = createNiceMock(LegoTank.class);
+        final LegoNxtTank legoNxtTank = createNiceMock(LegoNxtTank.class);
         final Capture<UnitMessage> messageCapture = new Capture<>();
-        legoTank.sendUnitMessage(capture(messageCapture));
+        legoNxtTank.sendUnitMessage(capture(messageCapture));
         expectLastCall().once();
-        replay(legoTank);
+        replay(legoNxtTank);
 
-        inputMove.sendUnitMessageTo(legoTank);
-        verify(legoTank);
+        inputMove.sendUnitMessageTo(legoNxtTank);
+        verify(legoNxtTank);
         assertEquals(UnitMessageType.Command, messageCapture.getValue().getMsgType());
         assertEquals(INPUT_MOVE, messageCapture.getValue().getPayload());
     }

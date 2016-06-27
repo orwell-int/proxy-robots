@@ -8,6 +8,7 @@ import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.config.elements.ConfigCamera;
+import orwell.proxy.config.elements.ConfigRobotException;
 import orwell.proxy.config.elements.ConfigTank;
 
 import static org.junit.Assert.assertEquals;
@@ -25,6 +26,8 @@ public class RobotFactoryTest {
     private static final String IMAGE_TEST = "ImageTest";
     private static final String TEMP_ROUTING_ID_TEST = "TempRoutingIdTest";
     private static final String IP_TEST = "IpTest";
+    private static final String MODEL_EV3_TEST = "ev3";
+    private static final String MODEL_NXT_TEST = "nxt";
     private static final int PORT_TEST = 777;
     private RobotFactory robotFactory;
 
@@ -36,14 +39,14 @@ public class RobotFactoryTest {
 
     @Test
     public void testGetLegoTank_NullConfigCamera() throws Exception {
-        final LegoTank legoTank = (LegoTank) robotFactory.getRobot(new ConfigTank());
-        assertEquals(IPWebcam.getDummy().getUrl(), legoTank.getCameraUrl());
+        final LegoNxtTank legoNxtTank = (LegoNxtTank) robotFactory.getRobot(new ConfigTank());
+        assertEquals(IPWebcam.getDummy().getUrl(), legoNxtTank.getCameraUrl());
     }
 
     @Test
     public void testGetLegoTank_NullParameter() throws Exception {
-        final LegoTank legoTank = (LegoTank) robotFactory.getRobot(null);
-        assertNull(legoTank);
+        final LegoNxtTank legoNxtTank = (LegoNxtTank) robotFactory.getRobot(null);
+        assertNull(legoNxtTank);
     }
 
     @Test
@@ -63,9 +66,29 @@ public class RobotFactoryTest {
         configTank.setCamera(configCamera);
 
         // Build a tank from the config
-        final LegoTank legoTank = (LegoTank) robotFactory.getRobot(configTank);
-        assertEquals(IMAGE_TEST, legoTank.getImage());
-        assertEquals("http://" + IP_TEST + ":" + PORT_TEST, legoTank.getCameraUrl());
+        final LegoNxtTank legoNxtTank = (LegoNxtTank) robotFactory.getRobot(configTank);
+        assertEquals(IMAGE_TEST, legoNxtTank.getImage());
+        assertEquals("http://" + IP_TEST + ":" + PORT_TEST, legoNxtTank.getCameraUrl());
+    }
+
+    @Test
+    public void getRobotLegoEv3Tank() throws ConfigRobotException {
+        final ConfigTank configTank = new ConfigTank();
+        configTank.setModel(MODEL_EV3_TEST);
+
+        final IRobot robot = robotFactory.getRobot(configTank);
+
+        assertEquals(LegoEv3Tank.class, robot.getClass());
+    }
+
+    @Test
+    public void getRobotLegoNxtTank() throws ConfigRobotException {
+        final ConfigTank configTank = new ConfigTank();
+        configTank.setModel(MODEL_NXT_TEST);
+
+        final IRobot robot = robotFactory.getRobot(configTank);
+
+        assertEquals(LegoNxtTank.class, robot.getClass());
     }
 
     @After

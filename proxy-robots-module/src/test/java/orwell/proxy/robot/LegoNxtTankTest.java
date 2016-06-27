@@ -24,8 +24,8 @@ import static org.junit.Assert.*;
  * Created by Michaël Ludmann on 11/04/15.
  */
 @RunWith(JUnit4.class)
-public class LegoTankTest {
-    private final static Logger logback = LoggerFactory.getLogger(LegoTankTest.class);
+public class LegoNxtTankTest {
+    private final static Logger logback = LoggerFactory.getLogger(LegoNxtTankTest.class);
     private final static String RFID_VALUE = "11111111";
     private final static String COLOUR_VALUE = "2";
     private final static String INPUT_MOVE = "move 50.5 10.0";
@@ -35,7 +35,7 @@ public class LegoTankTest {
     private final UnitMessage unitMessageMove = new UnitMessage(UnitMessageType.Command, INPUT_MOVE);
 
     @TestSubject
-    private LegoTank tank;
+    private LegoNxtTank tank;
 
     @Mock
     private MessageFramework messageFramework;
@@ -44,16 +44,16 @@ public class LegoTankTest {
     public void setUp() {
         logback.debug(">>>>>>>>> IN");
         // Instantiate default tank
-        tank = new LegoTank("", "", new MockedCamera(), "");
+        tank = new LegoNxtTank("", "", new MockedCamera(), "");
     }
 
-    private LegoTank legoTankFromMF(final MessageFramework messageFramework) {
-        return new LegoTank("BTNameTest", "BT-IDTest", messageFramework, new MockedCamera(), "ImageTest");
+    private LegoNxtTank legoTankFromMF(final MessageFramework messageFramework) {
+        return new LegoNxtTank("BTNameTest", "BT-IDTest", messageFramework, new MockedCamera(), "ImageTest");
     }
 
     @Test
     public void testToString() {
-        final String tankString = "LegoTank { [BTName]  [BT-ID]  [RoutingID] " + tank.getRoutingId() + " [TeamName]  }";
+        final String tankString = "LegoNxtTank { [BTName]  [BT-ID]  [RoutingID] " + tank.getRoutingId() + " [TeamName]  }";
         assertEquals(tankString, tank.toString());
     }
 

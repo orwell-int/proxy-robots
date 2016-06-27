@@ -3,6 +3,7 @@ package orwell.proxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.config.*;
+import orwell.proxy.config.elements.ConfigRobotException;
 import orwell.proxy.config.elements.IConfigRobot;
 import orwell.proxy.config.elements.IConfigRobots;
 import orwell.proxy.config.elements.IConfigServerGame;
@@ -88,7 +89,7 @@ public class ProxyRobots implements IZmqMessageListener {
      * This instantiates Robots objects from a configuration. It only sets up the
      * RobotsMap
      */
-    protected void initializeRobotsFromConfig() {
+    protected void initializeRobotsFromConfig() throws ConfigRobotException {
         for (final IConfigRobot configRobot : configRobots.getConfigRobotsToRegister()) {
             final IRobot robot = RobotFactory.getRobot(configRobot);
             if (null == robot) {
@@ -204,7 +205,7 @@ public class ProxyRobots implements IZmqMessageListener {
      * -start communication service with the server
      * -send register to the server
      */
-    public void start() {
+    public void start() throws ConfigRobotException {
         this.connectToServer();
         if (robotsMap.getRobotsArray().isEmpty())
             this.initializeRobotsFromConfig();

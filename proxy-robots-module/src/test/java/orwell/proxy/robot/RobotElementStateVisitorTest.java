@@ -23,7 +23,7 @@ public class RobotElementStateVisitorTest {
     private final static Logger logback = LoggerFactory.getLogger(RobotElementStateVisitorTest.class);
 
     @Mock
-    private final LegoTank tank = new LegoTank("", "", new MockedCamera(), "");
+    private final LegoNxtTank tank = new LegoNxtTank("", "", new MockedCamera(), "");
 
     @TestSubject
     private RobotElementStateVisitor stateVisitor;

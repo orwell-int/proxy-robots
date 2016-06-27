@@ -11,6 +11,7 @@ import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.config.ConfigFactory;
+import orwell.proxy.config.elements.ConfigRobotException;
 import orwell.proxy.config.source.ConfigurationResource;
 import orwell.proxy.mock.MockedTank;
 import orwell.proxy.robot.EnumRegistrationState;
@@ -176,7 +177,7 @@ public class ProxyRobotsTest {
     }
 
     @Test
-    public void testInitializeTanksFromConfig() {
+    public void testInitializeTanksFromConfig() throws ConfigRobotException {
         instantiateBasicProxyRobots();
 
         myProxyRobots.initializeRobotsFromConfig();
@@ -222,7 +223,7 @@ public class ProxyRobotsTest {
     }
 
     @Test
-    public void testStart_noUdpDiscovery() {
+    public void testStart_noUdpDiscovery() throws ConfigRobotException {
         logback.debug(">>>>>>>>> IN");
 
         // Build Mock of ZmqMessageBroker
@@ -255,7 +256,7 @@ public class ProxyRobotsTest {
     }
 
     @Test
-    public void testStart_udpDiscovery() {
+    public void testStart_udpDiscovery() throws ConfigRobotException {
         // Build Mock of ZmqMessageBroker
         final Capture<String> capturePushAddress = new Capture<>();
         final Capture<String> captureSubscribeAddress = new Capture<>();
@@ -300,7 +301,7 @@ public class ProxyRobotsTest {
      * server with the beacon finder, then we fallback on configuration data
      * found in the xml file
      */
-    public void testStart_udpDiscoveryWithZeroAttempt() {
+    public void testStart_udpDiscoveryWithZeroAttempt() throws ConfigRobotException {
         // Build Mock of ZmqMessageBroker
         final Capture<String> capturePushAddress = new Capture<>();
         final Capture<String> captureSubscribeAddress = new Capture<>();
@@ -378,7 +379,7 @@ public class ProxyRobotsTest {
     }
 
     @Test
-    public void testGetNbOutgoingMessageFiltered() {
+    public void testGetNbOutgoingMessageFiltered() throws ConfigRobotException {
         instantiateBasicProxyRobots();
         myProxyRobots.start();
 

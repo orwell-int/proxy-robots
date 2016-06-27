@@ -2,10 +2,7 @@ package orwell.proxy.robot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.config.elements.ConfigScout;
-import orwell.proxy.config.elements.ConfigTank;
-import orwell.proxy.config.elements.IConfigCamera;
-import orwell.proxy.config.elements.IConfigRobot;
+import orwell.proxy.config.elements.*;
 
 import java.net.MalformedURLException;
 
@@ -15,7 +12,7 @@ import java.net.MalformedURLException;
 public final class RobotFactory {
     private final static Logger logback = LoggerFactory.getLogger(RobotFactory.class);
 
-    public static IRobot getRobot(final IConfigRobot configRobot) {
+    public static IRobot getRobot(final IConfigRobot configRobot) throws ConfigRobotException {
         if (null == configRobot) {
             return null;
         }
@@ -30,12 +27,27 @@ public final class RobotFactory {
         return null;
     }
 
-    private static IRobot getRobot(final ConfigTank configTank) {
+    private static IRobot getRobot(final ConfigTank configTank) throws ConfigRobotException {
+        switch (configTank.getEnumModel())
+        {
+            case EV3:
+                return buildLegoEv3Tank(configTank);
+            case NXT:
+                return buildLegoNxtTank(configTank);
+        }
+        throw new ConfigRobotException(configTank, "EnumModel");
+    }
+
+    private static IRobot buildLegoEv3Tank(ConfigTank configTank) {
+        return new LegoEv3Tank();
+    }
+
+    private static IRobot buildLegoNxtTank(ConfigTank configTank) {
         final IConfigCamera configCamera = configTank.getConfigCamera();
         if (null == configCamera) {
-            logback.warn("Config of camera is missing for LegoTank: " + configTank.getBluetoothName());
+            logback.warn("Config of camera is missing for LegoNxtTank: " + configTank.getBluetoothName());
             logback.warn("Using dummy camera");
-            return new LegoTank(configTank.getBluetoothName(),
+            return new LegoNxtTank(configTank.getBluetoothName(),
                     configTank.getBluetoothID(), IPWebcam.getDummy(), configTank.getImage());
         } else {
             final IPWebcam ipWebcam;
@@ -48,7 +60,7 @@ public final class RobotFactory {
                 return null;
             }
             //TODO Improve initialization of setImage to get something meaningful from the string (actual image)
-            return new LegoTank(configTank.getBluetoothName(),
+            return new LegoNxtTank(configTank.getBluetoothName(),
                     configTank.getBluetoothID(), ipWebcam, configTank.getImage());
         }
     }

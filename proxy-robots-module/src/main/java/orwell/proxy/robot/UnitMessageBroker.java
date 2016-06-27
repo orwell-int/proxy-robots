@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
  */
 class UnitMessageBroker {
     private final static Logger logback = LoggerFactory.getLogger(UnitMessageBroker.class);
-    private final LegoTank tank;
+    private final LegoNxtTank tank;
 
-    public UnitMessageBroker(final LegoTank tank) {
+    public UnitMessageBroker(final LegoNxtTank tank) {
         this.tank = tank;
     }
 

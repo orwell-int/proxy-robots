@@ -29,7 +29,7 @@ public class RobotInputSetVisitorTest {
     private RobotInputSetVisitor inputSetVisitor;
 
     @Mock
-    private LegoTank tank;
+    private LegoNxtTank tank;
 
 
     @Before
@@ -62,7 +62,7 @@ public class RobotInputSetVisitorTest {
     @Test
     public void testVisit_Robot_Empty() {
         // Mock the tank
-        tank = createMock(LegoTank.class);
+        tank = createMock(LegoNxtTank.class);
         tank.sendUnitMessage(anyObject(UnitMessage.class));
         // We should not send any unitMessage (or we throw an exception)
         expectLastCall().andThrow(new AssertionFailedError("Tank should not send an unitMessage")).anyTimes();
@@ -84,7 +84,7 @@ public class RobotInputSetVisitorTest {
         inputSetVisitor.visit(inputFire);
 
         // Mock the tank
-        tank = createMock(LegoTank.class);
+        tank = createMock(LegoNxtTank.class);
         tank.sendUnitMessage(anyObject(UnitMessage.class));
         expectLastCall().times(2); // we should send two unitMessages
         replay(tank);

@@ -8,7 +8,7 @@ import orwell.proxy.config.Configuration;
 import orwell.proxy.config.elements.ConfigRobots;
 import orwell.proxy.config.elements.IConfigRobot;
 import orwell.proxy.robot.IRobot;
-import orwell.proxy.robot.LegoTank;
+import orwell.proxy.robot.LegoNxtTank;
 import orwell.proxy.robot.RobotFactory;
 
 import java.util.ArrayList;
@@ -37,8 +37,8 @@ public class DirectController {
         final ConfigRobots configRobots = configModel.getConfigRobots();
         final ArrayList<IConfigRobot> robots = configRobots.getConfigRobotsToRegister();
 
-        final LegoTank legoTank = (LegoTank) RobotFactory.getRobot(robots.get(0));
-        final DirectController controller = new DirectController(legoTank);
+        final LegoNxtTank legoNxtTank = (LegoNxtTank) RobotFactory.getRobot(robots.get(0));
+        final DirectController controller = new DirectController(legoNxtTank);
         controller.start();
     }
 
