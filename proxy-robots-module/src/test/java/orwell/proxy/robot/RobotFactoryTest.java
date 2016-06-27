@@ -99,6 +99,20 @@ public class RobotFactoryTest {
     }
 
     @Test
+    public void getRobotLegoEv3Tank_BadNetworkAddr() throws ConfigRobotException {
+        final ConfigNetworkInterface cni = new ConfigNetworkInterface();
+        cni.setNetworkAddress("");
+
+        final ConfigTank configTank = new ConfigTank();
+        configTank.setConfigNetworkInterfaces(Arrays.asList(cni));
+        configTank.setModel("ev3");
+
+        final IRobot robot = robotFactory.getRobot(configTank);
+
+        assertNull(robot);
+    }
+
+    @Test
     public void getRobotLegoNxtTank() throws ConfigRobotException {
         final ConfigTank configTank = new ConfigTank();
         configTank.setModel(MODEL_NXT_TEST);
