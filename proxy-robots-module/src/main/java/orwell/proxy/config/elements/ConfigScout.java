@@ -13,6 +13,7 @@ public class ConfigScout implements IConfigRobot {
     private String image;
     private String model;
     private String hostname;
+    private ConfigMessaging configMessaging;
 
     @Override
     public String getTempRoutingID() {
@@ -86,5 +87,16 @@ public class ConfigScout implements IConfigRobot {
     @XmlElement
     public void setHostname(final String hostname) {
         this.hostname = hostname;
+    }
+
+    @Override
+    public ConfigMessaging getConfigMessaging() {
+        return configMessaging;
+    }
+
+    @Override
+    @XmlElement
+    public void setConfigMessaging(ConfigMessaging configMessaging) {
+        this.configMessaging = configMessaging;
     }
 }

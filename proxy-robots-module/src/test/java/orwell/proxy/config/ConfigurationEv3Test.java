@@ -3,6 +3,7 @@ package orwell.proxy.config;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import orwell.proxy.config.elements.ConfigMessaging;
 import orwell.proxy.config.elements.ConfigNetworkInterface;
 import orwell.proxy.config.elements.ConfigTank;
 import orwell.proxy.config.source.ConfigurationResource;
@@ -81,6 +82,21 @@ public class ConfigurationEv3Test {
             configTank = (ConfigTank) new ConfigurationResource(CONF_WIFI_RESOURCE_PATH).getConfigModel().getConfigRobots()
                     .getConfigRobot("BananaWifiOne");
             assertEquals("R2D2", configTank.getHostname());
+        } catch (final Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testGetConfigMessaging() {
+        final ConfigTank configTank;
+        final ConfigMessaging configMessaging;
+        try {
+            configTank = (ConfigTank) new ConfigurationResource(CONF_WIFI_RESOURCE_PATH).getConfigModel().getConfigRobots()
+                    .getConfigRobot("BananaWifiOne");
+            configMessaging = configTank.getConfigMessaging();
+            assertEquals(10001, configMessaging.getPullPort());
+            assertEquals(10000, configMessaging.getPushPort());
         } catch (final Exception e) {
             fail(e.getMessage());
         }

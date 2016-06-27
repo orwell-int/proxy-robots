@@ -68,7 +68,7 @@ public class RobotFactoryTest {
         final ConfigCamera configCamera = new ConfigCamera();
         configCamera.setIp(IP_TEST);
         configCamera.setPort(PORT_TEST);
-        configTank.setCamera(configCamera);
+        configTank.setConfigCamera(configCamera);
 
         // Build a tank from the config
         final LegoNxtTank legoNxtTank = (LegoNxtTank) robotFactory.getRobot(configTank);
@@ -89,7 +89,7 @@ public class RobotFactoryTest {
 
         final ConfigTank configTank = new ConfigTank();
         configTank.setConfigNetworkInterfaces(Arrays.asList(cni));
-        configTank.setCamera(configCamera);
+        configTank.setConfigCamera(configCamera);
         configTank.setModel(MODEL_EV3_TEST);
         configTank.setImage(IMAGE_TEST);
 
@@ -105,7 +105,7 @@ public class RobotFactoryTest {
 
         final ConfigTank configTank = new ConfigTank();
         configTank.setConfigNetworkInterfaces(Arrays.asList(cni));
-        configTank.setModel("ev3");
+        configTank.setModel(MODEL_EV3_TEST);
 
         final IRobot robot = robotFactory.getRobot(configTank);
 

@@ -2,35 +2,36 @@ package orwell.proxy.config.elements;
 
 import orwell.proxy.robot.EnumModel;
 
-import javax.xml.bind.annotation.XmlElement;
-
 /**
  * Created by Michaël Ludmann on 5/22/15.
  */
 public interface IConfigRobot {
 
-    public String getTempRoutingID();
+    String getTempRoutingID();
 
-    public void setTempRoutingID(final String tempRoutingID);
+    void setTempRoutingID(final String tempRoutingID);
 
-    public boolean shouldRegister();
+    boolean shouldRegister();
 
-    public void setShouldRegister(final boolean shouldRegister);
+    void setShouldRegister(final boolean shouldRegister);
 
-    public String getImage();
+    String getImage();
 
-    public void setImage(final String image);
+    void setImage(final String image);
 
-    public IConfigNetworkInterface getConfigNetworkInterface(String address) throws ConfigRobotException;
+    IConfigNetworkInterface getConfigNetworkInterface(String address) throws ConfigRobotException;
 
-    public String getModel();
+    String getModel();
 
-    public void setModel(final String model);
+    void setModel(final String model);
 
     EnumModel getEnumModel();
 
     String getHostname();
 
-    @XmlElement
     void setHostname(String hostname);
+
+    ConfigMessaging getConfigMessaging();
+
+    void setConfigMessaging(ConfigMessaging configMessaging);
 }

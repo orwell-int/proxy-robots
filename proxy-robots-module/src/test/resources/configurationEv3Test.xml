@@ -31,6 +31,10 @@
             <camera>
                 <port>9100</port>
             </camera>
+            <messaging>
+                <pushPort>10000</pushPort>
+                <pullPort>10001</pullPort>
+            </messaging>
             <image>Yellow hull -- TO BE BETTER CONFIGURED</image>
         </tank>
     </robots>
