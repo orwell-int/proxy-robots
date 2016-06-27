@@ -40,8 +40,10 @@ public final class RobotFactory {
     private static LegoEv3Tank buildLegoEv3Tank(ConfigTank configTank) {
         try {
             ConfigNetworkInterface cni = configTank.getConfigNetworkInterface("wlan0");
+            ConfigMessaging cm = configTank.getConfigMessaging();
             return new LegoEv3Tank(cni.getIpAddress(), cni.getMacAddress(),
-                    configTank.getConfigCamera().getPort(), configTank.getImage());
+                    configTank.getConfigCamera().getPort(), configTank.getImage(),
+                    cm.getPushPort(), cm.getPullPort());
         } catch (ConfigRobotException e) {
             logback.error("ConfigNetwork interface of " + configTank.getHostname() +
                     " is not correct. Robot will not be instantiated. " +

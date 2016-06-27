@@ -9,17 +9,17 @@ import orwell.proxy.config.elements.IConfigRobots;
 import orwell.proxy.config.elements.IConfigServerGame;
 import orwell.proxy.robot.*;
 import orwell.proxy.udp.UdpBeaconFinder;
-import orwell.proxy.zmq.IZmqMessageBroker;
+import orwell.proxy.zmq.GameServerMessageBroker;
+import orwell.proxy.zmq.IGameServerMessageBroker;
 import orwell.proxy.zmq.IZmqMessageListener;
 import orwell.proxy.zmq.ZmqMessageBOM;
-import orwell.proxy.zmq.ZmqMessageBroker;
 
 public class ProxyRobots implements IZmqMessageListener {
     private final static Logger logback = LoggerFactory.getLogger(ProxyRobots.class);
     private static final long THREAD_SLEEP_MS = 10;
     private final IConfigServerGame configServerGame;
     private final IConfigRobots configRobots;
-    private final IZmqMessageBroker messageBroker;
+    private final IGameServerMessageBroker messageBroker;
     private final CommunicationService communicationService = new CommunicationService();
     private final Thread communicationThread = new Thread(communicationService);
     private final long outgoingMessagePeriod;
@@ -27,7 +27,7 @@ public class ProxyRobots implements IZmqMessageListener {
     private int outgoingMessageFiltered;
     private UdpBeaconFinder udpBeaconFinder;
 
-    public ProxyRobots(final IZmqMessageBroker messageBroker,
+    public ProxyRobots(final IGameServerMessageBroker messageBroker,
                        final IConfigFactory configFactory,
                        final IRobotsMap robotsMap) {
         logback.debug("Constructor -- IN");
@@ -47,7 +47,7 @@ public class ProxyRobots implements IZmqMessageListener {
     }
 
     public ProxyRobots(final UdpBeaconFinder udpBeaconFinder,
-                       final ZmqMessageBroker zmqMessageFramework,
+                       final GameServerMessageBroker zmqMessageFramework,
                        final ConfigFactory configFactory,
                        final RobotsMap robotsMap) {
         this(zmqMessageFramework, configFactory, robotsMap);

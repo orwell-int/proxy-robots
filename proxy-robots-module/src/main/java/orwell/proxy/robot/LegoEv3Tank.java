@@ -3,6 +3,7 @@ package orwell.proxy.robot;
 import lejos.mf.common.UnitMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zeromq.ZMQ;
 
 /**
  * Created by Michaël Ludmann on 26/06/16.
@@ -12,11 +13,13 @@ public class LegoEv3Tank extends IRobot {
     private final IRobotElement[] robotElements;
     private final IRobotInput[] robotActions;
 
-    public LegoEv3Tank(final String ipAdress, final String macAddress,
-                       final int streamPort, final String image) {
+    public LegoEv3Tank(final String ipAddress, final String macAddress,
+                       final int videoStreamPort, final String image,
+                       int pushPort, int subPort) {
         this.robotElements = new IRobotElement[]{new RfidSensor()};
         this.robotActions = new IRobotInput[]{new InputMove(), new InputFire()};
         setImage(image);
+
     }
 
     public void setRfidValue(final String rfidValue) {
@@ -30,6 +33,19 @@ public class LegoEv3Tank extends IRobot {
 
     @Override
     public EnumConnectionState connect() {
+        ZMQ.Context context = ZMQ.context(1);
+        ZMQ.Socket sender = context.socket(ZMQ.PUSH);
+        ZMQ.Socket receiver = context.socket(ZMQ.PULL);
+
+        sender.setLinger(1000);
+        receiver.setLinger(1000);
+        logback.debug("BIND");
+        sender.bind("tcp://0.0.0.0:10000");
+        receiver.bind("tcp://0.0.0.0:10001");
+        logback.debug("BOUND");
+        sender.send("PING".getBytes());
+        byte[] msg = receiver.recv();
+        logback.debug("Received message: " + new String(msg));
         return null;
     }
 

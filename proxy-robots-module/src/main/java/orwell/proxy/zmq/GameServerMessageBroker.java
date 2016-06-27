@@ -10,9 +10,9 @@ import java.util.ArrayList;
 /**
  * Created by Michael Ludmann on 08/03/15.
  */
-public class ZmqMessageBroker implements IZmqMessageBroker {
+public class GameServerMessageBroker implements IGameServerMessageBroker {
 
-    private final static Logger logback = LoggerFactory.getLogger(ZmqMessageBroker.class);
+    private final static Logger logback = LoggerFactory.getLogger(GameServerMessageBroker.class);
     private static final long THREAD_SLEEP_MS = 10;
     private final Object rXguard;
     private final ZMQ.Context context;
@@ -29,10 +29,10 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
     private volatile long baseTimeMs;
     private int nbBadMessages;
 
-    public ZmqMessageBroker(final long receiveTimeoutMs,
-                            final int senderLinger,
-                            final int receiverLinger,
-                            final ArrayList<IFilter> filterList) {
+    public GameServerMessageBroker(final long receiveTimeoutMs,
+                                   final int senderLinger,
+                                   final int receiverLinger,
+                                   final ArrayList<IFilter> filterList) {
         logback.info("Constructor -- IN");
         socketTimeoutMs = receiveTimeoutMs;
         isSocketTimeoutSet = 0 < receiveTimeoutMs;
@@ -53,9 +53,9 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
         logback.info("Constructor -- OUT");
     }
 
-    public ZmqMessageBroker(final long receiveTimeoutMs,
-                            final int senderLinger,
-                            final int receiverLinger) {
+    public GameServerMessageBroker(final long receiveTimeoutMs,
+                                   final int senderLinger,
+                                   final int receiverLinger) {
         this(receiveTimeoutMs, senderLinger, receiverLinger, null);
     }
 
