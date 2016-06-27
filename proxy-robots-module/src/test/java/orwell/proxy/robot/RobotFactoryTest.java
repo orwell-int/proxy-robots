@@ -8,8 +8,11 @@ import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.config.elements.ConfigCamera;
+import orwell.proxy.config.elements.ConfigNetworkInterface;
 import orwell.proxy.config.elements.ConfigRobotException;
 import orwell.proxy.config.elements.ConfigTank;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -29,6 +32,8 @@ public class RobotFactoryTest {
     private static final String MODEL_EV3_TEST = "ev3";
     private static final String MODEL_NXT_TEST = "nxt";
     private static final int PORT_TEST = 777;
+    private static final String NETWORK_ADDR_TEST = "wlan0";
+    private static final String MAC_TEST = "00:11:22:AA:BB";
     private RobotFactory robotFactory;
 
     @Before
@@ -73,8 +78,20 @@ public class RobotFactoryTest {
 
     @Test
     public void getRobotLegoEv3Tank() throws ConfigRobotException {
+        final ConfigNetworkInterface cni = new ConfigNetworkInterface();
+        cni.setNetworkAddress(NETWORK_ADDR_TEST);
+        cni.setIpAddress(IP_TEST);
+        cni.setMacAddress(MAC_TEST);
+
+        // idem for camera of tank
+        final ConfigCamera configCamera = new ConfigCamera();
+        configCamera.setPort(PORT_TEST);
+
         final ConfigTank configTank = new ConfigTank();
+        configTank.setConfigNetworkInterfaces(Arrays.asList(cni));
+        configTank.setCamera(configCamera);
         configTank.setModel(MODEL_EV3_TEST);
+        configTank.setImage(IMAGE_TEST);
 
         final IRobot robot = robotFactory.getRobot(configTank);
 

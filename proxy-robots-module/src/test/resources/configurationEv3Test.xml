@@ -28,14 +28,8 @@
                 <ip>10.0.1.1</ip>
             </networkInterface>
             <hostname>R2D2</hostname>
-
-
-            <bluetoothName>Daneel</bluetoothName>
-            <bluetoothID>001653119482</bluetoothID>
             <camera>
-                <ip>192.168.1.50</ip>
                 <port>9100</port>
-                <resourcePath>/videofeed</resourcePath>
             </camera>
             <image>Yellow hull -- TO BE BETTER CONFIGURED</image>
         </tank>

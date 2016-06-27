@@ -28,8 +28,7 @@ public final class RobotFactory {
     }
 
     private static IRobot getRobot(final ConfigTank configTank) throws ConfigRobotException {
-        switch (configTank.getEnumModel())
-        {
+        switch (configTank.getEnumModel()) {
             case EV3:
                 return buildLegoEv3Tank(configTank);
             case NXT:
@@ -38,8 +37,17 @@ public final class RobotFactory {
         throw new ConfigRobotException(configTank, "EnumModel");
     }
 
-    private static IRobot buildLegoEv3Tank(ConfigTank configTank) {
-        return new LegoEv3Tank();
+    private static LegoEv3Tank buildLegoEv3Tank(ConfigTank configTank) {
+        try {
+            ConfigNetworkInterface cni = configTank.getConfigNetworkInterface("wlan0");
+            return new LegoEv3Tank(cni.getIpAddress(), cni.getMacAddress(),
+                    configTank.getConfigCamera().getPort(), configTank.getImage());
+        } catch (ConfigRobotException e) {
+            logback.error("ConfigNetwork interface of " + configTank.getHostname() +
+                    " is not correct. Robot will not be instantiated. " +
+                    e.getMessage());
+        }
+        return null;
     }
 
     private static IRobot buildLegoNxtTank(ConfigTank configTank) {
