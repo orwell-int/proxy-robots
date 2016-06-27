@@ -4,6 +4,7 @@ import lejos.mf.common.UnitMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
+import orwell.proxy.zmq.RobotMessageBroker;
 
 /**
  * Created by Michaël Ludmann on 26/06/16.
@@ -12,6 +13,7 @@ public class LegoEv3Tank extends IRobot {
     private final static Logger logback = LoggerFactory.getLogger(LegoEv3Tank.class);
     private final IRobotElement[] robotElements;
     private final IRobotInput[] robotActions;
+    private final RobotMessageBroker robotMessageBroker;
 
     public LegoEv3Tank(final String ipAddress, final String macAddress,
                        final int videoStreamPort, final String image,
@@ -19,7 +21,7 @@ public class LegoEv3Tank extends IRobot {
         this.robotElements = new IRobotElement[]{new RfidSensor()};
         this.robotActions = new IRobotInput[]{new InputMove(), new InputFire()};
         setImage(image);
-
+        robotMessageBroker = new RobotMessageBroker(pushPort, subPort);
     }
 
     public void setRfidValue(final String rfidValue) {

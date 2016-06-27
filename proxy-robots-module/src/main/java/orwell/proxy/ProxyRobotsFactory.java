@@ -8,7 +8,7 @@ import orwell.proxy.robot.RobotsMap;
 import orwell.proxy.udp.UdpBeaconFinder;
 import orwell.proxy.udp.UdpBeaconFinderFactory;
 import orwell.proxy.zmq.FrequencyFilter;
-import orwell.proxy.zmq.GameServerMessageBroker;
+import orwell.proxy.zmq.ServerGameMessageBroker;
 import orwell.proxy.zmq.IFilter;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.ArrayList;
 class ProxyRobotsFactory {
     private final static Logger logback = LoggerFactory.getLogger(ProxyRobotsFactory.class);
     private final ConfigFactory configFactory;
-    private final GameServerMessageBroker gameServerMessageBroker;
+    private final ServerGameMessageBroker serverGameMessageBroker;
     private final UdpBeaconFinder udpBeaconFinder;
 
     public ProxyRobotsFactory(final Configuration configuration) {
@@ -28,11 +28,11 @@ class ProxyRobotsFactory {
 
         if (null == configFactory.getConfigProxy()) {
             // We do not have the data to initialize the broker and udp discovery
-            gameServerMessageBroker = null;
+            serverGameMessageBroker = null;
             udpBeaconFinder = null;
         } else {
 
-            gameServerMessageBroker = new GameServerMessageBroker(
+            serverGameMessageBroker = new ServerGameMessageBroker(
                     configFactory.getConfigProxy().getReceiveTimeout(),
                     configFactory.getConfigProxy().getSenderLinger(),
                     configFactory.getConfigProxy().getReceiverLinger()
@@ -46,11 +46,11 @@ class ProxyRobotsFactory {
     }
 
     public ProxyRobots getProxyRobots() {
-        if (null == gameServerMessageBroker) {
+        if (null == serverGameMessageBroker) {
             return null;
         }
         return new ProxyRobots(
-                udpBeaconFinder, gameServerMessageBroker,
+                udpBeaconFinder, serverGameMessageBroker,
                 configFactory, new RobotsMap()
         );
 
