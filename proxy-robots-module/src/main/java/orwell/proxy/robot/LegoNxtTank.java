@@ -1,7 +1,8 @@
 package orwell.proxy.robot;
 
+import lejos.mf.common.IUnitMessage;
 import lejos.mf.common.MessageListenerInterface;
-import lejos.mf.common.UnitMessage;
+import lejos.mf.common.StreamUnitMessage;
 import lejos.mf.pc.MessageFramework;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
@@ -35,18 +36,19 @@ public class LegoNxtTank extends IRobot implements MessageListenerInterface {
         this(bluetoothName, bluetoothId, new MessageFramework(), camera, image);
     }
 
-
+    @Override
     public void setRfidValue(final String rfidValue) {
         ((RfidSensor) robotElements[1]).setValue(rfidValue);
     }
 
+    @Override
     public void setColourValue(final String colourValue) {
         ((ColourSensor) robotElements[2]).setValue(colourValue);
     }
 
 
     @Override
-    public void receivedNewMessage(final UnitMessage msg) {
+    public void receivedNewMessage(final StreamUnitMessage msg) {
         unitMessageBroker.handle(msg);
     }
 
@@ -67,10 +69,9 @@ public class LegoNxtTank extends IRobot implements MessageListenerInterface {
     }
 
     @Override
-    public void sendUnitMessage(final UnitMessage unitMessage) {
-
+    public void sendUnitMessage(final IUnitMessage unitMessage) {
         logback.debug("Sending input to physical device");
-        messageFramework.SendMessage(unitMessage);
+        messageFramework.SendMessage((StreamUnitMessage) unitMessage);
     }
 
     @Override
@@ -79,13 +80,13 @@ public class LegoNxtTank extends IRobot implements MessageListenerInterface {
 
         final Boolean isConnected = messageFramework.ConnectToNXT(nxtInfo);
         if (isConnected) {
-            this.setConnectionState(EnumConnectionState.CONNECTED);
+            setConnectionState(EnumConnectionState.CONNECTED);
             logback.info("Robot [" + getRoutingId() + "] is connected to the proxy!");
         } else {
-            this.setConnectionState(EnumConnectionState.CONNECTION_FAILED);
+            setConnectionState(EnumConnectionState.CONNECTION_FAILED);
             logback.warn("Robot [" + getRoutingId() + "] failed to connect to the proxy!");
         }
-        return this.getConnectionState();
+        return getConnectionState();
     }
 
     @Override

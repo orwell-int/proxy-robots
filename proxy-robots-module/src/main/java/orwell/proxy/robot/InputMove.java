@@ -1,6 +1,6 @@
 package orwell.proxy.robot;
 
-import lejos.mf.common.UnitMessage;
+import lejos.mf.common.StreamUnitMessage;
 import lejos.mf.common.UnitMessageType;
 import orwell.messages.Controller.Input;
 
@@ -32,6 +32,6 @@ public class InputMove implements IRobotInput {
 
     public void sendUnitMessageTo(final IRobot robot) {
         // "input move leftMove rightMove"
-        robot.sendUnitMessage(new UnitMessage(UnitMessageType.Command, MOVE_PAYLOAD_HEADER + move.getLeft() + " " + move.getRight()));
+        robot.sendUnitMessage(new StreamUnitMessage(UnitMessageType.Command, MOVE_PAYLOAD_HEADER + move.getLeft() + " " + move.getRight()));
     }
 }

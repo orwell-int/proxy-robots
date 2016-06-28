@@ -1,6 +1,6 @@
 package orwell.proxy.robot;
 
-import lejos.mf.common.UnitMessage;
+import lejos.mf.common.StreamUnitMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,50 +9,50 @@ import org.slf4j.LoggerFactory;
  */
 class UnitMessageBroker {
     private final static Logger logback = LoggerFactory.getLogger(UnitMessageBroker.class);
-    private final LegoNxtTank tank;
+    private final IRobot robot;
 
-    public UnitMessageBroker(final LegoNxtTank tank) {
-        this.tank = tank;
+    public UnitMessageBroker(final IRobot robot) {
+        this.robot = robot;
     }
 
-    public void handle(final UnitMessage unitMessage) {
+    public void handle(final StreamUnitMessage streamUnitMessage) {
 
-        switch (unitMessage.getMsgType()) {
+        switch (streamUnitMessage.getMessageType()) {
             case Stop:
                 onMsgStop();
                 break;
             case Rfid:
-                onMsgRfid(unitMessage.getPayload());
+                onMsgRfid(streamUnitMessage.getPayload());
                 break;
             case Command:
-                onMsgCommand(unitMessage.getPayload());
+                onMsgCommand(streamUnitMessage.getPayload());
                 break;
             case Colour:
-                onMsgColour(unitMessage.getPayload());
+                onMsgColour(streamUnitMessage.getPayload());
                 break;
             default:
-                onMsgNotDefined(unitMessage.getPayload());
+                onMsgNotDefined(streamUnitMessage.getPayload());
                 break;
         }
     }
 
     private void onMsgStop() {
 
-        logback.info("Tank " + tank.getRoutingId() + " is stopping");
-        tank.setConnectionState(EnumConnectionState.NOT_CONNECTED);
-        tank.closeConnection();
+        logback.info("Tank " + robot.getRoutingId() + " is stopping");
+        robot.setConnectionState(EnumConnectionState.NOT_CONNECTED);
+        robot.closeConnection();
     }
 
     private void onMsgRfid(final String rfidValue) {
 
         logback.debug("RFID info received: " + rfidValue);
-        tank.setRfidValue(rfidValue);
+        robot.setRfidValue(rfidValue);
     }
 
     private void onMsgColour(final String colourValue) {
 
         logback.debug("Colour info received: " + colourValue);
-        tank.setColourValue(colourValue);
+        robot.setColourValue(colourValue);
     }
 
     private void onMsgCommand(final String msg) {

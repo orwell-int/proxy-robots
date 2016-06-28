@@ -1,7 +1,7 @@
 package orwell.proxy.robot;
 
 import junit.framework.AssertionFailedError;
-import lejos.mf.common.UnitMessage;
+import lejos.mf.common.StreamUnitMessage;
 import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.After;
@@ -63,7 +63,7 @@ public class RobotInputSetVisitorTest {
     public void testVisit_Robot_Empty() {
         // Mock the tank
         tank = createMock(LegoNxtTank.class);
-        tank.sendUnitMessage(anyObject(UnitMessage.class));
+        tank.sendUnitMessage(anyObject(StreamUnitMessage.class));
         // We should not send any unitMessage (or we throw an exception)
         expectLastCall().andThrow(new AssertionFailedError("Tank should not send an unitMessage")).anyTimes();
         replay(tank);
@@ -85,7 +85,7 @@ public class RobotInputSetVisitorTest {
 
         // Mock the tank
         tank = createMock(LegoNxtTank.class);
-        tank.sendUnitMessage(anyObject(UnitMessage.class));
+        tank.sendUnitMessage(anyObject(StreamUnitMessage.class));
         expectLastCall().times(2); // we should send two unitMessages
         replay(tank);
 

@@ -1,6 +1,6 @@
 package orwell.proxy.robot;
 
-import lejos.mf.common.UnitMessage;
+import lejos.mf.common.StreamUnitMessage;
 import lejos.mf.common.UnitMessageType;
 import lejos.mf.pc.MessageFramework;
 import lejos.pc.comm.NXTInfo;
@@ -29,10 +29,10 @@ public class LegoNxtTankTest {
     private final static String RFID_VALUE = "11111111";
     private final static String COLOUR_VALUE = "2";
     private final static String INPUT_MOVE = "move 50.5 10.0";
-    private final Capture<UnitMessage> messageCapture = new Capture<>();
-    private final UnitMessage unitMessageRfid = new UnitMessage(UnitMessageType.Rfid, RFID_VALUE);
-    private final UnitMessage unitMessageColour = new UnitMessage(UnitMessageType.Colour, COLOUR_VALUE);
-    private final UnitMessage unitMessageMove = new UnitMessage(UnitMessageType.Command, INPUT_MOVE);
+    private final Capture<StreamUnitMessage> messageCapture = new Capture<>();
+    private final StreamUnitMessage streamUnitMessageRfid = new StreamUnitMessage(UnitMessageType.Rfid, RFID_VALUE);
+    private final StreamUnitMessage streamUnitMessageColour = new StreamUnitMessage(UnitMessageType.Colour, COLOUR_VALUE);
+    private final StreamUnitMessage streamUnitMessageMove = new StreamUnitMessage(UnitMessageType.Command, INPUT_MOVE);
 
     @TestSubject
     private LegoNxtTank tank;
@@ -67,9 +67,9 @@ public class LegoNxtTankTest {
 
         tank = legoTankFromMF(messageFramework);
 
-        tank.sendUnitMessage(unitMessageMove);
+        tank.sendUnitMessage(streamUnitMessageMove);
         verify(messageFramework);
-        assertEquals(UnitMessageType.Command, messageCapture.getValue().getMsgType());
+        assertEquals(UnitMessageType.Command, messageCapture.getValue().getMessageType());
         assertEquals(INPUT_MOVE, messageCapture.getValue().getPayload());
     }
 
@@ -131,7 +131,7 @@ public class LegoNxtTankTest {
      * 3. Tank reads a Color value: third read of ServerRobotState is not null
      */
     public void testReceivedNewMessage() {
-        tank.receivedNewMessage(unitMessageRfid);
+        tank.receivedNewMessage(streamUnitMessageRfid);
 
         final RobotElementStateVisitor stateVisitor = new RobotElementStateVisitor();
         tank.accept(stateVisitor);
@@ -142,7 +142,7 @@ public class LegoNxtTankTest {
         tank.accept(stateVisitor);
         assertNull(stateVisitor.getServerRobotStateBytes());
 
-        tank.receivedNewMessage(unitMessageColour);
+        tank.receivedNewMessage(streamUnitMessageColour);
 
         stateVisitor.clearServerRobotState();
         tank.accept(stateVisitor);
@@ -186,7 +186,7 @@ public class LegoNxtTankTest {
         final RobotInputSetVisitor inputSetVisitor = new RobotInputSetVisitor(ProtobufTest.getTestInput().toByteArray());
         tank.accept(inputSetVisitor);
         verify(messageFramework);
-        assertEquals(UnitMessageType.Command, messageCapture.getValue().getMsgType());
+        assertEquals(UnitMessageType.Command, messageCapture.getValue().getMessageType());
         assertEquals(INPUT_MOVE, messageCapture.getValue().getPayload());
     }
 

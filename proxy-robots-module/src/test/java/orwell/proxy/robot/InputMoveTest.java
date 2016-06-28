@@ -1,6 +1,6 @@
 package orwell.proxy.robot;
 
-import lejos.mf.common.UnitMessage;
+import lejos.mf.common.StreamUnitMessage;
 import lejos.mf.common.UnitMessageType;
 import org.easymock.Capture;
 import org.junit.After;
@@ -42,14 +42,14 @@ public class InputMoveTest {
         inputMove.setMove(ProtobufTest.getTestInput().getMove());
 
         final LegoNxtTank legoNxtTank = createNiceMock(LegoNxtTank.class);
-        final Capture<UnitMessage> messageCapture = new Capture<>();
+        final Capture<StreamUnitMessage> messageCapture = new Capture<>();
         legoNxtTank.sendUnitMessage(capture(messageCapture));
         expectLastCall().once();
         replay(legoNxtTank);
 
         inputMove.sendUnitMessageTo(legoNxtTank);
         verify(legoNxtTank);
-        assertEquals(UnitMessageType.Command, messageCapture.getValue().getMsgType());
+        assertEquals(UnitMessageType.Command, messageCapture.getValue().getMessageType());
         assertEquals(INPUT_MOVE, messageCapture.getValue().getPayload());
     }
 

@@ -1,59 +1,63 @@
 package orwell.proxy.robot;
 
-import lejos.mf.common.UnitMessage;
+import lejos.mf.common.IUnitMessage;
+import lejos.mf.common.MessageListenerInterface;
+import lejos.mf.common.SimpleUnitMessage;
+import lejos.mf.common.StreamUnitMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zeromq.ZMQ;
 import orwell.proxy.zmq.RobotMessageBroker;
 
 /**
  * Created by Michaël Ludmann on 26/06/16.
  */
-public class LegoEv3Tank extends IRobot {
+public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
     private final static Logger logback = LoggerFactory.getLogger(LegoEv3Tank.class);
     private final IRobotElement[] robotElements;
     private final IRobotInput[] robotActions;
     private final RobotMessageBroker robotMessageBroker;
+    private final String hostname;
+    private final String ipAddress;
 
     public LegoEv3Tank(final String ipAddress, final String macAddress,
                        final int videoStreamPort, final String image,
-                       int pushPort, int subPort) {
+                       int pushPort, int pullPort, String hostname) {
         this.robotElements = new IRobotElement[]{new RfidSensor()};
         this.robotActions = new IRobotInput[]{new InputMove(), new InputFire()};
         setImage(image);
-        robotMessageBroker = new RobotMessageBroker(pushPort, subPort);
+        this.hostname = hostname;
+        this.ipAddress = ipAddress;
+        robotMessageBroker = new RobotMessageBroker(pushPort, pullPort);
     }
 
+    @Override
     public void setRfidValue(final String rfidValue) {
         ((RfidSensor) robotElements[1]).setValue(rfidValue);
     }
 
     @Override
-    public void sendUnitMessage(UnitMessage unitMessage) {
+    public void setColourValue(final String colourValue) {
+        ((ColourSensor) robotElements[2]).setValue(colourValue);
+    }
 
+
+    @Override
+    public void sendUnitMessage(final IUnitMessage unitMessage) {
+        robotMessageBroker.send((SimpleUnitMessage) unitMessage);
     }
 
     @Override
     public EnumConnectionState connect() {
-        ZMQ.Context context = ZMQ.context(1);
-        ZMQ.Socket sender = context.socket(ZMQ.PUSH);
-        ZMQ.Socket receiver = context.socket(ZMQ.PULL);
-
-        sender.setLinger(1000);
-        receiver.setLinger(1000);
-        logback.debug("BIND");
-        sender.bind("tcp://0.0.0.0:10000");
-        receiver.bind("tcp://0.0.0.0:10001");
-        logback.debug("BOUND");
-        sender.send("PING".getBytes());
-        byte[] msg = receiver.recv();
-        logback.debug("Received message: " + new String(msg));
-        return null;
+        robotMessageBroker.bind();
+        setConnectionState(EnumConnectionState.CONNECTED);
+        return getConnectionState();
     }
 
     @Override
     public void closeConnection() {
-
+        if (EnumConnectionState.CONNECTED == getConnectionState()) {
+            robotMessageBroker.close();
+        }
     }
 
     @Override
@@ -64,5 +68,17 @@ public class LegoEv3Tank extends IRobot {
     @Override
     public void accept(IRobotInputVisitor visitor) {
 
+    }
+
+    @Override
+    public void receivedNewMessage(StreamUnitMessage msg) {
+
+    }
+
+    @Override
+    public String toString() {
+        return "LegoEv3Tank { [Hostname] " + hostname + " [IP] " +
+                ipAddress + " [RoutingID] " + getRoutingId() +
+                " [TeamName] " + getTeamName() + " }";
     }
 }

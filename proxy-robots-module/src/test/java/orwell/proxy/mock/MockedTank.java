@@ -1,6 +1,6 @@
 package orwell.proxy.mock;
 
-import lejos.mf.common.UnitMessage;
+import lejos.mf.common.IUnitMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.robot.*;
@@ -25,8 +25,14 @@ public class MockedTank extends IRobot {
         this.robotActions = new IRobotInput[]{new InputMove(), new InputFire()};
     }
 
+    @Override
     public void setRfidValue(final String rfidValue) {
         ((RfidSensor) robotElements[0]).setValue(rfidValue);
+    }
+
+    @Override
+    public void setColourValue(String colourValue) {
+        ((RfidSensor) robotElements[1]).setValue(colourValue);
     }
 
     public InputMove getInputMove() {
@@ -38,7 +44,7 @@ public class MockedTank extends IRobot {
     }
 
     @Override
-    public void sendUnitMessage(final UnitMessage unitMessage) {
+    public void sendUnitMessage(final IUnitMessage unitMessage) {
 
     }
 
