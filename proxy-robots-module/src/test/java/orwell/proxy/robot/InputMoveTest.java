@@ -38,7 +38,7 @@ public class InputMoveTest {
     }
 
     @Test
-    public void testSendUnitMessageTo() throws Exception {
+    public void testSendUnitMessageTo() throws MessageNotSentException {
         inputMove.setMove(ProtobufTest.getTestInput().getMove());
 
         final LegoNxtTank legoNxtTank = createNiceMock(LegoNxtTank.class);

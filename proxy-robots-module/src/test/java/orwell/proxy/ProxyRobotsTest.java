@@ -14,12 +14,13 @@ import orwell.proxy.config.ConfigFactory;
 import orwell.proxy.config.elements.ConfigRobotException;
 import orwell.proxy.config.source.ConfigurationResource;
 import orwell.proxy.mock.MockedTank;
+import orwell.proxy.robot.EnumConnectionState;
 import orwell.proxy.robot.EnumRegistrationState;
 import orwell.proxy.robot.EnumRobotVictoryState;
 import orwell.proxy.robot.RobotsMap;
 import orwell.proxy.udp.UdpBeaconFinder;
-import orwell.proxy.zmq.ServerGameMessageBroker;
 import orwell.proxy.zmq.IZmqMessageListener;
+import orwell.proxy.zmq.ServerGameMessageBroker;
 import orwell.proxy.zmq.ZmqMessageBOM;
 
 import static org.easymock.EasyMock.*;
@@ -376,6 +377,37 @@ public class ProxyRobotsTest {
         assertTrue(((MockedTank) myProxyRobots.robotsMap.
                 get(ProtobufTest.REGISTERED_ROUTING_ID)).
                 getInputMove().hasMove());
+    }
+
+    @Test
+    public void onInput_MessageNotSentException() throws Exception {
+        instantiateBasicProxyRobots();
+
+        myProxyRobots.connectToRobots();
+
+        assertEquals(EnumConnectionState.CONNECTED, mockedTank.getConnectionState());
+
+        myProxyRobots.startCommunicationService();
+
+        // Robot needs to be registered in order to receive Input messages
+        myProxyRobots.sendRegister();
+        // Simulate reception of a REGISTERED message
+        myProxyRobots.receivedNewZmq(
+                new ZmqMessageBOM(mockedTank.getRoutingId(),
+                        EnumMessageType.REGISTERED,
+                        getBytesRegistered())
+        );
+
+        // Now simulate reception of a INPUT message
+        myProxyRobots.receivedNewZmq(
+                new ZmqMessageBOM(mockedTank.getRoutingId(),
+                        EnumMessageType.INPUT,
+                        getBytesInput())
+        );
+
+        // Robot should be disconnected by the proxy,
+        // because proxy failed to send it an input
+        assertEquals(EnumConnectionState.NOT_CONNECTED, mockedTank.getConnectionState());
     }
 
     @Test

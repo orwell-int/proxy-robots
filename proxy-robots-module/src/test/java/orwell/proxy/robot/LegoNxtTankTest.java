@@ -67,7 +67,11 @@ public class LegoNxtTankTest {
 
         tank = legoTankFromMF(messageFramework);
 
-        tank.sendUnitMessage(streamUnitMessageMove);
+        try {
+            tank.sendUnitMessage(streamUnitMessageMove);
+        } catch (MessageNotSentException e) {
+            e.printStackTrace();
+        }
         verify(messageFramework);
         assertEquals(UnitMessageType.Command, messageCapture.getValue().getMessageType());
         assertEquals(INPUT_MOVE, messageCapture.getValue().getPayload());
@@ -150,7 +154,7 @@ public class LegoNxtTankTest {
     }
 
     @Test
-    public void testAccept_inputVisitor_mock() {
+    public void testAccept_inputVisitor_mock() throws MessageNotSentException {
         // Simple test with mock visitor
         final RobotInputSetVisitor inputVisitor = createNiceMock(RobotInputSetVisitor.class);
 
@@ -172,7 +176,7 @@ public class LegoNxtTankTest {
     }
 
     @Test
-    public void testAccept_inputVisitor_concrete() {
+    public void testAccept_inputVisitor_concrete() throws MessageNotSentException {
         // Setup the LEGO BT message framework mock and instantiate the tank
         messageFramework = createNiceMock(MessageFramework.class);
         messageFramework.SendMessage(capture(messageCapture));

@@ -1,19 +1,29 @@
 package orwell.proxy.controller;
 
+import lejos.mf.common.SimpleUnitMessage;
+import lejos.mf.common.UnitMessageType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import orwell.proxy.robot.IRobot;
+import orwell.proxy.robot.MessageNotSentException;
+
 import javax.swing.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import java.awt.event.*;
 
 /**
  * Created by Michaël Ludmann on 6/18/15.
  */
-public class GameGUI extends JFrame {
+public class GameGUI extends JFrame implements KeyListener {
+    private final static Logger logback = LoggerFactory.getLogger(GameGUI.class);
+
     private static final String TITLE = "Direct control";
     private static final int GUI_WIDTH = 200;
     private static final int GUI_HEIGHT = 200;
+    private final IRobot robot;
 
-    public GameGUI() {
+    public GameGUI(IRobot robot) {
+        this.robot = robot;
+        robot.connect();
         this.run();
     }
 
@@ -26,12 +36,44 @@ public class GameGUI extends JFrame {
 
         final WindowListener listener = new WindowAdapter() {
             public void windowClosing(WindowEvent w) {
-                //m_imageStreamComponent.Kill();
+                logback.info("Ending Direct controller");
+                robot.closeConnection();
+                System.exit(0);
             }
         };
 
         this.addWindowListener(listener);
-        //m_frame.pack();
+        this.addKeyListener(this);
         this.setVisible(true);
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent e) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+        logback.debug("Key released: " + e.getKeyChar());
+
+        if (e.getKeyCode() == 83) {
+            logback.debug("Close connection");
+            robot.closeConnection();
+            System.exit(0);
+        }
+
+        SimpleUnitMessage unitMessage = new SimpleUnitMessage();
+        unitMessage.setMessageType(UnitMessageType.Command);
+        unitMessage.setPayload("move 0.50 0.50");
+        try {
+            robot.sendUnitMessage(unitMessage);
+        } catch (MessageNotSentException ex) {
+            logback.error(ex.getMessage());
+        }
     }
 }

@@ -77,11 +77,11 @@ public class RobotInputSetVisitor implements IRobotInputVisitor {
     private boolean isEmpty(final Controller.Input input) {
         return (null == input) ||
                 !(input.hasFire() &&
-                (input.getFire().getWeapon1() || input.getFire().getWeapon2()));
+                        (input.getFire().getWeapon1() || input.getFire().getWeapon2()));
     }
 
     @Override
-    public void visit(final IRobot robot) {
+    public void visit(final IRobot robot) throws MessageNotSentException {
 
         if (null != this.inputMove && this.inputMove.hasMove()) {
             inputMove.sendUnitMessageTo(robot);

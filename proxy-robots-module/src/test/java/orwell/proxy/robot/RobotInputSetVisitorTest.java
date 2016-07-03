@@ -60,10 +60,14 @@ public class RobotInputSetVisitorTest {
 
 
     @Test
-    public void testVisit_Robot_Empty() {
+    public void testVisit_Robot_Empty() throws MessageNotSentException {
         // Mock the tank
         tank = createMock(LegoNxtTank.class);
-        tank.sendUnitMessage(anyObject(StreamUnitMessage.class));
+        try {
+            tank.sendUnitMessage(anyObject(StreamUnitMessage.class));
+        } catch (MessageNotSentException e) {
+            e.printStackTrace();
+        }
         // We should not send any unitMessage (or we throw an exception)
         expectLastCall().andThrow(new AssertionFailedError("Tank should not send an unitMessage")).anyTimes();
         replay(tank);
@@ -76,7 +80,7 @@ public class RobotInputSetVisitorTest {
 
 
     @Test
-    public void testVisit_Robot_Full() {
+    public void testVisit_Robot_Full() throws MessageNotSentException {
         // Setup the class
         final InputMove inputMove = new InputMove();
         inputSetVisitor.visit(inputMove);
@@ -85,7 +89,11 @@ public class RobotInputSetVisitorTest {
 
         // Mock the tank
         tank = createMock(LegoNxtTank.class);
-        tank.sendUnitMessage(anyObject(StreamUnitMessage.class));
+        try {
+            tank.sendUnitMessage(anyObject(StreamUnitMessage.class));
+        } catch (MessageNotSentException e) {
+            e.printStackTrace();
+        }
         expectLastCall().times(2); // we should send two unitMessages
         replay(tank);
 

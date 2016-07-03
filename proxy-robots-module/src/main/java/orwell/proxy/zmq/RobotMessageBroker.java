@@ -1,6 +1,5 @@
 package orwell.proxy.zmq;
 
-import lejos.mf.common.IUnitMessage;
 import lejos.mf.common.SimpleUnitMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,8 +43,8 @@ public class RobotMessageBroker {
         logback.info("All sockets of are now closed");
     }
 
-    public void send(SimpleUnitMessage unitMessage) {
+    public boolean send(SimpleUnitMessage unitMessage) {
         logback.debug("Sending input to physical device");
-        sender.send(unitMessage.toString());
+        return sender.send(unitMessage.toString());
     }
 }

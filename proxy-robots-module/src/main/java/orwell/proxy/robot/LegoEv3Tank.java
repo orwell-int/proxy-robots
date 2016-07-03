@@ -28,6 +28,7 @@ public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
         this.hostname = hostname;
         this.ipAddress = ipAddress;
         robotMessageBroker = new RobotMessageBroker(pushPort, pullPort);
+        setCameraUrl("nc:" + ipAddress + ":" + videoStreamPort);
     }
 
     @Override
@@ -42,8 +43,15 @@ public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
 
 
     @Override
-    public void sendUnitMessage(final IUnitMessage unitMessage) {
-        robotMessageBroker.send((SimpleUnitMessage) unitMessage);
+    public void sendUnitMessage(final IUnitMessage unitMessage) throws MessageNotSentException {
+        if (!sendMessageSucceeds(unitMessage)) {
+            logback.error("Unable to send message to robot " + this.hostname + ". ABORT!");
+            throw new MessageNotSentException(hostname);
+        }
+    }
+
+    private boolean sendMessageSucceeds(IUnitMessage unitMessage) {
+        return robotMessageBroker.send((SimpleUnitMessage) unitMessage);
     }
 
     @Override
@@ -58,6 +66,7 @@ public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
         if (EnumConnectionState.CONNECTED == getConnectionState()) {
             robotMessageBroker.close();
         }
+        setConnectionState(EnumConnectionState.NOT_CONNECTED);
     }
 
     @Override

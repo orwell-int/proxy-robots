@@ -17,7 +17,7 @@ public abstract class IRobot implements IRobotElement, IRobotInput {
     private EnumConnectionState connectionState = EnumConnectionState.NOT_CONNECTED;
     private EnumRobotVictoryState victoryState = EnumRobotVictoryState.WAITING_FOR_START;
 
-    public abstract void sendUnitMessage(IUnitMessage unitMessage);
+    public abstract void sendUnitMessage(IUnitMessage unitMessage) throws MessageNotSentException;
 
     public abstract EnumConnectionState connect();
 

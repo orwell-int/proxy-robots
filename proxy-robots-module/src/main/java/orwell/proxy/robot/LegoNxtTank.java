@@ -61,7 +61,7 @@ public class LegoNxtTank extends IRobot implements MessageListenerInterface {
     }
 
     @Override
-    public void accept(final IRobotInputVisitor visitor) {
+    public void accept(final IRobotInputVisitor visitor) throws MessageNotSentException {
         for (final IRobotInput action : robotActions) {
             action.accept(visitor);
         }
@@ -69,7 +69,7 @@ public class LegoNxtTank extends IRobot implements MessageListenerInterface {
     }
 
     @Override
-    public void sendUnitMessage(final IUnitMessage unitMessage) {
+    public void sendUnitMessage(final IUnitMessage unitMessage) throws MessageNotSentException {
         logback.debug("Sending input to physical device");
         messageFramework.SendMessage((StreamUnitMessage) unitMessage);
     }
@@ -94,6 +94,7 @@ public class LegoNxtTank extends IRobot implements MessageListenerInterface {
         if (EnumConnectionState.CONNECTED == getConnectionState()) {
             messageFramework.close();
         }
+        setConnectionState(EnumConnectionState.NOT_CONNECTED);
     }
 
     @Override

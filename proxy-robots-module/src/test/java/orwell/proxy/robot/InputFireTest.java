@@ -13,7 +13,8 @@ import org.slf4j.LoggerFactory;
 import orwell.proxy.ProtobufTest;
 
 import static org.easymock.EasyMock.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Michaël Ludmann on 6/11/15.
@@ -37,7 +38,7 @@ public class InputFireTest {
     }
 
     @Test
-    public void testSendUnitMessageTo() throws Exception {
+    public void testSendUnitMessageTo() throws MessageNotSentException {
         inputFire.setFire(ProtobufTest.getTestInput().getFire());
 
         final LegoNxtTank legoNxtTank = createNiceMock(LegoNxtTank.class);

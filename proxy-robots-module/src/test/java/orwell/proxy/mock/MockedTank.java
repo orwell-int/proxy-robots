@@ -44,8 +44,8 @@ public class MockedTank extends IRobot {
     }
 
     @Override
-    public void sendUnitMessage(final IUnitMessage unitMessage) {
-
+    public void sendUnitMessage(final IUnitMessage unitMessage) throws MessageNotSentException {
+        throw new MessageNotSentException("MockedTank");
     }
 
     @Override
@@ -70,7 +70,7 @@ public class MockedTank extends IRobot {
     }
 
     @Override
-    public void accept(final IRobotInputVisitor visitor) {
+    public void accept(final IRobotInputVisitor visitor) throws MessageNotSentException {
         for (final IRobotInput action : robotActions) {
             action.accept(visitor);
         }

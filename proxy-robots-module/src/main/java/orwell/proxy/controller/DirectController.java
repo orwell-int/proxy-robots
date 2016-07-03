@@ -8,7 +8,7 @@ import orwell.proxy.config.Configuration;
 import orwell.proxy.config.elements.ConfigRobots;
 import orwell.proxy.config.elements.IConfigRobot;
 import orwell.proxy.robot.IRobot;
-import orwell.proxy.robot.LegoNxtTank;
+import orwell.proxy.robot.LegoEv3Tank;
 import orwell.proxy.robot.RobotFactory;
 
 import java.util.ArrayList;
@@ -23,10 +23,12 @@ public class DirectController {
 
     public DirectController(final IRobot robot) {
         this.robot = robot;
-        this.gameGUI = new GameGUI();
+        this.gameGUI = new GameGUI(robot);
     }
 
     public static void main(final String[] args) throws Exception {
+
+
         final Configuration configuration = new Cli(args).parse();
         if (null == configuration) {
             logback.warn("Command Line Interface did not manage to extract a configuration. Exiting now.");
@@ -37,8 +39,8 @@ public class DirectController {
         final ConfigRobots configRobots = configModel.getConfigRobots();
         final ArrayList<IConfigRobot> robots = configRobots.getConfigRobotsToRegister();
 
-        final LegoNxtTank legoNxtTank = (LegoNxtTank) RobotFactory.getRobot(robots.get(0));
-        final DirectController controller = new DirectController(legoNxtTank);
+        final LegoEv3Tank legoEv3Tank = (LegoEv3Tank) RobotFactory.getRobot(robots.get(0));
+        final DirectController controller = new DirectController(legoEv3Tank);
         controller.start();
     }
 

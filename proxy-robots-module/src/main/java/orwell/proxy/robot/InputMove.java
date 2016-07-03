@@ -30,7 +30,7 @@ public class InputMove implements IRobotInput {
         visitor.visit(this);
     }
 
-    public void sendUnitMessageTo(final IRobot robot) {
+    public void sendUnitMessageTo(final IRobot robot) throws MessageNotSentException {
         // "input move leftMove rightMove"
         robot.sendUnitMessage(new StreamUnitMessage(UnitMessageType.Command, MOVE_PAYLOAD_HEADER + move.getLeft() + " " + move.getRight()));
     }

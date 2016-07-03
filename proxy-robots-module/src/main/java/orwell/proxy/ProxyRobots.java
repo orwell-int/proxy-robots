@@ -2,16 +2,18 @@ package orwell.proxy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.config.*;
+import orwell.proxy.config.ConfigFactory;
+import orwell.proxy.config.Configuration;
+import orwell.proxy.config.IConfigFactory;
 import orwell.proxy.config.elements.ConfigRobotException;
 import orwell.proxy.config.elements.IConfigRobot;
 import orwell.proxy.config.elements.IConfigRobots;
 import orwell.proxy.config.elements.IConfigServerGame;
 import orwell.proxy.robot.*;
 import orwell.proxy.udp.UdpBeaconFinder;
-import orwell.proxy.zmq.ServerGameMessageBroker;
 import orwell.proxy.zmq.IServerGameMessageBroker;
 import orwell.proxy.zmq.IZmqMessageListener;
+import orwell.proxy.zmq.ServerGameMessageBroker;
 import orwell.proxy.zmq.ZmqMessageBOM;
 
 public class ProxyRobots implements IZmqMessageListener {
@@ -150,6 +152,7 @@ public class ProxyRobots implements IZmqMessageListener {
 
     public void stop() {
         disconnectAllRobots();
+        messageBroker.close();
     }
 
     private void disconnectAllRobots() {
@@ -177,20 +180,34 @@ public class ProxyRobots implements IZmqMessageListener {
         logback.info("Setting controller Input to robot");
         final String routingId = zmqMessageBOM.getRoutingId();
         if (robotsMap.isRobotRegistered(routingId)) {
-            final IRobot targetedRobot = robotsMap.get(routingId);
-            final RobotInputSetVisitor inputSetVisitor = new RobotInputSetVisitor(zmqMessageBOM.getMessageBodyBytes());
-            targetedRobot.accept(inputSetVisitor);
-            logback.info("robotTargeted input : " + inputSetVisitor.inputToString(targetedRobot));
+            applyInputOnRobot(zmqMessageBOM, routingId);
         } else {
             logback.info("RoutingID " + routingId
                     + " is not an ID of a registered robot");
         }
     }
 
+    private void applyInputOnRobot(ZmqMessageBOM input, String routingId) {
+        final IRobot targetedRobot = robotsMap.get(routingId);
+        final RobotInputSetVisitor inputSetVisitor = new RobotInputSetVisitor(input.getMessageBodyBytes());
+        logback.info("robotTargeted input : " + inputSetVisitor.inputToString(targetedRobot));
+        try {
+            targetedRobot.accept(inputSetVisitor);
+        } catch (MessageNotSentException e) {
+            logback.error(e.getMessage());
+            this.stop();
+        }
+    }
+
     private void onGameState(final ZmqMessageBOM zmqMessageBOM) {
         logback.info("Setting new GameState");
         final GameState gameState = new GameState(zmqMessageBOM.getMessageBodyBytes());
-        robotsMap.accept(gameState.getRobotGameStateVisitor());
+        try {
+            robotsMap.accept(gameState.getRobotGameStateVisitor());
+        } catch (Exception e) {
+            logback.error(e.getMessage());
+            this.stop();
+        }
     }
 
     private void onDefault() {
@@ -233,6 +250,9 @@ public class ProxyRobots implements IZmqMessageListener {
         }
     }
 
+    protected int getOutgoingMessageFiltered() {
+        return outgoingMessageFiltered;
+    }
 
     private class CommunicationService implements Runnable {
         public void run() {
@@ -271,9 +291,5 @@ public class ProxyRobots implements IZmqMessageListener {
                     !robotsMap.getConnectedRobots().isEmpty() &&
                     messageBroker.isConnectedToServer();
         }
-    }
-
-    protected int getOutgoingMessageFiltered() {
-        return outgoingMessageFiltered;
     }
 }

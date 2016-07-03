@@ -8,15 +8,15 @@ import orwell.proxy.robot.RobotsMap;
 import orwell.proxy.udp.UdpBeaconFinder;
 import orwell.proxy.udp.UdpBeaconFinderFactory;
 import orwell.proxy.zmq.FrequencyFilter;
-import orwell.proxy.zmq.ServerGameMessageBroker;
 import orwell.proxy.zmq.IFilter;
+import orwell.proxy.zmq.ServerGameMessageBroker;
 
 import java.util.ArrayList;
 
 /**
  * Created by Michaël Ludmann on 03/05/15.
  */
-class ProxyRobotsFactory {
+public class ProxyRobotsFactory {
     private final static Logger logback = LoggerFactory.getLogger(ProxyRobotsFactory.class);
     private final ConfigFactory configFactory;
     private final ServerGameMessageBroker serverGameMessageBroker;

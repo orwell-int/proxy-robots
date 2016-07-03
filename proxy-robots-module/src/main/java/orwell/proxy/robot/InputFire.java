@@ -30,10 +30,14 @@ public class InputFire implements IRobotInput {
     public void sendUnitMessageTo(final IRobot robot) {
         // "input fire fireWeapon1 fireWeapon2"
         if (fire.getWeapon1() || fire.getWeapon2()) // We avoid flooding the robot if there is no fire
-            robot.sendUnitMessage(
-                    new StreamUnitMessage(
-                            UnitMessageType.Command, FIRE_PAYLOAD_HEADER +
-                            fire.getWeapon1() + " " + fire.getWeapon2())
-            );
+            try {
+                robot.sendUnitMessage(
+                        new StreamUnitMessage(
+                                UnitMessageType.Command, FIRE_PAYLOAD_HEADER +
+                                fire.getWeapon1() + " " + fire.getWeapon2())
+                );
+            } catch (MessageNotSentException e) {
+                e.printStackTrace();
+            }
     }
 }
