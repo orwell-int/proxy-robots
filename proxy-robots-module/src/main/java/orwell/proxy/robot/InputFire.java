@@ -1,6 +1,6 @@
 package orwell.proxy.robot;
 
-import lejos.mf.common.StreamUnitMessage;
+import lejos.mf.common.UnitMessage;
 import lejos.mf.common.UnitMessageType;
 import orwell.messages.Controller;
 
@@ -31,8 +31,9 @@ public class InputFire implements IRobotInput {
         // "input fire fireWeapon1 fireWeapon2"
         if (fire.getWeapon1() || fire.getWeapon2()) // We avoid flooding the robot if there is no fire
             try {
+                // TODO change sendUnitMessage signature to delay implementation choice of unitMessage to IRobot
                 robot.sendUnitMessage(
-                        new StreamUnitMessage(
+                        new UnitMessage(
                                 UnitMessageType.Command, FIRE_PAYLOAD_HEADER +
                                 fire.getWeapon1() + " " + fire.getWeapon2())
                 );

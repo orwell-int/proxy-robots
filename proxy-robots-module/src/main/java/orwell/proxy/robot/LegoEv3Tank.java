@@ -1,9 +1,7 @@
 package orwell.proxy.robot;
 
-import lejos.mf.common.IUnitMessage;
+import lejos.mf.common.UnitMessage;
 import lejos.mf.common.MessageListenerInterface;
-import lejos.mf.common.SimpleUnitMessage;
-import lejos.mf.common.StreamUnitMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.zmq.RobotMessageBroker;
@@ -43,15 +41,15 @@ public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
 
 
     @Override
-    public void sendUnitMessage(final IUnitMessage unitMessage) throws MessageNotSentException {
+    public void sendUnitMessage(final UnitMessage unitMessage) throws MessageNotSentException {
         if (!sendMessageSucceeds(unitMessage)) {
             logback.error("Unable to send message to robot " + this.hostname + ". ABORT!");
             throw new MessageNotSentException(hostname);
         }
     }
 
-    private boolean sendMessageSucceeds(IUnitMessage unitMessage) {
-        return robotMessageBroker.send((SimpleUnitMessage) unitMessage);
+    private boolean sendMessageSucceeds(UnitMessage unitMessage) {
+        return robotMessageBroker.send(unitMessage);
     }
 
     @Override
@@ -71,17 +69,18 @@ public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
 
     @Override
     public void accept(IRobotElementVisitor visitor) {
-
+        for (final IRobotElement element : robotElements) {
+            element.accept(visitor);
+        }
+        visitor.visit(this);
     }
 
     @Override
-    public void accept(IRobotInputVisitor visitor) {
-
-    }
-
-    @Override
-    public void receivedNewMessage(StreamUnitMessage msg) {
-
+    public void accept(IRobotInputVisitor visitor) throws MessageNotSentException {
+        for (final IRobotInput action : robotActions) {
+            action.accept(visitor);
+        }
+        visitor.visit(this);
     }
 
     @Override
@@ -89,5 +88,10 @@ public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
         return "LegoEv3Tank { [Hostname] " + hostname + " [IP] " +
                 ipAddress + " [RoutingID] " + getRoutingId() +
                 " [TeamName] " + getTeamName() + " }";
+    }
+
+    @Override
+    public void receivedNewMessage(UnitMessage msg) {
+        // TODO implement this part
     }
 }

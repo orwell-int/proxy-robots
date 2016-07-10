@@ -1,6 +1,6 @@
 package orwell.proxy.robot;
 
-import lejos.mf.common.StreamUnitMessage;
+import lejos.mf.common.UnitMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,23 +15,23 @@ class UnitMessageBroker {
         this.robot = robot;
     }
 
-    public void handle(final StreamUnitMessage streamUnitMessage) {
+    public void handle(final UnitMessage unitMessage) {
 
-        switch (streamUnitMessage.getMessageType()) {
+        switch (unitMessage.getMessageType()) {
             case Stop:
                 onMsgStop();
                 break;
             case Rfid:
-                onMsgRfid(streamUnitMessage.getPayload());
+                onMsgRfid(unitMessage.getPayload());
                 break;
             case Command:
-                onMsgCommand(streamUnitMessage.getPayload());
+                onMsgCommand(unitMessage.getPayload());
                 break;
             case Colour:
-                onMsgColour(streamUnitMessage.getPayload());
+                onMsgColour(unitMessage.getPayload());
                 break;
             default:
-                onMsgNotDefined(streamUnitMessage.getPayload());
+                onMsgNotDefined(unitMessage.getPayload());
                 break;
         }
     }

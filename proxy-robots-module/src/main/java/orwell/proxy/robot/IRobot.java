@@ -1,6 +1,6 @@
 package orwell.proxy.robot;
 
-import lejos.mf.common.IUnitMessage;
+import lejos.mf.common.UnitMessage;
 
 import java.util.UUID;
 
@@ -17,7 +17,7 @@ public abstract class IRobot implements IRobotElement, IRobotInput {
     private EnumConnectionState connectionState = EnumConnectionState.NOT_CONNECTED;
     private EnumRobotVictoryState victoryState = EnumRobotVictoryState.WAITING_FOR_START;
 
-    public abstract void sendUnitMessage(IUnitMessage unitMessage) throws MessageNotSentException;
+    public abstract void sendUnitMessage(UnitMessage unitMessage) throws MessageNotSentException;
 
     public abstract EnumConnectionState connect();
 

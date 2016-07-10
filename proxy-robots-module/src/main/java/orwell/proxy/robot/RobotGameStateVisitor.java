@@ -1,6 +1,6 @@
 package orwell.proxy.robot;
 
-import lejos.mf.common.StreamUnitMessage;
+import lejos.mf.common.UnitMessage;
 import lejos.mf.common.UnitMessageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +66,7 @@ public class RobotGameStateVisitor {
 
     private void setDraw(final IRobot robot) throws MessageNotSentException {
         robot.setVictoryState(EnumRobotVictoryState.DRAW);
-        robot.sendUnitMessage(new StreamUnitMessage(UnitMessageType.Command, DRAW_PAYLOAD_HEADER));
+        robot.sendUnitMessage(new UnitMessage(UnitMessageType.Command, DRAW_PAYLOAD_HEADER));
         logback.info("Draw info sent to robot " + robot.getRoutingId());
     }
 
@@ -81,13 +81,13 @@ public class RobotGameStateVisitor {
 
     private void setVictory(final IRobot robot) throws MessageNotSentException {
         robot.setVictoryState(EnumRobotVictoryState.WINNER);
-        robot.sendUnitMessage(new StreamUnitMessage(UnitMessageType.Command, VICTORY_PAYLOAD_HEADER));
+        robot.sendUnitMessage(new UnitMessage(UnitMessageType.Command, VICTORY_PAYLOAD_HEADER));
         logback.info("Victory info sent to robot " + robot.getRoutingId());
     }
 
     private void setDefeat(final IRobot robot) throws MessageNotSentException {
         robot.setVictoryState(EnumRobotVictoryState.DEFEATED);
-        robot.sendUnitMessage(new StreamUnitMessage(UnitMessageType.Command, DEFEAT_PAYLOAD_HEADER));
+        robot.sendUnitMessage(new UnitMessage(UnitMessageType.Command, DEFEAT_PAYLOAD_HEADER));
         logback.info("Defeat info sent to robot " + robot.getRoutingId());
     }
 }

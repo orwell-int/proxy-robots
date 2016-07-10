@@ -1,6 +1,6 @@
 package orwell.proxy.robot;
 
-import lejos.mf.common.IUnitMessage;
+import lejos.mf.common.UnitMessage;
 import lejos.mf.common.MessageListenerInterface;
 import lejos.mf.common.StreamUnitMessage;
 import lejos.mf.pc.MessageFramework;
@@ -48,8 +48,8 @@ public class LegoNxtTank extends IRobot implements MessageListenerInterface {
 
 
     @Override
-    public void receivedNewMessage(final StreamUnitMessage msg) {
-        unitMessageBroker.handle(msg);
+    public void receivedNewMessage(final UnitMessage msg) {
+        unitMessageBroker.handle((StreamUnitMessage) msg);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class LegoNxtTank extends IRobot implements MessageListenerInterface {
     }
 
     @Override
-    public void sendUnitMessage(final IUnitMessage unitMessage) throws MessageNotSentException {
+    public void sendUnitMessage(final UnitMessage unitMessage) throws MessageNotSentException {
         logback.debug("Sending input to physical device");
         messageFramework.SendMessage((StreamUnitMessage) unitMessage);
     }

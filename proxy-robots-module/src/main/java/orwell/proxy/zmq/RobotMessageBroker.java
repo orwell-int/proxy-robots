@@ -1,6 +1,6 @@
 package orwell.proxy.zmq;
 
-import lejos.mf.common.SimpleUnitMessage;
+import lejos.mf.common.UnitMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zeromq.ZMQ;
@@ -30,7 +30,7 @@ public class RobotMessageBroker {
     }
 
     public void bind() {
-        logback.info("Proxy is starting binding on ports " + pushPort + " and " + pullPort);
+        logback.info("Proxy is starting binding on ports " + pushPort + " (push) and " + pullPort + " (pull)");
         sender.bind(BINDING_ADDRESS + ":" + pushPort);
         receiver.bind(BINDING_ADDRESS + ":" + pullPort);
         logback.debug("Proxy is done binding");
@@ -43,8 +43,8 @@ public class RobotMessageBroker {
         logback.info("All sockets of are now closed");
     }
 
-    public boolean send(SimpleUnitMessage unitMessage) {
-        logback.debug("Sending input to physical device");
+    public boolean send(UnitMessage unitMessage) {
+        logback.debug("Sending message to physical device");
         return sender.send(unitMessage.toString());
     }
 }

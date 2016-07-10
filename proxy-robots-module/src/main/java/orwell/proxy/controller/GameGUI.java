@@ -1,6 +1,6 @@
 package orwell.proxy.controller;
 
-import lejos.mf.common.SimpleUnitMessage;
+import lejos.mf.common.UnitMessage;
 import lejos.mf.common.UnitMessageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,9 +67,8 @@ public class GameGUI extends JFrame implements KeyListener {
             System.exit(0);
         }
 
-        SimpleUnitMessage unitMessage = new SimpleUnitMessage();
-        unitMessage.setMessageType(UnitMessageType.Command);
-        unitMessage.setPayload("move 0.50 0.50");
+        UnitMessage unitMessage = new UnitMessage(UnitMessageType.Command, "move 0.50 0.50");
+
         try {
             robot.sendUnitMessage(unitMessage);
         } catch (MessageNotSentException ex) {
