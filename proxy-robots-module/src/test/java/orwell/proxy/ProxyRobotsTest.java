@@ -398,6 +398,9 @@ public class ProxyRobotsTest {
                         getBytesRegistered())
         );
 
+        // Make robot unable to send unit message
+        ((MockedTank) myProxyRobots.robotsMap.get(mockedTank.getRoutingId())).makeUnableToSendUnitMessages();
+
         // Now simulate reception of a INPUT message
         myProxyRobots.receivedNewZmq(
                 new ZmqMessageBOM(mockedTank.getRoutingId(),

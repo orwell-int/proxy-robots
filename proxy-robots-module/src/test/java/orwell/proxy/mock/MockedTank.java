@@ -13,6 +13,7 @@ public class MockedTank extends IRobot {
 
     private final IRobotElement[] robotElements;
     private final IRobotInput[] robotActions;
+    private boolean isAbleToSendUnitMessage;
 
     public MockedTank() {
         this.setRoutingId("tempRoutingId");
@@ -23,6 +24,7 @@ public class MockedTank extends IRobot {
         this.setTeamName("BLUE");
         this.robotElements = new IRobotElement[]{new RfidSensor(), new ColourSensor()};
         this.robotActions = new IRobotInput[]{new InputMove(), new InputFire()};
+        isAbleToSendUnitMessage = true;
     }
 
     @Override
@@ -45,7 +47,13 @@ public class MockedTank extends IRobot {
 
     @Override
     public void sendUnitMessage(final IUnitMessage unitMessage) throws MessageNotSentException {
-        throw new MessageNotSentException("MockedTank");
+        if (!isAbleToSendUnitMessage()) {
+            throw new MessageNotSentException("MockedTank");
+        }
+    }
+
+    private boolean isAbleToSendUnitMessage() {
+        return isAbleToSendUnitMessage;
     }
 
     @Override
@@ -81,5 +89,9 @@ public class MockedTank extends IRobot {
     public String toString() {
         return "MockedTank { [RoutingID] " + getRoutingId() +
                 " [TeamName] " + getTeamName() + " }";
+    }
+
+    public void makeUnableToSendUnitMessages(){
+        isAbleToSendUnitMessage = false;
     }
 }

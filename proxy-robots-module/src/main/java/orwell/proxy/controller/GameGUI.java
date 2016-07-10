@@ -61,7 +61,7 @@ public class GameGUI extends JFrame implements KeyListener {
     public void keyReleased(KeyEvent e) {
         logback.debug("Key released: " + e.getKeyChar());
 
-        if (e.getKeyCode() == 83) {
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             logback.debug("Close connection");
             robot.closeConnection();
             System.exit(0);
