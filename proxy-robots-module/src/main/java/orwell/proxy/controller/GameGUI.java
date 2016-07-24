@@ -36,9 +36,7 @@ public class GameGUI extends JFrame implements KeyListener {
 
         final WindowListener listener = new WindowAdapter() {
             public void windowClosing(WindowEvent w) {
-                logback.info("Ending Direct controller");
-                robot.closeConnection();
-                System.exit(0);
+                closeConnectionAndExit();
             }
         };
 
@@ -62,9 +60,7 @@ public class GameGUI extends JFrame implements KeyListener {
         logback.debug("Key released: " + e.getKeyChar());
 
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            logback.debug("Close connection");
-            robot.closeConnection();
-            System.exit(0);
+            closeConnectionAndExit();
         }
 
         UnitMessage unitMessage = new UnitMessage(UnitMessageType.Command, "move 0.50 0.50");
@@ -74,5 +70,11 @@ public class GameGUI extends JFrame implements KeyListener {
         } catch (MessageNotSentException ex) {
             logback.error(ex.getMessage());
         }
+    }
+
+    private void closeConnectionAndExit() {
+        logback.debug("Close connection");
+        robot.closeConnection();
+        System.exit(0);
     }
 }

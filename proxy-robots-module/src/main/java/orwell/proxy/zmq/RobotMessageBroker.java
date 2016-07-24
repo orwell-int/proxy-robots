@@ -30,10 +30,9 @@ public class RobotMessageBroker {
     }
 
     public void bind() {
-        logback.info("Proxy is starting binding on ports " + pushPort + " (push) and " + pullPort + " (pull)");
         sender.bind(BINDING_ADDRESS + ":" + pushPort);
         receiver.bind(BINDING_ADDRESS + ":" + pullPort);
-        logback.debug("Proxy is done binding");
+        logback.info("Proxy is binding on ports " + pushPort + " (push) and " + pullPort + " (pull)");
     }
 
     public void close() {

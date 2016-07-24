@@ -23,7 +23,7 @@ public class DirectController {
 
     public DirectController(final IRobot robot) {
         this.robot = robot;
-        this.gameGUI = new GameGUI(robot);
+        gameGUI = new GameGUI(robot);
     }
 
     public static void main(final String[] args) throws Exception {

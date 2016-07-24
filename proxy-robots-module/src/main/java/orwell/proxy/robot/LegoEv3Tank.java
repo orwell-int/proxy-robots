@@ -16,6 +16,7 @@ public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
     private final RobotMessageBroker robotMessageBroker;
     private final String hostname;
     private final String ipAddress;
+    private final UnitMessageBroker unitMessageBroker = new UnitMessageBroker(this);
 
     public LegoEv3Tank(final String ipAddress, final String macAddress,
                        final int videoStreamPort, final String image,
@@ -84,14 +85,14 @@ public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
     }
 
     @Override
+    public void receivedNewMessage(UnitMessage message) {
+        unitMessageBroker.handle(message);
+    }
+
+    @Override
     public String toString() {
         return "LegoEv3Tank { [Hostname] " + hostname + " [IP] " +
                 ipAddress + " [RoutingID] " + getRoutingId() +
                 " [TeamName] " + getTeamName() + " }";
-    }
-
-    @Override
-    public void receivedNewMessage(UnitMessage msg) {
-        // TODO implement this part
     }
 }

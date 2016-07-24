@@ -46,12 +46,6 @@ public class LegoNxtTank extends IRobot implements MessageListenerInterface {
         ((ColourSensor) robotElements[2]).setValue(colourValue);
     }
 
-
-    @Override
-    public void receivedNewMessage(final UnitMessage msg) {
-        unitMessageBroker.handle((StreamUnitMessage) msg);
-    }
-
     @Override
     public void accept(final IRobotElementVisitor visitor) {
         for (final IRobotElement element : robotElements) {
@@ -99,9 +93,15 @@ public class LegoNxtTank extends IRobot implements MessageListenerInterface {
     }
 
     @Override
+    public void receivedNewMessage(final UnitMessage message) {
+        unitMessageBroker.handle(message);
+    }
+
+    @Override
     public String toString() {
         return "LegoNxtTank { [BTName] " + nxtInfo.name + " [BT-ID] " +
                 nxtInfo.deviceAddress + " [RoutingID] " + getRoutingId() +
                 " [TeamName] " + getTeamName() + " }";
     }
+
 }
