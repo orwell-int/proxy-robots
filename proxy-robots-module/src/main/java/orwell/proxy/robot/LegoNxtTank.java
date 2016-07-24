@@ -71,7 +71,8 @@ public class LegoNxtTank extends IRobot implements MessageListenerInterface {
     @Override
     public void sendUnitMessage(final UnitMessage unitMessage) throws MessageNotSentException {
         logback.debug("Sending input to physical device");
-        messageFramework.SendMessage((StreamUnitMessage) unitMessage);
+        StreamUnitMessage streamUnitMessage = new StreamUnitMessage(unitMessage.getMessageType(), unitMessage.getPayload());
+        messageFramework.SendMessage(streamUnitMessage);
     }
 
     @Override
