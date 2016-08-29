@@ -31,7 +31,7 @@ public class GameGUI extends JFrame implements KeyListener {
         //Setting frame
         this.setTitle(TITLE);
         this.setSize(GUI_WIDTH, GUI_HEIGHT);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setResizable(true);
 
         final WindowListener listener = new WindowAdapter() {
@@ -59,14 +59,32 @@ public class GameGUI extends JFrame implements KeyListener {
     public void keyReleased(KeyEvent e) {
         logback.debug("Key released: " + e.getKeyChar());
 
-        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            closeConnectionAndExit();
+
+        UnitMessage unitMessage;
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
+            unitMessage = new UnitMessage(UnitMessageType.Command, "move 0.50 0.50");
+        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            unitMessage = new UnitMessage(UnitMessageType.Command, "move -0.50 -0.50");
+        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            unitMessage = new UnitMessage(UnitMessageType.Command, "move -0.50 0.50");
+        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            unitMessage = new UnitMessage(UnitMessageType.Command, "move 0.50 -0.50");
+        } else if (e.getKeyCode() == KeyEvent.VK_NUMPAD1) {
+            unitMessage = new UnitMessage(UnitMessageType.Command, "fire true false");
+        } else if (e.getKeyCode() == KeyEvent.VK_NUMPAD2) {
+            unitMessage = new UnitMessage(UnitMessageType.Command, "fire false true");
+        } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            unitMessage = new UnitMessage(UnitMessageType.Command, "stop");
+        } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            unitMessage = new UnitMessage(UnitMessageType.Command, "stopPrg");
+        } else {
+            unitMessage = new UnitMessage(UnitMessageType.Command, "game nini");
         }
-
-        UnitMessage unitMessage = new UnitMessage(UnitMessageType.Command, "move 0.50 0.50");
-
         try {
             robot.sendUnitMessage(unitMessage);
+            if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                closeConnectionAndExit();
+            }
         } catch (MessageNotSentException ex) {
             logback.error(ex.getMessage());
         }

@@ -135,7 +135,7 @@ public class ServerGameMessageBroker implements IServerGameMessageBroker {
                 (System.currentTimeMillis() - baseTimeMs > socketTimeoutMs);
     }
 
-    private class ZmqReader extends Thread {
+    public class ZmqReader extends Thread {
         ZmqMessageBOM previousZmqMessage;
         ZmqMessageBOM newZmqMessage;
 

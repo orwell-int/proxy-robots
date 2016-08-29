@@ -1,7 +1,7 @@
 package orwell.proxy.robot;
 
-import lejos.mf.common.UnitMessage;
 import lejos.mf.common.MessageListenerInterface;
+import lejos.mf.common.UnitMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.zmq.RobotMessageBroker;
@@ -27,12 +27,13 @@ public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
         this.hostname = hostname;
         this.ipAddress = ipAddress;
         robotMessageBroker = new RobotMessageBroker(pushPort, pullPort);
+        robotMessageBroker.addMessageListener(this);
         setCameraUrl("nc:" + ipAddress + ":" + videoStreamPort);
     }
 
     @Override
     public void setRfidValue(final String rfidValue) {
-        ((RfidSensor) robotElements[1]).setValue(rfidValue);
+        ((RfidSensor) robotElements[0]).setValue(rfidValue);
     }
 
     @Override

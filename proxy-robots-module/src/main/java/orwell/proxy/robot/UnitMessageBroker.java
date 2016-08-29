@@ -16,7 +16,8 @@ class UnitMessageBroker {
     }
 
     public void handle(final UnitMessage unitMessage) {
-
+        if (unitMessage == null)
+            return;
         switch (unitMessage.getMessageType()) {
             case Stop:
                 onMsgStop();

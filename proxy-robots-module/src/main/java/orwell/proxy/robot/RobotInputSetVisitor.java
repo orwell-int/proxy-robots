@@ -75,9 +75,7 @@ public class RobotInputSetVisitor implements IRobotInputVisitor {
      * (meaning it is not worth sending it to the robot)
      */
     private boolean isEmpty(final Controller.Input input) {
-        return (null == input) ||
-                !(input.hasFire() &&
-                        (input.getFire().getWeapon1() || input.getFire().getWeapon2()));
+        return (null == input) || !(input.hasFire());
     }
 
     @Override
