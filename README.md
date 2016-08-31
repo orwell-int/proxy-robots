@@ -59,6 +59,11 @@ To update the coveralls status, export your repo token in the following environm
 mvn clean cobertura:cobertura coveralls:report
 ```
 
+Create a config file, using the template in proxy-robots-module/src/main/resources/config.default.xml
+```
+Rename the config you edited to suit your setup to proxy-robots-module/src/main/resources/config.xml
+```
+
 Run the jar created by the install to start the application
 ```
 java -jar proxy-robots-module/target/proxy-robots-module-0.1.0-jar-with-dependencies.jar -f proxy-robots-module/src/main/resources/config.xml
