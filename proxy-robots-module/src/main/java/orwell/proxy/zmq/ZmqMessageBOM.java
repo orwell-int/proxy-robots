@@ -56,7 +56,7 @@ public class ZmqMessageBOM {
 
         final EnumMessageType type = getEnumTypeFromTypeString(typeString);
 
-        logback.debug("Message parsed: [RoutingID] " + routingId + " [TYPE] " + type);
+        //logback.debug("Message parsed: [RoutingID] " + routingId + " [TYPE] " + type);
         return new ZmqMessageBOM(routingId, type, messageBodyBytes);
     }
 

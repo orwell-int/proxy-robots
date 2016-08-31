@@ -13,7 +13,8 @@ import java.util.ArrayList;
 public class ServerGameMessageBroker implements IServerGameMessageBroker {
 
     private final static Logger logback = LoggerFactory.getLogger(ServerGameMessageBroker.class);
-    private static final long THREAD_SLEEP_MS = 10;
+    private static final long THREAD_SLEEP_BETWEEN_MESSAGES_MS = 10;
+    private static final long THREAD_SLEEP_POST_CONNECT_MS = 1000;
     private final Object rXguard;
     private final ZMQ.Context context;
     private final ZMQ.Socket sender;
@@ -77,6 +78,13 @@ public class ServerGameMessageBroker implements IServerGameMessageBroker {
         receiver.connect(subscribeAddress);
         logback.info("ProxyRobots Receiver created");
         receiver.subscribe("".getBytes());
+
+        try {
+            Thread.sleep(THREAD_SLEEP_POST_CONNECT_MS);
+        } catch (InterruptedException e) {
+            logback.error(e.getMessage());
+        }
+
         try {
             if (Thread.State.NEW != reader.getState()) {
                 logback.error("Reader has already been started once");
@@ -141,7 +149,7 @@ public class ServerGameMessageBroker implements IServerGameMessageBroker {
 
         @Override
         public void run() {
-            logback.info("ZmqReader has been started");
+            logback.info("ZmqReader for ServerGame has been started");
             baseTimeMs = System.currentTimeMillis();
             while (isConnected && !hasReceivedTimeoutExpired()) {
                 final byte[] raw_zmq_message = receiver.recv(ZMQ.NOBLOCK);
@@ -152,7 +160,7 @@ public class ServerGameMessageBroker implements IServerGameMessageBroker {
                 }
                 try {
                     // This is performed to avoid high CPU consumption
-                    Thread.sleep(THREAD_SLEEP_MS);
+                    Thread.sleep(THREAD_SLEEP_BETWEEN_MESSAGES_MS);
                 } catch (final InterruptedException e) {
                     logback.error("ZmqReader thread sleep exception: " + e.getMessage());
                 }
@@ -197,7 +205,7 @@ public class ServerGameMessageBroker implements IServerGameMessageBroker {
 
         private void onReceivedNewZmqMessage(final ZmqMessageBOM zmqMessageBOM) {
             nbSuccessiveSameMessages = 0;
-            logback.debug("Received New ZMQ Message : " + zmqMessageBOM.getMessageType());
+            //logback.debug("Received New ZMQ Message : " + zmqMessageBOM.getMessageType());
             for (final IZmqMessageListener zmqMessageListener : zmqMessageListeners) {
                 zmqMessageListener.receivedNewZmq(zmqMessageBOM);
             }

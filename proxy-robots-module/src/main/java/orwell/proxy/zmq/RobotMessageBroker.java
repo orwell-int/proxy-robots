@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class RobotMessageBroker {
     private final static Logger logback = LoggerFactory.getLogger(RobotMessageBroker.class);
     private static final String BINDING_ADDRESS = "tcp://0.0.0.0";
+    private static final long THREAD_SLEEP_POST_CONNECT_MS = 1000;
     private final ZMQ.Context context;
     private final ZMQ.Socket sender;
     private final ZMQ.Socket receiver;
@@ -30,7 +31,7 @@ public class RobotMessageBroker {
         this.pushPort = pushPort;
         this.pullPort = pullPort;
 
-        context = ZMQ.context(1);
+        context = ZMQ.context(2);
         sender = context.socket(ZMQ.PUSH);
         receiver = context.socket(ZMQ.PULL);
 
@@ -45,8 +46,14 @@ public class RobotMessageBroker {
         sender.bind(BINDING_ADDRESS + ":" + pushPort);
         receiver.bind(BINDING_ADDRESS + ":" + pullPort);
         isConnected = true;
-        logback.info("Proxy is binding on ports " + pushPort + " (push) and " + pullPort + " (pull)");
 
+        try {
+            Thread.sleep(THREAD_SLEEP_POST_CONNECT_MS);
+        } catch (InterruptedException e) {
+            logback.error(e.getMessage());
+        }
+
+        logback.info("Proxy is binding on ports " + pushPort + " (push) and " + pullPort + " (pull) for robot communication");
         reader.start();
     }
 

@@ -51,7 +51,11 @@ public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
     }
 
     private boolean sendMessageSucceeds(UnitMessage unitMessage) {
-        return robotMessageBroker.send(unitMessage);
+        boolean isSendSuccessful = robotMessageBroker.send(unitMessage);
+        if (!isSendSuccessful) {
+            logback.error("Failed to send UnitMessage to robot " + hostname);
+        }
+        return true;
     }
 
     @Override
