@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/orwell-int/proxy-robots.svg?branch=master)](https://travis-ci.org/orwell-int/proxy-robots) [![Stories in Ready](https://badge.waffle.io/orwell-int/proxy-robots.png?label=ready&title=Ready)](https://waffle.io/orwell-int/proxy-robots) [![Coverage Status](https://coveralls.io/repos/orwell-int/proxy-robots/badge.svg?branch=master)](https://coveralls.io/r/orwell-int/proxy-robots?branch=master)
+
 proxy-robots
 ============
 
@@ -16,8 +17,6 @@ Get the submodules
 git submodule update --init --recursive
 ```
 
-local setup for coveralls
--------------------------
 Run with maven
 --------------
 Prerequiste: have jdk-7+ installed on your machine
@@ -47,20 +46,17 @@ mvn validate
 mvn clean install
 ```
 
-To update the coveralls status, export your repo token in the following environment variable:
-(You will find it on https://coveralls.io/r/orwell-int/proxy-robots)
-```
-export COVERALLS_REPO_TOKEN=yourToken
-```
-
-To update the coveralls status, export your repo token in the following environment variable:
-(You will find it on https://coveralls.io/r/orwell-int/proxy-robots)
-```
-mvn clean cobertura:cobertura coveralls:report
-```
-
 Run the jar created by the install to start the application
 ```
 java -jar proxy-robots-module/target/proxy-robots-module-0.1.0-jar-with-dependencies.jar -f proxy-robots-module/src/main/resources/configuration.xml
 ```
 
+Local setup for coverage with coveralls
+---------------------------------------
+
+To update the coveralls status, export your repo token in the following environment variable:
+(You will find it on https://coveralls.io/r/orwell-int/proxy-robots)
+```
+export COVERALLS_REPO_TOKEN=yourToken
+mvn clean cobertura:cobertura coveralls:report
+```
