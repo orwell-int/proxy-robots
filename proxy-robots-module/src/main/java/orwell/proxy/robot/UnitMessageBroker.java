@@ -31,6 +31,9 @@ class UnitMessageBroker {
             case Colour:
                 onMsgColour(unitMessage.getPayload());
                 break;
+            case Connection:
+                onMsgConnection(unitMessage.getPayload());
+                break;
             default:
                 onMsgNotDefined(unitMessage.getPayload());
                 break;
@@ -60,6 +63,15 @@ class UnitMessageBroker {
 
         logback.debug("Tank is sending a command: " + msg);
         logback.debug("This command will not be processed");
+    }
+
+    private void onMsgConnection(final String payload) {
+        logback.debug("Tank sent a connection message: " + payload);
+        if (payload.equalsIgnoreCase("connected")) {
+            robot.setConnectionState(EnumConnectionState.CONNECTED);
+        } else if (payload.equalsIgnoreCase("close")) {
+            robot.setConnectionState(EnumConnectionState.NOT_CONNECTED);
+        }
     }
 
     private void onMsgNotDefined(final String msg) {

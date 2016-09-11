@@ -3,6 +3,7 @@ package orwell.proxy.zmq;
 import lejos.mf.common.MessageListenerInterface;
 import lejos.mf.common.UnitMessage;
 import lejos.mf.common.UnitMessageBuilder;
+import lejos.mf.common.UnitMessageType;
 import lejos.mf.common.exception.UnitMessageException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +46,6 @@ public class RobotMessageBroker {
     public void bind() {
         sender.bind(BINDING_ADDRESS + ":" + pushPort);
         receiver.bind(BINDING_ADDRESS + ":" + pullPort);
-        isConnected = true;
 
         try {
             Thread.sleep(THREAD_SLEEP_POST_CONNECT_MS);
@@ -75,19 +75,35 @@ public class RobotMessageBroker {
     }
 
     private class RobotZmqReader extends Thread {
+        private static final long THREAD_SLEEP_BETWEEN_MSG_MS = 1;
+
         @Override
         public void run() {
+            establishFirstConnection();
             while (isConnected) {
                 listenForNewMessage();
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    logback.error(e.getMessage());
-                }
+                sleepBetweenMessages();
             }
         }
 
-        private void listenForNewMessage() {
+        private void establishFirstConnection() {
+            send(new UnitMessage(UnitMessageType.Connection, "ping"));
+            while(!isConnected) {
+                UnitMessage connectionMessage = listenForNewMessage();
+                receivedNewMessage(connectionMessage);
+                sleepBetweenMessages();
+            }
+        }
+
+        private void sleepBetweenMessages() {
+            try {
+                sleep(THREAD_SLEEP_BETWEEN_MSG_MS);
+            } catch (InterruptedException e) {
+                logback.error(e.getMessage());
+            }
+        }
+
+        private UnitMessage listenForNewMessage() {
             String msg = receiver.recvStr(1); // do not block thread waiting for a message
             if (msg != null) {
                 logback.debug("Message received: " + msg);
@@ -95,8 +111,10 @@ public class RobotMessageBroker {
             try {
                 UnitMessage unitMessage = UnitMessageBuilder.build(msg);
                 receivedNewMessage(unitMessage);
+                return unitMessage;
             } catch (UnitMessageException e) {
                 logback.debug("Unit Message Exception: " + e.getMessage());
+                return null;
             }
         }
 

@@ -111,6 +111,18 @@ public class ProxyRobots implements IZmqMessageListener {
         for (final IRobot robot : robotsMap.getNotConnectedRobots()) {
             robot.connect();
         }
+        waitForConnectionAck();
+    }
+
+    private void waitForConnectionAck() {
+        while (!robotsMap.getNotConnectedRobots().isEmpty()) {
+            try {
+                Thread.sleep(THREAD_SLEEP_MS);
+            } catch (InterruptedException e) {
+                logback.error(e.getMessage());
+            }
+        }
+        logback.info("All " + robotsMap.getConnectedRobots().size() + " robot(s) are connected");
     }
 
     protected void sendRegister() {
@@ -193,7 +205,7 @@ public class ProxyRobots implements IZmqMessageListener {
     private void applyInputOnRobot(ZmqMessageBOM input, String routingId) {
         final IRobot targetedRobot = robotsMap.get(routingId);
         final RobotInputSetVisitor inputSetVisitor = new RobotInputSetVisitor(input.getMessageBodyBytes());
-        logback.debug("robotTargeted input : " + inputSetVisitor.inputToString(targetedRobot));
+        logback.debug("robotTargeted input : " + inputSetVisitor.toString(targetedRobot));
         try {
             targetedRobot.accept(inputSetVisitor);
         } catch (MessageNotSentException e) {

@@ -24,18 +24,14 @@ public class RobotInputSetVisitor implements IRobotInputVisitor {
         }
     }
 
-    public String inputToString(final IRobot robot) {
+    public String toString(final IRobot robot) {
         final String string;
         if (null != input) {
             string = "Controller INPUT of Robot [" + robot.getRoutingId() + "]:"
-                    + "\n\t|___Move order: [LEFT] "
-                    + input.getMove().getLeft()
-                    + " \t\t[RIGHT] "
-                    + input.getMove().getRight()
-                    + "\n\t|___Fire order: [WEAPON1] "
-                    + input.getFire().getWeapon1()
-                    + " \t[WEAPON2] "
-                    + input.getFire().getWeapon2();
+                    + " | Move order: [LEFT] " + input.getMove().getLeft()
+                    + " [RIGHT] " + input.getMove().getRight()
+                    + " | Fire order: [WEAPON1] " + input.getFire().getWeapon1()
+                    + " [WEAPON2] " + input.getFire().getWeapon2();
         } else {
             string = "Controller INPUT of Robot [" + robot.getRoutingId()
                     + "] NOT initialized!";

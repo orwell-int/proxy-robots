@@ -1,6 +1,8 @@
 package orwell.proxy.robot;
 
 import lejos.mf.common.UnitMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
@@ -8,6 +10,7 @@ import java.util.UUID;
  * Created by Michaël Ludmann on 5/18/15.
  */
 public abstract class IRobot implements IRobotElement, IRobotInput {
+    private final static Logger logback = LoggerFactory.getLogger(IRobot.class);
 
     private String routingId = UUID.randomUUID().toString();
     private String cameraUrl;
@@ -70,6 +73,7 @@ public abstract class IRobot implements IRobotElement, IRobotInput {
 
     protected void setConnectionState(final EnumConnectionState connectionState) {
         this.connectionState = connectionState;
+        logback.info("Robot [" + routingId + "] changed its connection status to " + connectionState);
     }
 
     public EnumRobotVictoryState getVictoryState() {

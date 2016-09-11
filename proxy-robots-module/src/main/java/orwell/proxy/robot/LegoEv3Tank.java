@@ -16,17 +16,26 @@ public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
     private final RobotMessageBroker robotMessageBroker;
     private final String hostname;
     private final String ipAddress;
+    private final String macAddress;
     private final UnitMessageBroker unitMessageBroker = new UnitMessageBroker(this);
 
     public LegoEv3Tank(final String ipAddress, final String macAddress,
                        final int videoStreamPort, final String image,
                        int pushPort, int pullPort, String hostname) {
+        this(ipAddress, macAddress, videoStreamPort, image, hostname,
+                new RobotMessageBroker(pushPort, pullPort));
+    }
+
+    public LegoEv3Tank(final String ipAddress, final String macAddress,
+                       final int videoStreamPort, final String image,
+                       String hostname, final RobotMessageBroker messageBroker) {
         this.robotElements = new IRobotElement[]{new RfidSensor()};
         this.robotActions = new IRobotInput[]{new InputMove(), new InputFire()};
         setImage(image);
         this.hostname = hostname;
         this.ipAddress = ipAddress;
-        robotMessageBroker = new RobotMessageBroker(pushPort, pullPort);
+        this.macAddress = macAddress;
+        this.robotMessageBroker = messageBroker;
         robotMessageBroker.addMessageListener(this);
         setCameraUrl("nc:" + ipAddress + ":" + videoStreamPort);
     }
@@ -40,7 +49,6 @@ public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
     public void setColourValue(final String colourValue) {
         ((ColourSensor) robotElements[2]).setValue(colourValue);
     }
-
 
     @Override
     public void sendUnitMessage(final UnitMessage unitMessage) throws MessageNotSentException {
@@ -61,7 +69,6 @@ public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
     @Override
     public EnumConnectionState connect() {
         robotMessageBroker.bind();
-        setConnectionState(EnumConnectionState.CONNECTED);
         return getConnectionState();
     }
 
