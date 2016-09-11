@@ -70,7 +70,7 @@ public class LegoNxtTankTest {
         try {
             tank.sendUnitMessage(streamUnitMessageMove);
         } catch (MessageNotSentException e) {
-            e.printStackTrace();
+            logback.error(e.getMessage());
         }
         verify(messageFramework);
         assertEquals(UnitMessageType.Command, messageCapture.getValue().getMessageType());
@@ -126,6 +126,7 @@ public class LegoNxtTankTest {
         tank.closeConnection();
         // Check that the LEGO BT message framework close() method was called
         verify(messageFramework);
+        assertEquals(EnumConnectionState.NOT_CONNECTED, tank.getConnectionState());
     }
 
     @Test
