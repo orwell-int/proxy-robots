@@ -102,7 +102,7 @@ public class RobotsMap implements IRobotsMap {
     }
 
     @Override
-    public void accept(final RobotGameStateVisitor visitor) {
+    public void accept(final RobotGameStateVisitor visitor) throws Exception {
         visitor.visit(this);
     }
 }

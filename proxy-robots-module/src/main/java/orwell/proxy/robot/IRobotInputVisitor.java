@@ -8,5 +8,5 @@ public interface IRobotInputVisitor {
 
     void visit(final InputFire inputFire);
 
-    void visit(final IRobot robot);
+    void visit(final IRobot robot) throws MessageNotSentException;
 }

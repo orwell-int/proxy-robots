@@ -21,10 +21,10 @@
         </encoder>
     </appender>
 
-    <root level="trace">
+    <root level="TRACE">
         <appender-ref ref="FILE"/>
     </root>
-    <root level="debug">
+    <root level="DEBUG">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>

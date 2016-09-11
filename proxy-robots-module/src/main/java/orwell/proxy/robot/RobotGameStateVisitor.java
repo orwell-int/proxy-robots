@@ -27,13 +27,13 @@ public class RobotGameStateVisitor {
         this(gameState, null);
     }
 
-    public void visit(final RobotsMap robotsMap) {
+    public void visit(final RobotsMap robotsMap) throws MessageNotSentException {
         for (final IRobot robot : robotsMap.getRegisteredRobots()) {
             setGameState(robot);
         }
     }
 
-    private void setGameState(final IRobot robot) {
+    private void setGameState(final IRobot robot) throws MessageNotSentException {
         switch (gameState) {
             case WAITING_TO_START:
                 setWaitingToStart(robot);
@@ -50,7 +50,7 @@ public class RobotGameStateVisitor {
         }
     }
 
-    private void setFinished(final IRobot robot) {
+    private void setFinished(final IRobot robot) throws MessageNotSentException {
         if (null == winningTeam || winningTeam.equals("")) {
             setDraw(robot);
         } else if (winningTeam.equals(robot.getTeamName())) {
@@ -64,7 +64,7 @@ public class RobotGameStateVisitor {
         logback.warn("Undefined victory state for robot " + robot.getRoutingId() + ". Ignored.");
     }
 
-    private void setDraw(final IRobot robot) {
+    private void setDraw(final IRobot robot) throws MessageNotSentException {
         robot.setVictoryState(EnumRobotVictoryState.DRAW);
         robot.sendUnitMessage(new UnitMessage(UnitMessageType.Command, DRAW_PAYLOAD_HEADER));
         logback.info("Draw info sent to robot " + robot.getRoutingId());
@@ -79,13 +79,13 @@ public class RobotGameStateVisitor {
         logback.info("Robot " + robot.getRoutingId() + " is waiting for the game to start");
     }
 
-    private void setVictory(final IRobot robot) {
+    private void setVictory(final IRobot robot) throws MessageNotSentException {
         robot.setVictoryState(EnumRobotVictoryState.WINNER);
         robot.sendUnitMessage(new UnitMessage(UnitMessageType.Command, VICTORY_PAYLOAD_HEADER));
         logback.info("Victory info sent to robot " + robot.getRoutingId());
     }
 
-    private void setDefeat(final IRobot robot) {
+    private void setDefeat(final IRobot robot) throws MessageNotSentException {
         robot.setVictoryState(EnumRobotVictoryState.DEFEATED);
         robot.sendUnitMessage(new UnitMessage(UnitMessageType.Command, DEFEAT_PAYLOAD_HEADER));
         logback.info("Defeat info sent to robot " + robot.getRoutingId());

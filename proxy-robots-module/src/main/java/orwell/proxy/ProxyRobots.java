@@ -2,32 +2,34 @@ package orwell.proxy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.config.*;
+import orwell.proxy.config.ConfigFactory;
+import orwell.proxy.config.Configuration;
+import orwell.proxy.config.IConfigFactory;
+import orwell.proxy.config.elements.ConfigRobotException;
 import orwell.proxy.config.elements.IConfigRobot;
 import orwell.proxy.config.elements.IConfigRobots;
 import orwell.proxy.config.elements.IConfigServerGame;
 import orwell.proxy.robot.*;
 import orwell.proxy.udp.UdpBeaconFinder;
-import orwell.proxy.zmq.IZmqMessageBroker;
+import orwell.proxy.zmq.IServerGameMessageBroker;
 import orwell.proxy.zmq.IZmqMessageListener;
+import orwell.proxy.zmq.ServerGameMessageBroker;
 import orwell.proxy.zmq.ZmqMessageBOM;
-import orwell.proxy.zmq.ZmqMessageBroker;
 
 public class ProxyRobots implements IZmqMessageListener {
     private final static Logger logback = LoggerFactory.getLogger(ProxyRobots.class);
     private static final long THREAD_SLEEP_MS = 10;
     private final IConfigServerGame configServerGame;
     private final IConfigRobots configRobots;
-    private final IZmqMessageBroker messageBroker;
+    private final IServerGameMessageBroker messageBroker;
     private final CommunicationService communicationService = new CommunicationService();
     private final Thread communicationThread = new Thread(communicationService);
     private final long outgoingMessagePeriod;
-    private final RobotFactory robotFactory;
     protected IRobotsMap robotsMap;
     private int outgoingMessageFiltered;
     private UdpBeaconFinder udpBeaconFinder;
 
-    public ProxyRobots(final IZmqMessageBroker messageBroker,
+    public ProxyRobots(final IServerGameMessageBroker messageBroker,
                        final IConfigFactory configFactory,
                        final IRobotsMap robotsMap) {
         logback.debug("Constructor -- IN");
@@ -42,16 +44,15 @@ public class ProxyRobots implements IZmqMessageListener {
         this.robotsMap = robotsMap;
         this.outgoingMessagePeriod = configFactory.getConfigProxy().getOutgoingMsgPeriod();
 
-        robotFactory = new RobotFactory();
         messageBroker.addZmqMessageListener(this);
         logback.debug("Constructor -- OUT");
     }
 
     public ProxyRobots(final UdpBeaconFinder udpBeaconFinder,
-                       final ZmqMessageBroker zmqMessageFramework,
+                       final ServerGameMessageBroker serverGameMessageBroker,
                        final ConfigFactory configFactory,
                        final RobotsMap robotsMap) {
-        this(zmqMessageFramework, configFactory, robotsMap);
+        this(serverGameMessageBroker, configFactory, robotsMap);
         this.udpBeaconFinder = udpBeaconFinder;
     }
 
@@ -90,14 +91,14 @@ public class ProxyRobots implements IZmqMessageListener {
      * This instantiates Robots objects from a configuration. It only sets up the
      * RobotsMap
      */
-    protected void initializeRobotsFromConfig() {
+    protected void initializeRobotsFromConfig() throws ConfigRobotException {
         for (final IConfigRobot configRobot : configRobots.getConfigRobotsToRegister()) {
-            final IRobot robot = robotFactory.getRobot(configRobot);
+            final IRobot robot = RobotFactory.getRobot(configRobot);
             if (null == robot) {
                 logback.error("Robot not initialized. Skipping it for now.");
             } else {
-                logback.info("Temporary routing ID: " + robot.getRoutingId());
                 robot.setRoutingId(configRobot.getTempRoutingID());
+                logback.info("Temporary routing ID: " + robot.getRoutingId());
                 this.robotsMap.add(robot);
             }
         }
@@ -110,13 +111,28 @@ public class ProxyRobots implements IZmqMessageListener {
         for (final IRobot robot : robotsMap.getNotConnectedRobots()) {
             robot.connect();
         }
+        waitForConnectionAck();
+    }
+
+    private void waitForConnectionAck() {
+        while (!robotsMap.getNotConnectedRobots().isEmpty()) {
+            try {
+                Thread.sleep(THREAD_SLEEP_MS);
+            } catch (InterruptedException e) {
+                logback.error(e.getMessage());
+            }
+        }
+        logback.info("All " + robotsMap.getConnectedRobots().size() + " robot(s) are connected");
     }
 
     protected void sendRegister() {
         for (final IRobot robot : robotsMap.getConnectedRobots()) {
             final ZmqMessageBOM zmqMessageBOM = new ZmqMessageBOM(robot.getRoutingId(), EnumMessageType.REGISTER,
                     RegisterBytes.fromRobotFactory(robot));
-            messageBroker.sendZmqMessage(zmqMessageBOM);
+            boolean isSendSuccessful = messageBroker.sendZmqMessage(zmqMessageBOM);
+            if (!isSendSuccessful) {
+                logback.error("Failed to send a Register message for " + robot.getRoutingId());
+            }
             logback.info("Robot [" + robot.getRoutingId()
                     + "] is trying to register itself to the server!");
         }
@@ -151,6 +167,7 @@ public class ProxyRobots implements IZmqMessageListener {
 
     public void stop() {
         disconnectAllRobots();
+        messageBroker.close();
     }
 
     private void disconnectAllRobots() {
@@ -160,8 +177,8 @@ public class ProxyRobots implements IZmqMessageListener {
     }
 
     private void onRegistered(final ZmqMessageBOM zmqMessageBOM) {
-        logback.info("Setting ServerGame Registered to robot");
         final String routingId = zmqMessageBOM.getRoutingId();
+        logback.info("Setting ServerGame Registered to robot " + routingId);
         if (robotsMap.isRobotConnected(routingId)) {
             final IRobot registeredRobot = robotsMap.get(routingId);
             final Registered registered = new Registered(zmqMessageBOM.getMessageBodyBytes());
@@ -175,23 +192,37 @@ public class ProxyRobots implements IZmqMessageListener {
     }
 
     private void onInput(final ZmqMessageBOM zmqMessageBOM) {
-        logback.info("Setting controller Input to robot");
+        logback.debug("Setting controller Input to robot");
         final String routingId = zmqMessageBOM.getRoutingId();
         if (robotsMap.isRobotRegistered(routingId)) {
-            final IRobot targetedRobot = robotsMap.get(routingId);
-            final RobotInputSetVisitor inputSetVisitor = new RobotInputSetVisitor(zmqMessageBOM.getMessageBodyBytes());
-            targetedRobot.accept(inputSetVisitor);
-            logback.info("robotTargeted input : " + inputSetVisitor.inputToString(targetedRobot));
+            applyInputOnRobot(zmqMessageBOM, routingId);
         } else {
             logback.info("RoutingID " + routingId
                     + " is not an ID of a registered robot");
         }
     }
 
+    private void applyInputOnRobot(ZmqMessageBOM input, String routingId) {
+        final IRobot targetedRobot = robotsMap.get(routingId);
+        final RobotInputSetVisitor inputSetVisitor = new RobotInputSetVisitor(input.getMessageBodyBytes());
+        logback.debug("robotTargeted input : " + inputSetVisitor.toString(targetedRobot));
+        try {
+            targetedRobot.accept(inputSetVisitor);
+        } catch (MessageNotSentException e) {
+            logback.error(e.getMessage());
+            this.stop();
+        }
+    }
+
     private void onGameState(final ZmqMessageBOM zmqMessageBOM) {
-        logback.info("Setting new GameState");
+        //logback.debug("Setting new GameState");
         final GameState gameState = new GameState(zmqMessageBOM.getMessageBodyBytes());
-        robotsMap.accept(gameState.getRobotGameStateVisitor());
+        try {
+            robotsMap.accept(gameState.getRobotGameStateVisitor());
+        } catch (Exception e) {
+            logback.error(e.getMessage());
+            this.stop();
+        }
     }
 
     private void onDefault() {
@@ -206,7 +237,7 @@ public class ProxyRobots implements IZmqMessageListener {
      * -start communication service with the server
      * -send register to the server
      */
-    public void start() {
+    public void start() throws ConfigRobotException {
         this.connectToServer();
         if (robotsMap.getRobotsArray().isEmpty())
             this.initializeRobotsFromConfig();
@@ -234,6 +265,9 @@ public class ProxyRobots implements IZmqMessageListener {
         }
     }
 
+    protected int getOutgoingMessageFiltered() {
+        return outgoingMessageFiltered;
+    }
 
     private class CommunicationService implements Runnable {
         public void run() {
@@ -272,9 +306,5 @@ public class ProxyRobots implements IZmqMessageListener {
                     !robotsMap.getConnectedRobots().isEmpty() &&
                     messageBroker.isConnectedToServer();
         }
-    }
-
-    protected int getOutgoingMessageFiltered() {
-        return outgoingMessageFiltered;
     }
 }

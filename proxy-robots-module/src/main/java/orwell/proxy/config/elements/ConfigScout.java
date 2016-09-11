@@ -1,16 +1,19 @@
 package orwell.proxy.config.elements;
 
+import orwell.proxy.robot.EnumModel;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlType;
 
-@XmlType(propOrder = {"camera", "image"})
 public class ConfigScout implements IConfigRobot {
 
     private String tempRoutingID;
     private ConfigCamera camera;
     private boolean shouldRegister;
     private String image;
+    private String model;
+    private String hostname;
+    private ConfigMessaging configMessaging;
 
     @Override
     public String getTempRoutingID() {
@@ -52,5 +55,48 @@ public class ConfigScout implements IConfigRobot {
     @XmlElement
     public void setImage(final String image) {
         this.image = image;
+    }
+
+    @Override
+    public IConfigNetworkInterface getConfigNetworkInterface(String address) {
+        return null;
+    }
+
+    @Override
+    public String getModel() {
+        return model;
+    }
+
+    @Override
+    @XmlAttribute
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    @Override
+    public EnumModel getEnumModel() {
+        return EnumModel.getModelFromString(model);
+    }
+
+    @Override
+    public String getHostname() {
+        return hostname;
+    }
+
+    @Override
+    @XmlElement
+    public void setHostname(final String hostname) {
+        this.hostname = hostname;
+    }
+
+    @Override
+    public ConfigMessaging getConfigMessaging() {
+        return configMessaging;
+    }
+
+    @Override
+    @XmlElement
+    public void setConfigMessaging(ConfigMessaging configMessaging) {
+        this.configMessaging = configMessaging;
     }
 }

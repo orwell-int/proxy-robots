@@ -1,6 +1,6 @@
 package orwell.proxy.robot;
 
-import lejos.mf.common.UnitMessage;
+import lejos.mf.common.StreamUnitMessage;
 import lejos.mf.common.UnitMessageType;
 import lejos.mf.pc.MessageFramework;
 import lejos.pc.comm.NXTInfo;
@@ -24,18 +24,18 @@ import static org.junit.Assert.*;
  * Created by Michaël Ludmann on 11/04/15.
  */
 @RunWith(JUnit4.class)
-public class LegoTankTest {
-    private final static Logger logback = LoggerFactory.getLogger(LegoTankTest.class);
+public class LegoNxtTankTest {
+    private final static Logger logback = LoggerFactory.getLogger(LegoNxtTankTest.class);
     private final static String RFID_VALUE = "11111111";
     private final static String COLOUR_VALUE = "2";
     private final static String INPUT_MOVE = "move 50.5 10.0";
-    private final Capture<UnitMessage> messageCapture = new Capture<>();
-    private final UnitMessage unitMessageRfid = new UnitMessage(UnitMessageType.Rfid, RFID_VALUE);
-    private final UnitMessage unitMessageColour = new UnitMessage(UnitMessageType.Colour, COLOUR_VALUE);
-    private final UnitMessage unitMessageMove = new UnitMessage(UnitMessageType.Command, INPUT_MOVE);
+    private final Capture<StreamUnitMessage> messageCapture = new Capture<>();
+    private final StreamUnitMessage streamUnitMessageRfid = new StreamUnitMessage(UnitMessageType.Rfid, RFID_VALUE);
+    private final StreamUnitMessage streamUnitMessageColour = new StreamUnitMessage(UnitMessageType.Colour, COLOUR_VALUE);
+    private final StreamUnitMessage streamUnitMessageMove = new StreamUnitMessage(UnitMessageType.Command, INPUT_MOVE);
 
     @TestSubject
-    private LegoTank tank;
+    private LegoNxtTank tank;
 
     @Mock
     private MessageFramework messageFramework;
@@ -44,16 +44,16 @@ public class LegoTankTest {
     public void setUp() {
         logback.debug(">>>>>>>>> IN");
         // Instantiate default tank
-        tank = new LegoTank("", "", new MockedCamera(), "");
+        tank = new LegoNxtTank("", "", new MockedCamera(), "");
     }
 
-    private LegoTank legoTankFromMF(final MessageFramework messageFramework) {
-        return new LegoTank("BTNameTest", "BT-IDTest", messageFramework, new MockedCamera(), "ImageTest");
+    private LegoNxtTank legoTankFromMF(final MessageFramework messageFramework) {
+        return new LegoNxtTank("BTNameTest", "BT-IDTest", messageFramework, new MockedCamera(), "ImageTest");
     }
 
     @Test
     public void testToString() {
-        final String tankString = "LegoTank { [BTName]  [BT-ID]  [RoutingID] " + tank.getRoutingId() + " [TeamName]  }";
+        final String tankString = "LegoNxtTank { [BTName]  [BT-ID]  [RoutingID] " + tank.getRoutingId() + " [TeamName]  }";
         assertEquals(tankString, tank.toString());
     }
 
@@ -67,9 +67,13 @@ public class LegoTankTest {
 
         tank = legoTankFromMF(messageFramework);
 
-        tank.sendUnitMessage(unitMessageMove);
+        try {
+            tank.sendUnitMessage(streamUnitMessageMove);
+        } catch (MessageNotSentException e) {
+            logback.error(e.getMessage());
+        }
         verify(messageFramework);
-        assertEquals(UnitMessageType.Command, messageCapture.getValue().getMsgType());
+        assertEquals(UnitMessageType.Command, messageCapture.getValue().getMessageType());
         assertEquals(INPUT_MOVE, messageCapture.getValue().getPayload());
     }
 
@@ -122,6 +126,7 @@ public class LegoTankTest {
         tank.closeConnection();
         // Check that the LEGO BT message framework close() method was called
         verify(messageFramework);
+        assertEquals(EnumConnectionState.NOT_CONNECTED, tank.getConnectionState());
     }
 
     @Test
@@ -131,7 +136,7 @@ public class LegoTankTest {
      * 3. Tank reads a Color value: third read of ServerRobotState is not null
      */
     public void testReceivedNewMessage() {
-        tank.receivedNewMessage(unitMessageRfid);
+        tank.receivedNewMessage(streamUnitMessageRfid);
 
         final RobotElementStateVisitor stateVisitor = new RobotElementStateVisitor();
         tank.accept(stateVisitor);
@@ -142,7 +147,7 @@ public class LegoTankTest {
         tank.accept(stateVisitor);
         assertNull(stateVisitor.getServerRobotStateBytes());
 
-        tank.receivedNewMessage(unitMessageColour);
+        tank.receivedNewMessage(streamUnitMessageColour);
 
         stateVisitor.clearServerRobotState();
         tank.accept(stateVisitor);
@@ -150,7 +155,7 @@ public class LegoTankTest {
     }
 
     @Test
-    public void testAccept_inputVisitor_mock() {
+    public void testAccept_inputVisitor_mock() throws MessageNotSentException {
         // Simple test with mock visitor
         final RobotInputSetVisitor inputVisitor = createNiceMock(RobotInputSetVisitor.class);
 
@@ -172,7 +177,7 @@ public class LegoTankTest {
     }
 
     @Test
-    public void testAccept_inputVisitor_concrete() {
+    public void testAccept_inputVisitor_concrete() throws MessageNotSentException {
         // Setup the LEGO BT message framework mock and instantiate the tank
         messageFramework = createNiceMock(MessageFramework.class);
         messageFramework.SendMessage(capture(messageCapture));
@@ -186,7 +191,7 @@ public class LegoTankTest {
         final RobotInputSetVisitor inputSetVisitor = new RobotInputSetVisitor(ProtobufTest.getTestInput().toByteArray());
         tank.accept(inputSetVisitor);
         verify(messageFramework);
-        assertEquals(UnitMessageType.Command, messageCapture.getValue().getMsgType());
+        assertEquals(UnitMessageType.Command, messageCapture.getValue().getMessageType());
         assertEquals(INPUT_MOVE, messageCapture.getValue().getPayload());
     }
 

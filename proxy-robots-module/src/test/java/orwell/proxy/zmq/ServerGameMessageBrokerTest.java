@@ -23,7 +23,7 @@ import static org.powermock.api.easymock.PowerMock.expectLastCall;
 import static org.powermock.api.easymock.PowerMock.replay;
 
 /**
- * Tests for {@link ZmqMessageBroker}.
+ * Tests for {@link ServerGameMessageBroker}.
  * <p/>
  * Created by Michael Ludmann on 15/03/15.
  */
@@ -31,12 +31,12 @@ import static org.powermock.api.easymock.PowerMock.replay;
 @SuppressWarnings("unused")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ZMQ.Socket.class)
-public class ZmqMessageBrokerTest {
+public class ServerGameMessageBrokerTest {
 
     static final String TEST_ROUTING_ID_1 = "testRoutingId_1";
     static final String TEST_ROUTING_ID_2 = "testRoutingId_2";
     static final long OUTGOING_MSG_PERIOD_HIGH = 50000;
-    private final static Logger logback = LoggerFactory.getLogger(ZmqMessageBrokerTest.class);
+    private final static Logger logback = LoggerFactory.getLogger(ServerGameMessageBrokerTest.class);
     private final static long MAX_TIMEOUT_MS = 500;
     private final static String PUSH_ADDRESS = "tcp://127.0.0.1:9000";
     private final static String SUB_ADDRESS = "tcp://127.0.0.1:9001";
@@ -44,14 +44,14 @@ public class ZmqMessageBrokerTest {
     private final FrequencyFilter frequencyFilter = new FrequencyFilter(OUTGOING_MSG_PERIOD_HIGH);
 
     @TestSubject
-    private ZmqMessageBroker zmf;
+    private ServerGameMessageBroker zmf;
 
     @Before
     public void setUp() {
         logback.debug(">>>>>>>>> IN");
         final ArrayList<IFilter> filters = new ArrayList<>();
         filters.add(frequencyFilter);
-        zmf = new ZmqMessageBroker(100000, 1000, 1000, filters);
+        zmf = new ServerGameMessageBroker(100000, 1000, 1000, filters);
     }
 
     public void initZmqMocks() {
@@ -74,9 +74,9 @@ public class ZmqMessageBrokerTest {
         replay(mockedZmqContext);
 
         try {
-            MemberModifier.field(ZmqMessageBroker.class, "context").set(zmf, mockedZmqContext);
-            MemberModifier.field(ZmqMessageBroker.class, "sender").set(zmf, mockedZmqSocketSend);
-            MemberModifier.field(ZmqMessageBroker.class, "receiver").set(zmf, mockedZmqSocketRecv);
+            MemberModifier.field(ServerGameMessageBroker.class, "context").set(zmf, mockedZmqContext);
+            MemberModifier.field(ServerGameMessageBroker.class, "sender").set(zmf, mockedZmqSocketSend);
+            MemberModifier.field(ServerGameMessageBroker.class, "receiver").set(zmf, mockedZmqSocketRecv);
         } catch (final IllegalAccessException e) {
             logback.error(e.getMessage());
         }
@@ -197,9 +197,9 @@ public class ZmqMessageBrokerTest {
         replay(mockedZmqContext);
 
         try {
-            MemberModifier.field(ZmqMessageBroker.class, "context").set(zmf, mockedZmqContext);
-            MemberModifier.field(ZmqMessageBroker.class, "sender").set(zmf, mockedZmqSocketSend);
-            MemberModifier.field(ZmqMessageBroker.class, "receiver").set(zmf, mockedZmqSocketRecv);
+            MemberModifier.field(ServerGameMessageBroker.class, "context").set(zmf, mockedZmqContext);
+            MemberModifier.field(ServerGameMessageBroker.class, "sender").set(zmf, mockedZmqSocketSend);
+            MemberModifier.field(ServerGameMessageBroker.class, "receiver").set(zmf, mockedZmqSocketRecv);
         } catch (final IllegalAccessException e) {
             logback.error(e.getMessage());
         }

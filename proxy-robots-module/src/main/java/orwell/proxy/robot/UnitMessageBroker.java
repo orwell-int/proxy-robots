@@ -9,15 +9,16 @@ import org.slf4j.LoggerFactory;
  */
 class UnitMessageBroker {
     private final static Logger logback = LoggerFactory.getLogger(UnitMessageBroker.class);
-    private final LegoTank tank;
+    private final IRobot robot;
 
-    public UnitMessageBroker(final LegoTank tank) {
-        this.tank = tank;
+    public UnitMessageBroker(final IRobot robot) {
+        this.robot = robot;
     }
 
     public void handle(final UnitMessage unitMessage) {
-
-        switch (unitMessage.getMsgType()) {
+        if (unitMessage == null)
+            return;
+        switch (unitMessage.getMessageType()) {
             case Stop:
                 onMsgStop();
                 break;
@@ -30,6 +31,9 @@ class UnitMessageBroker {
             case Colour:
                 onMsgColour(unitMessage.getPayload());
                 break;
+            case Connection:
+                onMsgConnection(unitMessage.getPayload());
+                break;
             default:
                 onMsgNotDefined(unitMessage.getPayload());
                 break;
@@ -38,27 +42,36 @@ class UnitMessageBroker {
 
     private void onMsgStop() {
 
-        logback.info("Tank " + tank.getRoutingId() + " is stopping");
-        tank.setConnectionState(EnumConnectionState.NOT_CONNECTED);
-        tank.closeConnection();
+        logback.info("Tank " + robot.getRoutingId() + " is stopping");
+        robot.setConnectionState(EnumConnectionState.NOT_CONNECTED);
+        robot.closeConnection();
     }
 
     private void onMsgRfid(final String rfidValue) {
 
         logback.debug("RFID info received: " + rfidValue);
-        tank.setRfidValue(rfidValue);
+        robot.setRfidValue(rfidValue);
     }
 
     private void onMsgColour(final String colourValue) {
 
         logback.debug("Colour info received: " + colourValue);
-        tank.setColourValue(colourValue);
+        robot.setColourValue(colourValue);
     }
 
     private void onMsgCommand(final String msg) {
 
         logback.debug("Tank is sending a command: " + msg);
         logback.debug("This command will not be processed");
+    }
+
+    private void onMsgConnection(final String payload) {
+        logback.debug("Tank sent a connection message: " + payload);
+        if (payload.equalsIgnoreCase("connected")) {
+            robot.setConnectionState(EnumConnectionState.CONNECTED);
+        } else if (payload.equalsIgnoreCase("close")) {
+            robot.setConnectionState(EnumConnectionState.NOT_CONNECTED);
+        }
     }
 
     private void onMsgNotDefined(final String msg) {
