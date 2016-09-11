@@ -17,6 +17,7 @@ import java.util.ArrayList;
 public class RobotMessageBroker {
     private final static Logger logback = LoggerFactory.getLogger(RobotMessageBroker.class);
     private static final String BINDING_ADDRESS = "tcp://0.0.0.0";
+    // This sleep is very important - we tested this value to be enough. Without it, we might lose the first message sent by the server.
     private static final long THREAD_SLEEP_POST_CONNECT_MS = 1000;
     private final ZMQ.Context context;
     private final ZMQ.Socket sender;
