@@ -46,9 +46,14 @@ mvn validate
 mvn clean install
 ```
 
+Create a config file, using the template in proxy-robots-module/src/main/resources/config.default.xml
+```
+Rename the config you edited to suit your setup to proxy-robots-module/src/main/resources/config.xml
+```
+
 Run the jar created by the install to start the application
 ```
-java -jar proxy-robots-module/target/proxy-robots-module-0.1.0-jar-with-dependencies.jar -f proxy-robots-module/src/main/resources/configuration.xml
+java -jar proxy-robots-module/target/proxy-robots-module-0.1.0-jar-with-dependencies.jar -f proxy-robots-module/src/main/resources/config.xml
 ```
 
 Local setup for coverage with coveralls
@@ -60,3 +65,7 @@ To update the coveralls status, export your repo token in the following environm
 export COVERALLS_REPO_TOKEN=yourToken
 mvn clean cobertura:cobertura coveralls:report
 ```
+
+
+
+
