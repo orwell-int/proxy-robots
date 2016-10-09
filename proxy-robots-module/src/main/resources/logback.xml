@@ -11,13 +11,13 @@
             <maxFileSize>5MB</maxFileSize>
         </triggeringPolicy>
         <encoder>
-            <pattern>%d [%thread] |-%-5p %logger{10} (%class{0}.%method:%L\) - %msg%n</pattern>
+            <pattern>%d [%-4.4thread] |-%-5p (%-25.-25class{0}.%-25.-25method:%-3.-3L\) - %msg%n</pattern>
         </encoder>
     </appender>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss} [%thread] |-%-5p (%class{0}.%method:%L\) - %m%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%-4.4thread] |-%-5p (%-25.-25class{0}.%-25.-25method:%-3.-3L\) - %m%n</pattern>
         </encoder>
     </appender>
 

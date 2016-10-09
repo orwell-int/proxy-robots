@@ -22,7 +22,7 @@ public class MockedTank extends IRobot {
         this.setRegistrationState(EnumRegistrationState.NOT_REGISTERED);
         this.setConnectionState(EnumConnectionState.NOT_CONNECTED);
         this.setTeamName("BLUE");
-        this.robotElements = new IRobotElement[]{new RfidSensor(), new ColourSensor()};
+        this.robotElements = new IRobotElement[]{new RfidSensor(), new UsSensor(), new ColourSensor()};
         this.robotActions = new IRobotInput[]{new InputMove(), new InputFire()};
         isAbleToSendUnitMessage = true;
     }
@@ -33,8 +33,13 @@ public class MockedTank extends IRobot {
     }
 
     @Override
+    public void setUsValue(float usValue) {
+        ((UsSensor) robotElements[1]).setValue(usValue);
+    }
+
+    @Override
     public void setColourValue(String colourValue) {
-        ((RfidSensor) robotElements[1]).setValue(colourValue);
+        ((RfidSensor) robotElements[2]).setValue(colourValue);
     }
 
     public InputMove getInputMove() {

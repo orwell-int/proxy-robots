@@ -1,7 +1,5 @@
 package orwell.proxy.robot;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import orwell.messages.Robot;
 
 
@@ -9,7 +7,6 @@ import orwell.messages.Robot;
  * Created by Michaël Ludmann on 5/12/15.
  */
 public class RobotElementStateVisitor implements IRobotElementVisitor {
-    private final static Logger logback = LoggerFactory.getLogger(RobotElementStateVisitor.class);
     private final Robot.ServerRobotState.Builder serverRobotStateBuilder = Robot.ServerRobotState.newBuilder();
 
     protected Robot.ServerRobotState getServerRobotState() {
@@ -18,34 +15,41 @@ public class RobotElementStateVisitor implements IRobotElementVisitor {
 
     /**
      * @return the byte array of ServerRobotState or
-     * null if both rfid and colour list are empty
+     * null if rfid and colour list are empty
      */
     public byte[] getServerRobotStateBytes() {
         final Robot.ServerRobotState serverRobotState = getServerRobotState();
-        if (null == serverRobotState ||
-                (serverRobotState.getRfidList().isEmpty() &&
-                        serverRobotState.getColourList().isEmpty()))
+        if (isServerRobotStateEmpty(serverRobotState)) {
             return null;
-        else
+        }
+        else {
             return serverRobotState.toByteArray();
+        }
     }
 
-    public void clearServerRobotState() {
-        serverRobotStateBuilder.clear();
+    private boolean isServerRobotStateEmpty(Robot.ServerRobotState serverRobotState) {
+        return null == serverRobotState ||
+                (serverRobotState.getRfidList().isEmpty() &&
+                        serverRobotState.getColourList().isEmpty() &&
+                        Float.compare(serverRobotState.getUltrasound().getUltrasound(), UsSensor.US_NO_VALUE) == 0
+                );
     }
 
     @Override
     public void visit(final RfidSensor rfidSensor) {
-
         serverRobotStateBuilder.addAllRfid(rfidSensor.getRfidSensorReads());
         rfidSensor.clear();
     }
 
     @Override
     public void visit(final ColourSensor colourSensor) {
-
         serverRobotStateBuilder.addAllColour(colourSensor.getColourSensorReads());
         colourSensor.clear();
+    }
+
+    @Override
+    public void visit(UsSensor usSensor) {
+        serverRobotStateBuilder.setUltrasound(usSensor.getUltrasoundRead());
     }
 
     @Override
@@ -54,5 +58,30 @@ public class RobotElementStateVisitor implements IRobotElementVisitor {
 
     @Override
     public void visit(final IRobot robot) {
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        String separator = " | ";
+        Robot.ServerRobotState serverRobotState = getServerRobotState();
+        for (int i = 0; i < serverRobotState.getRfidList().size(); i++) {
+            stringBuilder.append(serverRobotState.getRfidList().get(i).getRfid());
+            stringBuilder.append("; ");
+        }
+        stringBuilder.append(separator);
+        for (int i = 0; i < serverRobotState.getColourList().size(); i++) {
+            stringBuilder.append(serverRobotState.getColourList().get(i).getColour());
+            stringBuilder.append("; ");
+        }
+        stringBuilder.append(separator);
+        stringBuilder.append(serverRobotState.getUltrasound().getUltrasound());
+        stringBuilder.append(separator);
+        stringBuilder.append(serverRobotState.getBattery().getVoltageMilliVolt());
+        return stringBuilder.toString();
+    }
+
+    protected void clearServerRobotState() {
+        serverRobotStateBuilder.clear();
     }
 }

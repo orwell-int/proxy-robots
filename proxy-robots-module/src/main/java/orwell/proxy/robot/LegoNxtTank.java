@@ -47,6 +47,11 @@ public class LegoNxtTank extends IRobot implements MessageListenerInterface {
     }
 
     @Override
+    public void setUsValue(float usValue) {
+        logback.info("Us sensor behavior not implemented");
+    }
+
+    @Override
     public void accept(final IRobotElementVisitor visitor) {
         for (final IRobotElement element : robotElements) {
             element.accept(visitor);

@@ -17,7 +17,6 @@ public class ConfigFactory implements IConfigFactory {
     private IConfigServerGame configServerGame;
 
     private ConfigFactory(final Configuration configuration) {
-        logback.debug("Constructor -- IN");
         configuration.populate();
 
         if (!configuration.isPopulated()) {
@@ -28,7 +27,6 @@ public class ConfigFactory implements IConfigFactory {
             configRobots = configuration.getConfigModel().getConfigRobots();
             configServerGame = configProxy.getMaxPriorityConfigServerGame();
         }
-        logback.debug("Constructor -- OUT");
     }
 
     public static ConfigFactory createConfigFactory(final Configuration configuration) {

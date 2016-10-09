@@ -32,7 +32,6 @@ public class ProxyRobots implements IZmqMessageListener {
     public ProxyRobots(final IServerGameMessageBroker messageBroker,
                        final IConfigFactory configFactory,
                        final IRobotsMap robotsMap) {
-        logback.debug("Constructor -- IN");
         assert null != messageBroker;
         assert null != configFactory;
         assert null != configFactory.getConfigProxy();
@@ -45,7 +44,6 @@ public class ProxyRobots implements IZmqMessageListener {
         this.outgoingMessagePeriod = configFactory.getConfigProxy().getOutgoingMsgPeriod();
 
         messageBroker.addZmqMessageListener(this);
-        logback.debug("Constructor -- OUT");
     }
 
     public ProxyRobots(final UdpBeaconFinder udpBeaconFinder,
@@ -95,10 +93,10 @@ public class ProxyRobots implements IZmqMessageListener {
         for (final IConfigRobot configRobot : configRobots.getConfigRobotsToRegister()) {
             final IRobot robot = RobotFactory.getRobot(configRobot);
             if (null == robot) {
-                logback.error("Robot not initialized. Skipping it for now.");
+                logback.error("One robot from config not initialized. Skipping it for now.");
             } else {
                 robot.setRoutingId(configRobot.getTempRoutingID());
-                logback.info("Temporary routing ID: " + robot.getRoutingId());
+                logback.info("Initializing one robot: its temporary routing ID is [" + robot.getRoutingId() + "]");
                 this.robotsMap.add(robot);
             }
         }
@@ -148,11 +146,11 @@ public class ProxyRobots implements IZmqMessageListener {
 
             final byte[] serverRobotStateBytes = stateVisitor.getServerRobotStateBytes();
             if (null != serverRobotStateBytes) {
-                logback.debug("Sending a ServerRobotState message");
                 final ZmqMessageBOM zmqMessageBOM =
                         new ZmqMessageBOM(robot.getRoutingId(), EnumMessageType.SERVER_ROBOT_STATE,
                                 serverRobotStateBytes);
                 messageBroker.sendZmqMessage(zmqMessageBOM);
+                logback.debug("Sending a ServerRobotState message: " + stateVisitor.toString());
             }
         }
     }

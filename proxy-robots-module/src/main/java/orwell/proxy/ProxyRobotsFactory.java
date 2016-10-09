@@ -23,7 +23,6 @@ public class ProxyRobotsFactory {
     private final UdpBeaconFinder udpBeaconFinder;
 
     public ProxyRobotsFactory(final Configuration configuration) {
-        logback.debug("Constructor -- IN");
         configFactory = ConfigFactory.createConfigFactory(configuration);
 
         if (null == configFactory.getConfigProxy()) {
@@ -42,7 +41,6 @@ public class ProxyRobotsFactory {
                     configFactory.getConfigProxy().getConfigUdpBroadcast()
             );
         }
-        logback.debug("Constructor -- OUT");
     }
 
     public ProxyRobots getProxyRobots() {

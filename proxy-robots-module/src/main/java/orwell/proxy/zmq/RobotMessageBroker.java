@@ -77,6 +77,7 @@ public class RobotMessageBroker {
 
     private class RobotZmqReader extends Thread {
         private static final long THREAD_SLEEP_BETWEEN_MSG_MS = 1;
+        private static final String CONNECTION_PAYLOAD = "ping";
 
         @Override
         public void run() {
@@ -88,11 +89,18 @@ public class RobotMessageBroker {
         }
 
         private void establishFirstConnection() {
-            send(new UnitMessage(UnitMessageType.Connection, "ping"));
+            send(new UnitMessage(UnitMessageType.Connection, CONNECTION_PAYLOAD));
             while(!isConnected) {
-                UnitMessage connectionMessage = listenForNewMessage();
-                receivedNewMessage(connectionMessage);
+                UnitMessage message = listenForNewMessage();
+                checkIfMessageConnection(message);
                 sleepBetweenMessages();
+            }
+            logback.info("Connection to robot successfully established");
+        }
+
+        private void checkIfMessageConnection(UnitMessage message) {
+            if (message != null && message.getMessageType() == UnitMessageType.Connection) {
+                isConnected = true;
             }
         }
 
@@ -106,9 +114,10 @@ public class RobotMessageBroker {
 
         private UnitMessage listenForNewMessage() {
             String msg = receiver.recvStr(1); // do not block thread waiting for a message
-            if (msg != null) {
-                logback.debug("Message received: " + msg);
+            if (msg == null) {
+                return null;
             }
+            logback.debug("Message received: " + msg);
             try {
                 UnitMessage unitMessage = UnitMessageBuilder.build(msg);
                 receivedNewMessage(unitMessage);

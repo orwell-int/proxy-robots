@@ -41,11 +41,7 @@ public class ZmqMessageBOM {
         final List<byte[]> zmqMessageBytesList = Utils.split(ZMQ_SEPARATOR,
                 raw_zmq_message, ZMQ_MESSAGE_ITEMS_NUM);
 
-        if (3 != zmqMessageBytesList.size()) {
-            logback.warn("ZmqMessage failed to split incoming message, missing items: " +
-                    raw_zmq_message);
-            throw new ParseException("Message does not contain all three mandatory items", ZMQ_MESSAGE_ITEMS_NUM);
-        }
+        checkSizeOfZmqMessage(zmqMessageBytesList);
 
         // routingId was a string encoded in bytes, there is no issue to build a String from it
         final String routingId = new String(zmqMessageBytesList.get(0));
@@ -58,6 +54,17 @@ public class ZmqMessageBOM {
 
         //logback.debug("Message parsed: [RoutingID] " + routingId + " [TYPE] " + type);
         return new ZmqMessageBOM(routingId, type, messageBodyBytes);
+    }
+
+    private static void checkSizeOfZmqMessage(List<byte[]> zmqMessageBytesList) throws ParseException {
+        if (3 != zmqMessageBytesList.size()) {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < zmqMessageBytesList.size(); i++) {
+                stringBuilder.append(new String(zmqMessageBytesList.get(i)) + " | ");
+            }
+            logback.warn("Incoming zmq message has " + zmqMessageBytesList.size() + " item(s): " + stringBuilder);
+            throw new ParseException("Message does not contain all three mandatory items", ZMQ_MESSAGE_ITEMS_NUM);
+        }
     }
 
     private static EnumMessageType getEnumTypeFromTypeString(final String typeString) {

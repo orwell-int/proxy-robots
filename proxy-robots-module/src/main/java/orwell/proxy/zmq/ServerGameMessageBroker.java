@@ -34,7 +34,6 @@ public class ServerGameMessageBroker implements IServerGameMessageBroker {
                                    final int senderLinger,
                                    final int receiverLinger,
                                    final ArrayList<IFilter> filterList) {
-        logback.info("Constructor -- IN");
         socketTimeoutMs = receiveTimeoutMs;
         isSocketTimeoutSet = 0 < receiveTimeoutMs;
         zmqMessageListeners = new ArrayList<>();
@@ -51,7 +50,7 @@ public class ServerGameMessageBroker implements IServerGameMessageBroker {
 
         this.filterList = filterList;
 
-        logback.info("Constructor -- OUT");
+        logback.info("ServerGameMessageBroker initialized");
     }
 
     public ServerGameMessageBroker(final long receiveTimeoutMs,
@@ -74,9 +73,9 @@ public class ServerGameMessageBroker implements IServerGameMessageBroker {
     public boolean connectToServer(final String pushAddress,
                                    final String subscribeAddress) {
         sender.connect(pushAddress);
-        logback.info("ProxyRobots Sender created");
         receiver.connect(subscribeAddress);
-        logback.info("ProxyRobots Receiver created");
+        logback.info("ProxyRobots Sender [" + pushAddress +
+                "] and Receiver [" + subscribeAddress + "] created");
         receiver.subscribe("".getBytes());
 
         try {

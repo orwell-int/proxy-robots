@@ -20,6 +20,11 @@ public class RobotElementPrintVisitor implements IRobotElementVisitor {
     }
 
     @Override
+    public void visit(UsSensor usSensor) {
+        logback.info(usSensor.toString());
+    }
+
+    @Override
     public void visit(final ICamera camera) {
         logback.info(camera.toString());
     }

@@ -31,6 +31,12 @@ class UnitMessageBroker {
             case Colour:
                 onMsgColour(unitMessage.getPayload());
                 break;
+            case UltraSound:
+                onMsgUltraSound(unitMessage.getPayload());
+                break;
+            case Battery:
+                OnMsgBattery(unitMessage.getPayload());
+                break;
             case Connection:
                 onMsgConnection(unitMessage.getPayload());
                 break;
@@ -65,6 +71,16 @@ class UnitMessageBroker {
         logback.debug("This command will not be processed");
     }
 
+    private void onMsgUltraSound(String usValue) {
+        logback.debug("US info received: " + usValue);
+        robot.setUsValue(Float.parseFloat(usValue));
+    }
+
+    private void OnMsgBattery(String payload) {
+        logback.debug("Battery info received: " + payload);
+        //robot.setBatteryValues(payload);
+    }
+
     private void onMsgConnection(final String payload) {
         logback.debug("Tank sent a connection message: " + payload);
         if (payload.equalsIgnoreCase("connected")) {
@@ -75,7 +91,6 @@ class UnitMessageBroker {
     }
 
     private void onMsgNotDefined(final String msg) {
-
         logback.error("Unable to decode message received: " + msg);
     }
 

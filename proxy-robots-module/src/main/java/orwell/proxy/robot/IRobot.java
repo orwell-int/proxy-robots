@@ -72,8 +72,10 @@ public abstract class IRobot implements IRobotElement, IRobotInput {
     }
 
     protected void setConnectionState(final EnumConnectionState connectionState) {
-        this.connectionState = connectionState;
-        logback.info("Robot [" + routingId + "] changed its connection status to " + connectionState);
+        if (this.connectionState != connectionState) {
+            this.connectionState = connectionState;
+            logback.info("Robot [" + routingId + "] changed its connection status to " + connectionState);
+        }
     }
 
     public EnumRobotVictoryState getVictoryState() {
@@ -87,4 +89,7 @@ public abstract class IRobot implements IRobotElement, IRobotInput {
     public abstract void setRfidValue(String rfidValue);
 
     public abstract void setColourValue(String colourValue);
+
+    public abstract void setUsValue(float usValue);
+
 }
