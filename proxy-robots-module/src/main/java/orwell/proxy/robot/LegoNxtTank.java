@@ -22,7 +22,7 @@ public class LegoNxtTank extends IRobot implements MessageListenerInterface {
     public LegoNxtTank(final String bluetoothName, final String bluetoothId,
                        final MessageFramework messageFramework,
                        final ICamera camera, final String image) {
-        this.robotElements = new IRobotElement[]{camera, new RfidSensor(), new ColourSensor()};
+        this.robotElements = new IRobotElement[]{camera, new RfidSensor(), new ColourSensor(), new UsSensor(), new BatteryInfo()};
         this.robotActions = new IRobotInput[]{new InputMove(), new InputFire()};
         this.nxtInfo = new NXTInfo(NXTCommFactory.BLUETOOTH, bluetoothName, bluetoothId);
         this.messageFramework = messageFramework;
