@@ -13,4 +13,6 @@ public interface IRobotElementVisitor {
     void visit(final IRobot robot);
 
     void visit(final UsSensor usSensor);
+
+    void visit(final BatteryInfo batteryInfo);
 }

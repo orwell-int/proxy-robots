@@ -53,6 +53,11 @@ public class RobotElementStateVisitor implements IRobotElementVisitor {
     }
 
     @Override
+    public void visit(BatteryInfo batteryInfo) {
+        serverRobotStateBuilder.setBattery(batteryInfo.getBatteryValues());
+    }
+
+    @Override
     public void visit(final ICamera camera) {
     }
 

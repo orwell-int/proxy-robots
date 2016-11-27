@@ -145,6 +145,7 @@ public class LegoNxtTankTest {
 
         stateVisitor.clearServerRobotState();
         tank.accept(stateVisitor);
+        logback.debug(stateVisitor.toString());
         assertNull(stateVisitor.getServerRobotStateBytes());
 
         tank.receivedNewMessage(streamUnitMessageColour);

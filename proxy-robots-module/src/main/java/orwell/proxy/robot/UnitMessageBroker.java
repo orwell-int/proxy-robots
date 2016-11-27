@@ -76,9 +76,9 @@ class UnitMessageBroker {
         robot.setUsValue(Float.parseFloat(usValue));
     }
 
-    private void OnMsgBattery(String payload) {
-        logback.debug("Battery info received: " + payload);
-        //robot.setBatteryValues(payload);
+    private void OnMsgBattery(String batteryValues) {
+        logback.debug("Battery info received: " + batteryValues);
+        robot.setBatteryValues(batteryValues);
     }
 
     private void onMsgConnection(final String payload) {

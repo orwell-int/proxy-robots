@@ -92,4 +92,5 @@ public abstract class IRobot implements IRobotElement, IRobotInput {
 
     public abstract void setUsValue(float usValue);
 
+    public abstract void setBatteryValues(String batteryValue);
 }

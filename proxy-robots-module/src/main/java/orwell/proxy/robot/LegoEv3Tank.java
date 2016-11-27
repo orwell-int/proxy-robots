@@ -29,7 +29,7 @@ public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
     public LegoEv3Tank(final String ipAddress, final String macAddress,
                        final int videoStreamPort, final String image,
                        String hostname, final RobotMessageBroker messageBroker) {
-        this.robotElements = new IRobotElement[]{new RfidSensor(), new UsSensor(), new ColourSensor()};
+        this.robotElements = new IRobotElement[]{new RfidSensor(), new UsSensor(), new ColourSensor(), new BatteryInfo()};
         this.robotActions = new IRobotInput[]{new InputMove(), new InputFire()};
         setImage(image);
         this.hostname = hostname;
@@ -53,6 +53,11 @@ public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
     @Override
     public void setColourValue(final String colourValue) {
         ((ColourSensor) robotElements[2]).setValue(colourValue);
+    }
+
+    @Override
+    public void setBatteryValues(final String batteryValue) {
+        ((BatteryInfo) robotElements[3]).setValue(batteryValue);
     }
 
     @Override

@@ -38,6 +38,11 @@ public class MockedTank extends IRobot {
     }
 
     @Override
+    public void setBatteryValues(String batteryValue) {
+
+    }
+
+    @Override
     public void setColourValue(String colourValue) {
         ((RfidSensor) robotElements[2]).setValue(colourValue);
     }
