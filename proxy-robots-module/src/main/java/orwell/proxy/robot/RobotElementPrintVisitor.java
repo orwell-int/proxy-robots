@@ -25,6 +25,11 @@ public class RobotElementPrintVisitor implements IRobotElementVisitor {
     }
 
     @Override
+    public void visit(BatteryInfo batteryInfo) {
+        logback.info(batteryInfo.toString());
+    }
+
+    @Override
     public void visit(final ICamera camera) {
         logback.info(camera.toString());
     }
