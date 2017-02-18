@@ -17,7 +17,7 @@ public class GameState {
         try {
             this.serverGameGameState = ServerGame.GameState.parseFrom(gameStateMessage);
             if (null != serverGameGameState && serverGameGameState.hasWinner()) {
-                logback.debug(">>>>>>> We have a winner: " + serverGameGameState.getWinner());
+                logback.info(">>>>>>> We have a winner: " + serverGameGameState.getWinner());
             }
         } catch (final InvalidProtocolBufferException e) {
             logback.error("setGameState protobuf exception: " + e.getMessage());

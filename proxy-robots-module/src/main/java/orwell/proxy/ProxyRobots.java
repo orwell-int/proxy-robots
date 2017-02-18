@@ -190,7 +190,6 @@ public class ProxyRobots implements IZmqMessageListener {
     }
 
     private void onInput(final ZmqMessageBOM zmqMessageBOM) {
-        logback.debug("Setting controller Input to robot");
         final String routingId = zmqMessageBOM.getRoutingId();
         if (robotsMap.isRobotRegistered(routingId)) {
             applyInputOnRobot(zmqMessageBOM, routingId);
@@ -203,7 +202,7 @@ public class ProxyRobots implements IZmqMessageListener {
     private void applyInputOnRobot(ZmqMessageBOM input, String routingId) {
         final IRobot targetedRobot = robotsMap.get(routingId);
         final RobotInputSetVisitor inputSetVisitor = new RobotInputSetVisitor(input.getMessageBodyBytes());
-        logback.debug("robotTargeted input : " + inputSetVisitor.toString(targetedRobot));
+        logback.debug(inputSetVisitor.toString(targetedRobot));
         try {
             targetedRobot.accept(inputSetVisitor);
         } catch (MessageNotSentException e) {

@@ -49,7 +49,7 @@ public class UtilsTest {
         final byte[] bytes = new byte[]{0x01, SEPARATOR, 0x02};
         final List<byte[]> list = Utils.split(SEPARATOR, bytes, 1);
         assertEquals(1, list.size());
-        assertArrayEquals(new byte[]{0x01}, list.get(0));
+        assertArrayEquals(new byte[]{0x01, SEPARATOR, 0x02}, list.get(0));
     }
 
     @Test
@@ -144,6 +144,17 @@ public class UtilsTest {
         assertArrayEquals(new byte[]{0x01, 0x02}, list.get(0));
         assertArrayEquals(new byte[]{0x03, 0x04, 0x05}, list.get(1));
         assertArrayEquals(new byte[]{0x06, 0x07}, list.get(2));
+    }
+
+    @Test
+    public void testSplit_bbSEPbbbSEPbb_limit2() throws Exception {
+        final byte[] bytes = new byte[]{0x01, 0x02, SEPARATOR,
+                0x03, 0x04, 0x05, SEPARATOR,
+                0x06, 0x07};
+        final List<byte[]> list = Utils.split(SEPARATOR, bytes, 2);
+        assertEquals(2, list.size());
+        assertArrayEquals(new byte[]{0x01, 0x02}, list.get(0));
+        assertArrayEquals(new byte[]{0x03, 0x04, 0x05, SEPARATOR, 0x06, 0x07}, list.get(1));
     }
 
     @After
