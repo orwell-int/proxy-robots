@@ -8,11 +8,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.Arrays;
 
-/**
- * Created by Michaël Ludmann on 26/02/17.
- */
 public class RobotsDiscoveryThread implements Runnable {
     private final static Logger logback = LoggerFactory.getLogger(RobotsDiscoveryThread.class);
 
@@ -41,8 +37,8 @@ public class RobotsDiscoveryThread implements Runnable {
                     final int checkByteSTX = 0xA2;
                     final int checkByteSeparator = 0xA3;
                     final int checkByteETX = 0xA4;
-                    final String robotPushAddress = "tcp://IP:10001";
-                    final String robotPullAddress = "tcp://IP:10000";
+                    final String robotPushAddress = "tcp://*:10001";
+                    final String robotPullAddress = "tcp://*:10000";
                     byte[] sendData = new byte[5 + robotPushAddress.length() + robotPullAddress.length()];
                     int index = 0;
                     sendData[index++] = (byte) checkByteSTX;
