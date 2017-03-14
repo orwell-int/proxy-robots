@@ -10,6 +10,7 @@ import orwell.proxy.config.elements.IConfigRobot;
 import orwell.proxy.config.elements.IConfigRobots;
 import orwell.proxy.config.elements.IConfigServerGame;
 import orwell.proxy.robot.*;
+import orwell.proxy.udp.RobotsDiscoveryThread;
 import orwell.proxy.udp.UdpBeaconFinder;
 import orwell.proxy.zmq.IServerGameMessageBroker;
 import orwell.proxy.zmq.IZmqMessageListener;
@@ -238,11 +239,17 @@ public class ProxyRobots implements IZmqMessageListener {
         this.connectToServer();
         if (robotsMap.getRobotsArray().isEmpty())
             this.initializeRobotsFromConfig();
+        this.broadcastServerIp();
         this.connectToRobots();
         //We have to start the communication service before sending Register
         //Otherwise we risk not being ready to read Registered in time
         this.startCommunicationService();
         this.sendRegister();
+    }
+
+    private void broadcastServerIp() {
+        Thread robotsDiscoveryThread = new Thread(RobotsDiscoveryThread.getInstance());
+        robotsDiscoveryThread.start();
     }
 
     @Override
