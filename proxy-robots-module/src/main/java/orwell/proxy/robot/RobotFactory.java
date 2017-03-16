@@ -10,6 +10,8 @@ import java.net.MalformedURLException;
  * Created by Michaël Ludmann on 5/21/15.
  */
 public final class RobotFactory {
+    public static final int PUSH_PORT = 10001;
+    public static final int PULL_PORT = 10000;
     private final static Logger logback = LoggerFactory.getLogger(RobotFactory.class);
 
     public static IRobot getRobot(final IConfigRobot configRobot) throws ConfigRobotException {
@@ -40,10 +42,9 @@ public final class RobotFactory {
     private static LegoEv3Tank buildLegoEv3Tank(ConfigTank configTank) {
         try {
             ConfigNetworkInterface cni = configTank.getConfigNetworkInterface("wlan0");
-            ConfigMessaging cm = configTank.getConfigMessaging();
-            return new LegoEv3Tank(cni.getIpAddress(), cni.getMacAddress(),
+            return new LegoEv3Tank(cni.getIpAddress(),
                     configTank.getConfigCamera().getPort(), configTank.getImage(),
-                    cm.getPushPort(), cm.getPullPort(), configTank.getHostname());
+                    PUSH_PORT, PULL_PORT, configTank.getHostname());
         } catch (ConfigRobotException e) {
             logback.error("ConfigNetwork interface of " + configTank.getHostname() +
                     " is not correct. Robot will not be instantiated. " +

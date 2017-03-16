@@ -7,7 +7,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.config.elements.*;
+import orwell.proxy.config.elements.ConfigCamera;
+import orwell.proxy.config.elements.ConfigNetworkInterface;
+import orwell.proxy.config.elements.ConfigRobotException;
+import orwell.proxy.config.elements.ConfigTank;
 
 import java.util.Arrays;
 
@@ -83,14 +86,9 @@ public class RobotFactoryTest {
         final ConfigCamera configCamera = new ConfigCamera();
         configCamera.setPort(PORT_TEST);
 
-        final ConfigMessaging configMessaging = new ConfigMessaging();
-        configMessaging.setPullPort(PORT_TEST);
-        configMessaging.setPushPort(PORT_TEST);
-
         final ConfigTank configTank = new ConfigTank();
         configTank.setConfigNetworkInterfaces(Arrays.asList(cni));
         configTank.setConfigCamera(configCamera);
-        configTank.setConfigMessaging(configMessaging);
         configTank.setModel(MODEL_EV3_TEST);
         configTank.setImage(IMAGE_TEST);
 

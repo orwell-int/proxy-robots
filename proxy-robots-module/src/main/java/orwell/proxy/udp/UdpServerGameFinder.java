@@ -7,34 +7,32 @@ import java.io.IOException;
 import java.net.*;
 import java.util.Enumeration;
 
-/**
- * Created by Michaël Ludmann on 5/25/15.
- */
-public class UdpBeaconFinder {
-    private final static Logger logback = LoggerFactory.getLogger(UdpBeaconFinder.class);
+public class UdpServerGameFinder {
+    private final static Logger logback = LoggerFactory.getLogger(UdpServerGameFinder.class);
     private final int broadcastPort;
     private final int receiverBufferSize = 512;
     private final DatagramSocket datagramSocket;
-    private final UdpBeaconDecoder udpBeaconDecoder;
+    private final UdpBroadcastDataDecoder udpBroadcastDataDecoder;
     private int maxAttemptsNumber;
     private int attemptsPerformed = 0;
     private String pushAddress;
     private String subscribeAddress;
 
-    public UdpBeaconFinder(final DatagramSocket datagramSocket,
-                           final int broadcastPort,
-                           final UdpBeaconDecoder udpBeaconDecoder) {
+    public UdpServerGameFinder(final DatagramSocket datagramSocket,
+                               final int broadcastPort,
+                               final UdpBroadcastDataDecoder udpBroadcastDataDecoder) {
         assert null != datagramSocket;
-        assert null != udpBeaconDecoder;
+        assert null != udpBroadcastDataDecoder;
         this.datagramSocket = datagramSocket;
         this.broadcastPort = broadcastPort;
-        this.udpBeaconDecoder = udpBeaconDecoder;
+        this.udpBroadcastDataDecoder = udpBroadcastDataDecoder;
         maxAttemptsNumber = 1;
     }
 
     /**
      * Change number of attempts to find the UDP beacon server
      * Default value is set to 1
+     *
      * @param maxAttemptsNumber
      */
     public void setMaxAttemptsNumber(final int maxAttemptsNumber) {
@@ -54,7 +52,7 @@ public class UdpBeaconFinder {
      * and have not reached max allowed attempts number
      */
     private boolean shouldTryToFindBeacon() {
-        return (!udpBeaconDecoder.hasReceivedCorrectData() &&
+        return (!udpBroadcastDataDecoder.hasReceivedCorrectData() &&
                 attemptsPerformed < maxAttemptsNumber);
     }
 
@@ -65,7 +63,7 @@ public class UdpBeaconFinder {
         try {
             datagramSocket.setBroadcast(true);
             while (shouldTryToFindBeacon()) {
-                logback.info("Trying to find UDP beacon, attempt [" + new Integer(attemptsPerformed+1) + "]");
+                logback.info("Trying to find UDP beacon, attempt [" + new Integer(attemptsPerformed + 1) + "]");
                 // Broadcast the message over all the network interfaces
                 final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 
@@ -122,7 +120,7 @@ public class UdpBeaconFinder {
 
         try {
             datagramSocket.receive(receivePacket);
-            udpBeaconDecoder.parseFrom(receivePacket);
+            udpBroadcastDataDecoder.parseFrom(receivePacket);
         } catch (final SocketTimeoutException e) {
             logback.info("Datagram socket received timeout, continue...");
         }
@@ -130,8 +128,8 @@ public class UdpBeaconFinder {
 
     private void fillFoundAddressFields() {
         if (hasFoundServer()) {
-            this.pushAddress = udpBeaconDecoder.getPushAddress();
-            this.subscribeAddress = udpBeaconDecoder.getSubscribeAddress();
+            this.pushAddress = udpBroadcastDataDecoder.getPushAddress();
+            this.subscribeAddress = udpBroadcastDataDecoder.getSubscribeAddress();
         }
     }
 
@@ -152,9 +150,9 @@ public class UdpBeaconFinder {
     }
 
     /**
-     * @return true if UdpBeaconFinder has found the server and it returned correct data
+     * @return true if UdpServerGameFinder has found the server and it returned correct data
      */
     public boolean hasFoundServer() {
-        return udpBeaconDecoder.hasReceivedCorrectData();
+        return udpBroadcastDataDecoder.hasReceivedCorrectData();
     }
 }

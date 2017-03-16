@@ -16,7 +16,6 @@ public class ConfigTank implements IConfigRobot {
     private List<ConfigNetworkInterface> configNetworkInterfaces;
     private String model;
     private String hostname;
-    private ConfigMessaging configMessaging;
 
     @Override
     public String getTempRoutingID() {
@@ -122,15 +121,4 @@ public class ConfigTank implements IConfigRobot {
     public void setHostname(final String hostname) {
         this.hostname = hostname;
     }
-
-    @XmlElement(name = "messaging")
-    public ConfigMessaging getConfigMessaging() {
-        return configMessaging;
-    }
-
-    @Override
-    public void setConfigMessaging(final ConfigMessaging configMessaging) {
-        this.configMessaging = configMessaging;
-    }
-
 }

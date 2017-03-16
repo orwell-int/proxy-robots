@@ -1,6 +1,5 @@
 package orwell.proxy.udp;
 
-import javassist.bytecode.ByteArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,35 +9,43 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 public class RobotsDiscoveryThread implements Runnable {
+    public static final String DISCOVER_PROXY_ROBOTS_REQUEST = "DISCOVER_PROXY-ROBOTS_REQUEST";
     private final static Logger logback = LoggerFactory.getLogger(RobotsDiscoveryThread.class);
+    private int pushPort;
+    private int pullPort;
+    private int udpProxyBroadcastPort;
+
+    public RobotsDiscoveryThread(int pushPort, int pullPort, int udpProxyBroadcastPort) {
+        this.pushPort = pushPort;
+        this.pullPort = pullPort;
+        this.udpProxyBroadcastPort = udpProxyBroadcastPort;
+    }
 
     @Override
     public void run() {
         try {
             //Keep a socket open to listen to all the UDP traffic that is destined for this port
-            DatagramSocket socket = new DatagramSocket(9081, InetAddress.getByName("0.0.0.0"));
+            DatagramSocket socket = new DatagramSocket(udpProxyBroadcastPort, InetAddress.getByName("0.0.0.0"));
             socket.setBroadcast(true);
 
+            byte[] receiverBuffer = new byte[15000];
+            DatagramPacket packet = new DatagramPacket(receiverBuffer, receiverBuffer.length);
             while (true) {
                 logback.info(">>>Ready to receive broadcast packets from robots!");
 
-                //Receive a packet
-                byte[] receiverBuffer = new byte[15000];
-                DatagramPacket packet = new DatagramPacket(receiverBuffer, receiverBuffer.length);
                 socket.receive(packet);
 
-                //Packet received
                 logback.info(">>>Discovery packet received from: " + packet.getAddress().getHostAddress());
                 logback.info(">>>Packet received; data: " + new String(packet.getData()));
 
                 //See if the packet holds the right command (message)
                 String message = new String(packet.getData()).trim();
-                if (message.equals("DISCOVER_PROXY-ROBOTS_REQUEST")) {
+                if (message.equals(DISCOVER_PROXY_ROBOTS_REQUEST)) {
                     final int checkByteSTX = 0xA2;
                     final int checkByteSeparator = 0xA3;
                     final int checkByteETX = 0xA4;
-                    final String robotPushAddress = "tcp://*:10001";
-                    final String robotPullAddress = "tcp://*:10000";
+                    final String robotPushAddress = "tcp://*:" + pushPort;
+                    final String robotPullAddress = "tcp://*:" + pullPort;
                     byte[] sendData = new byte[5 + robotPushAddress.length() + robotPullAddress.length()];
                     int index = 0;
                     sendData[index++] = (byte) checkByteSTX;
@@ -60,14 +67,5 @@ public class RobotsDiscoveryThread implements Runnable {
         } catch (IOException ex) {
             logback.error(ex.toString());
         }
-    }
-
-    public static RobotsDiscoveryThread getInstance() {
-        return RobotsDiscoveryThreadHolder.INSTANCE;
-    }
-
-    private static class RobotsDiscoveryThreadHolder {
-
-        private static final RobotsDiscoveryThread INSTANCE = new RobotsDiscoveryThread();
     }
 }

@@ -6,11 +6,8 @@ import org.slf4j.LoggerFactory;
 import java.net.DatagramPacket;
 import java.util.Arrays;
 
-/**
- * Created by Michaël Ludmann on 5/26/15.
- */
-public class UdpBeaconDecoder {
-    private final static Logger logback = LoggerFactory.getLogger(UdpBeaconDecoder.class);
+public class UdpBroadcastDataDecoder {
+    private final static Logger logback = LoggerFactory.getLogger(UdpBroadcastDataDecoder.class);
     private boolean isPacketDataCorrect;
     private String serverGameIp;
     private String partialPullerAddress;
@@ -18,7 +15,7 @@ public class UdpBeaconDecoder {
     private String pushAddress;
     private String subscribeAddress;
 
-    public UdpBeaconDecoder() {
+    public UdpBroadcastDataDecoder() {
 
     }
 
@@ -111,7 +108,7 @@ public class UdpBeaconDecoder {
 
     @Override
     public String toString() {
-        return "UdpBeaconDecoder values decoded: \n" +
+        return "UdpBroadcastDataDecoder values decoded: \n" +
                 "[ServerGameIp]     " + serverGameIp + "\n" +
                 "[PartialPullerAddress]    " + partialPullerAddress + "\n" +
                 "[PartialPublisherAddress] " + partialPublisherAddress;

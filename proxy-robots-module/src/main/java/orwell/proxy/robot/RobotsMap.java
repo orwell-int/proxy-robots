@@ -5,9 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
-/**
- * Created by Michaël Ludmann on 26/04/15.
- */
 public class RobotsMap implements IRobotsMap {
     private final static Logger logback = LoggerFactory.getLogger(RobotsMap.class);
 

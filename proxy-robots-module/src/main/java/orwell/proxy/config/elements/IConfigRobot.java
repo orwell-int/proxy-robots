@@ -30,8 +30,4 @@ public interface IConfigRobot {
     String getHostname();
 
     void setHostname(String hostname);
-
-    ConfigMessaging getConfigMessaging();
-
-    void setConfigMessaging(ConfigMessaging configMessaging);
 }

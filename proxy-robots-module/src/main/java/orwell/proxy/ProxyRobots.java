@@ -2,19 +2,14 @@ package orwell.proxy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.proxy.config.ConfigFactory;
 import orwell.proxy.config.Configuration;
 import orwell.proxy.config.IConfigFactory;
-import orwell.proxy.config.elements.ConfigRobotException;
-import orwell.proxy.config.elements.IConfigRobot;
-import orwell.proxy.config.elements.IConfigRobots;
-import orwell.proxy.config.elements.IConfigServerGame;
+import orwell.proxy.config.elements.*;
 import orwell.proxy.robot.*;
 import orwell.proxy.udp.RobotsDiscoveryThread;
-import orwell.proxy.udp.UdpBeaconFinder;
+import orwell.proxy.udp.UdpServerGameFinder;
 import orwell.proxy.zmq.IServerGameMessageBroker;
 import orwell.proxy.zmq.IZmqMessageListener;
-import orwell.proxy.zmq.ServerGameMessageBroker;
 import orwell.proxy.zmq.ZmqMessageBOM;
 
 public class ProxyRobots implements IZmqMessageListener {
@@ -25,34 +20,45 @@ public class ProxyRobots implements IZmqMessageListener {
     private final IServerGameMessageBroker messageBroker;
     private final CommunicationService communicationService = new CommunicationService();
     private final Thread communicationThread = new Thread(communicationService);
-    private final long outgoingMessagePeriod;
+    private final RobotsPortsPool robotsPortsPool;
     protected IRobotsMap robotsMap;
     private int outgoingMessageFiltered;
-    private UdpBeaconFinder udpBeaconFinder;
+    private UdpServerGameFinder udpServerGameFinder;
+    private int udpProxyBroadcastPort;
 
-    public ProxyRobots(final IServerGameMessageBroker messageBroker,
-                       final IConfigFactory configFactory,
-                       final IRobotsMap robotsMap) {
+
+    public ProxyRobots(
+            final IServerGameMessageBroker messageBroker,
+            final IConfigFactory configFactory,
+            final IRobotsMap robotsMap,
+            final ConfigRobotsPortsPool configRobotsPortsPool,
+            final int udpProxyBroadcastPort) {
         assert null != messageBroker;
         assert null != configFactory;
-        assert null != configFactory.getConfigProxy();
         assert null != robotsMap;
 
         this.messageBroker = messageBroker;
         this.configServerGame = configFactory.getMaxPriorityConfigServerGame();
         this.configRobots = configFactory.getConfigRobots();
         this.robotsMap = robotsMap;
-        this.outgoingMessagePeriod = configFactory.getConfigProxy().getOutgoingMsgPeriod();
 
         messageBroker.addZmqMessageListener(this);
+
+        robotsPortsPool = new RobotsPortsPool(
+                configRobotsPortsPool.getBeginPort(),
+                configRobotsPortsPool.getPortsCount());
+
+        this.udpProxyBroadcastPort = udpProxyBroadcastPort;
     }
 
-    public ProxyRobots(final UdpBeaconFinder udpBeaconFinder,
-                       final ServerGameMessageBroker serverGameMessageBroker,
-                       final ConfigFactory configFactory,
-                       final RobotsMap robotsMap) {
-        this(serverGameMessageBroker, configFactory, robotsMap);
-        this.udpBeaconFinder = udpBeaconFinder;
+    public ProxyRobots(final UdpServerGameFinder udpServerGameFinder,
+                       final IServerGameMessageBroker serverGameMessageBroker,
+                       final IConfigFactory configFactory,
+                       final IRobotsMap robotsMap,
+                       final ConfigRobotsPortsPool configRobotsPortsPool,
+                       final int udpProxyBroadcastPort) {
+        this(serverGameMessageBroker, configFactory, robotsMap, configRobotsPortsPool, udpProxyBroadcastPort);
+        this.udpServerGameFinder = udpServerGameFinder;
     }
 
     public static void main(final String[] args) throws Exception {
@@ -72,12 +78,12 @@ public class ProxyRobots implements IZmqMessageListener {
     }
 
     private void connectToServer() {
-        if (null != udpBeaconFinder) {
+        if (null != udpServerGameFinder) {
             // We first try to find the server using Udp discovery
-            udpBeaconFinder.broadcastAndGetServerAddress();
-            if (udpBeaconFinder.hasFoundServer()) {
-                messageBroker.connectToServer(udpBeaconFinder.getPushAddress(),
-                        udpBeaconFinder.getSubscribeAddress());
+            udpServerGameFinder.broadcastAndGetServerAddress();
+            if (udpServerGameFinder.hasFoundServer()) {
+                messageBroker.connectToServer(udpServerGameFinder.getPushAddress(),
+                        udpServerGameFinder.getSubscribeAddress());
                 return;
             }
         }
@@ -248,7 +254,10 @@ public class ProxyRobots implements IZmqMessageListener {
     }
 
     private void broadcastServerIp() {
-        Thread robotsDiscoveryThread = new Thread(RobotsDiscoveryThread.getInstance());
+        Thread robotsDiscoveryThread = new Thread(new RobotsDiscoveryThread(
+                robotsPortsPool.getAvailablePort(),
+                robotsPortsPool.getAvailablePort(),
+                udpProxyBroadcastPort));
         robotsDiscoveryThread.start();
     }
 
@@ -276,14 +285,14 @@ public class ProxyRobots implements IZmqMessageListener {
     private class CommunicationService implements Runnable {
         public void run() {
             logback.info("Start of communication service");
-            long lastSendTime = System.currentTimeMillis();
+            long lastSendTime = 0;
 
             // We stop the service once there are no more robots
             // connected to the proxy
             while (shouldRunCommunicationService()) {
 
                 // We avoid flooding the server
-                if (outgoingMessagePeriod < System.currentTimeMillis() - lastSendTime) {
+                if (messageBroker.getOutgoingMessagePeriod() < System.currentTimeMillis() - lastSendTime) {
                     sendServerRobotStates();
                     lastSendTime = System.currentTimeMillis();
                 } else {

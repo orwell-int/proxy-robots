@@ -21,7 +21,6 @@ public class LegoEv3TankTest {
     private static final String RFID_VALUE = "12345678";
     private final static String INPUT_MOVE = "move 50.5 10.0";
     private final String IP_ADDRESS = "192.168.0.17";
-    private final String MAC_ADDRESS = "00:11:22:AA:BB";
     private final int VIDEO_STREAM_PORT = 1111;
     private final String IMAGE = "YELLOW HULL";
     private final int PUSH_PORT = 10000;
@@ -34,13 +33,13 @@ public class LegoEv3TankTest {
     @Before
     public void setUp() {
         // Instantiate default tank
-        tank = new LegoEv3Tank(IP_ADDRESS, MAC_ADDRESS,
+        tank = new LegoEv3Tank(IP_ADDRESS,
                 VIDEO_STREAM_PORT, IMAGE,
                 PUSH_PORT, PULL_PORT, HOSTNAME);
     }
 
     private LegoEv3Tank legoEv3TankFromMB(final RobotMessageBroker messageBroker) {
-        return new LegoEv3Tank(IP_ADDRESS, MAC_ADDRESS,
+        return new LegoEv3Tank(IP_ADDRESS,
                 VIDEO_STREAM_PORT, IMAGE,
                 HOSTNAME, messageBroker);
     }

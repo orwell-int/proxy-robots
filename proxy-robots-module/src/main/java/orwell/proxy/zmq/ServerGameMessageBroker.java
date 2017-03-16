@@ -7,9 +7,6 @@ import org.zeromq.ZMQ;
 import java.text.ParseException;
 import java.util.ArrayList;
 
-/**
- * Created by Michael Ludmann on 08/03/15.
- */
 public class ServerGameMessageBroker implements IServerGameMessageBroker {
 
     private final static Logger logback = LoggerFactory.getLogger(ServerGameMessageBroker.class);
@@ -19,7 +16,6 @@ public class ServerGameMessageBroker implements IServerGameMessageBroker {
     private final ZMQ.Context context;
     private final ZMQ.Socket sender;
     private final ZMQ.Socket receiver;
-    final private ArrayList<IFilter> filterList;
     private final ArrayList<IZmqMessageListener> zmqMessageListeners;
     private final long socketTimeoutMs;
     private final boolean isSocketTimeoutSet;
@@ -29,11 +25,12 @@ public class ServerGameMessageBroker implements IServerGameMessageBroker {
     private boolean isSkipIdenticalMessages = false;
     private volatile long baseTimeMs;
     private int nbBadMessages;
+    private int outgoingMessagePeriod;
 
     public ServerGameMessageBroker(final long receiveTimeoutMs,
                                    final int senderLinger,
                                    final int receiverLinger,
-                                   final ArrayList<IFilter> filterList) {
+                                   final int outgoingMessagePeriod) {
         socketTimeoutMs = receiveTimeoutMs;
         isSocketTimeoutSet = 0 < receiveTimeoutMs;
         zmqMessageListeners = new ArrayList<>();
@@ -46,17 +43,11 @@ public class ServerGameMessageBroker implements IServerGameMessageBroker {
         sender.setLinger(senderLinger);
         receiver.setLinger(receiverLinger);
 
+        this.outgoingMessagePeriod = outgoingMessagePeriod;
+
         setupNewReader();
 
-        this.filterList = filterList;
-
         logback.info("ServerGameMessageBroker initialized");
-    }
-
-    public ServerGameMessageBroker(final long receiveTimeoutMs,
-                                   final int senderLinger,
-                                   final int receiverLinger) {
-        this(receiveTimeoutMs, senderLinger, receiverLinger, null);
     }
 
     private void setupNewReader() {
@@ -99,14 +90,6 @@ public class ServerGameMessageBroker implements IServerGameMessageBroker {
 
     @Override
     public boolean sendZmqMessage(ZmqMessageBOM zmqMessageBOM) {
-
-        // We apply the filters sequentially
-        if (null != this.filterList) {
-            for (final IFilter filter : this.filterList) {
-                zmqMessageBOM = filter.getFilteredMessage(zmqMessageBOM);
-            }
-        }
-
         if (zmqMessageBOM.isEmpty())
             return false;
         else
@@ -129,6 +112,10 @@ public class ServerGameMessageBroker implements IServerGameMessageBroker {
         return isConnected;
     }
 
+    @Override
+    public int getOutgoingMessagePeriod() {
+        return outgoingMessagePeriod;
+    }
     public int getNbSuccessiveMessagesSkipped() {
         return nbSuccessiveSameMessages;
     }

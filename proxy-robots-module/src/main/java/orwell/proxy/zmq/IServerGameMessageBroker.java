@@ -1,8 +1,5 @@
 package orwell.proxy.zmq;
 
-/**
- * Created by Michaël Ludmann on 03/05/15.
- */
 public interface IServerGameMessageBroker {
 
     /**
@@ -21,4 +18,6 @@ public interface IServerGameMessageBroker {
     void close();
 
     boolean isConnectedToServer();
+
+    int getOutgoingMessagePeriod();
 }

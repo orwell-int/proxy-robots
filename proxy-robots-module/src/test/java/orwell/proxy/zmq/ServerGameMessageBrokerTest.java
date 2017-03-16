@@ -41,6 +41,10 @@ public class ServerGameMessageBrokerTest {
     private final static String PUSH_ADDRESS = "tcp://127.0.0.1:9000";
     private final static String SUB_ADDRESS = "tcp://127.0.0.1:9001";
     private static final long WAIT_TIMEOUT_MS = 500;
+    public static final int RECEIVE_TIMEOUT_MS = 100000;
+    public static final int SENDER_LINGER = 1000;
+    public static final int RECEIVER_LINGER = 1000;
+    public static final int OUTGOING_MESSAGE_PERIOD = 42;
     private final FrequencyFilter frequencyFilter = new FrequencyFilter(OUTGOING_MSG_PERIOD_HIGH);
 
     @TestSubject
@@ -51,7 +55,7 @@ public class ServerGameMessageBrokerTest {
         logback.debug(">>>>>>>>> IN");
         final ArrayList<IFilter> filters = new ArrayList<>();
         filters.add(frequencyFilter);
-        zmf = new ServerGameMessageBroker(100000, 1000, 1000, filters);
+        zmf = new ServerGameMessageBroker(RECEIVE_TIMEOUT_MS, SENDER_LINGER, RECEIVER_LINGER, OUTGOING_MESSAGE_PERIOD);
     }
 
     public void initZmqMocks() {
@@ -146,34 +150,6 @@ public class ServerGameMessageBrokerTest {
         }
 
         assert (0 < zmf.getNbSuccessiveMessagesSkipped());
-    }
-
-    @Test
-    public void testSendZmqMessage_withFilter() throws Exception {
-        initZmqMocks();
-
-        final byte[] msgBody = "msgBody".getBytes();
-
-        final ZmqMessageBOM registerMsg =
-                new ZmqMessageBOM(TEST_ROUTING_ID_1, EnumMessageType.REGISTER, msgBody);
-        assertTrue(zmf.sendZmqMessage(registerMsg));
-
-        // Second identical message trying to be sent during the filtering period,
-        // So the sending fails
-        Thread.sleep(1);
-        assertFalse(zmf.sendZmqMessage(registerMsg));
-
-        // Third message is of a different type, so it is not filtered
-        Thread.sleep(1);
-        final ZmqMessageBOM serverRobotStateMsg_r1 =
-                new ZmqMessageBOM(TEST_ROUTING_ID_1, EnumMessageType.SERVER_ROBOT_STATE, msgBody);
-        assertTrue(zmf.sendZmqMessage(serverRobotStateMsg_r1));
-
-        // Fourth message is of a different routingId, so it is not filtered
-        Thread.sleep(1);
-        final ZmqMessageBOM serverRobotStateMsg_r2 =
-                new ZmqMessageBOM(TEST_ROUTING_ID_2, EnumMessageType.SERVER_ROBOT_STATE, msgBody);
-        assertTrue(zmf.sendZmqMessage(serverRobotStateMsg_r2));
     }
 
     @Test

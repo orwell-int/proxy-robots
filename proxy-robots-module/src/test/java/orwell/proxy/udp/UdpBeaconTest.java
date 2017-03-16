@@ -40,8 +40,8 @@ public class UdpBeaconTest {
     private static final String TCP_SUBSCRIBE_ADDRESS = "tcp://127.0.0.1:9000";
 
     @TestSubject
-    private UdpBeaconFinder udpBeaconFinder;
-    private UdpBeaconDecoder udpBeaconDecoder;
+    private UdpServerGameFinder udpServerGameFinder;
+    private UdpBroadcastDataDecoder udpBroadcastDataDecoder;
 
     @Mock
     private DatagramSocket mockedDatagramSocket;
@@ -54,7 +54,7 @@ public class UdpBeaconTest {
         mockedDatagramSocket.send((DatagramPacket) anyObject());
         mockedDatagramSocket.close();
 
-        udpBeaconDecoder = new UdpBeaconDecoder();
+        udpBroadcastDataDecoder = new UdpBroadcastDataDecoder();
     }
 
     /**
@@ -103,15 +103,15 @@ public class UdpBeaconTest {
                 );
         replay(mockedDatagramSocket);
 
-        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
-        udpBeaconFinder.broadcastAndGetServerAddress();
-        logback.info(udpBeaconFinder.toString());
+        udpServerGameFinder = new UdpServerGameFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBroadcastDataDecoder);
+        udpServerGameFinder.broadcastAndGetServerAddress();
+        logback.info(udpServerGameFinder.toString());
 
         verify(mockedDatagramSocket);
-        assertTrue(udpBeaconDecoder.hasReceivedCorrectData());
-        assertEquals(IP_TEST, udpBeaconDecoder.getServerGameIp());
-        assertEquals(TCP_PUSH_ADDRESS, udpBeaconDecoder.getPushAddress());
-        assertEquals(TCP_SUBSCRIBE_ADDRESS, udpBeaconDecoder.getSubscribeAddress());
+        assertTrue(udpBroadcastDataDecoder.hasReceivedCorrectData());
+        assertEquals(IP_TEST, udpBroadcastDataDecoder.getServerGameIp());
+        assertEquals(TCP_PUSH_ADDRESS, udpBroadcastDataDecoder.getPushAddress());
+        assertEquals(TCP_SUBSCRIBE_ADDRESS, udpBroadcastDataDecoder.getSubscribeAddress());
     }
 
     @Test
@@ -130,15 +130,15 @@ public class UdpBeaconTest {
                 );
         replay(mockedDatagramSocket);
 
-        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
-        udpBeaconFinder.broadcastAndGetServerAddress();
-        logback.info(udpBeaconFinder.toString());
+        udpServerGameFinder = new UdpServerGameFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBroadcastDataDecoder);
+        udpServerGameFinder.broadcastAndGetServerAddress();
+        logback.info(udpServerGameFinder.toString());
 
         verify(mockedDatagramSocket);
-        assertFalse(udpBeaconDecoder.hasReceivedCorrectData());
-        assertEquals(IP_TEST, udpBeaconDecoder.getServerGameIp());
-        assertNull(udpBeaconDecoder.getPushAddress());
-        assertNull(udpBeaconDecoder.getSubscribeAddress());
+        assertFalse(udpBroadcastDataDecoder.hasReceivedCorrectData());
+        assertEquals(IP_TEST, udpBroadcastDataDecoder.getServerGameIp());
+        assertNull(udpBroadcastDataDecoder.getPushAddress());
+        assertNull(udpBroadcastDataDecoder.getSubscribeAddress());
     }
 
     @Test
@@ -157,15 +157,15 @@ public class UdpBeaconTest {
                 );
         replay(mockedDatagramSocket);
 
-        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
-        udpBeaconFinder.broadcastAndGetServerAddress();
-        logback.info(udpBeaconFinder.toString());
+        udpServerGameFinder = new UdpServerGameFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBroadcastDataDecoder);
+        udpServerGameFinder.broadcastAndGetServerAddress();
+        logback.info(udpServerGameFinder.toString());
 
         verify(mockedDatagramSocket);
-        assertFalse(udpBeaconDecoder.hasReceivedCorrectData());
-        assertEquals(IP_TEST, udpBeaconDecoder.getServerGameIp());
-        assertNull(udpBeaconDecoder.getPushAddress());
-        assertNull(udpBeaconDecoder.getSubscribeAddress());
+        assertFalse(udpBroadcastDataDecoder.hasReceivedCorrectData());
+        assertEquals(IP_TEST, udpBroadcastDataDecoder.getServerGameIp());
+        assertNull(udpBroadcastDataDecoder.getPushAddress());
+        assertNull(udpBroadcastDataDecoder.getSubscribeAddress());
     }
 
     @Test
@@ -184,15 +184,15 @@ public class UdpBeaconTest {
                 );
         replay(mockedDatagramSocket);
 
-        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
-        udpBeaconFinder.broadcastAndGetServerAddress();
-        logback.info(udpBeaconFinder.toString());
+        udpServerGameFinder = new UdpServerGameFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBroadcastDataDecoder);
+        udpServerGameFinder.broadcastAndGetServerAddress();
+        logback.info(udpServerGameFinder.toString());
 
         verify(mockedDatagramSocket);
-        assertFalse(udpBeaconDecoder.hasReceivedCorrectData());
-        assertEquals(IP_TEST, udpBeaconDecoder.getServerGameIp());
-        assertNull(udpBeaconDecoder.getPushAddress());
-        assertNull(udpBeaconDecoder.getSubscribeAddress());
+        assertFalse(udpBroadcastDataDecoder.hasReceivedCorrectData());
+        assertEquals(IP_TEST, udpBroadcastDataDecoder.getServerGameIp());
+        assertNull(udpBroadcastDataDecoder.getPushAddress());
+        assertNull(udpBroadcastDataDecoder.getSubscribeAddress());
     }
 
     @Test
@@ -211,15 +211,15 @@ public class UdpBeaconTest {
                 );
         replay(mockedDatagramSocket);
 
-        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
-        udpBeaconFinder.broadcastAndGetServerAddress();
-        logback.info(udpBeaconFinder.toString());
+        udpServerGameFinder = new UdpServerGameFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBroadcastDataDecoder);
+        udpServerGameFinder.broadcastAndGetServerAddress();
+        logback.info(udpServerGameFinder.toString());
 
         verify(mockedDatagramSocket);
-        assertFalse(udpBeaconDecoder.hasReceivedCorrectData());
-        assertEquals(IP_TEST, udpBeaconDecoder.getServerGameIp());
-        assertNull(udpBeaconDecoder.getPushAddress());
-        assertNull(udpBeaconDecoder.getSubscribeAddress());
+        assertFalse(udpBroadcastDataDecoder.hasReceivedCorrectData());
+        assertEquals(IP_TEST, udpBroadcastDataDecoder.getServerGameIp());
+        assertNull(udpBroadcastDataDecoder.getPushAddress());
+        assertNull(udpBroadcastDataDecoder.getSubscribeAddress());
     }
 
     @Test
@@ -238,15 +238,15 @@ public class UdpBeaconTest {
                 );
         replay(mockedDatagramSocket);
 
-        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
-        udpBeaconFinder.broadcastAndGetServerAddress();
-        logback.info(udpBeaconFinder.toString());
+        udpServerGameFinder = new UdpServerGameFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBroadcastDataDecoder);
+        udpServerGameFinder.broadcastAndGetServerAddress();
+        logback.info(udpServerGameFinder.toString());
 
         verify(mockedDatagramSocket);
-        assertFalse(udpBeaconDecoder.hasReceivedCorrectData());
-        assertEquals(IP_TEST, udpBeaconDecoder.getServerGameIp());
-        assertNull(udpBeaconDecoder.getPushAddress());
-        assertNull(udpBeaconDecoder.getSubscribeAddress());
+        assertFalse(udpBroadcastDataDecoder.hasReceivedCorrectData());
+        assertEquals(IP_TEST, udpBroadcastDataDecoder.getServerGameIp());
+        assertNull(udpBroadcastDataDecoder.getPushAddress());
+        assertNull(udpBroadcastDataDecoder.getSubscribeAddress());
     }
 
     @Test
@@ -254,14 +254,14 @@ public class UdpBeaconTest {
         mockedDatagramSocket.receive((DatagramPacket) anyObject());
         replay(mockedDatagramSocket);
 
-        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
-        udpBeaconFinder.broadcastAndGetServerAddress();
-        logback.info(udpBeaconFinder.toString());
+        udpServerGameFinder = new UdpServerGameFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBroadcastDataDecoder);
+        udpServerGameFinder.broadcastAndGetServerAddress();
+        logback.info(udpServerGameFinder.toString());
 
-        assertEquals("UdpBeaconDecoder values decoded: \n" +
+        assertEquals("UdpBroadcastDataDecoder values decoded: \n" +
                 "[ServerGameIp]     null\n" +
                 "[PartialPullerAddress]    null\n" +
-                "[PartialPublisherAddress] null", udpBeaconDecoder.toString());
+                "[PartialPublisherAddress] null", udpBroadcastDataDecoder.toString());
     }
 
     @Test
@@ -292,16 +292,16 @@ public class UdpBeaconTest {
                 );
         replay(mockedDatagramSocket);
 
-        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
-        udpBeaconFinder.setMaxAttemptsNumber(2);
-        udpBeaconFinder.broadcastAndGetServerAddress();
-        logback.info(udpBeaconFinder.toString());
+        udpServerGameFinder = new UdpServerGameFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBroadcastDataDecoder);
+        udpServerGameFinder.setMaxAttemptsNumber(2);
+        udpServerGameFinder.broadcastAndGetServerAddress();
+        logback.info(udpServerGameFinder.toString());
 
         verify(mockedDatagramSocket); // Check that 2 tries where performed
-        assertTrue(udpBeaconDecoder.hasReceivedCorrectData());
-        assertEquals(IP_TEST, udpBeaconDecoder.getServerGameIp());
-        assertEquals("tcp://127.0.0.1:9001", udpBeaconDecoder.getPushAddress());
-        assertEquals("tcp://127.0.0.1:9000", udpBeaconDecoder.getSubscribeAddress());
+        assertTrue(udpBroadcastDataDecoder.hasReceivedCorrectData());
+        assertEquals(IP_TEST, udpBroadcastDataDecoder.getServerGameIp());
+        assertEquals("tcp://127.0.0.1:9001", udpBroadcastDataDecoder.getPushAddress());
+        assertEquals("tcp://127.0.0.1:9000", udpBroadcastDataDecoder.getSubscribeAddress());
     }
 
     @Test
@@ -324,16 +324,16 @@ public class UdpBeaconTest {
         // Save the scenario
         replay(mockedDatagramSocket);
 
-        udpBeaconFinder = new UdpBeaconFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBeaconDecoder);
-        udpBeaconFinder.setMaxAttemptsNumber(0);
-        udpBeaconFinder.broadcastAndGetServerAddress();
-        logback.info(udpBeaconFinder.toString());
+        udpServerGameFinder = new UdpServerGameFinder(mockedDatagramSocket, BROADCAST_TIMEOUT_MS, udpBroadcastDataDecoder);
+        udpServerGameFinder.setMaxAttemptsNumber(0);
+        udpServerGameFinder.broadcastAndGetServerAddress();
+        logback.info(udpServerGameFinder.toString());
 
         verify(mockedDatagramSocket); // Check that 2 tries where performed
-        assertFalse(udpBeaconDecoder.hasReceivedCorrectData());
-        assertNull(udpBeaconDecoder.getServerGameIp());
-        assertNull(udpBeaconDecoder.getPushAddress());
-        assertNull(udpBeaconDecoder.getSubscribeAddress());
+        assertFalse(udpBroadcastDataDecoder.hasReceivedCorrectData());
+        assertNull(udpBroadcastDataDecoder.getServerGameIp());
+        assertNull(udpBroadcastDataDecoder.getPushAddress());
+        assertNull(udpBroadcastDataDecoder.getSubscribeAddress());
     }
 
     @After

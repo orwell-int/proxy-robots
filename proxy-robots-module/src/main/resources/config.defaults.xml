@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding='utf-8'?>
 <setup>
     <proxy>
-        <udpBroadcast>
+        <udpServerGameFinder>
             <port>9080</port>
-            <attempts>5</attempts>
+            <attempts>500</attempts>
             <timeoutPerAttemptMs>1000</timeoutPerAttemptMs>
-        </udpBroadcast>
+        </udpServerGameFinder>
+        <udpProxyBroadcastPort>9081</udpProxyBroadcastPort>
+        <receiveTimeout>300000</receiveTimeout>
         <senderLinger>1000</senderLinger>
         <receiverLinger>1000</receiverLinger>
         <outgoingMsgPeriod>50</outgoingMsgPeriod>

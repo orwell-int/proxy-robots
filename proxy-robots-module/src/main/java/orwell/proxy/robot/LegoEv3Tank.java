@@ -16,17 +16,16 @@ public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
     private final RobotMessageBroker robotMessageBroker;
     private final String hostname;
     private final String ipAddress;
-    private final String macAddress;
     private final UnitMessageBroker unitMessageBroker = new UnitMessageBroker(this);
 
-    public LegoEv3Tank(final String ipAddress, final String macAddress,
+    public LegoEv3Tank(final String ipAddress,
                        final int videoStreamPort, final String image,
                        int pushPort, int pullPort, String hostname) {
-        this(ipAddress, macAddress, videoStreamPort, image, hostname,
+        this(ipAddress, videoStreamPort, image, hostname,
                 new RobotMessageBroker(pushPort, pullPort));
     }
 
-    public LegoEv3Tank(final String ipAddress, final String macAddress,
+    public LegoEv3Tank(final String ipAddress,
                        final int videoStreamPort, final String image,
                        String hostname, final RobotMessageBroker messageBroker) {
         this.robotElements = new IRobotElement[]{new RfidSensor(), new UsSensor(), new ColourSensor(), new BatteryInfo()};
@@ -34,7 +33,6 @@ public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
         setImage(image);
         this.hostname = hostname;
         this.ipAddress = ipAddress;
-        this.macAddress = macAddress;
         this.robotMessageBroker = messageBroker;
         robotMessageBroker.addMessageListener(this);
         setCameraUrl("nc:" + ipAddress + ":" + videoStreamPort);

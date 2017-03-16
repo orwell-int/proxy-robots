@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding='utf-8'?>
 <setup>
     <proxy>
-        <udpBroadcast>
+        <udpServerGameFinder>
             <port>9080</port>
             <attempts>5</attempts>
             <timeoutPerAttemptMs>1000</timeoutPerAttemptMs>
-        </udpBroadcast>
+        </udpServerGameFinder>
+        <udpProxyBroadcastPort>9081</udpProxyBroadcastPort>
         <receiveTimeout>300000</receiveTimeout>
         <senderLinger>1000</senderLinger>
         <receiverLinger>1000</receiverLinger>
         <outgoingMsgPeriod>500</outgoingMsgPeriod>
+        <robotsPortsPool>
+            <beginPort>10000</beginPort>
+            <portsCount>8</portsCount>
+        </robotsPortsPool>
         <server-game name='irondamien'>
             <ip>192.168.1.37</ip>
             <pushPort>9000</pushPort>
@@ -20,21 +25,15 @@
     <robots>
         <tank tempRoutingID='BananaWifiOne' shouldRegister='1' model='ev3'>
             <networkInterface addr='wlan0'>
-                <mac>74:DA:38:7F:89:61</mac>
                 <ip>192.168.2.219</ip>
             </networkInterface>
             <networkInterface addr='br0'>
-                <mac>02:16:53:42:C3:AA</mac>
                 <ip>10.0.1.1</ip>
             </networkInterface>
             <hostname>R2D2</hostname>
             <camera>
                 <port>9100</port>
             </camera>
-            <messaging>
-                <pushPort>10000</pushPort>
-                <pullPort>10001</pullPort>
-            </messaging>
             <image>Yellow hull -- TO BE BETTER CONFIGURED</image>
         </tank>
     </robots>
