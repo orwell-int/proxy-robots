@@ -6,9 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.zmq.RobotMessageBroker;
 
-/**
- * Created by Michaël Ludmann on 26/06/16.
- */
 public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
     private final static Logger logback = LoggerFactory.getLogger(LegoEv3Tank.class);
     private final IRobotElement[] robotElements;
@@ -28,7 +25,7 @@ public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
     public LegoEv3Tank(final String ipAddress,
                        final int videoStreamPort, final String image,
                        String hostname, final RobotMessageBroker messageBroker) {
-        this.robotElements = new IRobotElement[]{new RfidSensor(), new UsSensor(), new ColourSensor(), new BatteryInfo()};
+        this.robotElements = new IRobotElement[]{new UsSensor(), new ColourSensor(), new BatteryInfo()};
         this.robotActions = new IRobotInput[]{new InputMove(), new InputFire()};
         setImage(image);
         this.hostname = hostname;
@@ -39,23 +36,18 @@ public class LegoEv3Tank extends IRobot implements MessageListenerInterface {
     }
 
     @Override
-    public void setRfidValue(final String rfidValue) {
-        ((RfidSensor) robotElements[0]).setValue(rfidValue);
-    }
-
-    @Override
-    public void setUsValue(float usValue) {
-        ((UsSensor) robotElements[1]).setValue(usValue);
+    public void setUsValue(int usValue) {
+        ((UsSensor) robotElements[0]).setValue(usValue);
     }
 
     @Override
     public void setColourValue(final String colourValue) {
-        ((ColourSensor) robotElements[2]).setValue(colourValue);
+        ((ColourSensor) robotElements[1]).setValue(colourValue);
     }
 
     @Override
     public void setBatteryValues(final String batteryValue) {
-        ((BatteryInfo) robotElements[3]).setValue(batteryValue);
+        ((BatteryInfo) robotElements[2]).setValue(batteryValue);
     }
 
     @Override

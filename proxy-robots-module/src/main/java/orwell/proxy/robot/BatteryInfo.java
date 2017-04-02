@@ -2,43 +2,45 @@ package orwell.proxy.robot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.messages.Robot;
+import orwell.messages.Common;
 
-/**
- * Created by Michaël Ludmann on 27/11/16.
- */
 public class BatteryInfo implements IRobotElement {
     private final static Logger logback = LoggerFactory.getLogger(BatteryInfo.class);
     private static final String BATTERY_MESSAGE_SPLIT_CHAR = " ";
     private static final int VOLTAGE_NO_VALUE = -1;
-    private Robot.Battery currentBatteryValues;
+    private Common.Battery currentBatteryValues;
+    private boolean hasUpdate;
+    private String lastValue = "";
 
     @Override
     public void accept(IRobotElementVisitor visitor) {
         visitor.visit(this);
     }
 
-    public void setValue(String value) {
-        logback.debug("Setting battery values: " + value);
-        String[] values = value.split(BATTERY_MESSAGE_SPLIT_CHAR, 3);
-        int voltageMilliVolt = Integer.parseInt(values[0]);
-        float batteryCurrentAmps = Float.parseFloat(values[1]);
-        float motorCurrentAmps = Float.parseFloat(values[2]);
-        final Robot.Battery.Builder builder = Robot.Battery.newBuilder();
-        builder.setTimestamp(System.currentTimeMillis());
-        builder.setVoltageMilliVolt(voltageMilliVolt);
-        builder.setBatteryCurrentAmps(batteryCurrentAmps);
-        builder.setMotorCurrentAmps(motorCurrentAmps);
-        currentBatteryValues = builder.build();
+    public void setValue(String currentValue) {
+        if (!lastValue.equals(currentValue)) {
+            logback.debug("Setting battery values: " + currentValue);
+            String[] values = currentValue.split(BATTERY_MESSAGE_SPLIT_CHAR, 3);
+            int VoltageMillivolt = Integer.parseInt(values[0]);
+            float currentAmps = Float.parseFloat(values[1]);
+            final Common.Battery.Builder builder = Common.Battery.newBuilder();
+            builder.setTimestamp(System.currentTimeMillis());
+            builder.setVoltageMillivolt(VoltageMillivolt);
+            builder.setCurrentAmp(currentAmps);
+            currentBatteryValues = builder.build();
+            lastValue = currentValue;
+            hasUpdate = true;
+        }
     }
 
-    public Robot.Battery getBatteryValues() {
+    public Common.Battery getBatteryValues() {
         if (currentBatteryValues == null) {
-            final Robot.Battery.Builder builder = Robot.Battery.newBuilder();
+            final Common.Battery.Builder builder = Common.Battery.newBuilder();
             builder.setTimestamp(System.currentTimeMillis());
-            builder.setVoltageMilliVolt(VOLTAGE_NO_VALUE);
+            builder.setVoltageMillivolt(VOLTAGE_NO_VALUE);
             currentBatteryValues = builder.build();
         }
+        hasUpdate = false;
         return currentBatteryValues;
     }
 
@@ -47,8 +49,11 @@ public class BatteryInfo implements IRobotElement {
         if (currentBatteryValues == null) {
             return "Battery info: no values";
         }
-        return "Battery info: " + currentBatteryValues.getVoltageMilliVolt() + "mV " +
-                currentBatteryValues.getBatteryCurrentAmps() + "A " +
-                currentBatteryValues.getMotorCurrentAmps() + "A";
+        return "Battery info: " + currentBatteryValues.getVoltageMillivolt() + "mV " +
+                currentBatteryValues.getCurrentAmp() + "A";
+    }
+
+    public boolean hasUpdate() {
+        return hasUpdate;
     }
 }

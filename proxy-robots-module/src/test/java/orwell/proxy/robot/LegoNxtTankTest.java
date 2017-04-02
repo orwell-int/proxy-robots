@@ -20,17 +20,12 @@ import orwell.proxy.mock.MockedCamera;
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.*;
 
-/**
- * Created by Michaël Ludmann on 11/04/15.
- */
 @RunWith(JUnit4.class)
 public class LegoNxtTankTest {
     private final static Logger logback = LoggerFactory.getLogger(LegoNxtTankTest.class);
-    private final static String RFID_VALUE = "11111111";
     private final static String COLOUR_VALUE = "2";
     private final static String INPUT_MOVE = "move 50.5 10.0";
     private final Capture<StreamUnitMessage> messageCapture = new Capture<>();
-    private final StreamUnitMessage streamUnitMessageRfid = new StreamUnitMessage(UnitMessageType.Rfid, RFID_VALUE);
     private final StreamUnitMessage streamUnitMessageColour = new StreamUnitMessage(UnitMessageType.Colour, COLOUR_VALUE);
     private final StreamUnitMessage streamUnitMessageMove = new StreamUnitMessage(UnitMessageType.Command, INPUT_MOVE);
 
@@ -131,16 +126,15 @@ public class LegoNxtTankTest {
 
     @Test
     /**
-     * 1. Tank reads an RFID value: first read of ServerRobotState is not null
+     * 1. Tank reads an Colour value: first read of ServerRobotState is not null
      * 2. Nothing happens: second read of ServerRobotState is null
-     * 3. Tank reads a Color value: third read of ServerRobotState is not null
+     * 3. Tank reads a Colour value: third read of ServerRobotState is not null
      */
     public void testReceivedNewMessage() {
-        tank.receivedNewMessage(streamUnitMessageRfid);
+        tank.receivedNewMessage(streamUnitMessageColour);
 
         final RobotElementStateVisitor stateVisitor = new RobotElementStateVisitor();
         tank.accept(stateVisitor);
-
         assertNotNull(stateVisitor.getServerRobotStateBytes());
 
         stateVisitor.clearServerRobotState();
@@ -149,7 +143,6 @@ public class LegoNxtTankTest {
         assertNull(stateVisitor.getServerRobotStateBytes());
 
         tank.receivedNewMessage(streamUnitMessageColour);
-
         stateVisitor.clearServerRobotState();
         tank.accept(stateVisitor);
         assertNotNull(stateVisitor.getServerRobotStateBytes());
@@ -203,8 +196,6 @@ public class LegoNxtTankTest {
 
         // Preparation of the mock state visitor
         // We check that we visit all sensors and the tank itself
-        stateVisitor.visit((RfidSensor) anyObject());
-        expectLastCall().once();
         stateVisitor.visit((ColourSensor) anyObject());
         expectLastCall().once();
         stateVisitor.visit((MockedCamera) anyObject());

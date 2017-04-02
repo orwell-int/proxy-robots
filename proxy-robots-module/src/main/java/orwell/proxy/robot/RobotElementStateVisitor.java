@@ -2,12 +2,9 @@ package orwell.proxy.robot;
 
 import orwell.messages.Robot;
 
-
-/**
- * Created by Michaël Ludmann on 5/12/15.
- */
 public class RobotElementStateVisitor implements IRobotElementVisitor {
     private final Robot.ServerRobotState.Builder serverRobotStateBuilder = Robot.ServerRobotState.newBuilder();
+    private boolean hasUpdate;
 
     protected Robot.ServerRobotState getServerRobotState() {
         return serverRobotStateBuilder.build();
@@ -19,41 +16,34 @@ public class RobotElementStateVisitor implements IRobotElementVisitor {
      */
     public byte[] getServerRobotStateBytes() {
         final Robot.ServerRobotState serverRobotState = getServerRobotState();
-        if (isServerRobotStateEmpty(serverRobotState)) {
+        if (!hasRobotStateUpdate(serverRobotState)) {
             return null;
-        }
-        else {
+        } else {
+            hasUpdate = false;
             return serverRobotState.toByteArray();
         }
     }
 
-    private boolean isServerRobotStateEmpty(Robot.ServerRobotState serverRobotState) {
-        return null == serverRobotState ||
-                (serverRobotState.getRfidList().isEmpty() &&
-                        serverRobotState.getColourList().isEmpty() &&
-                        Float.compare(serverRobotState.getUltrasound().getUltrasound(), UsSensor.US_NO_VALUE) == 0
-                );
-    }
-
-    @Override
-    public void visit(final RfidSensor rfidSensor) {
-        serverRobotStateBuilder.addAllRfid(rfidSensor.getRfidSensorReads());
-        rfidSensor.clear();
+    private boolean hasRobotStateUpdate(Robot.ServerRobotState serverRobotState) {
+        return serverRobotState != null && hasUpdate;
     }
 
     @Override
     public void visit(final ColourSensor colourSensor) {
+        hasUpdate = hasUpdate || colourSensor.hasUpdate();
         serverRobotStateBuilder.addAllColour(colourSensor.getColourSensorReads());
         colourSensor.clear();
     }
 
     @Override
     public void visit(UsSensor usSensor) {
+        hasUpdate = hasUpdate || usSensor.hasUpdate();
         serverRobotStateBuilder.setUltrasound(usSensor.getUltrasoundRead());
     }
 
     @Override
     public void visit(BatteryInfo batteryInfo) {
+        hasUpdate = hasUpdate || batteryInfo.hasUpdate();
         serverRobotStateBuilder.setBattery(batteryInfo.getBatteryValues());
     }
 
@@ -70,19 +60,14 @@ public class RobotElementStateVisitor implements IRobotElementVisitor {
         StringBuilder stringBuilder = new StringBuilder();
         String separator = " | ";
         Robot.ServerRobotState serverRobotState = getServerRobotState();
-        for (int i = 0; i < serverRobotState.getRfidList().size(); i++) {
-            stringBuilder.append(serverRobotState.getRfidList().get(i).getRfid());
-            stringBuilder.append("; ");
-        }
-        stringBuilder.append(separator);
         for (int i = 0; i < serverRobotState.getColourList().size(); i++) {
             stringBuilder.append(serverRobotState.getColourList().get(i).getColour());
             stringBuilder.append("; ");
         }
         stringBuilder.append(separator);
-        stringBuilder.append(serverRobotState.getUltrasound().getUltrasound());
+        stringBuilder.append(serverRobotState.getUltrasound().getDistance());
         stringBuilder.append(separator);
-        stringBuilder.append(serverRobotState.getBattery().getVoltageMilliVolt());
+        stringBuilder.append(serverRobotState.getBattery().getVoltageMillivolt());
         return stringBuilder.toString();
     }
 

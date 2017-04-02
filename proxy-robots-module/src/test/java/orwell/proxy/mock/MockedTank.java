@@ -5,9 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.robot.*;
 
-/**
- * Created by Michaël Ludmann on 03/05/15.
- */
 public class MockedTank extends IRobot {
     private final static Logger logback = LoggerFactory.getLogger(MockedTank.class);
 
@@ -22,19 +19,14 @@ public class MockedTank extends IRobot {
         this.setRegistrationState(EnumRegistrationState.NOT_REGISTERED);
         this.setConnectionState(EnumConnectionState.NOT_CONNECTED);
         this.setTeamName("BLUE");
-        this.robotElements = new IRobotElement[]{new RfidSensor(), new UsSensor(), new ColourSensor()};
+        this.robotElements = new IRobotElement[]{new UsSensor(), new ColourSensor()};
         this.robotActions = new IRobotInput[]{new InputMove(), new InputFire()};
         isAbleToSendUnitMessage = true;
     }
 
     @Override
-    public void setRfidValue(final String rfidValue) {
-        ((RfidSensor) robotElements[0]).setValue(rfidValue);
-    }
-
-    @Override
-    public void setUsValue(float usValue) {
-        ((UsSensor) robotElements[1]).setValue(usValue);
+    public void setUsValue(int usValue) {
+        ((UsSensor) robotElements[0]).setValue(usValue);
     }
 
     @Override
@@ -44,7 +36,7 @@ public class MockedTank extends IRobot {
 
     @Override
     public void setColourValue(String colourValue) {
-        ((RfidSensor) robotElements[2]).setValue(colourValue);
+        ((ColourSensor) robotElements[1]).setValue(colourValue);
     }
 
     public InputMove getInputMove() {
@@ -101,7 +93,7 @@ public class MockedTank extends IRobot {
                 " [TeamName] " + getTeamName() + " }";
     }
 
-    public void makeUnableToSendUnitMessages(){
+    public void makeUnableToSendUnitMessages() {
         isAbleToSendUnitMessage = false;
     }
 }

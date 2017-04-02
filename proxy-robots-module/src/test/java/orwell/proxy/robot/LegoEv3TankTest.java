@@ -18,7 +18,7 @@ import static org.junit.Assert.assertEquals;
 public class LegoEv3TankTest {
     private final static Logger logback = LoggerFactory.getLogger(LegoEv3TankTest.class);
 
-    private static final String RFID_VALUE = "12345678";
+    private static final String COLOUR_VALUE = "2";
     private final static String INPUT_MOVE = "move 50.5 10.0";
     private final String IP_ADDRESS = "192.168.0.17";
     private final int VIDEO_STREAM_PORT = 1111;
@@ -51,7 +51,7 @@ public class LegoEv3TankTest {
 
     @Test
     public void testSendUnitMessage() {
-        tank.setRfidValue(RFID_VALUE);
+        tank.setColourValue(COLOUR_VALUE);
         RobotMessageBroker messageBroker = createNiceMock(RobotMessageBroker.class);
         expect(messageBroker.send(capture(messageCapture))).andReturn(true);
         replay(messageBroker);

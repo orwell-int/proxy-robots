@@ -1,8 +1,8 @@
 package orwell.proxy.robot;
 
-import lejos.mf.common.UnitMessage;
 import lejos.mf.common.MessageListenerInterface;
 import lejos.mf.common.StreamUnitMessage;
+import lejos.mf.common.UnitMessage;
 import lejos.mf.pc.MessageFramework;
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTInfo;
@@ -22,7 +22,7 @@ public class LegoNxtTank extends IRobot implements MessageListenerInterface {
     public LegoNxtTank(final String bluetoothName, final String bluetoothId,
                        final MessageFramework messageFramework,
                        final ICamera camera, final String image) {
-        this.robotElements = new IRobotElement[]{camera, new RfidSensor(), new ColourSensor(), new UsSensor(), new BatteryInfo()};
+        this.robotElements = new IRobotElement[]{camera, new ColourSensor(), new UsSensor(), new BatteryInfo()};
         this.robotActions = new IRobotInput[]{new InputMove(), new InputFire()};
         this.nxtInfo = new NXTInfo(NXTCommFactory.BLUETOOTH, bluetoothName, bluetoothId);
         this.messageFramework = messageFramework;
@@ -37,17 +37,12 @@ public class LegoNxtTank extends IRobot implements MessageListenerInterface {
     }
 
     @Override
-    public void setRfidValue(final String rfidValue) {
-        ((RfidSensor) robotElements[1]).setValue(rfidValue);
-    }
-
-    @Override
     public void setColourValue(final String colourValue) {
-        ((ColourSensor) robotElements[2]).setValue(colourValue);
+        ((ColourSensor) robotElements[1]).setValue(colourValue);
     }
 
     @Override
-    public void setUsValue(float usValue) {
+    public void setUsValue(int usValue) {
         logback.error("Us sensor behavior not implemented");
     }
 

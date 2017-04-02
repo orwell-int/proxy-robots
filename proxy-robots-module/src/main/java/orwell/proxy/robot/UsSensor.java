@@ -2,38 +2,45 @@ package orwell.proxy.robot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import orwell.messages.Robot;
+import orwell.messages.Common;
 
-/**
- * Created by Michaël Ludmann on 12/09/16.
- */
 public class UsSensor implements IRobotElement {
     private final static Logger logback = LoggerFactory.getLogger(UsSensor.class);
-    public static final float US_NO_VALUE = -1;
 
-    private Robot.Ultrasound currentUltrasoundValue;
+    private Common.Ultrasound currentUltrasoundValue;
+    private boolean hasUpdate = false;
+    private int lastValue;
 
     @Override
     public void accept(final IRobotElementVisitor visitor) {
         visitor.visit(this);
     }
 
-    public void setValue(final float currentValue) {
-        logback.debug("Setting US value: " + currentValue);
-        final Robot.Ultrasound.Builder builder = Robot.Ultrasound.newBuilder();
-        builder.setTimestamp(System.currentTimeMillis());
-        builder.setUltrasound(currentValue);
-        this.currentUltrasoundValue = builder.build();
+    public void setValue(final int currentValue) {
+        if (currentValue != lastValue) {
+            logback.debug("Setting US value: " + currentValue);
+            final Common.Ultrasound.Builder builder = Common.Ultrasound.newBuilder();
+            builder.setTimestamp(System.currentTimeMillis());
+            builder.setDistance(currentValue);
+            this.currentUltrasoundValue = builder.build();
+            lastValue = currentValue;
+            hasUpdate = true;
+        }
     }
 
-    public Robot.Ultrasound getUltrasoundRead() {
+    public Common.Ultrasound getUltrasoundRead() {
         if (currentUltrasoundValue == null) {
-            final Robot.Ultrasound.Builder builder = Robot.Ultrasound.newBuilder();
+            final Common.Ultrasound.Builder builder = Common.Ultrasound.newBuilder();
             builder.setTimestamp(System.currentTimeMillis());
-            builder.setUltrasound(US_NO_VALUE);
+            builder.setDistance(Integer.MAX_VALUE);
             currentUltrasoundValue = builder.build();
         }
+        hasUpdate = false;
         return currentUltrasoundValue;
+    }
+
+    public boolean hasUpdate() {
+        return hasUpdate;
     }
 
     @Override
@@ -41,6 +48,6 @@ public class UsSensor implements IRobotElement {
         if (currentUltrasoundValue == null) {
             return "UsSensor: no value";
         }
-        return "UsSensor: " + currentUltrasoundValue.getUltrasound();
+        return "UsSensor: " + currentUltrasoundValue.getDistance();
     }
 }

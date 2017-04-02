@@ -4,9 +4,6 @@ import lejos.mf.common.UnitMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Created by Michaël Ludmann on 5/19/15.
- */
 class UnitMessageBroker {
     private final static Logger logback = LoggerFactory.getLogger(UnitMessageBroker.class);
     private final IRobot robot;
@@ -21,9 +18,6 @@ class UnitMessageBroker {
         switch (unitMessage.getMessageType()) {
             case Stop:
                 onMsgStop();
-                break;
-            case Rfid:
-                onMsgRfid(unitMessage.getPayload());
                 break;
             case Command:
                 onMsgCommand(unitMessage.getPayload());
@@ -53,12 +47,6 @@ class UnitMessageBroker {
         robot.closeConnection();
     }
 
-    private void onMsgRfid(final String rfidValue) {
-
-        logback.debug("RFID info received: " + rfidValue);
-        robot.setRfidValue(rfidValue);
-    }
-
     private void onMsgColour(final String colourValue) {
 
         logback.debug("Colour info received: " + colourValue);
@@ -73,7 +61,7 @@ class UnitMessageBroker {
 
     private void onMsgUltraSound(String usValue) {
         logback.debug("US info received: " + usValue);
-        robot.setUsValue(Float.parseFloat(usValue));
+        robot.setUsValue(Integer.parseInt(usValue));
     }
 
     private void OnMsgBattery(String batteryValues) {

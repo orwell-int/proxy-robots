@@ -6,9 +6,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
-/**
- * Created by Michaël Ludmann on 5/18/15.
- */
 public abstract class IRobot implements IRobotElement, IRobotInput {
     private final static Logger logback = LoggerFactory.getLogger(IRobot.class);
 
@@ -86,11 +83,9 @@ public abstract class IRobot implements IRobotElement, IRobotInput {
         this.victoryState = victoryState;
     }
 
-    public abstract void setRfidValue(String rfidValue);
-
     public abstract void setColourValue(String colourValue);
 
-    public abstract void setUsValue(float usValue);
+    public abstract void setUsValue(int usValue);
 
     public abstract void setBatteryValues(String batteryValue);
 }

@@ -35,17 +35,6 @@ public class RobotElementStateVisitorTest {
         stateVisitor = new RobotElementStateVisitor();
     }
 
-
-    @Test
-    public void testVisit_rfid() {
-        tank.setRfidValue("2");
-        tank.accept(stateVisitor);
-
-        assertEquals("2", stateVisitor.getServerRobotState().getRfid(0).getRfid());
-        assertEquals(Robot.Status.ON, stateVisitor.getServerRobotState().getRfid(0).getStatus());
-    }
-
-
     @Test
     public void testVisit_colour() {
         tank.setColourValue("7");

@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 public class ProxyRobotsTest {
 
     private final static Logger logback = LoggerFactory.getLogger(ProxyRobotsTest.class);
-    private static final String RFID_VALUE_1 = "11111111";
+    private static final String COLOUR_VALUE_1 = "3";
     private static final String PUSH_ADDRESS_UDP = "tcp://localhost:9000";
     private static final String SUB_ADDRESS_UDP = "tcp://localhost:9001";
     private static final String PUSH_ADDRESS_CONFIG = "tcp://127.0.0.1:9001";
@@ -214,8 +214,8 @@ public class ProxyRobotsTest {
                         EnumMessageType.REGISTERED,
                         getBytesRegistered())
         );
-        // We put a new RFID value into the tank to change its state
-        mockedTank.setRfidValue(RFID_VALUE_1);
+        // We put a new COLOUR value into the tank to change its state
+        mockedTank.setColourValue(COLOUR_VALUE_1);
         myProxyRobots.sendServerRobotStates();
 
         // ProxyRobot is expected to send a ServerRobotState message
