@@ -2,19 +2,18 @@ package orwell.proxy.robot;
 
 import lejos.mf.common.UnitMessage;
 import lejos.mf.common.UnitMessageType;
+import lejos.mf.common.constants.GameStateStrings;
+import lejos.mf.common.constants.UnitMessagePayloadHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.EnumGameState;
 
-/**
- * Created by Michaël Ludmann on 6/4/15.
- */
 public class RobotGameStateVisitor {
     private final static Logger logback = LoggerFactory.getLogger(RobotGameStateVisitor.class);
-    private final static String VICTORY_PAYLOAD_HEADER = "game vict ";
-    private final static String DEFEAT_PAYLOAD_HEADER = "game fail ";
-    private final static String DRAW_PAYLOAD_HEADER = "game draw ";
-    private static final String WAITING_START_PAYLOAD_HEADER = "game wait";
+    private final static String VICTORY_PAYLOAD_HEADER = UnitMessagePayloadHeaders.GameState + " " + GameStateStrings.Victory;
+    private final static String DEFEAT_PAYLOAD_HEADER = UnitMessagePayloadHeaders.GameState + " " + GameStateStrings.Defeat;
+    private final static String DRAW_PAYLOAD_HEADER = UnitMessagePayloadHeaders.GameState + " " + GameStateStrings.Draw;
+    private static final String WAITING_START_PAYLOAD_HEADER = UnitMessagePayloadHeaders.GameState + " " + GameStateStrings.Wait;
     private final String winningTeam;
     private final EnumGameState gameState;
 

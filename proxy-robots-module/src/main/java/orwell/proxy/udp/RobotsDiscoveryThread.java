@@ -8,8 +8,9 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import static lejos.mf.common.constants.UdpProxyFinderStrings.DiscoverProxyRobotsRequest;
+
 public class RobotsDiscoveryThread implements Runnable {
-    public static final String DISCOVER_PROXY_ROBOTS_REQUEST = "DISCOVER_PROXY-ROBOTS_REQUEST";
     private final static Logger logback = LoggerFactory.getLogger(RobotsDiscoveryThread.class);
     private int pushPort;
     private int pullPort;
@@ -40,7 +41,7 @@ public class RobotsDiscoveryThread implements Runnable {
 
                 //See if the packet holds the right command (message)
                 String message = new String(packet.getData()).trim();
-                if (message.equals(DISCOVER_PROXY_ROBOTS_REQUEST)) {
+                if (message.equals(DiscoverProxyRobotsRequest)) {
                     final int checkByteSTX = 0xA2;
                     final int checkByteSeparator = 0xA3;
                     final int checkByteETX = 0xA4;

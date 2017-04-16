@@ -2,6 +2,7 @@ package orwell.proxy.controller;
 
 import lejos.mf.common.UnitMessage;
 import lejos.mf.common.UnitMessageType;
+import lejos.mf.common.constants.UnitMessagePayloadHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.robot.IRobot;
@@ -10,9 +11,6 @@ import orwell.proxy.robot.MessageNotSentException;
 import javax.swing.*;
 import java.awt.event.*;
 
-/**
- * Created by Michaël Ludmann on 6/18/15.
- */
 public class GameGUI extends JFrame implements KeyListener {
     private final static Logger logback = LoggerFactory.getLogger(GameGUI.class);
 
@@ -62,23 +60,23 @@ public class GameGUI extends JFrame implements KeyListener {
 
         UnitMessage unitMessage;
         if (e.getKeyCode() == KeyEvent.VK_UP) {
-            unitMessage = new UnitMessage(UnitMessageType.Command, "move 0.50 0.50");
+            unitMessage = new UnitMessage(UnitMessageType.Command, UnitMessagePayloadHeaders.MoveAction + " 0.50 0.50");
         } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            unitMessage = new UnitMessage(UnitMessageType.Command, "move -0.50 -0.50");
+            unitMessage = new UnitMessage(UnitMessageType.Command, UnitMessagePayloadHeaders.MoveAction + " -0.50 -0.50");
         } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            unitMessage = new UnitMessage(UnitMessageType.Command, "move -0.50 0.50");
+            unitMessage = new UnitMessage(UnitMessageType.Command, UnitMessagePayloadHeaders.MoveAction + " -0.50 0.50");
         } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            unitMessage = new UnitMessage(UnitMessageType.Command, "move 0.50 -0.50");
+            unitMessage = new UnitMessage(UnitMessageType.Command, UnitMessagePayloadHeaders.MoveAction + " 0.50 -0.50");
         } else if (e.getKeyCode() == KeyEvent.VK_NUMPAD1) {
-            unitMessage = new UnitMessage(UnitMessageType.Command, "fire true false");
+            unitMessage = new UnitMessage(UnitMessageType.Command, UnitMessagePayloadHeaders.FireAction + " true false");
         } else if (e.getKeyCode() == KeyEvent.VK_NUMPAD2) {
-            unitMessage = new UnitMessage(UnitMessageType.Command, "fire false true");
+            unitMessage = new UnitMessage(UnitMessageType.Command, UnitMessagePayloadHeaders.FireAction + " false true");
         } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-            unitMessage = new UnitMessage(UnitMessageType.Command, "stop");
+            unitMessage = new UnitMessage(UnitMessageType.Command, UnitMessagePayloadHeaders.Stop);
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            unitMessage = new UnitMessage(UnitMessageType.Command, "stopPrg");
+            unitMessage = new UnitMessage(UnitMessageType.Command, UnitMessagePayloadHeaders.StopProgram);
         } else {
-            unitMessage = new UnitMessage(UnitMessageType.Command, "game nini");
+            unitMessage = new UnitMessage(UnitMessageType.Command, UnitMessagePayloadHeaders.GameState + " nini");
         }
         try {
             robot.sendUnitMessage(unitMessage);

@@ -63,7 +63,7 @@ public class UdpServerGameFinder {
         try {
             datagramSocket.setBroadcast(true);
             while (shouldTryToFindBeacon()) {
-                logback.info("Trying to find UDP beacon, attempt [" + new Integer(attemptsPerformed + 1) + "]");
+                logback.info("Trying to find UDP beacon on port " + broadcastPort + ", attempt [" + (attemptsPerformed + 1) + "]");
                 // Broadcast the message over all the network interfaces
                 final Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
 
@@ -92,25 +92,33 @@ public class UdpServerGameFinder {
         }
 
         for (final InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
+            logback.debug("interface address = " + interfaceAddress.getAddress() + " ; broadcast = " + interfaceAddress.getBroadcast());
             final InetAddress broadcastAddress = interfaceAddress.getBroadcast();
             if (null != broadcastAddress) {
-                logback.info("Trying to send broadcast package on interface: " + networkInterface.getDisplayName());
+                logback.debug("Trying to send broadcast package on interface: " + networkInterface.getDisplayName());
                 sendBroadcastPackageToAddress(broadcastAddress);
             }
         }
     }
 
     private void sendBroadcastPackageToAddress(final InetAddress broadcastAddress) {
-        try {
-            final String ipPing = broadcastAddress.getHostAddress();
+        final String ipPing = broadcastAddress.getHostAddress();
+        final byte[] ipPingBytes = ipPing.getBytes();
+        final DatagramPacket datagramPacket;
 
-            final byte[] ipPingBytes = ipPing.getBytes();
-            final DatagramPacket datagramPacket = new DatagramPacket(ipPingBytes, ipPingBytes.length, broadcastAddress, broadcastPort);
-            datagramSocket.send(datagramPacket);
-        } catch (final Exception e) {
-            logback.error(e.getMessage());
+        try {
+            datagramPacket = new DatagramPacket(ipPingBytes, ipPingBytes.length, InetAddress.getByName(ipPing), broadcastPort);
+        } catch (UnknownHostException e) {
+            logback.error(e.getStackTrace().toString());
+            return;
         }
 
+        try {
+            datagramSocket.send(datagramPacket);
+        } catch (final Exception e) {
+            logback.error("Address " + datagramPacket.getAddress() + " Port " + datagramPacket.getPort() + " SocketAddr " + datagramPacket.getSocketAddress() + " Data " + datagramPacket.getData());
+            return;
+        }
         logback.info("Request packet sent to: " + broadcastAddress.getHostAddress());
     }
 
@@ -122,7 +130,7 @@ public class UdpServerGameFinder {
             datagramSocket.receive(receivePacket);
             udpBroadcastDataDecoder.parseFrom(receivePacket);
         } catch (final SocketTimeoutException e) {
-            logback.info("Datagram socket received timeout, continue...");
+            logback.debug("Datagram socket received timeout, continue...");
         }
     }
 

@@ -2,18 +2,13 @@ package orwell.proxy.robot;
 
 import lejos.mf.common.UnitMessage;
 import lejos.mf.common.UnitMessageType;
+import lejos.mf.common.constants.UnitMessagePayloadHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.messages.Controller;
 
-/**
- * Created by Michaël Ludmann on 5/18/15.
- */
 public class InputFire implements IRobotInput {
     final static Logger logback = LoggerFactory.getLogger(IRobotInput.class);
-
-
-    private final static String FIRE_PAYLOAD_HEADER = "fire ";
     private Controller.Input.Fire fire;
     private boolean hasFire = false;
 
@@ -37,7 +32,7 @@ public class InputFire implements IRobotInput {
             try {
                 robot.sendUnitMessage(
                         new UnitMessage(
-                                UnitMessageType.Command, FIRE_PAYLOAD_HEADER +
+                                UnitMessageType.Command, UnitMessagePayloadHeaders.FireAction + " " +
                                 fire.getWeapon1() + " " + fire.getWeapon2())
                 );
             } catch (MessageNotSentException e) {

@@ -5,10 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.messages.Controller;
 
-
-/**
- * Created by Michaël Ludmann on 5/12/15.
- */
 public class RobotInputSetVisitor implements IRobotInputVisitor {
     private final static Logger logback = LoggerFactory.getLogger(RobotInputSetVisitor.class);
     private Controller.Input input;
