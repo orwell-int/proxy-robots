@@ -1,13 +1,13 @@
 package orwell.proxy.robot;
 
 import lejos.mf.common.UnitMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
-/**
- * Created by Michaël Ludmann on 5/18/15.
- */
 public abstract class IRobot implements IRobotElement, IRobotInput {
+    private final static Logger logback = LoggerFactory.getLogger(IRobot.class);
 
     private String routingId = UUID.randomUUID().toString();
     private String cameraUrl;
@@ -17,7 +17,7 @@ public abstract class IRobot implements IRobotElement, IRobotInput {
     private EnumConnectionState connectionState = EnumConnectionState.NOT_CONNECTED;
     private EnumRobotVictoryState victoryState = EnumRobotVictoryState.WAITING_FOR_START;
 
-    public abstract void sendUnitMessage(UnitMessage unitMessage);
+    public abstract void sendUnitMessage(UnitMessage unitMessage) throws MessageNotSentException;
 
     public abstract EnumConnectionState connect();
 
@@ -69,7 +69,10 @@ public abstract class IRobot implements IRobotElement, IRobotInput {
     }
 
     protected void setConnectionState(final EnumConnectionState connectionState) {
-        this.connectionState = connectionState;
+        if (this.connectionState != connectionState) {
+            this.connectionState = connectionState;
+            logback.info("Robot [" + routingId + "] changed its connection status to " + connectionState);
+        }
     }
 
     public EnumRobotVictoryState getVictoryState() {
@@ -79,4 +82,10 @@ public abstract class IRobot implements IRobotElement, IRobotInput {
     protected void setVictoryState(final EnumRobotVictoryState victoryState) {
         this.victoryState = victoryState;
     }
+
+    public abstract void setColourValue(String colourValue);
+
+    public abstract void setUsValue(int usValue);
+
+    public abstract void setBatteryValues(String batteryValue);
 }

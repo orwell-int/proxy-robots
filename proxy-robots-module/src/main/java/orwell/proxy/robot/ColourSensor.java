@@ -6,9 +6,6 @@ import orwell.messages.Robot;
 
 import java.util.ArrayDeque;
 
-/**
- * Created by Michaël Ludmann on 5/12/15.
- */
 public class ColourSensor implements IRobotElement {
     private final static Logger logback = LoggerFactory.getLogger(ColourSensor.class);
 
@@ -94,5 +91,9 @@ public class ColourSensor implements IRobotElement {
         }
         stringBuilder.append("}");
         return stringBuilder.toString();
+    }
+
+    public boolean hasUpdate() {
+        return !colourSensorReads.isEmpty();
     }
 }

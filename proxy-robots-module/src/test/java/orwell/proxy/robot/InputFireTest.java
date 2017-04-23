@@ -1,5 +1,6 @@
 package orwell.proxy.robot;
 
+import lejos.mf.common.StreamUnitMessage;
 import lejos.mf.common.UnitMessage;
 import lejos.mf.common.UnitMessageType;
 import org.easymock.Capture;
@@ -11,10 +12,10 @@ import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.ProtobufTest;
-import orwell.proxy.mock.MockedTank;
 
 import static org.easymock.EasyMock.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by Michaël Ludmann on 6/11/15.
@@ -38,18 +39,18 @@ public class InputFireTest {
     }
 
     @Test
-    public void testSendUnitMessageTo() throws Exception {
+    public void testSendUnitMessageTo() throws MessageNotSentException {
         inputFire.setFire(ProtobufTest.getTestInput().getFire());
 
-        final LegoTank legoTank = createNiceMock(LegoTank.class);
+        final LegoNxtTank legoNxtTank = createNiceMock(LegoNxtTank.class);
         final Capture<UnitMessage> messageCapture = new Capture<>();
-        legoTank.sendUnitMessage(capture(messageCapture));
+        legoNxtTank.sendUnitMessage(capture(messageCapture));
         expectLastCall().once();
-        replay(legoTank);
+        replay(legoNxtTank);
 
-        inputFire.sendUnitMessageTo(legoTank);
-        verify(legoTank);
-        assertEquals(UnitMessageType.Command, messageCapture.getValue().getMsgType());
+        inputFire.sendUnitMessageTo(legoNxtTank);
+        verify(legoNxtTank);
+        assertEquals(UnitMessageType.Command, messageCapture.getValue().getMessageType());
         assertEquals(INPUT_FIRE, messageCapture.getValue().getPayload());
     }
 

@@ -23,7 +23,7 @@ public class RobotElementStateVisitorTest {
     private final static Logger logback = LoggerFactory.getLogger(RobotElementStateVisitorTest.class);
 
     @Mock
-    private final LegoTank tank = new LegoTank("", "", new MockedCamera(), "");
+    private final LegoNxtTank tank = new LegoNxtTank("", "", new MockedCamera(), "");
 
     @TestSubject
     private RobotElementStateVisitor stateVisitor;
@@ -34,17 +34,6 @@ public class RobotElementStateVisitorTest {
         logback.debug(">>>>>>>>> IN");
         stateVisitor = new RobotElementStateVisitor();
     }
-
-
-    @Test
-    public void testVisit_rfid() {
-        tank.setRfidValue("2");
-        tank.accept(stateVisitor);
-
-        assertEquals("2", stateVisitor.getServerRobotState().getRfid(0).getRfid());
-        assertEquals(Robot.Status.ON, stateVisitor.getServerRobotState().getRfid(0).getStatus());
-    }
-
 
     @Test
     public void testVisit_colour() {

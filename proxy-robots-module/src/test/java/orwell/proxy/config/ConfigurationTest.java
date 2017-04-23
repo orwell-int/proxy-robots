@@ -21,15 +21,11 @@ import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.junit.Assert.*;
 
-/**
- * Tests for {@link ConfigModel}.
- *
- * @author miludmann@gmail.com (Michael Ludmann)
- */
-
 @RunWith(JUnit4.class)
 public class ConfigurationTest {
 
+    public static final int BEGIN_PORT = 10000;
+    public static final int PORTS_COUNT = 8;
     private final static Logger logback = LoggerFactory.getLogger(ConfigurationTest.class);
     private static final String CONFIGURATION_RESOURCE_PATH = "/configurationTest.xml";
     private static final int PUSH_PORT = 9001;
@@ -38,11 +34,11 @@ public class ConfigurationTest {
     private static final int CAMERA_PORT_SCOUT = 9102;
     private static final int LINGER_TIME_MS = 1000;
     private static final int OUTGOING_MSG_FREQ_MS = 500;
-    private static final int UDP_BROADCAST_TIMEOUT = 1000;
-    private static final int UDP_BROADCAST_ATTEMPTS = 5;
-    private static final int UDP_BROADCAST_PORT = 9080;
-    private static final int RECEIVE_TIMEOUT_MS = 300000;
+    private static final int UDP_SERVER_GAME_FINDER_TIMEOUT = 1000;
+    private static final int UDP_SERVER_GAME_FINDER_ATTEMPTS = 5;
+    private static final int UDP_SERVER_GAME_FINDER_PORT = 9080;
     private static final String SERVER_ADDRESS = "tcp://127.0.0.1:";
+    private static final int UDP_PROXY_BROADCAST_PORT = 9081;
 
     @Before
     public void setUp() {
@@ -95,7 +91,7 @@ public class ConfigurationTest {
         configProxy = getConfigurationResourceTest().getConfigModel()
                 .getConfigProxy();
 
-        assertEquals(RECEIVE_TIMEOUT_MS, configProxy.getReceiveTimeout());
+        assertEquals(UDP_PROXY_BROADCAST_PORT, configProxy.getUdpProxyBroadcastPort());
         assertEquals(LINGER_TIME_MS, configProxy.getSenderLinger());
         assertEquals(LINGER_TIME_MS, configProxy.getReceiverLinger());
         assertEquals(OUTGOING_MSG_FREQ_MS, configProxy.getOutgoingMsgPeriod());
@@ -190,14 +186,14 @@ public class ConfigurationTest {
     }
 
     @Test
-    public void testUdpBroadcastElement() {
-        final ConfigUdpBroadcast configUdpBroadcast;
+    public void testUdpServerGameFinderElement() {
+        final ConfigUdpServerGameFinder configUdpServerGameFinder;
         try {
-            configUdpBroadcast = getConfigurationResourceTest().getConfigModel()
-                    .getConfigProxy().getConfigUdpBroadcast();
-            assertEquals(UDP_BROADCAST_PORT, configUdpBroadcast.getPort());
-            assertEquals(UDP_BROADCAST_ATTEMPTS, configUdpBroadcast.getAttempts());
-            assertEquals(UDP_BROADCAST_TIMEOUT, configUdpBroadcast.getTimeoutPerAttemptMs());
+            configUdpServerGameFinder = getConfigurationResourceTest().getConfigModel()
+                    .getConfigProxy().getConfigUdpServerGameFinder();
+            assertEquals(UDP_SERVER_GAME_FINDER_PORT, configUdpServerGameFinder.getPort());
+            assertEquals(UDP_SERVER_GAME_FINDER_ATTEMPTS, configUdpServerGameFinder.getAttempts());
+            assertEquals(UDP_SERVER_GAME_FINDER_TIMEOUT, configUdpServerGameFinder.getTimeoutPerAttemptMs());
         } catch (final Exception e) {
             fail(e.toString());
         }
@@ -206,6 +202,16 @@ public class ConfigurationTest {
     @Test
     public void testConfiguration_loadsDefaultResource() {
         assertTrue(new ConfigurationResource("configThatDoesNotExist.xml").isPopulated());
+    }
+
+    @Test
+    public void testConfigRobotsPortsPool() {
+        final ConfigRobotsPortsPool configRobotsPortsPool;
+        configRobotsPortsPool = getConfigurationResourceTest().getConfigModel()
+                .getConfigProxy().getConfigRobotsPortsPool();
+
+        assertEquals(BEGIN_PORT, configRobotsPortsPool.getBeginPort());
+        assertEquals(PORTS_COUNT, configRobotsPortsPool.getPortsCount());
     }
 
     @After

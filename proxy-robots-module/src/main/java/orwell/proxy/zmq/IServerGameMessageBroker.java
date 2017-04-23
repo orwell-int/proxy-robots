@@ -1,9 +1,6 @@
 package orwell.proxy.zmq;
 
-/**
- * Created by Michaël Ludmann on 03/05/15.
- */
-public interface IZmqMessageBroker {
+public interface IServerGameMessageBroker {
 
     /**
      * Decide whether to handle two identical successive messages or to ignore the second
@@ -21,4 +18,6 @@ public interface IZmqMessageBroker {
     void close();
 
     boolean isConnectedToServer();
+
+    int getOutgoingMessagePeriod();
 }

@@ -10,7 +10,9 @@ public class ConfigProxy implements IConfigProxy {
     private int senderLinger;
     private int receiverLinger;
     private int outgoingMsgPeriod;
-    private ConfigUdpBroadcast configUdpBroadcast;
+    private ConfigUdpServerGameFinder configUdpServerGameFinder;
+    private ConfigRobotsPortsPool configRobotsPortsPool;
+    private int udpProxyBroadcastPort;
 
     @XmlElement(name = "server-game")
     public List<ConfigServerGame> getConfigServerGames() {
@@ -34,6 +36,16 @@ public class ConfigProxy implements IConfigProxy {
             }
         }
         return maxPriorityConfig;
+    }
+
+    @Override
+    public int getUdpProxyBroadcastPort() {
+        return udpProxyBroadcastPort;
+    }
+
+    @XmlElement
+    public void setUdpProxyBroadcastPort(final int udpProxyBroadcastPort) {
+        this.udpProxyBroadcastPort = udpProxyBroadcastPort;
     }
 
     @Override
@@ -77,13 +89,22 @@ public class ConfigProxy implements IConfigProxy {
         this.outgoingMsgPeriod = outgoingMsgPeriod;
     }
 
-    @Override
-    public ConfigUdpBroadcast getConfigUdpBroadcast() {
-        return configUdpBroadcast;
+    public ConfigUdpServerGameFinder getConfigUdpServerGameFinder() {
+        return configUdpServerGameFinder;
     }
 
-    @XmlElement(name = "udpBroadcast")
-    public void setConfigUdpBroadcast(final ConfigUdpBroadcast configUdpBroadcast) {
-        this.configUdpBroadcast = configUdpBroadcast;
+    @XmlElement(name = "udpServerGameFinder")
+    public void setConfigUdpServerGameFinder(final ConfigUdpServerGameFinder configUdpServerGameFinder) {
+        this.configUdpServerGameFinder = configUdpServerGameFinder;
+    }
+
+    @Override
+    public ConfigRobotsPortsPool getConfigRobotsPortsPool() {
+        return configRobotsPortsPool;
+    }
+
+    @XmlElement(name = "robotsPortsPool")
+    public void setConfigRobotsPortsPool(ConfigRobotsPortsPool configRobotsPortsPool) {
+        this.configRobotsPortsPool = configRobotsPortsPool;
     }
 }

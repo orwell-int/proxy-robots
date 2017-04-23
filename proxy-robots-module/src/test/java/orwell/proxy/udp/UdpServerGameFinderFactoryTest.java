@@ -16,14 +16,14 @@ import static org.junit.Assert.assertEquals;
  */
 @SuppressWarnings("unused")
 @RunWith(JUnit4.class)
-public class UdpBeaconFinderFactoryTest {
-    private final static Logger logback = LoggerFactory.getLogger(UdpBeaconFinderFactoryTest.class);
+public class UdpServerGameFinderFactoryTest {
+    private final static Logger logback = LoggerFactory.getLogger(UdpServerGameFinderFactoryTest.class);
     private final static int BROADCAST_PORT = 9999;
     private final static int BROADCAST_ATTEMPT_NB = 5;
     private final static int BROADCAST_TIMEOUT_MS = 100;
 
     @TestSubject
-    private UdpBeaconFinder udpBeaconFinder;
+    private UdpServerGameFinder udpServerGameFinder;
 
     @Before
     public void setUp() throws Exception {
@@ -32,13 +32,13 @@ public class UdpBeaconFinderFactoryTest {
 
     @Test
     public void testFromParameters() throws Exception {
-        udpBeaconFinder = UdpBeaconFinderFactory.fromParameters(BROADCAST_PORT,
+        udpServerGameFinder = UdpServerGameFinderFactory.fromParameters(BROADCAST_PORT,
                 BROADCAST_ATTEMPT_NB, BROADCAST_TIMEOUT_MS);
-        udpBeaconFinder.broadcastAndGetServerAddress();
+        udpServerGameFinder.broadcastAndGetServerAddress();
 
         // There is no server running (or mock simulating it)
         // so the beacon should fail by reaching its max attempts of broadcast
-        assertEquals(BROADCAST_ATTEMPT_NB, udpBeaconFinder.getNumberOfPerformedAttempts());
+        assertEquals(BROADCAST_ATTEMPT_NB, udpServerGameFinder.getNumberOfPerformedAttempts());
     }
 
     @After

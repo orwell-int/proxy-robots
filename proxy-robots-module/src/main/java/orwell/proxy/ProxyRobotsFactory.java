@@ -4,65 +4,55 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.proxy.config.ConfigFactory;
 import orwell.proxy.config.Configuration;
+import orwell.proxy.config.elements.ConfigRobotsPortsPool;
+import orwell.proxy.config.elements.IConfigProxy;
 import orwell.proxy.robot.RobotsMap;
-import orwell.proxy.udp.UdpBeaconFinder;
-import orwell.proxy.udp.UdpBeaconFinderFactory;
-import orwell.proxy.zmq.FrequencyFilter;
-import orwell.proxy.zmq.IFilter;
-import orwell.proxy.zmq.ZmqMessageBroker;
+import orwell.proxy.udp.UdpServerGameFinder;
+import orwell.proxy.udp.UdpServerGameFinderFactory;
+import orwell.proxy.zmq.ServerGameMessageBroker;
 
-import java.util.ArrayList;
-
-/**
- * Created by Michaël Ludmann on 03/05/15.
- */
-class ProxyRobotsFactory {
+public class ProxyRobotsFactory {
     private final static Logger logback = LoggerFactory.getLogger(ProxyRobotsFactory.class);
     private final ConfigFactory configFactory;
-    private final ZmqMessageBroker zmqMessageBroker;
-    private final UdpBeaconFinder udpBeaconFinder;
+    private final ServerGameMessageBroker serverGameMessageBroker;
+    private final UdpServerGameFinder udpServerGameFinder;
 
     public ProxyRobotsFactory(final Configuration configuration) {
-        logback.debug("Constructor -- IN");
         configFactory = ConfigFactory.createConfigFactory(configuration);
 
         if (null == configFactory.getConfigProxy()) {
             // We do not have the data to initialize the broker and udp discovery
-            zmqMessageBroker = null;
-            udpBeaconFinder = null;
+            assert (false);
+            serverGameMessageBroker = null;
+            udpServerGameFinder = null;
         } else {
 
-            zmqMessageBroker = new ZmqMessageBroker(
-                    configFactory.getConfigProxy().getReceiveTimeout(),
-                    configFactory.getConfigProxy().getSenderLinger(),
-                    configFactory.getConfigProxy().getReceiverLinger()
+            final IConfigProxy configProxy = configFactory.getConfigProxy();
+            serverGameMessageBroker = new ServerGameMessageBroker(
+                    configProxy.getReceiveTimeout(),
+                    configProxy.getSenderLinger(),
+                    configProxy.getReceiverLinger(),
+                    configProxy.getOutgoingMsgPeriod()
             );
 
-            udpBeaconFinder = UdpBeaconFinderFactory.fromConfig(
-                    configFactory.getConfigProxy().getConfigUdpBroadcast()
+            udpServerGameFinder = UdpServerGameFinderFactory.fromConfig(
+                    configFactory.getConfigProxy().getConfigUdpServerGameFinder()
             );
         }
-        logback.debug("Constructor -- OUT");
     }
 
     public ProxyRobots getProxyRobots() {
-        if (null == zmqMessageBroker) {
+        if (null == serverGameMessageBroker) {
             return null;
         }
+        final IConfigProxy configProxy = configFactory.getConfigProxy();
+        ConfigRobotsPortsPool configRobotsPortsPool = configProxy.getConfigRobotsPortsPool();
         return new ProxyRobots(
-                udpBeaconFinder, zmqMessageBroker,
-                configFactory, new RobotsMap()
+                udpServerGameFinder, serverGameMessageBroker,
+                configFactory, new RobotsMap(),
+                configRobotsPortsPool,
+                configProxy.getUdpProxyBroadcastPort()
         );
 
-    }
-
-    // TODO Frequency filter should be revised ; we do not want to filter
-    // necessary messages for the server
-    private ArrayList<IFilter> getFilterList() {
-        final ArrayList<IFilter> filterList = new ArrayList<>();
-        if (null != configFactory.getConfigProxy())
-            filterList.add(new FrequencyFilter(configFactory.getConfigProxy().getOutgoingMsgPeriod()));
-
-        return filterList;
     }
 }

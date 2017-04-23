@@ -1,7 +1,7 @@
 package orwell.proxy.robot;
 
 import junit.framework.AssertionFailedError;
-import lejos.mf.common.UnitMessage;
+import lejos.mf.common.StreamUnitMessage;
 import org.easymock.Mock;
 import org.easymock.TestSubject;
 import org.junit.After;
@@ -29,7 +29,7 @@ public class RobotInputSetVisitorTest {
     private RobotInputSetVisitor inputSetVisitor;
 
     @Mock
-    private LegoTank tank;
+    private LegoNxtTank tank;
 
 
     @Before
@@ -60,10 +60,14 @@ public class RobotInputSetVisitorTest {
 
 
     @Test
-    public void testVisit_Robot_Empty() {
+    public void testVisit_Robot_Empty() throws MessageNotSentException {
         // Mock the tank
-        tank = createMock(LegoTank.class);
-        tank.sendUnitMessage(anyObject(UnitMessage.class));
+        tank = createMock(LegoNxtTank.class);
+        try {
+            tank.sendUnitMessage(anyObject(StreamUnitMessage.class));
+        } catch (MessageNotSentException e) {
+            e.printStackTrace();
+        }
         // We should not send any unitMessage (or we throw an exception)
         expectLastCall().andThrow(new AssertionFailedError("Tank should not send an unitMessage")).anyTimes();
         replay(tank);
@@ -76,7 +80,7 @@ public class RobotInputSetVisitorTest {
 
 
     @Test
-    public void testVisit_Robot_Full() {
+    public void testVisit_Robot_Full() throws MessageNotSentException {
         // Setup the class
         final InputMove inputMove = new InputMove();
         inputSetVisitor.visit(inputMove);
@@ -84,8 +88,12 @@ public class RobotInputSetVisitorTest {
         inputSetVisitor.visit(inputFire);
 
         // Mock the tank
-        tank = createMock(LegoTank.class);
-        tank.sendUnitMessage(anyObject(UnitMessage.class));
+        tank = createMock(LegoNxtTank.class);
+        try {
+            tank.sendUnitMessage(anyObject(StreamUnitMessage.class));
+        } catch (MessageNotSentException e) {
+            e.printStackTrace();
+        }
         expectLastCall().times(2); // we should send two unitMessages
         replay(tank);
 

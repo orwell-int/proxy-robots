@@ -24,21 +24,20 @@ public class Registered {
         robot.setRoutingId(serverGameRegistered.getRobotId());
         if (robot.getRoutingId().isEmpty()) {
             robot.setRegistrationState(EnumRegistrationState.REGISTRATION_FAILED);
-            logback.warn("Registration of robot: " + serverGameRegisteredToString(robot) + " FAILED");
+            logback.warn("Registration of robot: " + toString(robot) + " FAILED");
         } else {
             robot.setRegistrationState(EnumRegistrationState.REGISTERED);
             robot.setTeamName(serverGameRegistered.getTeam());
-            logback.info("Registered robot: " + serverGameRegisteredToString(robot));
+            logback.info("Registered robot: " + toString(robot));
         }
     }
 
-    private String serverGameRegisteredToString(final IRobot robot) {
+    private String toString(final IRobot robot) {
         final String string;
         if (null != serverGameRegistered) {
-            string = "ServerGame REGISTERED of Robot [" + robot.getRoutingId() + "]:"
-                    + "\n\t|___final RoutingID: "
-                    + serverGameRegistered.getRobotId() + "\n\t|___team: "
-                    + serverGameRegistered.getTeam();
+            string = "ServerGame REGISTERED of Robot [" + robot.getRoutingId() + "] | " +
+                    "final RoutingID: " + serverGameRegistered.getRobotId() +
+                    " | team: " + serverGameRegistered.getTeam();
         } else {
             string = "ServerGame REGISTERED of Robot [" + robot.getRoutingId()
                     + "] NOT initialized!";

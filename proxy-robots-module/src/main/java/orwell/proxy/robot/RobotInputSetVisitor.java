@@ -5,10 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import orwell.messages.Controller;
 
-
-/**
- * Created by Michaël Ludmann on 5/12/15.
- */
 public class RobotInputSetVisitor implements IRobotInputVisitor {
     private final static Logger logback = LoggerFactory.getLogger(RobotInputSetVisitor.class);
     private Controller.Input input;
@@ -24,18 +20,14 @@ public class RobotInputSetVisitor implements IRobotInputVisitor {
         }
     }
 
-    public String inputToString(final IRobot robot) {
+    public String toString(final IRobot robot) {
         final String string;
         if (null != input) {
             string = "Controller INPUT of Robot [" + robot.getRoutingId() + "]:"
-                    + "\n\t|___Move order: [LEFT] "
-                    + input.getMove().getLeft()
-                    + " \t\t[RIGHT] "
-                    + input.getMove().getRight()
-                    + "\n\t|___Fire order: [WEAPON1] "
-                    + input.getFire().getWeapon1()
-                    + " \t[WEAPON2] "
-                    + input.getFire().getWeapon2();
+                    + " | Move order: [LEFT] " + input.getMove().getLeft()
+                    + " [RIGHT] " + input.getMove().getRight()
+                    + " | Fire order: [WEAPON1] " + input.getFire().getWeapon1()
+                    + " [WEAPON2] " + input.getFire().getWeapon2();
         } else {
             string = "Controller INPUT of Robot [" + robot.getRoutingId()
                     + "] NOT initialized!";
@@ -75,13 +67,11 @@ public class RobotInputSetVisitor implements IRobotInputVisitor {
      * (meaning it is not worth sending it to the robot)
      */
     private boolean isEmpty(final Controller.Input input) {
-        return (null == input) ||
-                !(input.hasFire() &&
-                (input.getFire().getWeapon1() || input.getFire().getWeapon2()));
+        return (null == input) || !(input.hasFire());
     }
 
     @Override
-    public void visit(final IRobot robot) {
+    public void visit(final IRobot robot) throws MessageNotSentException {
 
         if (null != this.inputMove && this.inputMove.hasMove()) {
             inputMove.sendUnitMessageTo(robot);

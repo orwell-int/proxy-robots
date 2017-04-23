@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding='utf-8'?>
 <setup>
     <proxy>
-        <udpBroadcast>
+        <udpServerGameFinder>
             <port>9080</port>
-            <attempts>5</attempts>
+            <attempts>500</attempts>
             <timeoutPerAttemptMs>1000</timeoutPerAttemptMs>
-        </udpBroadcast>
+        </udpServerGameFinder>
+        <udpProxyBroadcastPort>9081</udpProxyBroadcastPort>
+        <receiveTimeout>0</receiveTimeout>
         <senderLinger>1000</senderLinger>
         <receiverLinger>1000</receiverLinger>
         <outgoingMsgPeriod>50</outgoingMsgPeriod>
+        <robotsPortsPool>
+            <beginPort>10000</beginPort>
+            <portsCount>8</portsCount>
+        </robotsPortsPool>
         <server-game name='default' priority="1">
             <ip>localhost</ip>
             <pushPort>9000</pushPort>
@@ -16,13 +22,12 @@
         </server-game>
     </proxy>
     <robots>
-        <tank tempRoutingID='defaultId' shouldRegister='1'>
-            <bluetoothName>DefaultName</bluetoothName>
-            <bluetoothID>000000000000</bluetoothID>
+        <tank tempRoutingID='defaultId' shouldRegister='1' model='ev3'>
+            <networkInterface addr='wlan0'>
+                <ip>192.168.0.15</ip>
+            </networkInterface>
             <camera>
-                <ip>192.168.1.1</ip>
-                <port>80</port>
-                <resourcePath>/defaultPath</resourcePath>
+                <port>5000</port>
             </camera>
             <image>DefaultImage</image>
         </tank>

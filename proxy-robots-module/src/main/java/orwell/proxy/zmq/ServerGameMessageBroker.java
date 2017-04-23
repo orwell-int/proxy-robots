@@ -7,18 +7,15 @@ import org.zeromq.ZMQ;
 import java.text.ParseException;
 import java.util.ArrayList;
 
-/**
- * Created by Michael Ludmann on 08/03/15.
- */
-public class ZmqMessageBroker implements IZmqMessageBroker {
+public class ServerGameMessageBroker implements IServerGameMessageBroker {
 
-    private final static Logger logback = LoggerFactory.getLogger(ZmqMessageBroker.class);
-    private static final long THREAD_SLEEP_MS = 10;
+    private final static Logger logback = LoggerFactory.getLogger(ServerGameMessageBroker.class);
+    private static final long THREAD_SLEEP_BETWEEN_MESSAGES_MS = 10;
+    private static final long THREAD_SLEEP_POST_CONNECT_MS = 1000;
     private final Object rXguard;
     private final ZMQ.Context context;
     private final ZMQ.Socket sender;
     private final ZMQ.Socket receiver;
-    final private ArrayList<IFilter> filterList;
     private final ArrayList<IZmqMessageListener> zmqMessageListeners;
     private final long socketTimeoutMs;
     private final boolean isSocketTimeoutSet;
@@ -28,12 +25,12 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
     private boolean isSkipIdenticalMessages = false;
     private volatile long baseTimeMs;
     private int nbBadMessages;
+    private int outgoingMessagePeriod;
 
-    public ZmqMessageBroker(final long receiveTimeoutMs,
-                            final int senderLinger,
-                            final int receiverLinger,
-                            final ArrayList<IFilter> filterList) {
-        logback.info("Constructor -- IN");
+    public ServerGameMessageBroker(final long receiveTimeoutMs,
+                                   final int senderLinger,
+                                   final int receiverLinger,
+                                   final int outgoingMessagePeriod) {
         socketTimeoutMs = receiveTimeoutMs;
         isSocketTimeoutSet = 0 < receiveTimeoutMs;
         zmqMessageListeners = new ArrayList<>();
@@ -46,17 +43,11 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
         sender.setLinger(senderLinger);
         receiver.setLinger(receiverLinger);
 
+        this.outgoingMessagePeriod = outgoingMessagePeriod;
+
         setupNewReader();
 
-        this.filterList = filterList;
-
-        logback.info("Constructor -- OUT");
-    }
-
-    public ZmqMessageBroker(final long receiveTimeoutMs,
-                            final int senderLinger,
-                            final int receiverLinger) {
-        this(receiveTimeoutMs, senderLinger, receiverLinger, null);
+        logback.info("ServerGameMessageBroker initialized");
     }
 
     private void setupNewReader() {
@@ -73,10 +64,17 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
     public boolean connectToServer(final String pushAddress,
                                    final String subscribeAddress) {
         sender.connect(pushAddress);
-        logback.info("ProxyRobots Sender created");
         receiver.connect(subscribeAddress);
-        logback.info("ProxyRobots Receiver created");
+        logback.info("ProxyRobots Sender [" + pushAddress +
+                "] and Receiver [" + subscribeAddress + "] created");
         receiver.subscribe("".getBytes());
+
+        try {
+            Thread.sleep(THREAD_SLEEP_POST_CONNECT_MS);
+        } catch (InterruptedException e) {
+            logback.error(e.getMessage());
+        }
+
         try {
             if (Thread.State.NEW != reader.getState()) {
                 logback.error("Reader has already been started once");
@@ -92,14 +90,6 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
 
     @Override
     public boolean sendZmqMessage(ZmqMessageBOM zmqMessageBOM) {
-
-        // We apply the filters sequentially
-        if (null != this.filterList) {
-            for (final IFilter filter : this.filterList) {
-                zmqMessageBOM = filter.getFilteredMessage(zmqMessageBOM);
-            }
-        }
-
         if (zmqMessageBOM.isEmpty())
             return false;
         else
@@ -122,6 +112,10 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
         return isConnected;
     }
 
+    @Override
+    public int getOutgoingMessagePeriod() {
+        return outgoingMessagePeriod;
+    }
     public int getNbSuccessiveMessagesSkipped() {
         return nbSuccessiveSameMessages;
     }
@@ -135,13 +129,13 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
                 (System.currentTimeMillis() - baseTimeMs > socketTimeoutMs);
     }
 
-    private class ZmqReader extends Thread {
+    public class ZmqReader extends Thread {
         ZmqMessageBOM previousZmqMessage;
         ZmqMessageBOM newZmqMessage;
 
         @Override
         public void run() {
-            logback.info("ZmqReader has been started");
+            logback.info("ZmqReader for ServerGame has been started");
             baseTimeMs = System.currentTimeMillis();
             while (isConnected && !hasReceivedTimeoutExpired()) {
                 final byte[] raw_zmq_message = receiver.recv(ZMQ.NOBLOCK);
@@ -152,7 +146,7 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
                 }
                 try {
                     // This is performed to avoid high CPU consumption
-                    Thread.sleep(THREAD_SLEEP_MS);
+                    Thread.sleep(THREAD_SLEEP_BETWEEN_MESSAGES_MS);
                 } catch (final InterruptedException e) {
                     logback.error("ZmqReader thread sleep exception: " + e.getMessage());
                 }
@@ -197,7 +191,7 @@ public class ZmqMessageBroker implements IZmqMessageBroker {
 
         private void onReceivedNewZmqMessage(final ZmqMessageBOM zmqMessageBOM) {
             nbSuccessiveSameMessages = 0;
-            logback.debug("Received New ZMQ Message : " + zmqMessageBOM.getMessageType());
+            //logback.debug("Received New ZMQ Message : " + zmqMessageBOM.getMessageType());
             for (final IZmqMessageListener zmqMessageListener : zmqMessageListeners) {
                 zmqMessageListener.receivedNewZmq(zmqMessageBOM);
             }

@@ -42,7 +42,7 @@ public class ConfigurationResource extends Configuration {
         }
         final ConfigModel configModel = (ConfigModel) unmarshaller.unmarshal(xml);
         setIsPopulated(true);
-        logback.info("Configuration loaded");
+        logback.info("Configuration loaded from " + filePath);
 
         return configModel;
     }

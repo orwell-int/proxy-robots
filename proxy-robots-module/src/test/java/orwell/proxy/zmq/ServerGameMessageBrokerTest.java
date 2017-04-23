@@ -23,7 +23,7 @@ import static org.powermock.api.easymock.PowerMock.expectLastCall;
 import static org.powermock.api.easymock.PowerMock.replay;
 
 /**
- * Tests for {@link ZmqMessageBroker}.
+ * Tests for {@link ServerGameMessageBroker}.
  * <p/>
  * Created by Michael Ludmann on 15/03/15.
  */
@@ -31,27 +31,31 @@ import static org.powermock.api.easymock.PowerMock.replay;
 @SuppressWarnings("unused")
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(ZMQ.Socket.class)
-public class ZmqMessageBrokerTest {
+public class ServerGameMessageBrokerTest {
 
     static final String TEST_ROUTING_ID_1 = "testRoutingId_1";
     static final String TEST_ROUTING_ID_2 = "testRoutingId_2";
     static final long OUTGOING_MSG_PERIOD_HIGH = 50000;
-    private final static Logger logback = LoggerFactory.getLogger(ZmqMessageBrokerTest.class);
+    private final static Logger logback = LoggerFactory.getLogger(ServerGameMessageBrokerTest.class);
     private final static long MAX_TIMEOUT_MS = 500;
     private final static String PUSH_ADDRESS = "tcp://127.0.0.1:9000";
     private final static String SUB_ADDRESS = "tcp://127.0.0.1:9001";
     private static final long WAIT_TIMEOUT_MS = 500;
+    public static final int RECEIVE_TIMEOUT_MS = 100000;
+    public static final int SENDER_LINGER = 1000;
+    public static final int RECEIVER_LINGER = 1000;
+    public static final int OUTGOING_MESSAGE_PERIOD = 42;
     private final FrequencyFilter frequencyFilter = new FrequencyFilter(OUTGOING_MSG_PERIOD_HIGH);
 
     @TestSubject
-    private ZmqMessageBroker zmf;
+    private ServerGameMessageBroker zmf;
 
     @Before
     public void setUp() {
         logback.debug(">>>>>>>>> IN");
         final ArrayList<IFilter> filters = new ArrayList<>();
         filters.add(frequencyFilter);
-        zmf = new ZmqMessageBroker(100000, 1000, 1000, filters);
+        zmf = new ServerGameMessageBroker(RECEIVE_TIMEOUT_MS, SENDER_LINGER, RECEIVER_LINGER, OUTGOING_MESSAGE_PERIOD);
     }
 
     public void initZmqMocks() {
@@ -74,9 +78,9 @@ public class ZmqMessageBrokerTest {
         replay(mockedZmqContext);
 
         try {
-            MemberModifier.field(ZmqMessageBroker.class, "context").set(zmf, mockedZmqContext);
-            MemberModifier.field(ZmqMessageBroker.class, "sender").set(zmf, mockedZmqSocketSend);
-            MemberModifier.field(ZmqMessageBroker.class, "receiver").set(zmf, mockedZmqSocketRecv);
+            MemberModifier.field(ServerGameMessageBroker.class, "context").set(zmf, mockedZmqContext);
+            MemberModifier.field(ServerGameMessageBroker.class, "sender").set(zmf, mockedZmqSocketSend);
+            MemberModifier.field(ServerGameMessageBroker.class, "receiver").set(zmf, mockedZmqSocketRecv);
         } catch (final IllegalAccessException e) {
             logback.error(e.getMessage());
         }
@@ -149,34 +153,6 @@ public class ZmqMessageBrokerTest {
     }
 
     @Test
-    public void testSendZmqMessage_withFilter() throws Exception {
-        initZmqMocks();
-
-        final byte[] msgBody = "msgBody".getBytes();
-
-        final ZmqMessageBOM registerMsg =
-                new ZmqMessageBOM(TEST_ROUTING_ID_1, EnumMessageType.REGISTER, msgBody);
-        assertTrue(zmf.sendZmqMessage(registerMsg));
-
-        // Second identical message trying to be sent during the filtering period,
-        // So the sending fails
-        Thread.sleep(1);
-        assertFalse(zmf.sendZmqMessage(registerMsg));
-
-        // Third message is of a different type, so it is not filtered
-        Thread.sleep(1);
-        final ZmqMessageBOM serverRobotStateMsg_r1 =
-                new ZmqMessageBOM(TEST_ROUTING_ID_1, EnumMessageType.SERVER_ROBOT_STATE, msgBody);
-        assertTrue(zmf.sendZmqMessage(serverRobotStateMsg_r1));
-
-        // Fourth message is of a different routingId, so it is not filtered
-        Thread.sleep(1);
-        final ZmqMessageBOM serverRobotStateMsg_r2 =
-                new ZmqMessageBOM(TEST_ROUTING_ID_2, EnumMessageType.SERVER_ROBOT_STATE, msgBody);
-        assertTrue(zmf.sendZmqMessage(serverRobotStateMsg_r2));
-    }
-
-    @Test
     public void testReceiveBadMessage() {
         // Mock ZMQ behaviour with mock sockets and context
         final ZMQ.Socket mockedZmqSocketSend = createNiceMock(ZMQ.Socket.class);
@@ -197,9 +173,9 @@ public class ZmqMessageBrokerTest {
         replay(mockedZmqContext);
 
         try {
-            MemberModifier.field(ZmqMessageBroker.class, "context").set(zmf, mockedZmqContext);
-            MemberModifier.field(ZmqMessageBroker.class, "sender").set(zmf, mockedZmqSocketSend);
-            MemberModifier.field(ZmqMessageBroker.class, "receiver").set(zmf, mockedZmqSocketRecv);
+            MemberModifier.field(ServerGameMessageBroker.class, "context").set(zmf, mockedZmqContext);
+            MemberModifier.field(ServerGameMessageBroker.class, "sender").set(zmf, mockedZmqSocketSend);
+            MemberModifier.field(ServerGameMessageBroker.class, "receiver").set(zmf, mockedZmqSocketRecv);
         } catch (final IllegalAccessException e) {
             logback.error(e.getMessage());
         }

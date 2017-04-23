@@ -34,15 +34,14 @@ public final class Utils {
         int blockStart = 0;
         int blockEnd = 0;
         final boolean limited = 0 < limit;
-        while (blockEnd < input.length && (!limited || limit > list.size())) {
+        while (blockEnd < input.length && (!limited || limit > list.size() + 1)) {
             if (separator == input[blockEnd]) {
                 list.add(Arrays.copyOfRange(input, blockStart, blockEnd));
                 blockStart = blockEnd + 1;
             }
             blockEnd++;
         }
-        if (1 != limit)
-            list.add(Arrays.copyOfRange(input, blockStart, input.length));
+        list.add(Arrays.copyOfRange(input, blockStart, input.length));
         return list;
     }
 }
